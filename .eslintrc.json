@@ -21,6 +21,7 @@
     "import/prefer-default-export": "off",
     "import/no-default-export": "error",
     "import/extensions": ["error", "ignorePackages", { "ts": "never" }],
+    "no-useless-constructor": "off",
     "import-helpers/order-imports": [
       "warn",
       {
