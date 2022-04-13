@@ -27,6 +27,8 @@
     "test:unit": "npm test -- --watch -c jest-unit.config.ts",
     "test:integration": "npm test -- --watch -c jest-integration.config.ts",
     "test:cov": "npm test -- --coverage --silent",
+    "preknex": "npm run build",
+    "knex": "knex --knexfile ./dist/database/knexfile.js",
     "prepare": "husky install",
     "commit": "cz",
     "pre-push": "npm run test & npm run build",
@@ -34,7 +36,10 @@
     "postinstall": "echo \"Checking dependencies...\" & npm run check"
   },
   "dependencies": {
-    "@jest/types": "^27.5.1"
+    "@jest/types": "^27.5.1",
+    "dotenv": "^16.0.0",
+    "knex": "^1.0.6",
+    "pg": "^8.7.3"
   },
   "devDependencies": {
     "@commitlint/cli": "^16.2.3",
