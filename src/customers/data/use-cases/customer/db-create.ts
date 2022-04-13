@@ -1,4 +1,4 @@
-import { CreateCustomerRepository } from '@/customers/data/repositories';
+import { CreateCustomerRepository } from '@/customers/data/contracts/repositories';
 import { CreateCustomerUseCase } from '@/customers/domain/use-cases';
 
 export class DbCreateCustomerUseCase implements CreateCustomerUseCase.UseCase {
