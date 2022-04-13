@@ -33,7 +33,7 @@ export abstract class KnexBaseRepository {
   }
 
   protected async baseCreate<Model extends BaseModel>(
-    model: Omit<Model, 'id' & 'createdAt'>,
+    model: Omit<Model, 'id' | 'createdAt'>,
   ): Promise<Model> {
     const query = this.knex
       .table(this.tableName)
