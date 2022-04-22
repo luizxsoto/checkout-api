@@ -18,6 +18,7 @@
     "node": ">=16.13.0"
   },
   "scripts": {
+    "start": "node dist/src/server.js",
     "prebuild": "rm -rf ./dist",
     "build": "tsc -p tsconfig.build.json && tscpaths -p tsconfig.build.json -s .",
     "format": "prettier --write \"./**/*.ts\"",
@@ -37,6 +38,7 @@
   },
   "dependencies": {
     "@jest/types": "^27.5.1",
+    "crypto": "^1.0.1",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "knex": "^1.0.6",
