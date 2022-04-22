@@ -1,5 +1,6 @@
-import { createDefaultTable, dropTable } from '@db/helpers';
 import { Knex } from 'knex';
+
+import { createDefaultTable, dropTable } from '@db/helpers';
 
 const tableName = 'customers';
 
@@ -8,7 +9,7 @@ export async function up(knex: Knex): Promise<void> {
     tableName,
     columns: (table) => {
       table.string('name', 100).notNullable();
-      table.string('email', 100).notNullable();
+      table.string('email', 100).unique().notNullable();
     },
   });
 }
