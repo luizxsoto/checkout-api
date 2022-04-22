@@ -1,8 +1,6 @@
-import { bootstrap } from '@/server';
-
-describe(bootstrap.name, () => {
-  test('shold log params', () => {
-    const result = bootstrap(1, 1);
+describe('sum', () => {
+  test('shold sum correctly', () => {
+    const result = 1 + 1;
 
     expect(result).toBe(2);
   });

@@ -1,7 +1,7 @@
 import { setupApp } from '@/app';
 import { envConfig } from '@/shared/config';
 
-export function bootstrap(): void {
+function bootstrap(): void {
   const app = setupApp();
 
   app.listen(envConfig.port, () =>
