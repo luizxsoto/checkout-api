@@ -1,11 +1,13 @@
 import * as dotenv from 'dotenv';
 import { Knex } from 'knex';
 
+import { envConfig } from '@/shared/config/env';
+
 dotenv.config({ path: '../../.env' });
 
 const config: Knex.Config = {
   client: 'pg',
-  connection: process.env.DB_MIGRATIONS_URL,
+  connection: envConfig.dbURL,
   migrations: {
     directory: './migrations',
     tableName: 'knex_migrations',

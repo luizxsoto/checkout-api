@@ -1,6 +1,8 @@
 import { knex } from 'knex';
 
+import { envConfig } from './env';
+
 export const knexConfig = knex({
   client: 'pg',
-  connection: process.env.DB_URL ?? 'postgres://postgres:postgres@pg/payment_phone_database',
+  connection: envConfig.dbURL,
 });
