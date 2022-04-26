@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 import { Knex } from 'knex';
 
-import { envConfig } from '@/shared/config/env';
+import { envConfig } from '@/main/config';
 
 dotenv.config({ path: '../../.env' });
 

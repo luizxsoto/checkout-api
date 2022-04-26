@@ -18,7 +18,7 @@
     "node": ">=16.13.0"
   },
   "scripts": {
-    "start": "node dist/src/server.js",
+    "start": "node dist/src/main/server.js",
     "prebuild": "rm -rf ./dist",
     "build": "tsc -p tsconfig.build.json && tscpaths -p tsconfig.build.json -s .",
     "format": "prettier --write \"./**/*.ts\"",
