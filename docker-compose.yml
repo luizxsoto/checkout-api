@@ -1,0 +1,39 @@
+version: '3.7'
+
+services:
+  api:
+    container_name: checkout-api
+    image: node:16.13.2-alpine3.15
+    working_dir: /app
+    command: npm run start:debug
+    expose:
+      - 3000
+    ports:
+      - 3000:3000
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: base
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    networks:
+      checkout:
+        aliases:
+          - checkout-api
+  pg:
+    container_name: checkout-pg
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+    networks:
+      - checkout
+
+networks:
+  checkout:
+    name: checkout
+    driver: bridge
