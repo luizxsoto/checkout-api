@@ -1,3 +1,4 @@
+import 'module-alias/register';
 import { Knex } from 'knex';
 
 import { envConfig } from '@/main/config';
