@@ -17,6 +17,7 @@ export abstract class KnexBaseRepository {
       queryStr = query.toQuery();
       return (await query) as T;
     } catch (err) {
+      console.error('[KnexBaseRepository.run]', err, queryStr);
       throw new DatabaseException(err, queryStr);
     }
   }
@@ -33,7 +34,7 @@ export abstract class KnexBaseRepository {
   }
 
   protected async baseCreate<Model extends BaseModel>(
-    model: Omit<Model, 'id' | 'createdAt'>,
+    model: Omit<Model, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>,
   ): Promise<Model> {
     const query = this.knex
       .table(this.tableName)
@@ -47,7 +48,7 @@ export abstract class KnexBaseRepository {
 
   protected async baseUpdate<Model extends BaseModel>(
     where: Partial<Model>,
-    model: Omit<Model, 'updatedAt'>,
+    model: Omit<Model, 'updatedAt' | 'deletedAt'>,
   ): Promise<Model> {
     const query = this.knex
       .table(this.tableName)

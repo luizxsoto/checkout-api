@@ -2,10 +2,11 @@ import { Knex } from 'knex';
 
 import { KnexBaseRepository } from './base';
 
-import { CreateCustomerRepository } from '@/data/contracts/repositories';
+import { CreateCustomerRepository, FindByCustomerRepository } from '@/data/contracts/repositories';
 import { GenerateUniqueIDService } from '@/data/contracts/services';
+import { CustomerModel } from '@/domain/models';
 
-type Repositories = CreateCustomerRepository.Repository;
+type Repositories = CreateCustomerRepository.Repository & FindByCustomerRepository.Repository;
 
 export class KnexCustomerRepository extends KnexBaseRepository implements Repositories {
   constructor(knex: Knex, uuidService: GenerateUniqueIDService) {
@@ -13,8 +14,15 @@ export class KnexCustomerRepository extends KnexBaseRepository implements Reposi
   }
 
   public async create(
-    params: CreateCustomerRepository.RequestModel,
+    requestModel: CreateCustomerRepository.RequestModel,
   ): Promise<CreateCustomerRepository.ResponseModel> {
-    return this.baseCreate<CreateCustomerRepository.ResponseModel>(params);
+    return this.baseCreate<CreateCustomerRepository.ResponseModel>(requestModel);
+  }
+
+  public async findBy(
+    requestModel: Partial<CustomerModel>,
+  ): Promise<FindByCustomerRepository.ResponseModel> {
+    const query = this.knex.table(this.tableName).where(requestModel);
+    return this.baseFind<CreateCustomerRepository.ResponseModel>(query);
   }
 }
