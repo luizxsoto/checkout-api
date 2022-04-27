@@ -4,7 +4,7 @@ export class InternalException extends ApplicationException {
   constructor(error: Error) {
     super({
       name: 'InternalException',
-      code: 'E_INTERNAL_EXCEPTION',
+      code: 'INTERNAL_EXCEPTION',
       message: 'Something went wrong',
       originalError: error,
     });
