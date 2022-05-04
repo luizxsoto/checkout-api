@@ -1,2 +1,1 @@
 - [ ] Tirar o padrão do repository e do usecase com `.Repository`, `.RequestModel` e `.ResponseModel`. Assim deixando o nome completo pra cada interface, como por exemplo `CreateRepository`, `CreateRepositoryParams` e `CreateRepositoryResult`
-- [ ] Separar o shared por camada

@@ -1,4 +1,4 @@
-import 'module-alias/register';
+import './config/module-alias';
 import { envConfig, setupApp } from './config';
 
 function bootstrap(): void {

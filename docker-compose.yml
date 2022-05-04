@@ -5,15 +5,11 @@ services:
     container_name: checkout-api
     image: node:16.13.2-alpine3.15
     working_dir: /app
-    command: npm run start:debug
+    command: npm run start:dev
     expose:
       - 3000
     ports:
       - 3000:3000
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: base
     volumes:
       - .:/app
     env_file:
