@@ -21,6 +21,8 @@
     "class-methods-use-this": "off",
     "no-useless-constructor": "off",
     "sort-imports": ["error", { "ignoreDeclarationSort": true }],
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": ["error"],
     "import/order": [
       "error",
       {

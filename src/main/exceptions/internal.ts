@@ -1,10 +1,10 @@
-import { ApplicationException } from './application';
+import { ApplicationException, ErrorCodes } from './application';
 
 export class InternalException extends ApplicationException {
   constructor(error: Error) {
     super({
       name: 'InternalException',
-      code: 'INTERNAL_EXCEPTION',
+      code: ErrorCodes.INTERNAL,
       message: 'Something went wrong',
       originalError: error,
     });

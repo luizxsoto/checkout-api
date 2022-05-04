@@ -1,4 +1,4 @@
-import { ApplicationException } from '@/main/exceptions';
+import { ApplicationException, ErrorCodes } from '@/main/exceptions';
 
 export interface ValidationItem {
   field: string;
@@ -10,7 +10,7 @@ export class ValidationException extends ApplicationException {
   constructor(private readonly validations: ValidationItem[]) {
     super({
       name: 'ValidationException',
-      code: 'VALIDATION_EXCEPTION',
+      code: ErrorCodes.BAD_REQUEST,
       message: 'An error ocurred performing a validation',
     });
   }

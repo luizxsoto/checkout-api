@@ -10,11 +10,7 @@ export function serverError(error: Error): HttpResponse {
   let body = new InternalException(error);
 
   if (error instanceof ApplicationException) {
-    const statusCodeDict: Record<string, number> = {
-      VALIDATION_EXCEPTION: 400,
-    };
-
-    statusCode = statusCodeDict[error.code] ?? 500;
+    statusCode = error.code;
     body = error;
   }
 
