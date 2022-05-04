@@ -7,7 +7,7 @@ import { DatabaseException } from '@/infra/exceptions';
 export abstract class KnexBaseRepository {
   constructor(
     protected readonly knex: Knex,
-    protected readonly uuidService: GenerateUniqueIDService,
+    protected readonly uuidService: GenerateUniqueIDService.Service,
     protected readonly tableName: string,
   ) {}
 

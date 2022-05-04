@@ -9,7 +9,7 @@ import { CustomerModel } from '@/domain/models';
 type Repositories = CreateCustomerRepository.Repository & FindByCustomerRepository.Repository;
 
 export class KnexCustomerRepository extends KnexBaseRepository implements Repositories {
-  constructor(knex: Knex, uuidService: GenerateUniqueIDService) {
+  constructor(knex: Knex, uuidService: GenerateUniqueIDService.Service) {
     super(knex, uuidService, 'customers');
   }
 

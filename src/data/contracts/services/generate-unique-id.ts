@@ -1,3 +1,3 @@
-export interface GenerateUniqueIDService {
+export interface Service {
   generateUniqueID: () => string;
 }
