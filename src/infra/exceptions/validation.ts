@@ -2,7 +2,7 @@ import { ApplicationException, ErrorCodes } from '@/main/exceptions';
 
 export interface ValidationItem {
   field: string;
-  validation: string;
+  rule: string;
   message: string;
 }
 

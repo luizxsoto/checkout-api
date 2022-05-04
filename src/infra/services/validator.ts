@@ -46,14 +46,14 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
       if (model[key]) return null;
       return {
         field: key as string,
-        validation: 'required',
+        rule: 'required',
         message: 'This value is required',
       };
     },
     string: (key, options: Parameters<Rules['string']>[0], model) => {
       const response = {
         field: key as string,
-        validation: 'string',
+        rule: 'string',
         message: 'This value must be a string',
       };
 
@@ -84,7 +84,7 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
 
       return {
         field: key as string,
-        validation: 'email',
+        rule: 'email',
         message: 'This value must be a valid email',
       };
     },
@@ -99,7 +99,7 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
 
       return {
         field: key as string,
-        validation: 'unique',
+        rule: 'unique',
         message: 'This value is already used',
       };
     },
