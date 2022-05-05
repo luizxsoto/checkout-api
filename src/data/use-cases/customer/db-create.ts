@@ -9,7 +9,7 @@ export class DbCreateCustomerUseCase implements CreateCustomerUseCase.UseCase {
     private readonly findByCustomerRepository: FindByCustomerRepository.Repository,
     private readonly validator: ValidatorService.Validator<
       CreateCustomerUseCase.RequestModel,
-      { findedCustomers: CustomerModel[] }
+      { customers: () => Promise<CustomerModel[]> }
     >,
   ) {}
 
@@ -26,7 +26,7 @@ export class DbCreateCustomerUseCase implements CreateCustomerUseCase.UseCase {
   private async validateRequestModel(
     requestModel: CreateCustomerUseCase.RequestModel,
   ): Promise<void> {
-    this.validator.validate({
+    await this.validator.validate({
       schema: {
         name: [
           this.validator.rules.required(),
@@ -37,16 +37,14 @@ export class DbCreateCustomerUseCase implements CreateCustomerUseCase.UseCase {
           this.validator.rules.string({ minLength: 6, maxLength: 100 }),
           this.validator.rules.email(),
           this.validator.rules.unique({
-            dataEntity: 'findedCustomers',
+            dataEntity: 'customers',
             props: [{ modelKey: 'email', dataKey: 'email' }],
           }),
         ],
       },
       model: requestModel,
       data: {
-        findedCustomers: await this.findByCustomerRepository.findBy({
-          email: requestModel.email,
-        }),
+        customers: () => this.findByCustomerRepository.findBy({ email: requestModel.email }),
       },
     });
   }

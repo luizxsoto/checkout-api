@@ -25,6 +25,10 @@ export class ApplicationException {
             stack: originalError?.stack?.split('\n').map((line: string) => line.trim()),
           };
 
-    Object.assign(this, error, { details });
+    Object.assign(
+      this,
+      error,
+      Object.values(details || {}).filter((value) => Boolean(value)).length ? { details } : {},
+    );
   }
 }

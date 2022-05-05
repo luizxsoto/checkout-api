@@ -1,27 +1,36 @@
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-restricted-syntax */
 import { ValidatorService } from '@/data/contracts/services';
 import { Rules } from '@/data/contracts/services/validator';
 import { ValidationException, ValidationItem } from '@/infra/exceptions';
 
-export class VanillaValidatorService<Model, ValidatorData extends Record<string, any[]>>
-  implements ValidatorService.Validator<Model, ValidatorData>
+export class VanillaValidatorService<
+  Model,
+  ValidatorData extends Record<string, () => Promise<any[]>>,
+> implements ValidatorService.Validator<Model, ValidatorData>
 {
-  public validate(params: ValidatorService.Params<Model, ValidatorData>): ValidatorService.Result {
+  public async validate(
+    params: ValidatorService.Params<Model, ValidatorData>,
+  ): ValidatorService.Result {
     const validations: ValidationItem[] = [];
 
-    Object.keys(params.schema).forEach((key) => {
+    for (const key of Object.keys(params.schema)) {
       const parsedKey = key as keyof Model;
 
-      params.schema[parsedKey].forEach((rule) => {
-        const validation = this.validationRules[rule.name](
+      for (const rule of params.schema[parsedKey]) {
+        const validation = await this.validationRules[rule.name](
           parsedKey,
           rule.options,
           params.model,
           params.data,
         );
 
-        if (validation) validations.push(validation);
-      });
-    });
+        if (validation) {
+          validations.push(validation);
+          break;
+        }
+      }
+    }
 
     if (validations.length) throw new ValidationException(validations);
   }
@@ -40,7 +49,7 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
       options: any,
       model: ValidatorService.Params<Model, ValidatorData>['model'],
       data: ValidatorService.Params<Model, ValidatorData>['data'],
-    ) => null | ValidationItem
+    ) => null | ValidationItem | Promise<null | ValidationItem>
   > = {
     required: (key, _options, model) => {
       if (model[key]) return null;
@@ -88,8 +97,8 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
         message: 'This value must be a valid email',
       };
     },
-    unique: (key, options: Parameters<Rules['unique']>[0], model, data) => {
-      const hasItem = data[options.dataEntity].some((dataItem) =>
+    unique: async (key, options: Parameters<Rules['unique']>[0], model, data) => {
+      const hasItem = (await data[options.dataEntity]()).some((dataItem) =>
         options.props?.every(
           (prop) => dataItem[prop.dataKey] === model[prop.modelKey as keyof Model],
         ),
