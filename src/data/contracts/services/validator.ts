@@ -22,10 +22,10 @@ export type Params<Model, ValidatorData extends Record<string, () => Promise<any
   data: ValidatorData;
 };
 
-export type Result = Promise<void>;
+export type Result = void;
 
 export interface Validator<Model, ValidatorData extends Record<string, () => Promise<any[]>>> {
   rules: Rules;
 
-  validate: (payload: Params<Model, ValidatorData>) => Result;
+  validate: (payload: Params<Model, ValidatorData>) => Promise<Result>;
 }

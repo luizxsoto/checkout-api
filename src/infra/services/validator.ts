@@ -11,7 +11,7 @@ export class VanillaValidatorService<
 {
   public async validate(
     params: ValidatorService.Params<Model, ValidatorData>,
-  ): ValidatorService.Result {
+  ): Promise<ValidatorService.Result> {
     const validations: ValidationItem[] = [];
 
     for (const key of Object.keys(params.schema)) {
@@ -42,7 +42,7 @@ export class VanillaValidatorService<
     unique: (options) => ({ name: 'unique', options }),
   };
 
-  public validationRules: Record<
+  private validationRules: Record<
     keyof ValidatorService.Rules,
     (
       key: keyof Model,
