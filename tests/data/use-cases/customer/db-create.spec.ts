@@ -2,7 +2,6 @@ import { DbCreateCustomerUseCase } from '@/data/use-cases';
 import { ValidationException } from '@/infra/exceptions';
 import { makeCustomerRepositoryStub } from '@tests/data/stubs/repositories';
 import { makeValidatorServiceStub } from '@tests/data/stubs/services';
-import { makeCustomerModelMock } from '@tests/domain/mocks/models';
 
 function makeSut() {
   const customerRepository = makeCustomerRepositoryStub();
@@ -16,7 +15,7 @@ describe(DbCreateCustomerUseCase.name, () => {
   test('Should create customer and return correct values', async () => {
     const { customerRepository, sut } = makeSut();
 
-    const requestModel = { name: 'any_name', email: 'any@email.com' };
+    const requestModel = { name: 'Any Name', email: 'any@email.com' };
     const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
 
     customerRepository.create.mockReturnValueOnce(responseModel);
@@ -99,7 +98,8 @@ describe(DbCreateCustomerUseCase.name, () => {
     it(JSON.stringify(validations), async () => {
       const { customerRepository, sut } = makeSut();
 
-      const requestModel = makeCustomerModelMock(properties as any);
+      // eslint-disable-next-line prefer-object-spread
+      const requestModel = Object.assign({ name: 'Any Name', email: 'any@email.com' }, properties);
       const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
 
       customerRepository.create.mockReturnValueOnce(responseModel);
