@@ -53,5 +53,17 @@ describe(KnexCustomerRepository.name, () => {
 
       expect(sutResult).toStrictEqual([responseModel]);
     });
+
+    test('Should throw DatabaseException if knex throws', async () => {
+      const { knex, sut } = makeSut();
+
+      const requestModel = { name: 'Any Name', email: 'any@email.com' };
+      const error = new Error();
+      knex.then.mockImplementationOnce((_resolve, reject) => reject(error));
+
+      const sutResult = await sut.findBy(requestModel).catch((e) => e);
+
+      expect(sutResult).toStrictEqual(new DatabaseException(error, ''));
+    });
   });
 });
