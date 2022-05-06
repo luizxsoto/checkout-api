@@ -62,7 +62,7 @@ export function makeValidatorServiceStub<
                   field: key as string,
                   rule: 'regex',
                   message: `This value must be valid according to the pattern: ${
-                    options.customPattern || options.pattern
+                    options.customPattern ?? options.pattern
                   }`,
                 };
 

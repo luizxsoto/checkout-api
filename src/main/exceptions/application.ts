@@ -28,7 +28,7 @@ export class ApplicationException {
     Object.assign(
       this,
       error,
-      Object.values(details || {}).filter((value) => Boolean(value)).length ? { details } : {},
+      Object.values(details ?? {}).filter((value) => Boolean(value)).length ? { details } : {},
     );
   }
 }
