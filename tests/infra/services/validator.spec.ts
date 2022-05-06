@@ -113,4 +113,22 @@ describe(VanillaValidatorService.name, () => {
       );
     });
   });
+
+  test('Should throw if a field is out of length', async () => {
+    const { sut } = makeSut();
+
+    const sutResult = await sut
+      .validate({
+        schema: { anyProp: [sut.rules.length({ minLength: 2, maxLength: 3 })] },
+        model: { anyProp: '1' },
+        data: { anyData: async () => [] },
+      })
+      .catch((e) => e);
+
+    expect(sutResult).toStrictEqual(
+      new ValidationException([
+        { field: 'anyProp', rule: 'length', message: 'This value length must be beetween 2 and 3' },
+      ]),
+    );
+  });
 });
