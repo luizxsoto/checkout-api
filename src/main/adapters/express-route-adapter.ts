@@ -15,7 +15,7 @@ export function adaptRoute(controller: Controller) {
 
       res.status(httpResponse.statusCode).json(httpResponse.body);
     } catch (err) {
-      console.error('[adaptRoute]', err);
+      console.error('[Express.adaptRoute]', err);
       const httpResponse = serverError(err);
 
       res.status(httpResponse.statusCode).json(httpResponse.body);
