@@ -66,5 +66,27 @@ describe(VanillaValidatorService.name, () => {
         ]),
       );
     });
+
+    test('regex: email', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: { anyProp: [sut.rules.regex({ pattern: 'email' })] },
+          model: { anyProp: 'invalid_email' },
+          data: { anyData: async () => [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toStrictEqual(
+        new ValidationException([
+          {
+            field: 'anyProp',
+            rule: 'regex',
+            message: 'This value must be valid according to the pattern: email',
+          },
+        ]),
+      );
+    });
   });
 });
