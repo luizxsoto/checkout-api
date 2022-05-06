@@ -8,7 +8,7 @@ function makeSut() {
 }
 
 describe(VanillaValidatorService.name, () => {
-  test('Should throw if a required field was not informed', async () => {
+  test('Should throw if a required value was not informed', async () => {
     const { sut } = makeSut();
 
     const sutResult = await sut
@@ -26,7 +26,7 @@ describe(VanillaValidatorService.name, () => {
     );
   });
 
-  test('Should throw if a field should be string, but is not', async () => {
+  test('Should throw if the value should be string, but is not', async () => {
     const { sut } = makeSut();
 
     const sutResult = await sut
@@ -44,7 +44,7 @@ describe(VanillaValidatorService.name, () => {
     );
   });
 
-  describe('Should throw if a field should match with a regex, but is not', () => {
+  describe('Should throw if the value should match with a regex, but is not', () => {
     test('regex: name', async () => {
       const { sut } = makeSut();
 
@@ -114,7 +114,7 @@ describe(VanillaValidatorService.name, () => {
     });
   });
 
-  test('Should throw if a field is out of length', async () => {
+  test('Should throw if the value is out of length', async () => {
     const { sut } = makeSut();
 
     const sutResult = await sut
@@ -128,6 +128,31 @@ describe(VanillaValidatorService.name, () => {
     expect(sutResult).toStrictEqual(
       new ValidationException([
         { field: 'anyProp', rule: 'length', message: 'This value length must be beetween 2 and 3' },
+      ]),
+    );
+  });
+
+  test('Should throw if the value has already been used', async () => {
+    const { sut } = makeSut();
+
+    const sutResult = await sut
+      .validate({
+        schema: {
+          anyProp: [
+            sut.rules.unique({
+              dataEntity: 'anyData',
+              props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }],
+            }),
+          ],
+        },
+        model: { anyProp: 'anyProp' },
+        data: { anyData: async () => [{ anyProp: 'anyProp' }] },
+      })
+      .catch((e) => e);
+
+    expect(sutResult).toStrictEqual(
+      new ValidationException([
+        { field: 'anyProp', rule: 'unique', message: 'This value has already been used' },
       ]),
     );
   });
