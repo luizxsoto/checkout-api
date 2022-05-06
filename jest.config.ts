@@ -5,7 +5,14 @@ const config: Config.InitialOptions = {
   verbose: true,
   testRegex: '.*\\.(spec|test)\\.ts$',
   transform: { '^.+\\.ts$': 'ts-jest' },
-  collectCoverageFrom: ['<rootDir>/src/**/*.ts'],
+  collectCoverageFrom: [
+    '<rootDir>/src/**/*.ts',
+    '!<rootDir>/src/domain/**',
+    '!<rootDir>/src/main/config/**',
+    '!<rootDir>/src/presentation/dtos/**',
+    '!<rootDir>/src/**/contracts/**',
+    '!<rootDir>/src/**/exceptions/**',
+  ],
   coverageDirectory: './coverage',
   roots: ['<rootDir>/src/', '<rootDir>/tests/'],
   moduleNameMapper: {
