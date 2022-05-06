@@ -2,8 +2,10 @@ import { Request, Response } from 'express';
 
 import { adaptRoute } from '@/main/adapters';
 
+const mockErrorBody = { error: { message: 'error message' } };
+
 jest.mock('@/presentation/helpers/http-helper', () => ({
-  serverError: jest.fn(() => ({ statusCode: 500, body: { error: { message: 'error message' } } })),
+  serverError: jest.fn(() => ({ statusCode: 500, body: mockErrorBody })),
 }));
 
 function makeSut() {
@@ -35,5 +37,23 @@ describe('Express adaptRoute', () => {
     expect(response.status).toBeCalledWith(200);
     expect(response.json).toBeCalledWith({ id: 'any_id' });
     expect(sutResult).toBeUndefined();
+  });
+
+  test('Should not throw controller throws', async () => {
+    const { handle, sut } = makeSut();
+
+    const request = {};
+    const response = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn().mockReturnThis(),
+    };
+    handle.mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    const sutResult = await sut(request as unknown as Request, response as unknown as Response);
+
+    expect(response.status).toBeCalledWith(500);
+    expect(response.json).toBeCalledWith(mockErrorBody);
   });
 });
