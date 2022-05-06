@@ -26,7 +26,7 @@ describe(VanillaValidatorService.name, () => {
     );
   });
 
-  test('Should throw if a field should be string but is not', async () => {
+  test('Should throw if a field should be string, but is not', async () => {
     const { sut } = makeSut();
 
     const sutResult = await sut
@@ -42,5 +42,29 @@ describe(VanillaValidatorService.name, () => {
         { field: 'anyProp', rule: 'string', message: 'This value must be a string' },
       ]),
     );
+  });
+
+  describe('Should throw if a field should match with a regex, but is not', () => {
+    test('regex: name', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: { anyProp: [sut.rules.regex({ pattern: 'name' })] },
+          model: { anyProp: ' iNv@l1 -_- n@m3 ' },
+          data: { anyData: async () => [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toStrictEqual(
+        new ValidationException([
+          {
+            field: 'anyProp',
+            rule: 'regex',
+            message: 'This value must be valid according to the pattern: name',
+          },
+        ]),
+      );
+    });
   });
 });
