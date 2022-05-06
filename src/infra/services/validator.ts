@@ -38,7 +38,8 @@ export class VanillaValidatorService<
   public rules: ValidatorService.Rules = {
     required: (options) => ({ name: 'required', options }),
     string: (options) => ({ name: 'string', options }),
-    email: (options) => ({ name: 'email', options }),
+    regex: (options) => ({ name: 'regex', options }),
+    length: (options) => ({ name: 'length', options }),
     unique: (options) => ({ name: 'unique', options }),
   };
 
@@ -59,43 +60,48 @@ export class VanillaValidatorService<
         message: 'This value is required',
       };
     },
-    string: (key, options: Parameters<Rules['string']>[0], model) => {
-      const response = {
+    string: (key, _options, model) => {
+      if (typeof model[key] === 'string') return null;
+      return {
         field: key as string,
         rule: 'string',
         message: 'This value must be a string',
       };
-
-      if (typeof model[key] !== 'string') return response;
-      const messages: string[] = [];
-
-      if (options.minLength && (model[key] as unknown as string)?.length < options.minLength)
-        messages.push(`higher than ${options.minLength}`);
-
-      if (options.maxLength && (model[key] as unknown as string)?.length > options.maxLength)
-        messages.push(`lower than ${options.maxLength}`);
-
-      if (!messages.length) return null;
-
-      response.message += ` ${messages.join(' and ')}`;
-
-      return response;
     },
-    email: (key, _options, model) => {
-      const emailRgx = /^[\w+.]+@\w+\.\w{2,}(?:\.\w{2})?$/;
+    regex: (key, options: Parameters<Rules['regex']>[0], model) => {
+      const regexDict = {
+        name: /^([\w\u00C0-\u00FF]+\s)*[\w\u00C0-\u00FF]+$/,
+        email: /^[\w+.]+@\w+\.\w{2,}(?:\.\w{2})?$/,
+        custom: options.customPattern ?? /^\w$/,
+      };
 
       if (
-        !model[key] ||
         typeof model[key] !== 'string' ||
-        emailRgx.test(model[key] as unknown as string)
+        !regexDict[options.pattern].test(model[key] as unknown as string)
       )
-        return null;
+        return {
+          field: key as string,
+          rule: 'regex',
+          message: `This value must be valid according to the pattern: ${
+            options.customPattern || options.pattern
+          }`,
+        };
 
-      return {
-        field: key as string,
-        rule: 'email',
-        message: 'This value must be a valid email',
-      };
+      return null;
+    },
+    length: (key, options: Parameters<Rules['length']>[0], model) => {
+      if (
+        String(model[key]).length < options.minLength ||
+        String(model[key]).length > options.maxLength
+      ) {
+        return {
+          field: key as string,
+          rule: 'length',
+          message: `This value length must be beetween ${options.minLength} and ${options.maxLength}`,
+        };
+      }
+
+      return null;
     },
     unique: async (key, options: Parameters<Rules['unique']>[0], model, data) => {
       const hasItem = (await data[options.dataEntity]()).some((dataItem) =>
@@ -109,7 +115,7 @@ export class VanillaValidatorService<
       return {
         field: key as string,
         rule: 'unique',
-        message: 'This value is already used',
+        message: 'This value has already been used',
       };
     },
   };

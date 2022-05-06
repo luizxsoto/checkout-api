@@ -30,12 +30,15 @@ export class DbCreateCustomerUseCase implements CreateCustomerUseCase.UseCase {
       schema: {
         name: [
           this.validator.rules.required(),
-          this.validator.rules.string({ minLength: 6, maxLength: 100 }),
+          this.validator.rules.string(),
+          this.validator.rules.regex({ pattern: 'name' }),
+          this.validator.rules.length({ minLength: 6, maxLength: 100 }),
         ],
         email: [
           this.validator.rules.required(),
-          this.validator.rules.string({ minLength: 6, maxLength: 100 }),
-          this.validator.rules.email(),
+          this.validator.rules.string(),
+          this.validator.rules.regex({ pattern: 'email' }),
+          this.validator.rules.length({ minLength: 6, maxLength: 100 }),
           this.validator.rules.unique({
             dataEntity: 'customers',
             props: [{ modelKey: 'email', dataKey: 'email' }],

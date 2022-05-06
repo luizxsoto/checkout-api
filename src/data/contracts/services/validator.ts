@@ -1,10 +1,14 @@
 export interface Rules {
   required: (options?: null) => { name: 'required'; options: Parameters<Rules['required']>[0] };
-  string: (options: { minLength?: number; maxLength?: number }) => {
-    name: 'string';
-    options: Parameters<Rules['string']>[0];
+  string: (options?: null) => { name: 'string'; options: Parameters<Rules['string']>[0] };
+  regex: (options: { pattern: 'name' | 'email' | 'custom'; customPattern?: RegExp }) => {
+    name: 'regex';
+    options: Parameters<Rules['regex']>[0];
   };
-  email: (options?: null) => { name: 'email'; options: Parameters<Rules['email']>[0] };
+  length: (options: { minLength: number; maxLength: number }) => {
+    name: 'length';
+    options: Parameters<Rules['length']>[0];
+  };
   unique: (options: { props?: { modelKey: string; dataKey: string }[]; dataEntity: string }) => {
     name: 'unique';
     options: Parameters<Rules['unique']>[0];
