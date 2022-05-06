@@ -88,5 +88,29 @@ describe(VanillaValidatorService.name, () => {
         ]),
       );
     });
+
+    test('regex: custom', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [sut.rules.regex({ pattern: 'custom', customPattern: /customPattern/ })],
+          },
+          model: { anyProp: 'invalid_custom' },
+          data: { anyData: async () => [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toStrictEqual(
+        new ValidationException([
+          {
+            field: 'anyProp',
+            rule: 'regex',
+            message: 'This value must be valid according to the pattern: /customPattern/',
+          },
+        ]),
+      );
+    });
   });
 });
