@@ -8,40 +8,72 @@ function makeSut() {
 }
 
 describe(VanillaValidatorService.name, () => {
-  test('Should throw if a required value was not informed', async () => {
-    const { sut } = makeSut();
+  describe('Should throw if a required value was not informed', () => {
+    test('Should throw', async () => {
+      const { sut } = makeSut();
 
-    const sutResult = await sut
-      .validate({
-        schema: { anyProp: [sut.rules.required()] },
-        model: { anyProp: undefined },
-        data: { anyData: async () => [] },
-      })
-      .catch((e) => e);
+      const sutResult = await sut
+        .validate({
+          schema: { anyProp: [sut.rules.required()] },
+          model: { anyProp: undefined },
+          data: { anyData: async () => [] },
+        })
+        .catch((e) => e);
 
-    expect(sutResult).toStrictEqual(
-      new ValidationException([
-        { field: 'anyProp', rule: 'required', message: 'This value is required' },
-      ]),
-    );
+      expect(sutResult).toStrictEqual(
+        new ValidationException([
+          { field: 'anyProp', rule: 'required', message: 'This value is required' },
+        ]),
+      );
+    });
+
+    test('Should not throw', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: { anyProp: [sut.rules.required()] },
+          model: { anyProp: 'anyProp' },
+          data: { anyData: async () => [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
   });
 
-  test('Should throw if the value should be string, but is not', async () => {
-    const { sut } = makeSut();
+  describe('Should throw if the value should be string, but is not', () => {
+    test('Should throw', async () => {
+      const { sut } = makeSut();
 
-    const sutResult = await sut
-      .validate({
-        schema: { anyProp: [sut.rules.string()] },
-        model: { anyProp: 1 },
-        data: { anyData: async () => [] },
-      })
-      .catch((e) => e);
+      const sutResult = await sut
+        .validate({
+          schema: { anyProp: [sut.rules.string()] },
+          model: { anyProp: 1 },
+          data: { anyData: async () => [] },
+        })
+        .catch((e) => e);
 
-    expect(sutResult).toStrictEqual(
-      new ValidationException([
-        { field: 'anyProp', rule: 'string', message: 'This value must be a string' },
-      ]),
-    );
+      expect(sutResult).toStrictEqual(
+        new ValidationException([
+          { field: 'anyProp', rule: 'string', message: 'This value must be a string' },
+        ]),
+      );
+    });
+
+    test('Should not throw', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: { anyProp: [sut.rules.string()] },
+          model: { anyProp: 'anyProp' },
+          data: { anyData: async () => [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
   });
 
   describe('Should throw if the value should match with a regex, but is not', () => {
@@ -112,48 +144,105 @@ describe(VanillaValidatorService.name, () => {
         ]),
       );
     });
+
+    test('Should not throw', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: { anyProp: [sut.rules.regex({ pattern: 'name' })] },
+          model: { anyProp: 'Any Prop' },
+          data: { anyData: async () => [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
   });
 
-  test('Should throw if the value is out of length', async () => {
-    const { sut } = makeSut();
+  describe('Should throw if the value is out of length', () => {
+    test('Should throw', async () => {
+      const { sut } = makeSut();
 
-    const sutResult = await sut
-      .validate({
-        schema: { anyProp: [sut.rules.length({ minLength: 2, maxLength: 3 })] },
-        model: { anyProp: '1' },
-        data: { anyData: async () => [] },
-      })
-      .catch((e) => e);
+      const sutResult = await sut
+        .validate({
+          schema: { anyProp: [sut.rules.length({ minLength: 6, maxLength: 22 })] },
+          model: { anyProp: 'lowerOrBiggerThenLength' },
+          data: { anyData: async () => [] },
+        })
+        .catch((e) => e);
 
-    expect(sutResult).toStrictEqual(
-      new ValidationException([
-        { field: 'anyProp', rule: 'length', message: 'This value length must be beetween 2 and 3' },
-      ]),
-    );
+      expect(sutResult).toStrictEqual(
+        new ValidationException([
+          {
+            field: 'anyProp',
+            rule: 'length',
+            message: 'This value length must be beetween 6 and 22',
+          },
+        ]),
+      );
+    });
+
+    test('Should not throw', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: { anyProp: [sut.rules.length({ minLength: 6, maxLength: 13 })] },
+          model: { anyProp: 'correctLength' },
+          data: { anyData: async () => [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
   });
 
-  test('Should throw if the value has already been used', async () => {
-    const { sut } = makeSut();
+  describe('Should throw if the value has already been used', () => {
+    test('Should throw', async () => {
+      const { sut } = makeSut();
 
-    const sutResult = await sut
-      .validate({
-        schema: {
-          anyProp: [
-            sut.rules.unique({
-              dataEntity: 'anyData',
-              props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }],
-            }),
-          ],
-        },
-        model: { anyProp: 'anyProp' },
-        data: { anyData: async () => [{ anyProp: 'anyProp' }] },
-      })
-      .catch((e) => e);
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [
+              sut.rules.unique({
+                dataEntity: 'anyData',
+                props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }],
+              }),
+            ],
+          },
+          model: { anyProp: 'anyProp' },
+          data: { anyData: async () => [{ anyProp: 'anyProp' }] },
+        })
+        .catch((e) => e);
 
-    expect(sutResult).toStrictEqual(
-      new ValidationException([
-        { field: 'anyProp', rule: 'unique', message: 'This value has already been used' },
-      ]),
-    );
+      expect(sutResult).toStrictEqual(
+        new ValidationException([
+          { field: 'anyProp', rule: 'unique', message: 'This value has already been used' },
+        ]),
+      );
+    });
+
+    test('Should not throw', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [
+              sut.rules.unique({
+                dataEntity: 'anyData',
+                props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }],
+              }),
+            ],
+          },
+          model: { anyProp: 'anyOtherProp' },
+          data: { anyData: async () => [{ anyProp: 'anyProp' }] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
   });
 });
