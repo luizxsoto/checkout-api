@@ -33,7 +33,7 @@
     "knex": "knex --knexfile ./dist/database/knexfile.js",
     "prepare": "husky install",
     "commit": "cz",
-    "pre-push": "concurrently npm:test npm:build",
+    "pre-push": "concurrently npm:test:cov npm:build",
     "check": "ncu",
     "postinstall": "echo \"Checking dependencies...\" & npm run check"
   },
