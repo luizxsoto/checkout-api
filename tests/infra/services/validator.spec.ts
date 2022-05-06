@@ -25,4 +25,22 @@ describe(VanillaValidatorService.name, () => {
       ]),
     );
   });
+
+  test('Should throw if a field should be string but is not', async () => {
+    const { sut } = makeSut();
+
+    const sutResult = await sut
+      .validate({
+        schema: { anyProp: [sut.rules.string()] },
+        model: { anyProp: 1 },
+        data: { anyData: async () => [] },
+      })
+      .catch((e) => e);
+
+    expect(sutResult).toStrictEqual(
+      new ValidationException([
+        { field: 'anyProp', rule: 'string', message: 'This value must be a string' },
+      ]),
+    );
+  });
 });
