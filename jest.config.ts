@@ -8,7 +8,6 @@ const config: Config.InitialOptions = {
   collectCoverageFrom: [
     '<rootDir>/src/**/*.ts',
     '!<rootDir>/src/domain/**',
-    '!<rootDir>/src/main/config/**',
     '!<rootDir>/src/presentation/dtos/**',
     '!<rootDir>/src/**/contracts/**',
     '!<rootDir>/src/**/exceptions/**',
