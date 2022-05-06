@@ -94,19 +94,25 @@ describe(DbCreateCustomerUseCase.name, () => {
         { field: 'email', rule: 'unique', message: 'This value has already been used' },
       ],
     },
-  ])('Should validate every customer prop', ({ properties, validations }) => {
-    it(JSON.stringify(validations), async () => {
-      const { customerRepository, sut } = makeSut();
+  ])(
+    'Should throw ValidationException for every customer invalid prop',
+    ({ properties, validations }) => {
+      it(JSON.stringify(validations), async () => {
+        const { customerRepository, sut } = makeSut();
 
-      // eslint-disable-next-line prefer-object-spread
-      const requestModel = Object.assign({ name: 'Any Name', email: 'any@email.com' }, properties);
-      const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
+        // eslint-disable-next-line prefer-object-spread
+        const requestModel = Object.assign(
+          { name: 'Any Name', email: 'any@email.com' },
+          properties,
+        );
+        const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
 
-      customerRepository.create.mockReturnValueOnce(responseModel);
+        customerRepository.create.mockReturnValueOnce(responseModel);
 
-      const sutResult = await sut.execute(requestModel).catch((e) => e);
+        const sutResult = await sut.execute(requestModel).catch((e) => e);
 
-      expect(sutResult).toStrictEqual(new ValidationException(validations));
-    });
-  });
+        expect(sutResult).toStrictEqual(new ValidationException(validations));
+      });
+    },
+  );
 });
