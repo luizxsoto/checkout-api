@@ -21,9 +21,7 @@ describe(KnexCustomerRepository.name, () => {
 
       const requestModel = { name: 'Any Name', email: 'any@email.com' };
       const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
-      knex.returning.mockReturnValueOnce(
-        Promise.resolve([responseModel as unknown as Record<string, unknown>]),
-      );
+      knex.then.mockImplementationOnce((resolve) => resolve([responseModel]));
 
       const sutResult = await sut.create(requestModel);
 
@@ -35,11 +33,25 @@ describe(KnexCustomerRepository.name, () => {
 
       const requestModel = { name: 'Any Name', email: 'any@email.com' };
       const error = new Error();
-      knex.returning.mockReturnValueOnce(Promise.reject(error));
+      knex.then.mockImplementationOnce((_resolve, reject) => reject(error));
 
       const sutResult = await sut.create(requestModel).catch((e) => e);
 
-      expect(sutResult).toStrictEqual(new DatabaseException(error));
+      expect(sutResult).toStrictEqual(new DatabaseException(error, ''));
+    });
+  });
+
+  describe('findBy()', () => {
+    test('Should findBy customer and return correct values', async () => {
+      const { knex, sut } = makeSut();
+
+      const requestModel = { name: 'Any Name', email: 'any@email.com' };
+      const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
+      knex.then.mockImplementationOnce((resolve) => resolve([responseModel]));
+
+      const sutResult = await sut.findBy(requestModel);
+
+      expect(sutResult).toStrictEqual([responseModel]);
     });
   });
 });
