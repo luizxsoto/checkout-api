@@ -70,7 +70,7 @@ export class VanillaValidatorService<
     },
     regex: (key, options: Parameters<Rules['regex']>[0], model) => {
       const regexDict = {
-        name: /^([\w\u00C0-\u00FF]+\s)*[\w\u00C0-\u00FF]+$/,
+        name: /^([a-zA-Z\u00C0-\u00FF]+\s)*[a-zA-Z\u00C0-\u00FF]+$/,
         email: /^[\w+.]+@\w+\.\w{2,}(?:\.\w{2})?$/,
         custom: options.customPattern ?? /^\w$/,
       };
