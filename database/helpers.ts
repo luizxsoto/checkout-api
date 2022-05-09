@@ -7,7 +7,7 @@ export interface CreateTableOptions {
 
 export async function createDefaultTable(knex: Knex, options: CreateTableOptions): Promise<void> {
   await knex.schema.createTable(options.tableName, (table) => {
-    table.uuid('id').primary();
+    table.uuid('id').primary().notNullable();
 
     options.columns(table);
 
