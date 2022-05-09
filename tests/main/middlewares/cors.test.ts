@@ -6,8 +6,8 @@ import { setupApp } from '@/main/config/app';
 let app: Express;
 
 describe('CORS Middleware', () => {
-  beforeAll(async () => {
-    app = await setupApp();
+  beforeAll(() => {
+    app = setupApp();
   });
 
   test('Should enable CORS', async () => {

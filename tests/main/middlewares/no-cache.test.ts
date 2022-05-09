@@ -7,8 +7,8 @@ import { noCache } from '@/main/middlewares';
 let app: Express;
 
 describe('NoCache Middleware', () => {
-  beforeAll(async () => {
-    app = await setupApp();
+  beforeAll(() => {
+    app = setupApp();
   });
 
   test('Should disable cache', async () => {

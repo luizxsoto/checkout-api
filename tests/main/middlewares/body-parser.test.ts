@@ -6,8 +6,8 @@ import { setupApp } from '@/main/config/app';
 let app: Express;
 
 describe('Body Parser Middleware', () => {
-  beforeAll(async () => {
-    app = await setupApp();
+  beforeAll(() => {
+    app = setupApp();
   });
 
   test('Should parse body as json', async () => {
@@ -17,7 +17,7 @@ describe('Body Parser Middleware', () => {
 
     await request(app)
       .post('/test_body_parser')
-      .send({ name: 'Rodrigo' })
-      .expect({ name: 'Rodrigo' });
+      .send({ anyProp: 'anyProp' })
+      .expect({ anyProp: 'anyProp' });
   });
 });

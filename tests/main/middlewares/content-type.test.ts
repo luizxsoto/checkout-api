@@ -6,8 +6,8 @@ import { setupApp } from '@/main/config/app';
 let app: Express;
 
 describe('Content Type Middleware', () => {
-  beforeAll(async () => {
-    app = await setupApp();
+  beforeAll(() => {
+    app = setupApp();
   });
 
   test('Should return default content type as json', async () => {
