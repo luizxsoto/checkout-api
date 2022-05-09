@@ -1,4 +1,9 @@
-import './config/module-alias';
+/* eslint-disable import/order */
+/* eslint-disable import/first */
+/* eslint-disable import/newline-after-import */
+import { setupModuleAlias } from './config/module-alias';
+setupModuleAlias();
+
 import { envConfig, setupApp } from './config';
 
 function bootstrap(): void {

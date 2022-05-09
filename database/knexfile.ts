@@ -1,4 +1,9 @@
-import '../src/main/config/module-alias';
+/* eslint-disable import/order */
+/* eslint-disable import/first */
+/* eslint-disable import/newline-after-import */
+import { setupModuleAlias } from '../src/main/config/module-alias';
+setupModuleAlias();
+
 import { Knex } from 'knex';
 
 import { envConfig } from '@/main/config';

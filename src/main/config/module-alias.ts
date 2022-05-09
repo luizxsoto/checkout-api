@@ -2,9 +2,11 @@ import { resolve } from 'path';
 
 import { addAlias } from 'module-alias';
 
-let rootPath = 'src';
+export function setupModuleAlias() {
+  let rootPath = 'src';
 
-if (process.cwd().includes('database')) rootPath = `../${rootPath}`;
-else if (!process.env.TS_NODE_DEV) rootPath = `dist/${rootPath}`;
+  if (process.cwd().includes('database')) rootPath = `../${rootPath}`;
+  else if (!process.env.TS_NODE_DEV) rootPath = `dist/${rootPath}`;
 
-addAlias('@', resolve(rootPath));
+  addAlias('@', resolve(rootPath));
+}
