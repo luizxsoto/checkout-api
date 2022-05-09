@@ -36,40 +36,45 @@ export abstract class KnexBaseRepository {
   protected async baseCreate<Model extends BaseModel>(
     model: Omit<Model, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>,
   ): Promise<Model> {
-    const query = this.knex
-      .table(this.tableName)
-      .insert({ ...model, id: this.uuidService.generateUniqueID(), createdAt: new Date() })
-      .returning('*');
+    const fullModel = {
+      ...model,
+      id: this.uuidService.generateUniqueID(),
+      createdAt: new Date(),
+    } as Model;
 
-    const [row] = await this.run<Model[]>(query);
+    const query = this.knex.table(this.tableName).insert(fullModel);
 
-    return row;
+    await this.run<Model[]>(query);
+
+    return fullModel;
   }
 
   protected async baseUpdate<Model extends BaseModel>(
     where: Partial<Model>,
     model: Omit<Model, 'updatedAt' | 'deletedAt'>,
   ): Promise<Model> {
-    const query = this.knex
-      .table(this.tableName)
-      .update({ ...model, updatedAt: new Date() })
-      .where(where)
-      .returning('*');
+    const fullModel = {
+      ...model,
+      updatedAt: new Date(),
+    } as Model;
 
-    const [row] = await this.run<Model[]>(query);
+    const query = this.knex.table(this.tableName).update(fullModel).where(where);
 
-    return row;
+    await this.run<Model[]>(query);
+
+    return fullModel;
   }
 
   protected async baseRemove<Model extends BaseModel>(where: Partial<Model>): Promise<Model> {
-    const query = this.knex
-      .table(this.tableName)
-      .update({ deletedAt: new Date() })
-      .where(where)
-      .returning('*');
+    const fullModel = {
+      ...where,
+      deletedAt: new Date(),
+    } as Model;
 
-    const [row] = await this.run<Model[]>(query);
+    const query = this.knex.table(this.tableName).update(fullModel).where(where);
 
-    return row;
+    await this.run<Model[]>(query);
+
+    return fullModel;
   }
 }
