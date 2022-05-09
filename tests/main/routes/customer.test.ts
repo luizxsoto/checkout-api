@@ -21,9 +21,33 @@ describe('Customer Routes', () => {
   });
 
   test('Should create customer and return correct values', async () => {
-    await request(app)
-      .post('/api/customers')
-      .send({ name: 'Any Name', email: 'any@email.com' })
-      .expect(201);
+    const requestModel = { name: 'Any Name', email: 'any@email.com' };
+
+    const result = await request(app).post('/api/customers').send(requestModel);
+
+    expect(result.status).toBe(201);
+    expect(result.body.name).toBe(requestModel.name);
+    expect(result.body.email).toBe(requestModel.email);
+    expect(result.body.id).toBeDefined();
+  });
+
+  test('Should return a correct body validation error if some prop is invalid', async () => {
+    const requestModel = { name: 'Any Name' };
+
+    const result = await request(app).post('/api/customers').send(requestModel);
+
+    expect(result.status).toBe(400);
+    expect(result.body).toStrictEqual({
+      name: 'ValidationException',
+      code: 400,
+      message: 'An error ocurred performing a validation',
+      validations: [
+        {
+          field: 'email',
+          rule: 'required',
+          message: 'This value is required',
+        },
+      ],
+    });
   });
 });
