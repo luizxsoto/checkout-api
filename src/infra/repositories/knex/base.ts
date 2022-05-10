@@ -11,7 +11,7 @@ export abstract class KnexBaseRepository {
     protected readonly tableName: string,
   ) {}
 
-  protected async run<T>(query: Knex.QueryBuilder): Promise<T> {
+  protected async baseRun<T>(query: Knex.QueryBuilder): Promise<T> {
     let queryStr = '';
     try {
       queryStr = query.toQuery?.();
@@ -28,7 +28,7 @@ export abstract class KnexBaseRepository {
   ): Promise<Model[]> {
     if (!withDeleted) query.whereNull('deletedAt');
 
-    const rows = await this.run<Model[]>(query);
+    const rows = await this.baseRun<Model[]>(query);
 
     return rows;
   }
@@ -44,7 +44,7 @@ export abstract class KnexBaseRepository {
 
     const query = this.knex.table(this.tableName).insert(fullModel);
 
-    await this.run<Model[]>(query);
+    await this.baseRun<Model[]>(query);
 
     return fullModel;
   }
@@ -60,7 +60,7 @@ export abstract class KnexBaseRepository {
 
     const query = this.knex.table(this.tableName).update(fullModel).where(where);
 
-    await this.run<Model[]>(query);
+    await this.baseRun<Model[]>(query);
 
     return fullModel;
   }
@@ -73,7 +73,7 @@ export abstract class KnexBaseRepository {
 
     const query = this.knex.table(this.tableName).update(fullModel).where(where);
 
-    await this.run<Model[]>(query);
+    await this.baseRun<Model[]>(query);
 
     return fullModel;
   }
