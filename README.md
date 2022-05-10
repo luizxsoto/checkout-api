@@ -1,3 +1,3 @@
 # Checkout API
 
-- [ ] Os testes que possuem `jest.mock` devem resetar os mocks `afterEach` test. Não resetar, faz que um mesmo valor / spy seja utilizado em testes diferentes
+- [ ] Validar se as injeções dos testes estão sendo chamadas corretamente

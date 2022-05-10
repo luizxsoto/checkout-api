@@ -20,6 +20,10 @@ describe('Module Alias', () => {
     process.env = { TS_NODE_DEV: undefined };
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   afterAll(() => {
     process.env = processEnvBkp;
   });

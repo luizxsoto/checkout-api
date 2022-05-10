@@ -16,6 +16,10 @@ function makeSut() {
 }
 
 describe('Express adaptRoute', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   test('Should call controller with params / body and return correct values', async () => {
     const { handle, sut } = makeSut();
 

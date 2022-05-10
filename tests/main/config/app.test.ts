@@ -16,6 +16,10 @@ function makeSut() {
 }
 
 describe('App', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   test('Should setup app', () => {
     const { sut } = makeSut();
 

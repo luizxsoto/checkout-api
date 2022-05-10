@@ -15,6 +15,10 @@ function makeSut() {
 }
 
 describe('Middlewares', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   test('Should setup middlewares', () => {
     const { express, sut } = makeSut();
 
