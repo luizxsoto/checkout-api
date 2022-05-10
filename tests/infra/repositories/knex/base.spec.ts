@@ -1,6 +1,6 @@
 import { Knex } from 'knex';
 
-// import { DatabaseException } from '@/infra/exceptions';
+import { DatabaseException } from '@/infra/exceptions';
 import { KnexBaseRepository } from '@/infra/repositories';
 import { makeUuidServiceSub } from '@tests/data/stubs/services/uuid';
 import { makeBaseModelMock } from '@tests/domain/mocks/models';
@@ -10,6 +10,8 @@ function makeSut() {
   const knex = makeKnexStub(makeBaseModelMock() as unknown as Record<string, unknown>);
   const uuidService = makeUuidServiceSub();
   const sut = new (class extends KnexBaseRepository {
+    public run = this.baseRun;
+
     public find = this.baseFind;
 
     public create = this.baseCreate;
@@ -23,6 +25,18 @@ function makeSut() {
 }
 
 describe(KnexBaseRepository.name, () => {
+  test('Should throw DatabaseException if knex throws', async () => {
+    const { knex, sut } = makeSut();
+
+    const query = knex.where('anyProp', 'anyValue');
+    const error = new Error();
+    knex.then.mockImplementationOnce((_resolve, reject) => reject(error));
+
+    const sutResult = await sut.run(query).catch((e) => e);
+
+    expect(sutResult).toStrictEqual(new DatabaseException(error, ''));
+  });
+
   describe('find()', () => {
     test('Should find register and return correct values', async () => {
       const { knex, sut } = makeSut();
@@ -35,17 +49,5 @@ describe(KnexBaseRepository.name, () => {
 
       expect(sutResult).toStrictEqual([responseModel]);
     });
-
-    // test('Should throw DatabaseException if knex throws', async () => {
-    //   const { knex, sut } = makeSut();
-
-    //   const requestModel = { name: 'Any Name', email: 'any@email.com' };
-    //   const error = new Error();
-    //   knex.then.mockImplementationOnce((_resolve, reject) => reject(error));
-
-    //   const sutResult = await sut.create(requestModel).catch((e) => e);
-
-    //   expect(sutResult).toStrictEqual(new DatabaseException(error, ''));
-    // });
   });
 });
