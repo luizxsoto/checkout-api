@@ -13,7 +13,7 @@ function makeSut() {
 
 describe(DbCreateCustomerUseCase.name, () => {
   test('Should create customer and return correct values', async () => {
-    const { customerRepository, sut } = makeSut();
+    const { customerRepository, validatorService, sut } = makeSut();
 
     const requestModel = { name: 'Any Name', email: 'any@email.com' };
     const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
@@ -23,6 +23,31 @@ describe(DbCreateCustomerUseCase.name, () => {
     const sutResult = await sut.execute(requestModel);
 
     expect(sutResult).toBe(responseModel);
+    expect(validatorService.validate).toBeCalledWith({
+      schema: {
+        name: [
+          validatorService.rules.required(),
+          validatorService.rules.string(),
+          validatorService.rules.regex({ pattern: 'name' }),
+          validatorService.rules.length({ minLength: 6, maxLength: 100 }),
+        ],
+        email: [
+          validatorService.rules.required(),
+          validatorService.rules.string(),
+          validatorService.rules.regex({ pattern: 'email' }),
+          validatorService.rules.length({ minLength: 6, maxLength: 100 }),
+          validatorService.rules.unique({
+            dataEntity: 'customers',
+            props: [{ modelKey: 'email', dataKey: 'email' }],
+          }),
+        ],
+      },
+      model: requestModel,
+      data: {
+        customers: expect.any(Function),
+      },
+    });
+    expect(customerRepository.create).toBeCalledWith(requestModel);
   });
 
   describe.each([
