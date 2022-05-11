@@ -1,6 +1,10 @@
 import { ApplicationException, InternalException } from '@/main/exceptions';
 import { HttpResponse } from '@/presentation/contracts';
 
+export function ok(data: any): HttpResponse {
+  return { statusCode: 200, body: data };
+}
+
 export function created(data: any): HttpResponse {
   return { statusCode: 201, body: data };
 }

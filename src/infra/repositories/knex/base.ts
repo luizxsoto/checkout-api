@@ -51,7 +51,7 @@ export abstract class KnexBaseRepository {
 
   protected async baseUpdate<Model extends BaseModel>(
     where: Partial<Model>,
-    model: Omit<Model, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>,
+    model: Partial<Omit<Model, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>>,
   ): Promise<void> {
     const updateModel = {
       ...model,
