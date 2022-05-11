@@ -1,7 +1,7 @@
 export abstract class BaseModel {
   public id!: string;
 
-  public createdAt: Date = new Date();
+  public createdAt!: Date;
 
   public updatedAt?: Date;
 

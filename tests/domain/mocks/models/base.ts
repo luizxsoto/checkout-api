@@ -6,9 +6,5 @@ export function makeBaseModelMock(extraData?: Partial<BaseModel>) {
       super();
       Object.assign(this, partial);
     }
-  })({
-    id: 'any_id',
-    createdAt: new Date(),
-    ...extraData,
-  });
+  })({ id: 'any_id', createdAt: new Date(), ...extraData });
 }
