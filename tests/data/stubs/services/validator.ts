@@ -92,13 +92,21 @@ export function makeValidatorServiceStub<
                 ...findedData,
               ];
 
-              const hasItem = findedData.some((dataItem) =>
-                options.props?.every(
+              const registerFinded = findedData.find((dataItem) =>
+                options.props.every(
                   (prop) => dataItem[prop.dataKey] === model[prop.modelKey as keyof Model],
                 ),
               );
 
-              if (!hasItem) return null;
+              const isSameIgnoreProps =
+                registerFinded &&
+                options.ignoreProps?.every(
+                  (ignoreProp) =>
+                    registerFinded[ignoreProp.dataKey] ===
+                    model[ignoreProp.modelKey as keyof Model],
+                );
+
+              if (!registerFinded || isSameIgnoreProps) return null;
 
               return {
                 field: key as string,

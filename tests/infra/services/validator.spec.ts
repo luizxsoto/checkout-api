@@ -266,5 +266,29 @@ describe(VanillaValidatorService.name, () => {
 
       expect(sutResult).toStrictEqual({ anyData: [{ anyProp: 'anyProp' }] });
     });
+
+    test('Should not throw if isSameIgnoreProps', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [
+              sut.rules.unique({
+                dataEntity: 'anyData',
+                ignoreProps: [{ modelKey: 'otherProp', dataKey: 'otherProp' }],
+                props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }],
+              }),
+            ],
+          },
+          model: { anyProp: 'anyProp', otherProp: 'otherProp' },
+          data: { anyData: async () => [{ anyProp: 'anyProp', otherProp: 'otherProp' }] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toStrictEqual({
+        anyData: [{ anyProp: 'anyProp', otherProp: 'otherProp' }],
+      });
+    });
   });
 });
