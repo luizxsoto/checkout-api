@@ -1,7 +1,7 @@
 export interface Rules {
   required: (options?: null) => { name: 'required'; options: Parameters<Rules['required']>[0] };
   string: (options?: null) => { name: 'string'; options: Parameters<Rules['string']>[0] };
-  regex: (options: { pattern: 'name' | 'email' | 'custom'; customPattern?: RegExp }) => {
+  regex: (options: { pattern: 'custom' | 'name' | 'email' | 'uuidV4'; customPattern?: RegExp }) => {
     name: 'regex';
     options: Parameters<Rules['regex']>[0];
   };

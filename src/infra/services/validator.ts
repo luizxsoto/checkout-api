@@ -70,9 +70,10 @@ export class VanillaValidatorService<
     },
     regex: (key, options: Parameters<Rules['regex']>[0], model) => {
       const regexDict = {
+        custom: options.customPattern ?? /^\w$/,
         name: /^([a-zA-Z\u00C0-\u00FF]+\s)*[a-zA-Z\u00C0-\u00FF]+$/,
         email: /^[\w+.]+@\w+\.\w{2,}(?:\.\w{2})?$/,
-        custom: options.customPattern ?? /^\w$/,
+        uuidV4: /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i,
       };
 
       if (
