@@ -15,13 +15,20 @@ function makeSut() {
 }
 
 describe(KnexCustomerRepository.name, () => {
+  beforeAll(() => {
+    jest.useFakeTimers();
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+
   describe('create()', () => {
     test('Should create customer and return correct values', async () => {
-      const { knex, sut } = makeSut();
+      const { sut } = makeSut();
 
       const requestModel = { name: 'Any Name', email: 'any@email.com' };
       const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
-      knex.then.mockImplementationOnce((resolve) => resolve([responseModel]));
 
       const sutResult = await sut.create(requestModel);
 
