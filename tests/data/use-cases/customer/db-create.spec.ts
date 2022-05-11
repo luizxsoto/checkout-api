@@ -15,8 +15,10 @@ describe(DbCreateCustomerUseCase.name, () => {
   test('Should create customer and return correct values', async () => {
     const { customerRepository, validatorService, sut } = makeSut();
 
-    const requestModel = { name: 'Any Name', email: 'any@email.com' };
-    const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
+    const requestModel = { name: 'Any Name', email: 'any@email.com', anyWrongProp: 'anyValue' };
+    const sanitizedRequestModel = { ...requestModel };
+    Reflect.deleteProperty(sanitizedRequestModel, 'anyWrongProp');
+    const responseModel = { ...sanitizedRequestModel, id: 'any_id', createdAt: new Date() };
 
     customerRepository.create.mockReturnValueOnce(responseModel);
 
@@ -42,12 +44,12 @@ describe(DbCreateCustomerUseCase.name, () => {
           }),
         ],
       },
-      model: requestModel,
+      model: sanitizedRequestModel,
       data: {
         customers: expect.any(Function),
       },
     });
-    expect(customerRepository.create).toBeCalledWith(requestModel);
+    expect(customerRepository.create).toBeCalledWith(sanitizedRequestModel);
   });
 
   describe.each([
