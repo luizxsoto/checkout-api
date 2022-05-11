@@ -16,11 +16,22 @@ export class DbCreateCustomerUseCase implements CreateCustomerUseCase.UseCase {
   public async execute(
     requestModel: CreateCustomerUseCase.RequestModel,
   ): Promise<CreateCustomerUseCase.ResponseModel> {
-    await this.validateRequestModel(requestModel);
+    const sanitizedRequestModel = this.sanitizeRequestModel(requestModel);
 
-    const repositoryResult = await this.createCustomerRepository.create(requestModel);
+    await this.validateRequestModel(sanitizedRequestModel);
+
+    const repositoryResult = await this.createCustomerRepository.create(sanitizedRequestModel);
 
     return repositoryResult;
+  }
+
+  private sanitizeRequestModel(
+    requestModel: CreateCustomerUseCase.RequestModel,
+  ): CreateCustomerUseCase.RequestModel {
+    return {
+      name: requestModel.name,
+      email: requestModel.email,
+    };
   }
 
   private async validateRequestModel(
