@@ -48,6 +48,20 @@ describe(KnexBaseRepository.name, () => {
       const sutResult = await sut.find(query);
 
       expect(sutResult).toStrictEqual([responseModel]);
+      expect(knex.whereNull).toBeCalledWith('deletedAt');
+    });
+
+    test('Should not filter whereNull deletedAt if withDeleted was informed', async () => {
+      const { knex, sut } = makeSut();
+
+      const query = knex.where('anyProp', 'anyValue');
+      const responseModel = { anyProp: 'anyValue' };
+      knex.then.mockImplementationOnce((resolve) => resolve([responseModel]));
+
+      const withDeleted = true;
+      await sut.find(query, withDeleted);
+
+      expect(knex.whereNull).not.toBeCalled();
     });
   });
 });
