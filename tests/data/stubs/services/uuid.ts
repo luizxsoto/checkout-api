@@ -1,5 +1,5 @@
 export function makeUuidServiceSub() {
   return {
-    generateUniqueID: () => 'any_id',
+    generateUniqueID: jest.fn(() => 'any_id'),
   };
 }

@@ -9,6 +9,7 @@ import { makeKnexStub } from '@tests/infra/stubs';
 function makeSut() {
   const knex = makeKnexStub(makeBaseModelMock() as unknown as Record<string, unknown>);
   const uuidService = makeUuidServiceSub();
+  const tableName = 'tableName';
   const sut = new (class extends KnexBaseRepository {
     public run = this.baseRun;
 
@@ -19,12 +20,20 @@ function makeSut() {
     public update = this.baseUpdate;
 
     public remove = this.baseRemove;
-  })(knex as unknown as Knex, uuidService, 'table');
+  })(knex as unknown as Knex, uuidService, tableName);
 
-  return { knex, uuidService, sut };
+  return { knex, uuidService, tableName, sut };
 }
 
 describe(KnexBaseRepository.name, () => {
+  beforeAll(() => {
+    jest.useFakeTimers();
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+
   test('Should throw DatabaseException if knex throws', async () => {
     const { knex, sut } = makeSut();
 
@@ -62,6 +71,23 @@ describe(KnexBaseRepository.name, () => {
       await sut.find(query, withDeleted);
 
       expect(knex.whereNull).not.toBeCalled();
+    });
+  });
+
+  describe('create()', () => {
+    test('Should create register and return correct values', async () => {
+      const { knex, uuidService, tableName, sut } = makeSut();
+
+      const requestModel = { anyProp: 'anyValue' };
+      const responseModel = { anyProp: 'anyValue', id: 'any_id', createdAt: new Date() };
+      uuidService.generateUniqueID.mockReturnValueOnce('any_id');
+
+      const sutResult = await sut.create(requestModel);
+
+      expect(sutResult).toStrictEqual(responseModel);
+      expect(uuidService.generateUniqueID).toBeCalledWith();
+      expect(knex.table).toBeCalledWith(tableName);
+      expect(knex.insert).toBeCalledWith(responseModel);
     });
   });
 });
