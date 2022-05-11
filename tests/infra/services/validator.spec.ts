@@ -77,6 +77,30 @@ describe(VanillaValidatorService.name, () => {
   });
 
   describe('Should throw if the value should match with a regex, but is not', () => {
+    test('regex: custom', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [sut.rules.regex({ pattern: 'custom', customPattern: /customPattern/ })],
+          },
+          model: { anyProp: 'invalid_custom' },
+          data: { anyData: async () => [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toStrictEqual(
+        new ValidationException([
+          {
+            field: 'anyProp',
+            rule: 'regex',
+            message: 'This value must be valid according to the pattern: /customPattern/',
+          },
+        ]),
+      );
+    });
+
     test('regex: name', async () => {
       const { sut } = makeSut();
 
@@ -121,15 +145,13 @@ describe(VanillaValidatorService.name, () => {
       );
     });
 
-    test('regex: custom', async () => {
+    test('regex: uuidV4', async () => {
       const { sut } = makeSut();
 
       const sutResult = await sut
         .validate({
-          schema: {
-            anyProp: [sut.rules.regex({ pattern: 'custom', customPattern: /customPattern/ })],
-          },
-          model: { anyProp: 'invalid_custom' },
+          schema: { anyProp: [sut.rules.regex({ pattern: 'uuidV4' })] },
+          model: { anyProp: 'invalid_uuidV4' },
           data: { anyData: async () => [] },
         })
         .catch((e) => e);
@@ -139,7 +161,7 @@ describe(VanillaValidatorService.name, () => {
           {
             field: 'anyProp',
             rule: 'regex',
-            message: 'This value must be valid according to the pattern: /customPattern/',
+            message: 'This value must be valid according to the pattern: uuidV4',
           },
         ]),
       );
