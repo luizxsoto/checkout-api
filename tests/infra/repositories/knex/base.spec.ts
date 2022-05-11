@@ -80,7 +80,7 @@ describe(KnexBaseRepository.name, () => {
       const { knex, uuidService, tableName, sut } = makeSut();
 
       const requestModel = { anyProp: 'anyValue' };
-      const responseModel = { anyProp: 'anyValue', id: 'any_id', createdAt: new Date() };
+      const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
       uuidService.generateUniqueID.mockReturnValueOnce('any_id');
 
       const sutResult = await sut.create(requestModel);
@@ -98,12 +98,27 @@ describe(KnexBaseRepository.name, () => {
 
       const where = { anyProp: 'anyValue' };
       const requestModel = { anyProp: 'otherValue' };
-      const updateModel = { anyProp: 'otherValue', updatedAt: new Date() };
+      const updateModel = { ...requestModel, updatedAt: new Date() };
 
       await sut.update(where as unknown as BaseModel, requestModel);
 
       expect(knex.table).toBeCalledWith(tableName);
       expect(knex.update).toBeCalledWith(updateModel);
+      expect(knex.where).toBeCalledWith(where);
+    });
+  });
+
+  describe('remove()', () => {
+    test('Should remove register correctly', async () => {
+      const { knex, tableName, sut } = makeSut();
+
+      const where = { anyProp: 'anyValue' };
+      const removeModel = { ...where, deletedAt: new Date() };
+
+      await sut.remove(where as unknown as BaseModel);
+
+      expect(knex.table).toBeCalledWith(tableName);
+      expect(knex.update).toBeCalledWith(removeModel);
       expect(knex.where).toBeCalledWith(where);
     });
   });
