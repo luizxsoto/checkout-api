@@ -1,4 +1,5 @@
 import { DbCreateCustomerUseCase } from '@/data/use-cases';
+import { CustomerModel } from '@/domain/models';
 import { CreateCustomerUseCase } from '@/domain/use-cases';
 import { KnexCustomerRepository } from '@/infra/repositories';
 import { UUIDService } from '@/infra/services';
@@ -7,7 +8,10 @@ import { knexConfig } from '@/main/config';
 
 export function makeDbCreateCustomerUseCase(): CreateCustomerUseCase.UseCase {
   const repository = new KnexCustomerRepository(knexConfig, new UUIDService());
-  const validatorService = new VanillaValidatorService();
+  const validatorService = new VanillaValidatorService<
+    CreateCustomerUseCase.RequestModel,
+    { customers: () => Promise<CustomerModel[]> }
+  >();
   const useCase = new DbCreateCustomerUseCase(repository, repository, validatorService);
 
   return useCase;

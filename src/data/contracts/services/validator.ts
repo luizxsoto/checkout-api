@@ -26,10 +26,13 @@ export type Params<Model, ValidatorData extends Record<string, () => Promise<any
   data: ValidatorData;
 };
 
-export type Result = void;
+export type Result<ValidatorData extends Record<string, () => Promise<any[]>>> = Record<
+  keyof ValidatorData,
+  any[]
+>;
 
 export interface Validator<Model, ValidatorData extends Record<string, () => Promise<any[]>>> {
   rules: Rules;
 
-  validate: (payload: Params<Model, ValidatorData>) => Promise<Result>;
+  validate: (payload: Params<Model, ValidatorData>) => Promise<Result<ValidatorData>>;
 }

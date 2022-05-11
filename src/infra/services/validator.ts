@@ -9,9 +9,11 @@ export class VanillaValidatorService<
   ValidatorData extends Record<string, () => Promise<any[]>>,
 > implements ValidatorService.Validator<Model, ValidatorData>
 {
+  private validatorData = {} as Record<keyof ValidatorData, any[]>;
+
   public async validate(
     params: ValidatorService.Params<Model, ValidatorData>,
-  ): Promise<ValidatorService.Result> {
+  ): Promise<ValidatorService.Result<ValidatorData>> {
     const validations: ValidationItem[] = [];
 
     for (const key of Object.keys(params.schema)) {
@@ -33,6 +35,8 @@ export class VanillaValidatorService<
     }
 
     if (validations.length) throw new ValidationException(validations);
+
+    return this.validatorData;
   }
 
   public rules: ValidatorService.Rules = {
@@ -105,7 +109,13 @@ export class VanillaValidatorService<
       return null;
     },
     unique: async (key, options: Parameters<Rules['unique']>[0], model, data) => {
-      const hasItem = (await data[options.dataEntity]()).some((dataItem) =>
+      const findedData = await data[options.dataEntity]();
+      this.validatorData[options.dataEntity as keyof ValidatorData] = [
+        ...(this.validatorData[options.dataEntity] ?? []),
+        ...findedData,
+      ];
+
+      const hasItem = findedData.some((dataItem) =>
         options.props?.every(
           (prop) => dataItem[prop.dataKey] === model[prop.modelKey as keyof Model],
         ),
