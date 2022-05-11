@@ -51,30 +51,26 @@ export abstract class KnexBaseRepository {
 
   protected async baseUpdate<Model extends BaseModel>(
     where: Partial<Model>,
-    model: Omit<Model, 'updatedAt' | 'deletedAt'>,
-  ): Promise<Model> {
-    const fullModel = {
+    model: Omit<Model, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>,
+  ): Promise<void> {
+    const updateModel = {
       ...model,
       updatedAt: new Date(),
     } as Model;
 
-    const query = this.knex.table(this.tableName).update(fullModel).where(where);
+    const query = this.knex.table(this.tableName).update(updateModel).where(where);
 
     await this.baseRun<Model[]>(query);
-
-    return fullModel;
   }
 
-  protected async baseRemove<Model extends BaseModel>(where: Partial<Model>): Promise<Model> {
-    const fullModel = {
+  protected async baseRemove<Model extends BaseModel>(where: Partial<Model>): Promise<void> {
+    const removeModel = {
       ...where,
       deletedAt: new Date(),
     } as Model;
 
-    const query = this.knex.table(this.tableName).update(fullModel).where(where);
+    const query = this.knex.table(this.tableName).update(removeModel).where(where);
 
     await this.baseRun<Model[]>(query);
-
-    return fullModel;
   }
 }
