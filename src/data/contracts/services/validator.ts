@@ -9,7 +9,11 @@ export interface Rules {
     name: 'length';
     options: Parameters<Rules['length']>[0];
   };
-  unique: (options: { props?: { modelKey: string; dataKey: string }[]; dataEntity: string }) => {
+  unique: (options: {
+    props: { modelKey: string; dataKey: string }[];
+    ignoreProps?: { modelKey: string; dataKey: string }[];
+    dataEntity: string;
+  }) => {
     name: 'unique';
     options: Parameters<Rules['unique']>[0];
   };

@@ -62,6 +62,7 @@ export class DbUpdateCustomerUseCase implements UpdateCustomerUseCase.UseCase {
           this.validator.rules.length({ minLength: 6, maxLength: 100 }),
           this.validator.rules.unique({
             dataEntity: 'customers',
+            ignoreProps: [{ modelKey: 'id', dataKey: 'id' }],
             props: [{ modelKey: 'email', dataKey: 'email' }],
           }),
         ],
