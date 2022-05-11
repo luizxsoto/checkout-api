@@ -1,5 +1,6 @@
 import { Knex } from 'knex';
 
+import { BaseModel } from '@/domain/models';
 import { DatabaseException } from '@/infra/exceptions';
 import { KnexBaseRepository } from '@/infra/repositories';
 import { makeUuidServiceSub } from '@tests/data/stubs/services/uuid';
@@ -88,6 +89,22 @@ describe(KnexBaseRepository.name, () => {
       expect(uuidService.generateUniqueID).toBeCalledWith();
       expect(knex.table).toBeCalledWith(tableName);
       expect(knex.insert).toBeCalledWith(responseModel);
+    });
+  });
+
+  describe('update()', () => {
+    test('Should update register correctly', async () => {
+      const { knex, tableName, sut } = makeSut();
+
+      const where = { anyProp: 'anyValue' };
+      const requestModel = { anyProp: 'otherValue' };
+      const updateModel = { anyProp: 'otherValue', updatedAt: new Date() };
+
+      await sut.update(where as unknown as BaseModel, requestModel);
+
+      expect(knex.table).toBeCalledWith(tableName);
+      expect(knex.update).toBeCalledWith(updateModel);
+      expect(knex.where).toBeCalledWith(where);
     });
   });
 });
