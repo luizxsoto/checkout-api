@@ -8,6 +8,8 @@ export function makeValidatorServiceStub<
   Model,
   ValidatorData extends Record<string, () => Promise<any[]>>,
 >() {
+  const validatorData = {} as Record<keyof ValidatorData, any[]>;
+
   return {
     rules: <ValidatorService.Rules>{
       required: (options) => ({ name: 'required', options }),
@@ -21,7 +23,7 @@ export function makeValidatorServiceStub<
       .mockImplementation(
         async (
           params: ValidatorService.Params<Model, ValidatorData>,
-        ): Promise<ValidatorService.Result> => {
+        ): Promise<ValidatorService.Result<ValidatorData>> => {
           const validationRules: Record<
             keyof ValidatorService.Rules,
             (
@@ -85,6 +87,11 @@ export function makeValidatorServiceStub<
             },
             unique: async (key, options: Parameters<Rules['unique']>[0], model, data) => {
               const findedData = await data[options.dataEntity]();
+              validatorData[options.dataEntity as keyof ValidatorData] = [
+                ...(validatorData[options.dataEntity] ?? []),
+                ...findedData,
+              ];
+
               const hasItem = findedData.some((dataItem) =>
                 options.props?.every(
                   (prop) => dataItem[prop.dataKey] === model[prop.modelKey as keyof Model],
@@ -122,6 +129,8 @@ export function makeValidatorServiceStub<
           }
 
           if (validations.length) throw new ValidationException(validations);
+
+          return validatorData;
         },
       ),
   };

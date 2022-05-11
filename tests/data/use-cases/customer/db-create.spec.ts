@@ -24,7 +24,7 @@ describe(DbCreateCustomerUseCase.name, () => {
 
     const sutResult = await sut.execute(requestModel);
 
-    expect(sutResult).toBe(responseModel);
+    expect(sutResult).toStrictEqual(responseModel);
     expect(validatorService.validate).toBeCalledWith({
       schema: {
         name: [

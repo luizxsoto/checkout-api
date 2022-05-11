@@ -38,7 +38,7 @@ describe(VanillaValidatorService.name, () => {
         })
         .catch((e) => e);
 
-      expect(sutResult).toBeUndefined();
+      expect(sutResult).toStrictEqual({});
     });
   });
 
@@ -72,7 +72,7 @@ describe(VanillaValidatorService.name, () => {
         })
         .catch((e) => e);
 
-      expect(sutResult).toBeUndefined();
+      expect(sutResult).toStrictEqual({});
     });
   });
 
@@ -178,7 +178,7 @@ describe(VanillaValidatorService.name, () => {
         })
         .catch((e) => e);
 
-      expect(sutResult).toBeUndefined();
+      expect(sutResult).toStrictEqual({});
     });
   });
 
@@ -216,7 +216,7 @@ describe(VanillaValidatorService.name, () => {
         })
         .catch((e) => e);
 
-      expect(sutResult).toBeUndefined();
+      expect(sutResult).toStrictEqual({});
     });
   });
 
@@ -264,7 +264,7 @@ describe(VanillaValidatorService.name, () => {
         })
         .catch((e) => e);
 
-      expect(sutResult).toBeUndefined();
+      expect(sutResult).toStrictEqual({ anyData: [{ anyProp: 'anyProp' }] });
     });
   });
 });
