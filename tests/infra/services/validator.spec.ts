@@ -291,4 +291,52 @@ describe(VanillaValidatorService.name, () => {
       });
     });
   });
+
+  describe('Should throw if the value was not found', () => {
+    test('Should throw', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [
+              sut.rules.exists({
+                dataEntity: 'anyData',
+                props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }],
+              }),
+            ],
+          },
+          model: { anyProp: 'anyOtherProp' },
+          data: { anyData: async () => [{ anyProp: 'anyProp' }] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toStrictEqual(
+        new ValidationException([
+          { field: 'anyProp', rule: 'exists', message: 'This value was not found' },
+        ]),
+      );
+    });
+
+    test('Should not throw', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [
+              sut.rules.exists({
+                dataEntity: 'anyData',
+                props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }],
+              }),
+            ],
+          },
+          model: { anyProp: 'anyProp' },
+          data: { anyData: async () => [{ anyProp: 'anyProp' }] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toStrictEqual({ anyData: [{ anyProp: 'anyProp' }] });
+    });
+  });
 });
