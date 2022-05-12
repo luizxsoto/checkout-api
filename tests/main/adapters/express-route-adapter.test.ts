@@ -10,7 +10,7 @@ jest.mock('@/presentation/helpers/http-helper', () => ({
 
 function makeSut() {
   const handle = jest.fn(() => Promise.resolve({ statusCode: 200, body: {} }));
-  const sut = adaptRoute({ handle });
+  const sut = adaptRoute(() => ({ handle }));
 
   return { handle, sut };
 }
