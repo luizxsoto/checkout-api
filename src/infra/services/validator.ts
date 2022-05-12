@@ -16,23 +16,25 @@ export class VanillaValidatorService<
   ): Promise<ValidatorService.Result<ValidatorData>> {
     const validations: ValidationItem[] = [];
 
-    for (const key of Object.keys(params.schema)) {
-      const parsedKey = key as keyof Model;
+    await Promise.allSettled(
+      Object.keys(params.schema).map(async (key) => {
+        const parsedKey = key as keyof Model;
 
-      for (const rule of params.schema[parsedKey]) {
-        const validation = await this.validationRules[rule.name](
-          parsedKey,
-          rule.options,
-          params.model,
-          params.data,
-        );
+        for (const rule of params.schema[parsedKey]) {
+          const validation = await this.validationRules[rule.name](
+            parsedKey,
+            rule.options,
+            params.model,
+            params.data,
+          );
 
-        if (validation) {
-          validations.push(validation);
-          break;
+          if (validation) {
+            validations.push(validation);
+            break;
+          }
         }
-      }
-    }
+      }),
+    );
 
     if (validations.length) throw new ValidationException(validations);
 
@@ -45,6 +47,7 @@ export class VanillaValidatorService<
     regex: (options) => ({ name: 'regex', options }),
     length: (options) => ({ name: 'length', options }),
     unique: (options) => ({ name: 'unique', options }),
+    exists: (options) => ({ name: 'exists', options }),
   };
 
   private validationRules: Record<
@@ -134,6 +137,27 @@ export class VanillaValidatorService<
         field: key as string,
         rule: 'unique',
         message: 'This value has already been used',
+      };
+    },
+    exists: async (key, options: Parameters<Rules['exists']>[0], model, data) => {
+      const findedData = await data[options.dataEntity]();
+      this.validatorData[options.dataEntity as keyof ValidatorData] = [
+        ...(this.validatorData[options.dataEntity] ?? []),
+        ...findedData,
+      ];
+
+      const registerFinded = findedData.find((dataItem) =>
+        options.props.every(
+          (prop) => dataItem[prop.dataKey] === model[prop.modelKey as keyof Model],
+        ),
+      );
+
+      if (registerFinded) return null;
+
+      return {
+        field: key as string,
+        rule: 'exists',
+        message: 'This value was not found',
       };
     },
   };

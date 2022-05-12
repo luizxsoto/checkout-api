@@ -52,6 +52,10 @@ export class DbUpdateCustomerUseCase implements UpdateCustomerUseCase.UseCase {
           this.validator.rules.required(),
           this.validator.rules.string(),
           this.validator.rules.regex({ pattern: 'uuidV4' }),
+          this.validator.rules.exists({
+            dataEntity: 'customers',
+            props: [{ modelKey: 'id', dataKey: 'id' }],
+          }),
         ],
         name: [
           this.validator.rules.string(),

@@ -17,6 +17,10 @@ export interface Rules {
     name: 'unique';
     options: Parameters<Rules['unique']>[0];
   };
+  exists: (options: { props: { modelKey: string; dataKey: string }[]; dataEntity: string }) => {
+    name: 'exists';
+    options: Parameters<Rules['exists']>[0];
+  };
 }
 
 export type Rule<Key extends keyof Rules = keyof Rules> = {
