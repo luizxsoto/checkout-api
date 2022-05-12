@@ -6,6 +6,7 @@ export function makeKnexStub(modelMock?: Record<string, unknown>) {
     where: jest.fn().mockReturnThis(),
     whereNull: jest.fn().mockReturnThis(),
     toQuery: jest.fn().mockReturnValue(''),
+    returning: jest.fn().mockReturnThis(),
 
     then: jest.fn((resolve, _reject) => resolve([modelMock])),
   };
