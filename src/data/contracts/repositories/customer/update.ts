@@ -7,7 +7,7 @@ export type RequestModel = Parameters<
   ) => void
 >;
 
-export type ResponseModel = void;
+export type ResponseModel = CustomerModel;
 
 export interface Repository {
   update: (...requestModel: RequestModel) => Promise<ResponseModel>;

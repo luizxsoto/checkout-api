@@ -20,7 +20,7 @@ export class DbUpdateCustomerUseCase implements UpdateCustomerUseCase.UseCase {
 
     const validatorData = await this.validateRequestModel(sanitizedRequestModel);
 
-    await this.updateCustomerRepository.update(
+    const repositoryResult = await this.updateCustomerRepository.update(
       { id: sanitizedRequestModel.id },
       sanitizedRequestModel,
     );
@@ -28,9 +28,8 @@ export class DbUpdateCustomerUseCase implements UpdateCustomerUseCase.UseCase {
     const findedCustomer = validatorData.customers.find(
       (customer) => customer.id === sanitizedRequestModel.id,
     ) as CustomerModel;
-    const responseModel = { ...findedCustomer, ...sanitizedRequestModel };
 
-    return responseModel;
+    return { ...findedCustomer, ...sanitizedRequestModel, ...repositoryResult };
   }
 
   private sanitizeRequestModel(

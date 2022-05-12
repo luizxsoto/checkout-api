@@ -22,9 +22,7 @@ export class DbCreateCustomerUseCase implements CreateCustomerUseCase.UseCase {
 
     const repositoryResult = await this.createCustomerRepository.create(sanitizedRequestModel);
 
-    const responseModel = { ...sanitizedRequestModel, ...repositoryResult };
-
-    return responseModel;
+    return { ...sanitizedRequestModel, ...repositoryResult };
   }
 
   private sanitizeRequestModel(
