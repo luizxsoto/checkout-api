@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { Controller } from '@/presentation/contracts';
 import { serverError } from '@/presentation/helpers';
 
-export function adaptRoute(controller: Controller) {
+export function adaptRoute(makeController: () => Controller) {
   return async (req: Request, res: Response) => {
     try {
       const request = {
@@ -11,6 +11,7 @@ export function adaptRoute(controller: Controller) {
         ...(req.params ?? {}),
       };
 
+      const controller = makeController();
       const httpResponse = await controller.handle(request);
 
       res.status(httpResponse.statusCode).json(httpResponse.body);

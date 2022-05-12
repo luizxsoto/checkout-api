@@ -24,9 +24,11 @@ export class DbUpdateCustomerUseCase implements UpdateCustomerUseCase.UseCase {
       { id: sanitizedRequestModel.id },
       sanitizedRequestModel,
     );
-    console.log({ validatorData });
 
-    const responseModel = { ...sanitizedRequestModel, ...validatorData.customers[0] };
+    const findedCustomer = validatorData.customers.find(
+      (customer) => customer.id === sanitizedRequestModel.id,
+    ) as CustomerModel;
+    const responseModel = { ...findedCustomer, ...sanitizedRequestModel };
 
     return responseModel;
   }
