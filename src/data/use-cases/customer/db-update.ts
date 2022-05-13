@@ -9,7 +9,10 @@ export class DbUpdateCustomerUseCase implements UpdateCustomerUseCase.UseCase {
     private readonly findByCustomerRepository: FindByCustomerRepository.Repository,
     private readonly validator: ValidatorService.Validator<
       UpdateCustomerUseCase.RequestModel,
-      { customers: () => Promise<CustomerModel[]> }
+      {
+        customersById: () => Promise<CustomerModel[]>;
+        customersByEmail: () => Promise<CustomerModel[]>;
+      }
     >,
   ) {}
 
@@ -25,7 +28,7 @@ export class DbUpdateCustomerUseCase implements UpdateCustomerUseCase.UseCase {
       sanitizedRequestModel,
     );
 
-    const findedCustomer = validatorData.customers.find(
+    const findedCustomer = validatorData.customersById.find(
       (customer) => customer.id === sanitizedRequestModel.id,
     ) as CustomerModel;
 
@@ -44,7 +47,7 @@ export class DbUpdateCustomerUseCase implements UpdateCustomerUseCase.UseCase {
 
   private async validateRequestModel(
     requestModel: UpdateCustomerUseCase.RequestModel,
-  ): Promise<{ customers: CustomerModel[] }> {
+  ): Promise<{ customersById: CustomerModel[]; customersByEmail: CustomerModel[] }> {
     return this.validator.validate({
       schema: {
         id: [
@@ -52,7 +55,7 @@ export class DbUpdateCustomerUseCase implements UpdateCustomerUseCase.UseCase {
           this.validator.rules.string(),
           this.validator.rules.regex({ pattern: 'uuidV4' }),
           this.validator.rules.exists({
-            dataEntity: 'customers',
+            dataEntity: 'customersById',
             props: [{ modelKey: 'id', dataKey: 'id' }],
           }),
         ],
@@ -66,7 +69,7 @@ export class DbUpdateCustomerUseCase implements UpdateCustomerUseCase.UseCase {
           this.validator.rules.regex({ pattern: 'email' }),
           this.validator.rules.length({ minLength: 6, maxLength: 100 }),
           this.validator.rules.unique({
-            dataEntity: 'customers',
+            dataEntity: 'customersByEmail',
             ignoreProps: [{ modelKey: 'id', dataKey: 'id' }],
             props: [{ modelKey: 'email', dataKey: 'email' }],
           }),
@@ -74,7 +77,8 @@ export class DbUpdateCustomerUseCase implements UpdateCustomerUseCase.UseCase {
       },
       model: requestModel,
       data: {
-        customers: () => this.findByCustomerRepository.findBy({ email: requestModel.email }),
+        customersById: () => this.findByCustomerRepository.findBy({ id: requestModel.id }),
+        customersByEmail: () => this.findByCustomerRepository.findBy({ email: requestModel.email }),
       },
     });
   }
