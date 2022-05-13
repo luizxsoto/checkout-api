@@ -7,5 +7,7 @@ export function setupRoutes(app: Express): void {
 
   app.use('/api', router);
 
-  Object.values(routes).map((route) => route(router));
+  Object.values(routes)
+    .filter((route) => typeof route === 'function')
+    .forEach((route) => route(router));
 }
