@@ -28,5 +28,12 @@ describe('Http Helpers', () => {
 
       expect(sutResult).toStrictEqual({ statusCode: 500, body: error });
     });
+
+    test('Case error is not instanceof ApplicationException', () => {
+      const error = new Error();
+      const sutResult = serverError(error);
+
+      expect(sutResult).toStrictEqual({ statusCode: 500, body: new InternalException(error) });
+    });
   });
 });
