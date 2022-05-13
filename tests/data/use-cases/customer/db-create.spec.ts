@@ -50,6 +50,7 @@ describe(DbCreateCustomerUseCase.name, () => {
       },
     });
     expect(customerRepository.create).toBeCalledWith(sanitizedRequestModel);
+    expect(customerRepository.findBy).toBeCalledWith({ email: sanitizedRequestModel.email });
   });
 
   describe.each([

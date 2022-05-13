@@ -24,5 +24,6 @@ describe(CreateCustomerController.name, () => {
     const sutResult = await sut.handle(customerMock);
 
     expect(sutResult).toStrictEqual({ statusCode: 201, body: customerMock });
+    expect(createCustomerUseCase.execute).toBeCalledWith(customerMock);
   });
 });
