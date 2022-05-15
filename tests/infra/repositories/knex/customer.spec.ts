@@ -68,4 +68,18 @@ describe(KnexCustomerRepository.name, () => {
       expect(sutResult).toStrictEqual(responseModel);
     });
   });
+
+  describe('remove()', () => {
+    test('Should remove customer and return correct values', async () => {
+      const { knex, sut } = makeSut();
+
+      const requestModel = { id: 'any_id' };
+      const responseModel = { ...requestModel, deletedAt: new Date() };
+      knex.then.mockImplementationOnce((resolve) => resolve([responseModel]));
+
+      const sutResult = await sut.remove(requestModel);
+
+      expect(sutResult).toStrictEqual(responseModel);
+    });
+  });
 });

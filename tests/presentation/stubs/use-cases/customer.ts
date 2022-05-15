@@ -11,3 +11,9 @@ export function makeUpdateCustomerUseCaseStub() {
     execute: jest.fn(() => Promise.resolve(makeCustomerModelMock())),
   };
 }
+
+export function makeRemoveCustomerUseCaseStub() {
+  return {
+    execute: jest.fn(() => Promise.resolve(makeCustomerModelMock())),
+  };
+}

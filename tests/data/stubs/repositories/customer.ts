@@ -1,4 +1,9 @@
-import { CreateCustomerRepository, FindByCustomerRepository } from '@/data/contracts/repositories';
+import {
+  CreateCustomerRepository,
+  FindByCustomerRepository,
+  RemoveCustomerRepository,
+  UpdateCustomerRepository,
+} from '@/data/contracts/repositories';
 import { makeCustomerModelMock } from '@tests/domain/mocks/models';
 
 export function makeCustomerRepositoryStub() {
@@ -17,8 +22,15 @@ export function makeCustomerRepositoryStub() {
       .fn()
       .mockImplementation(
         (
-          requestModel: CreateCustomerRepository.RequestModel,
-        ): CreateCustomerRepository.ResponseModel => makeCustomerModelMock(requestModel),
+          requestModel: UpdateCustomerRepository.RequestModel,
+        ): UpdateCustomerRepository.ResponseModel => makeCustomerModelMock(requestModel[1]),
+      ),
+    remove: jest
+      .fn()
+      .mockImplementation(
+        (
+          requestModel: RemoveCustomerRepository.RequestModel,
+        ): RemoveCustomerRepository.ResponseModel => makeCustomerModelMock(requestModel[0]),
       ),
   };
 }

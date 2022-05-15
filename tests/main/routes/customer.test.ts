@@ -104,4 +104,54 @@ describe('Customer Routes', () => {
       });
     });
   });
+
+  describe('remove()', () => {
+    test('Should remove customer and return correct values', async () => {
+      const requestModel = {
+        id: '00000000-0000-4000-8000-000000000001',
+        name: 'Any Name',
+        email: 'any@email.com',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      await knexConfig.table('customers').insert(requestModel);
+
+      const result = await request(app).delete(`/api/customers/${requestModel.id}`).send();
+
+      expect(result.status).toBe(200);
+      expect(result.body.id).toBe(requestModel.id);
+      expect(result.body.name).toBe(requestModel.name);
+      expect(result.body.email).toBe(requestModel.email);
+      expect(result.body.createdAt).toBe(requestModel.createdAt);
+      expect(result.body.updatedAt).toBe(requestModel.updatedAt);
+      expect(result.body.deletedAt).toBeDefined();
+    });
+
+    test('Should return a correct body validation error if some prop is invalid', async () => {
+      const requestModel = {
+        id: 'invalid_id',
+        name: 'Any Name',
+        email: 'any@email.com',
+        createdAt: new Date(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      const result = await request(app).delete(`/api/customers/${requestModel.id}`).send();
+
+      expect(result.status).toBe(400);
+      expect(result.body).toStrictEqual({
+        name: 'ValidationException',
+        code: 400,
+        message: 'An error ocurred performing a validation',
+        validations: [
+          {
+            field: 'id',
+            rule: 'regex',
+            message: 'This value must be valid according to the pattern: uuidV4',
+          },
+        ],
+      });
+    });
+  });
 });
