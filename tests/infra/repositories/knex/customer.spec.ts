@@ -22,6 +22,20 @@ describe(KnexCustomerRepository.name, () => {
     jest.useRealTimers();
   });
 
+  describe('findBy()', () => {
+    test('Should findBy customer and return correct values', async () => {
+      const { knex, sut } = makeSut();
+
+      const requestModel = { name: 'Any Name', email: 'any@email.com' };
+      const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
+      knex.then.mockImplementationOnce((resolve) => resolve([responseModel]));
+
+      const sutResult = await sut.findBy(requestModel);
+
+      expect(sutResult).toStrictEqual([responseModel]);
+    });
+  });
+
   describe('create()', () => {
     test('Should create customer and return correct values', async () => {
       const { knex, sut } = makeSut();
@@ -36,17 +50,22 @@ describe(KnexCustomerRepository.name, () => {
     });
   });
 
-  describe('findBy()', () => {
-    test('Should findBy customer and return correct values', async () => {
+  describe('update()', () => {
+    test('Should update customer and return correct values', async () => {
       const { knex, sut } = makeSut();
 
-      const requestModel = { name: 'Any Name', email: 'any@email.com' };
-      const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
+      const requestModel = {
+        id: 'any_id',
+        name: 'Any Name',
+        email: 'any@email.com',
+        createdAt: new Date(),
+      };
+      const responseModel = { ...requestModel, updatedAt: new Date() };
       knex.then.mockImplementationOnce((resolve) => resolve([responseModel]));
 
-      const sutResult = await sut.findBy(requestModel);
+      const sutResult = await sut.update({ id: requestModel.id }, requestModel);
 
-      expect(sutResult).toStrictEqual([responseModel]);
+      expect(sutResult).toStrictEqual(responseModel);
     });
   });
 });
