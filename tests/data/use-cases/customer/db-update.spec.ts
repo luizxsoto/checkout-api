@@ -78,11 +78,12 @@ describe(DbUpdateCustomerUseCase.name, () => {
       model: sanitizedRequestModel,
       data: { customers: [existsCustomer, otherCustomer] },
     });
+    expect(customerRepository.findBy).toBeCalledWith({ id: sanitizedRequestModel.id });
+    expect(customerRepository.findBy).toBeCalledWith({ email: sanitizedRequestModel.email });
     expect(customerRepository.update).toBeCalledWith(
       { id: sanitizedRequestModel.id },
       sanitizedRequestModel,
     );
-    expect(customerRepository.findBy).toBeCalledWith({ email: sanitizedRequestModel.email });
   });
 
   describe.each([
@@ -170,18 +171,9 @@ describe(DbUpdateCustomerUseCase.name, () => {
           { id: validUuidV4, name: 'Any Name', email: 'any@email.com' },
           properties,
         );
-        requestModel.id =
-          properties.id === 'id_not_found'
-            ? '00000000-0000-4000-8000-000000000002'
-            : requestModel.id;
         const responseModel = { ...requestModel, updatedAt: new Date() };
 
-        customerRepository.findBy.mockReturnValueOnce([
-          {
-            ...responseModel,
-            id: properties.id === 'id_not_found' ? validUuidV4 : responseModel.id,
-          },
-        ]);
+        customerRepository.findBy.mockReturnValueOnce([responseModel]);
         customerRepository.update.mockReturnValueOnce(responseModel);
 
         const sutResult = await sut.execute(requestModel).catch((e) => e);
