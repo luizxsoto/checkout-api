@@ -90,6 +90,22 @@ describe(KnexBaseRepository.name, () => {
       expect(knex.table).toBeCalledWith(tableName);
       expect(knex.insert).toBeCalledWith(responseModel);
     });
+
+    test('Should validate if repository result is a number', async () => {
+      const { knex, uuidService, tableName, sut } = makeSut();
+
+      const requestModel = { anyProp: 'anyValue' };
+      const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
+      uuidService.generateUniqueID.mockReturnValueOnce('any_id');
+      knex.then.mockImplementationOnce((resolve) => resolve(1));
+
+      const sutResult = await sut.create(requestModel);
+
+      expect(sutResult).toStrictEqual(responseModel);
+      expect(uuidService.generateUniqueID).toBeCalledWith();
+      expect(knex.table).toBeCalledWith(tableName);
+      expect(knex.insert).toBeCalledWith(responseModel);
+    });
   });
 
   describe('update()', () => {
@@ -106,6 +122,21 @@ describe(KnexBaseRepository.name, () => {
       expect(knex.update).toBeCalledWith(updateModel);
       expect(knex.where).toBeCalledWith(where);
     });
+
+    test('Should validate if repository result is a number', async () => {
+      const { knex, tableName, sut } = makeSut();
+
+      const where = { anyProp: 'anyValue' };
+      const requestModel = { anyProp: 'otherValue' };
+      const updateModel = { ...requestModel, updatedAt: new Date() };
+      knex.then.mockImplementationOnce((resolve) => resolve(1));
+
+      await sut.update(where as unknown as BaseModel, requestModel);
+
+      expect(knex.table).toBeCalledWith(tableName);
+      expect(knex.update).toBeCalledWith(updateModel);
+      expect(knex.where).toBeCalledWith(where);
+    });
   });
 
   describe('remove()', () => {
@@ -114,6 +145,20 @@ describe(KnexBaseRepository.name, () => {
 
       const where = { anyProp: 'anyValue' };
       const removeModel = { ...where, deletedAt: new Date() };
+
+      await sut.remove(where as unknown as BaseModel);
+
+      expect(knex.table).toBeCalledWith(tableName);
+      expect(knex.update).toBeCalledWith(removeModel);
+      expect(knex.where).toBeCalledWith(where);
+    });
+
+    test('Should validate if repository result is a number', async () => {
+      const { knex, tableName, sut } = makeSut();
+
+      const where = { anyProp: 'anyValue' };
+      const removeModel = { ...where, deletedAt: new Date() };
+      knex.then.mockImplementationOnce((resolve) => resolve(1));
 
       await sut.remove(where as unknown as BaseModel);
 
