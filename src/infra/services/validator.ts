@@ -1,27 +1,22 @@
-/* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
 import { ValidatorService } from '@/data/contracts/services';
 import { Rules } from '@/data/contracts/services/validator';
 import { ValidationException, ValidationItem } from '@/infra/exceptions';
 
-export class VanillaValidatorService<
-  Model,
-  ValidatorData extends Record<string, () => Promise<any[]>>,
-> implements ValidatorService.Validator<Model, ValidatorData>
+export class VanillaValidatorService<Model, ValidatorData extends Record<string, any[]>>
+  implements ValidatorService.Validator<Model, ValidatorData>
 {
-  private validatorData = {} as Record<keyof ValidatorData, any[]>;
-
   public async validate(
     params: ValidatorService.Params<Model, ValidatorData>,
-  ): Promise<ValidatorService.Result<ValidatorData>> {
+  ): Promise<ValidatorService.Result> {
     const validations: ValidationItem[] = [];
 
     await Promise.allSettled(
-      Object.keys(params.schema).map(async (key) => {
+      Object.keys(params.schema).map((key) => {
         const parsedKey = key as keyof Model;
 
         for (const rule of params.schema[parsedKey]) {
-          const validation = await this.validationRules[rule.name](
+          const validation = this.validationRules[rule.name](
             parsedKey,
             rule.options,
             params.model,
@@ -33,12 +28,12 @@ export class VanillaValidatorService<
             break;
           }
         }
+
+        return null;
       }),
     );
 
     if (validations.length) throw new ValidationException(validations);
-
-    return this.validatorData;
   }
 
   public rules: ValidatorService.Rules = {
@@ -57,7 +52,7 @@ export class VanillaValidatorService<
       options: any,
       model: ValidatorService.Params<Model, ValidatorData>['model'],
       data: ValidatorService.Params<Model, ValidatorData>['data'],
-    ) => null | ValidationItem | Promise<null | ValidationItem>
+    ) => null | ValidationItem
   > = {
     required: (key, _options, model) => {
       if (model[key]) return null;
@@ -111,14 +106,8 @@ export class VanillaValidatorService<
 
       return null;
     },
-    unique: async (key, options: Parameters<Rules['unique']>[0], model, data) => {
-      const findedData = await data[options.dataEntity]();
-      this.validatorData[options.dataEntity as keyof ValidatorData] = [
-        ...(this.validatorData[options.dataEntity] ?? []),
-        ...findedData,
-      ];
-
-      const registerFinded = findedData.find((dataItem) =>
+    unique: (key, options: Parameters<Rules['unique']>[0], model, data) => {
+      const registerFinded = data[options.dataEntity].find((dataItem) =>
         options.props.every(
           (prop) => dataItem[prop.dataKey] === model[prop.modelKey as keyof Model],
         ),
@@ -139,14 +128,8 @@ export class VanillaValidatorService<
         message: 'This value has already been used',
       };
     },
-    exists: async (key, options: Parameters<Rules['exists']>[0], model, data) => {
-      const findedData = await data[options.dataEntity]();
-      this.validatorData[options.dataEntity as keyof ValidatorData] = [
-        ...(this.validatorData[options.dataEntity] ?? []),
-        ...findedData,
-      ];
-
-      const registerFinded = findedData.find((dataItem) =>
+    exists: (key, options: Parameters<Rules['exists']>[0], model, data) => {
+      const registerFinded = data[options.dataEntity].find((dataItem) =>
         options.props.every(
           (prop) => dataItem[prop.dataKey] === model[prop.modelKey as keyof Model],
         ),

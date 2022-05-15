@@ -27,8 +27,11 @@ describe(DbUpdateCustomerUseCase.name, () => {
     const sanitizedRequestModel = { ...requestModel };
     Reflect.deleteProperty(sanitizedRequestModel, 'anyWrongProp');
     const responseModel = { ...sanitizedRequestModel, updatedAt: new Date() };
+    const existsCustomer = { ...responseModel };
+    const otherCustomer = { ...responseModel, email: 'valid@email.com' };
 
-    customerRepository.findBy.mockReturnValueOnce([responseModel]);
+    customerRepository.findBy.mockReturnValueOnce([existsCustomer]);
+    customerRepository.findBy.mockReturnValueOnce([otherCustomer]);
     customerRepository.update.mockReturnValueOnce(responseModel);
 
     const sutResult = await sut.execute(requestModel).catch();
@@ -40,10 +43,6 @@ describe(DbUpdateCustomerUseCase.name, () => {
           validatorService.rules.required(),
           validatorService.rules.string(),
           validatorService.rules.regex({ pattern: 'uuidV4' }),
-          validatorService.rules.exists({
-            dataEntity: 'customersById',
-            props: [{ modelKey: 'id', dataKey: 'id' }],
-          }),
         ],
         name: [
           validatorService.rules.string(),
@@ -54,18 +53,30 @@ describe(DbUpdateCustomerUseCase.name, () => {
           validatorService.rules.string(),
           validatorService.rules.regex({ pattern: 'email' }),
           validatorService.rules.length({ minLength: 6, maxLength: 100 }),
+        ],
+      },
+      model: sanitizedRequestModel,
+      data: { customers: [] },
+    });
+    expect(validatorService.validate).toBeCalledWith({
+      schema: {
+        id: [
+          validatorService.rules.exists({
+            dataEntity: 'customers',
+            props: [{ modelKey: 'id', dataKey: 'id' }],
+          }),
+        ],
+        name: [],
+        email: [
           validatorService.rules.unique({
-            dataEntity: 'customersByEmail',
+            dataEntity: 'customers',
             ignoreProps: [{ modelKey: 'id', dataKey: 'id' }],
             props: [{ modelKey: 'email', dataKey: 'email' }],
           }),
         ],
       },
       model: sanitizedRequestModel,
-      data: {
-        customersById: expect.any(Function),
-        customersByEmail: expect.any(Function),
-      },
+      data: { customers: [existsCustomer, otherCustomer] },
     });
     expect(customerRepository.update).toBeCalledWith(
       { id: sanitizedRequestModel.id },
@@ -93,10 +104,6 @@ describe(DbUpdateCustomerUseCase.name, () => {
           message: 'This value must be valid according to the pattern: uuidV4',
         },
       ],
-    },
-    {
-      properties: { id: 'not_found_id', email: 'any@email.com' },
-      validations: [{ field: 'id', rule: 'exists', message: 'This value was not found' }],
     },
     // name
     {
@@ -152,12 +159,6 @@ describe(DbUpdateCustomerUseCase.name, () => {
         { field: 'email', rule: 'length', message: 'This value length must be beetween 6 and 100' },
       ],
     },
-    {
-      properties: { email: 'valid@email.com' },
-      validations: [
-        { field: 'email', rule: 'unique', message: 'This value has already been used' },
-      ],
-    },
   ])(
     'Should throw ValidationException for every customer invalid prop',
     ({ properties, validations }) => {
@@ -170,7 +171,7 @@ describe(DbUpdateCustomerUseCase.name, () => {
           properties,
         );
         requestModel.id =
-          properties.id === 'not_found_id'
+          properties.id === 'id_not_found'
             ? '00000000-0000-4000-8000-000000000002'
             : requestModel.id;
         const responseModel = { ...requestModel, updatedAt: new Date() };
@@ -178,7 +179,7 @@ describe(DbUpdateCustomerUseCase.name, () => {
         customerRepository.findBy.mockReturnValueOnce([
           {
             ...responseModel,
-            id: properties.id === 'not_found_id' ? validUuidV4 : responseModel.id,
+            id: properties.id === 'id_not_found' ? validUuidV4 : responseModel.id,
           },
         ]);
         customerRepository.update.mockReturnValueOnce(responseModel);
@@ -189,4 +190,53 @@ describe(DbUpdateCustomerUseCase.name, () => {
       });
     },
   );
+
+  test('Should throw ValidationException if id was not found', async () => {
+    const { customerRepository, sut } = makeSut();
+
+    const requestModel = {
+      id: '00000000-0000-4000-8000-000000000002',
+      name: 'Any Name',
+      email: 'any@email.com',
+    };
+    const responseModel = { ...requestModel, updatedAt: new Date() };
+
+    customerRepository.findBy.mockReturnValueOnce([
+      { ...responseModel, id: validUuidV4, email: 'other@email.com' },
+    ]);
+    customerRepository.update.mockReturnValueOnce(responseModel);
+
+    const sutResult = await sut.execute(requestModel).catch((e) => e);
+
+    expect(sutResult).toStrictEqual(
+      new ValidationException([
+        { field: 'id', rule: 'exists', message: 'This value was not found' },
+      ]),
+    );
+  });
+
+  test('Should throw ValidationException if email is already used', async () => {
+    const { customerRepository, sut } = makeSut();
+
+    const requestModel = {
+      id: validUuidV4,
+      name: 'Any Name',
+      email: 'any@email.com',
+    };
+    const responseModel = { ...requestModel, updatedAt: new Date() };
+
+    customerRepository.findBy.mockReturnValueOnce([{ ...responseModel, email: 'other@email.com' }]);
+    customerRepository.findBy.mockReturnValueOnce([
+      { ...responseModel, id: '00000000-0000-4000-8000-000000000002' },
+    ]);
+    customerRepository.update.mockReturnValueOnce(responseModel);
+
+    const sutResult = await sut.execute(requestModel).catch((e) => e);
+
+    expect(sutResult).toStrictEqual(
+      new ValidationException([
+        { field: 'email', rule: 'unique', message: 'This value has already been used' },
+      ]),
+    );
+  });
 });

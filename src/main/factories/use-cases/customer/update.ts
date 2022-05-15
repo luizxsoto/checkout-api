@@ -9,11 +9,8 @@ import { knexConfig } from '@/main/config';
 export function makeDbUpdateCustomerUseCase(): UpdateCustomerUseCase.UseCase {
   const repository = new KnexCustomerRepository(knexConfig, new UUIDService());
   const validatorService = new VanillaValidatorService<
-    UpdateCustomerUseCase.RequestModel,
-    {
-      customersById: () => Promise<CustomerModel[]>;
-      customersByEmail: () => Promise<CustomerModel[]>;
-    }
+    Partial<UpdateCustomerUseCase.RequestModel>,
+    { customers: CustomerModel[] }
   >();
   const useCase = new DbUpdateCustomerUseCase(repository, repository, validatorService);
 

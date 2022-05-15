@@ -8,11 +8,8 @@ export class DbUpdateCustomerUseCase implements UpdateCustomerUseCase.UseCase {
     private readonly updateCustomerRepository: UpdateCustomerRepository.Repository,
     private readonly findByCustomerRepository: FindByCustomerRepository.Repository,
     private readonly validator: ValidatorService.Validator<
-      UpdateCustomerUseCase.RequestModel,
-      {
-        customersById: () => Promise<CustomerModel[]>;
-        customersByEmail: () => Promise<CustomerModel[]>;
-      }
+      Partial<UpdateCustomerUseCase.RequestModel>,
+      { customers: CustomerModel[] }
     >,
   ) {}
 
@@ -21,18 +18,23 @@ export class DbUpdateCustomerUseCase implements UpdateCustomerUseCase.UseCase {
   ): Promise<UpdateCustomerUseCase.ResponseModel> {
     const sanitizedRequestModel = this.sanitizeRequestModel(requestModel);
 
-    const validatorData = await this.validateRequestModel(sanitizedRequestModel);
+    const restValidation = await this.validateRequestModel(sanitizedRequestModel);
+
+    const [customerById] = await this.findByCustomerRepository.findBy({
+      id: requestModel.id,
+    });
+    const [customerByEmail] = await this.findByCustomerRepository.findBy({
+      email: requestModel.email,
+    });
+
+    await restValidation({ customers: [customerById, customerByEmail] });
 
     const repositoryResult = await this.updateCustomerRepository.update(
       { id: sanitizedRequestModel.id },
       sanitizedRequestModel,
     );
 
-    const findedCustomer = validatorData.customersById.find(
-      (customer) => customer.id === sanitizedRequestModel.id,
-    ) as CustomerModel;
-
-    return { ...findedCustomer, ...sanitizedRequestModel, ...repositoryResult };
+    return { ...customerById, ...sanitizedRequestModel, ...repositoryResult };
   }
 
   private sanitizeRequestModel(
@@ -47,17 +49,13 @@ export class DbUpdateCustomerUseCase implements UpdateCustomerUseCase.UseCase {
 
   private async validateRequestModel(
     requestModel: UpdateCustomerUseCase.RequestModel,
-  ): Promise<{ customersById: CustomerModel[]; customersByEmail: CustomerModel[] }> {
-    return this.validator.validate({
+  ): Promise<(validationData: { customers: CustomerModel[] }) => Promise<void>> {
+    await this.validator.validate({
       schema: {
         id: [
           this.validator.rules.required(),
           this.validator.rules.string(),
           this.validator.rules.regex({ pattern: 'uuidV4' }),
-          this.validator.rules.exists({
-            dataEntity: 'customersById',
-            props: [{ modelKey: 'id', dataKey: 'id' }],
-          }),
         ],
         name: [
           this.validator.rules.string(),
@@ -68,18 +66,31 @@ export class DbUpdateCustomerUseCase implements UpdateCustomerUseCase.UseCase {
           this.validator.rules.string(),
           this.validator.rules.regex({ pattern: 'email' }),
           this.validator.rules.length({ minLength: 6, maxLength: 100 }),
-          this.validator.rules.unique({
-            dataEntity: 'customersByEmail',
-            ignoreProps: [{ modelKey: 'id', dataKey: 'id' }],
-            props: [{ modelKey: 'email', dataKey: 'email' }],
-          }),
         ],
       },
       model: requestModel,
-      data: {
-        customersById: () => this.findByCustomerRepository.findBy({ id: requestModel.id }),
-        customersByEmail: () => this.findByCustomerRepository.findBy({ email: requestModel.email }),
-      },
+      data: { customers: [] },
     });
+    return (validationData) =>
+      this.validator.validate({
+        schema: {
+          id: [
+            this.validator.rules.exists({
+              dataEntity: 'customers',
+              props: [{ modelKey: 'id', dataKey: 'id' }],
+            }),
+          ],
+          name: [],
+          email: [
+            this.validator.rules.unique({
+              dataEntity: 'customers',
+              ignoreProps: [{ modelKey: 'id', dataKey: 'id' }],
+              props: [{ modelKey: 'email', dataKey: 'email' }],
+            }),
+          ],
+        },
+        model: requestModel,
+        data: validationData,
+      });
   }
 }

@@ -19,7 +19,9 @@ describe(DbCreateCustomerUseCase.name, () => {
     const sanitizedRequestModel = { ...requestModel };
     Reflect.deleteProperty(sanitizedRequestModel, 'anyWrongProp');
     const responseModel = { ...sanitizedRequestModel, id: 'any_id', createdAt: new Date() };
+    const otherCustomer = { ...responseModel, email: 'valid@email.com' };
 
+    customerRepository.findBy.mockReturnValueOnce([otherCustomer]);
     customerRepository.create.mockReturnValueOnce(responseModel);
 
     const sutResult = await sut.execute(requestModel);
@@ -38,6 +40,15 @@ describe(DbCreateCustomerUseCase.name, () => {
           validatorService.rules.string(),
           validatorService.rules.regex({ pattern: 'email' }),
           validatorService.rules.length({ minLength: 6, maxLength: 100 }),
+        ],
+      },
+      model: sanitizedRequestModel,
+      data: { customers: [] },
+    });
+    expect(validatorService.validate).toBeCalledWith({
+      schema: {
+        name: [],
+        email: [
           validatorService.rules.unique({
             dataEntity: 'customers',
             props: [{ modelKey: 'email', dataKey: 'email' }],
@@ -45,9 +56,7 @@ describe(DbCreateCustomerUseCase.name, () => {
         ],
       },
       model: sanitizedRequestModel,
-      data: {
-        customers: expect.any(Function),
-      },
+      data: { customers: [otherCustomer] },
     });
     expect(customerRepository.create).toBeCalledWith(sanitizedRequestModel);
     expect(customerRepository.findBy).toBeCalledWith({ email: sanitizedRequestModel.email });

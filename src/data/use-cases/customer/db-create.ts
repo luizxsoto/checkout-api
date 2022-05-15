@@ -8,8 +8,8 @@ export class DbCreateCustomerUseCase implements CreateCustomerUseCase.UseCase {
     private readonly createCustomerRepository: CreateCustomerRepository.Repository,
     private readonly findByCustomerRepository: FindByCustomerRepository.Repository,
     private readonly validator: ValidatorService.Validator<
-      CreateCustomerUseCase.RequestModel,
-      { customers: () => Promise<CustomerModel[]> }
+      Partial<CreateCustomerUseCase.RequestModel>,
+      { customers: CustomerModel[] }
     >,
   ) {}
 
@@ -18,7 +18,13 @@ export class DbCreateCustomerUseCase implements CreateCustomerUseCase.UseCase {
   ): Promise<CreateCustomerUseCase.ResponseModel> {
     const sanitizedRequestModel = this.sanitizeRequestModel(requestModel);
 
-    await this.validateRequestModel(sanitizedRequestModel);
+    const restValidation = await this.validateRequestModel(sanitizedRequestModel);
+
+    const customers = await this.findByCustomerRepository.findBy({
+      email: sanitizedRequestModel.email,
+    });
+
+    await restValidation({ customers });
 
     const repositoryResult = await this.createCustomerRepository.create(sanitizedRequestModel);
 
@@ -36,7 +42,7 @@ export class DbCreateCustomerUseCase implements CreateCustomerUseCase.UseCase {
 
   private async validateRequestModel(
     requestModel: CreateCustomerUseCase.RequestModel,
-  ): Promise<void> {
+  ): Promise<(validationData: { customers: CustomerModel[] }) => Promise<void>> {
     await this.validator.validate({
       schema: {
         name: [
@@ -50,16 +56,24 @@ export class DbCreateCustomerUseCase implements CreateCustomerUseCase.UseCase {
           this.validator.rules.string(),
           this.validator.rules.regex({ pattern: 'email' }),
           this.validator.rules.length({ minLength: 6, maxLength: 100 }),
-          this.validator.rules.unique({
-            dataEntity: 'customers',
-            props: [{ modelKey: 'email', dataKey: 'email' }],
-          }),
         ],
       },
       model: requestModel,
-      data: {
-        customers: () => this.findByCustomerRepository.findBy({ email: requestModel.email }),
-      },
+      data: { customers: [] },
     });
+    return (validationData) =>
+      this.validator.validate({
+        schema: {
+          name: [],
+          email: [
+            this.validator.rules.unique({
+              dataEntity: 'customers',
+              props: [{ modelKey: 'email', dataKey: 'email' }],
+            }),
+          ],
+        },
+        model: requestModel,
+        data: validationData,
+      });
   }
 }

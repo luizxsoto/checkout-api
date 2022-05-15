@@ -16,7 +16,7 @@ describe(VanillaValidatorService.name, () => {
         .validate({
           schema: { anyProp: [sut.rules.required()] },
           model: { anyProp: undefined },
-          data: { anyData: async () => [] },
+          data: { anyData: [] },
         })
         .catch((e) => e);
 
@@ -34,11 +34,11 @@ describe(VanillaValidatorService.name, () => {
         .validate({
           schema: { anyProp: [sut.rules.required()] },
           model: { anyProp: 'anyProp' },
-          data: { anyData: async () => [] },
+          data: { anyData: [] },
         })
         .catch((e) => e);
 
-      expect(sutResult).toStrictEqual({});
+      expect(sutResult).toBeUndefined();
     });
   });
 
@@ -50,7 +50,7 @@ describe(VanillaValidatorService.name, () => {
         .validate({
           schema: { anyProp: [sut.rules.string()] },
           model: { anyProp: 1 },
-          data: { anyData: async () => [] },
+          data: { anyData: [] },
         })
         .catch((e) => e);
 
@@ -68,11 +68,11 @@ describe(VanillaValidatorService.name, () => {
         .validate({
           schema: { anyProp: [sut.rules.string()] },
           model: { anyProp: 'anyProp' },
-          data: { anyData: async () => [] },
+          data: { anyData: [] },
         })
         .catch((e) => e);
 
-      expect(sutResult).toStrictEqual({});
+      expect(sutResult).toBeUndefined();
     });
   });
 
@@ -86,7 +86,7 @@ describe(VanillaValidatorService.name, () => {
             anyProp: [sut.rules.regex({ pattern: 'custom', customPattern: /customPattern/ })],
           },
           model: { anyProp: 'invalid_custom' },
-          data: { anyData: async () => [] },
+          data: { anyData: [] },
         })
         .catch((e) => e);
 
@@ -108,7 +108,7 @@ describe(VanillaValidatorService.name, () => {
         .validate({
           schema: { anyProp: [sut.rules.regex({ pattern: 'name' })] },
           model: { anyProp: ' iNv@l1 -_- n@m3 ' },
-          data: { anyData: async () => [] },
+          data: { anyData: [] },
         })
         .catch((e) => e);
 
@@ -130,7 +130,7 @@ describe(VanillaValidatorService.name, () => {
         .validate({
           schema: { anyProp: [sut.rules.regex({ pattern: 'email' })] },
           model: { anyProp: 'invalid_email' },
-          data: { anyData: async () => [] },
+          data: { anyData: [] },
         })
         .catch((e) => e);
 
@@ -152,7 +152,7 @@ describe(VanillaValidatorService.name, () => {
         .validate({
           schema: { anyProp: [sut.rules.regex({ pattern: 'uuidV4' })] },
           model: { anyProp: 'invalid_uuidV4' },
-          data: { anyData: async () => [] },
+          data: { anyData: [] },
         })
         .catch((e) => e);
 
@@ -174,11 +174,11 @@ describe(VanillaValidatorService.name, () => {
         .validate({
           schema: { anyProp: [sut.rules.regex({ pattern: 'name' })] },
           model: { anyProp: 'Any Prop' },
-          data: { anyData: async () => [] },
+          data: { anyData: [] },
         })
         .catch((e) => e);
 
-      expect(sutResult).toStrictEqual({});
+      expect(sutResult).toBeUndefined();
     });
   });
 
@@ -190,7 +190,7 @@ describe(VanillaValidatorService.name, () => {
         .validate({
           schema: { anyProp: [sut.rules.length({ minLength: 6, maxLength: 22 })] },
           model: { anyProp: 'lowerOrBiggerThenLength' },
-          data: { anyData: async () => [] },
+          data: { anyData: [] },
         })
         .catch((e) => e);
 
@@ -212,11 +212,11 @@ describe(VanillaValidatorService.name, () => {
         .validate({
           schema: { anyProp: [sut.rules.length({ minLength: 6, maxLength: 13 })] },
           model: { anyProp: 'correctLength' },
-          data: { anyData: async () => [] },
+          data: { anyData: [] },
         })
         .catch((e) => e);
 
-      expect(sutResult).toStrictEqual({});
+      expect(sutResult).toBeUndefined();
     });
   });
 
@@ -235,7 +235,7 @@ describe(VanillaValidatorService.name, () => {
             ],
           },
           model: { anyProp: 'anyProp' },
-          data: { anyData: async () => [{ anyProp: 'anyProp' }] },
+          data: { anyData: [{ anyProp: 'anyProp' }] },
         })
         .catch((e) => e);
 
@@ -260,11 +260,11 @@ describe(VanillaValidatorService.name, () => {
             ],
           },
           model: { anyProp: 'anyOtherProp' },
-          data: { anyData: async () => [{ anyProp: 'anyProp' }] },
+          data: { anyData: [{ anyProp: 'anyProp' }] },
         })
         .catch((e) => e);
 
-      expect(sutResult).toStrictEqual({ anyData: [{ anyProp: 'anyProp' }] });
+      expect(sutResult).toBeUndefined();
     });
 
     test('Should not throw if isSameIgnoreProps', async () => {
@@ -282,13 +282,11 @@ describe(VanillaValidatorService.name, () => {
             ],
           },
           model: { anyProp: 'anyProp', otherProp: 'otherProp' },
-          data: { anyData: async () => [{ anyProp: 'anyProp', otherProp: 'otherProp' }] },
+          data: { anyData: [{ anyProp: 'anyProp', otherProp: 'otherProp' }] },
         })
         .catch((e) => e);
 
-      expect(sutResult).toStrictEqual({
-        anyData: [{ anyProp: 'anyProp', otherProp: 'otherProp' }],
-      });
+      expect(sutResult).toBeUndefined();
     });
   });
 
@@ -307,7 +305,7 @@ describe(VanillaValidatorService.name, () => {
             ],
           },
           model: { anyProp: 'anyOtherProp' },
-          data: { anyData: async () => [{ anyProp: 'anyProp' }] },
+          data: { anyData: [{ anyProp: 'anyProp' }] },
         })
         .catch((e) => e);
 
@@ -332,11 +330,11 @@ describe(VanillaValidatorService.name, () => {
             ],
           },
           model: { anyProp: 'anyProp' },
-          data: { anyData: async () => [{ anyProp: 'anyProp' }] },
+          data: { anyData: [{ anyProp: 'anyProp' }] },
         })
         .catch((e) => e);
 
-      expect(sutResult).toStrictEqual({ anyData: [{ anyProp: 'anyProp' }] });
+      expect(sutResult).toBeUndefined();
     });
   });
 });
