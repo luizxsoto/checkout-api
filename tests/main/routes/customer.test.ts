@@ -16,38 +16,92 @@ describe('Customer Routes', () => {
       .catch((error) => console.error('knexConfig.migrate', error));
   });
 
+  afterEach(async () => {
+    await knexConfig.table('customers').del();
+  });
+
   afterAll(async () => {
     await knexConfig.destroy();
   });
 
-  test('Should create customer and return correct values', async () => {
-    const requestModel = { name: 'Any Name', email: 'any@email.com' };
+  describe('create()', () => {
+    test('Should create customer and return correct values', async () => {
+      const requestModel = { name: 'Any Name', email: 'any@email.com' };
 
-    const result = await request(app).post('/api/customers').send(requestModel);
+      const result = await request(app).post('/api/customers').send(requestModel);
 
-    expect(result.status).toBe(201);
-    expect(result.body.name).toBe(requestModel.name);
-    expect(result.body.email).toBe(requestModel.email);
-    expect(result.body.id).toBeDefined();
+      expect(result.status).toBe(201);
+      expect(result.body.name).toBe(requestModel.name);
+      expect(result.body.email).toBe(requestModel.email);
+      expect(result.body.id).toBeDefined();
+      expect(result.body.createdAt).toBeDefined();
+    });
+
+    test('Should return a correct body validation error if some prop is invalid', async () => {
+      const requestModel = { name: 'Any Name' };
+
+      const result = await request(app).post('/api/customers').send(requestModel);
+
+      expect(result.status).toBe(400);
+      expect(result.body).toStrictEqual({
+        name: 'ValidationException',
+        code: 400,
+        message: 'An error ocurred performing a validation',
+        validations: [
+          {
+            field: 'email',
+            rule: 'required',
+            message: 'This value is required',
+          },
+        ],
+      });
+    });
   });
 
-  test('Should return a correct body validation error if some prop is invalid', async () => {
-    const requestModel = { name: 'Any Name' };
+  describe('update()', () => {
+    test('Should update customer and return correct values', async () => {
+      const requestModel = {
+        id: '00000000-0000-4000-8000-000000000001',
+        name: 'Any Name',
+        email: 'any@email.com',
+        createdAt: new Date().toISOString(),
+      };
 
-    const result = await request(app).post('/api/customers').send(requestModel);
+      await knexConfig.table('customers').insert(requestModel);
 
-    expect(result.status).toBe(400);
-    expect(result.body).toStrictEqual({
-      name: 'ValidationException',
-      code: 400,
-      message: 'An error ocurred performing a validation',
-      validations: [
-        {
-          field: 'email',
-          rule: 'required',
-          message: 'This value is required',
-        },
-      ],
+      const result = await request(app).put(`/api/customers/${requestModel.id}`).send(requestModel);
+
+      expect(result.status).toBe(200);
+      expect(result.body.id).toBe(requestModel.id);
+      expect(result.body.name).toBe(requestModel.name);
+      expect(result.body.email).toBe(requestModel.email);
+      expect(result.body.createdAt).toBe(requestModel.createdAt);
+      expect(result.body.updatedAt).toBeDefined();
+    });
+
+    test('Should return a correct body validation error if some prop is invalid', async () => {
+      const requestModel = {
+        id: 'invalid_id',
+        name: 'Any Name',
+        email: 'any@email.com',
+        createdAt: new Date(),
+      };
+
+      const result = await request(app).put(`/api/customers/${requestModel.id}`).send(requestModel);
+
+      expect(result.status).toBe(400);
+      expect(result.body).toStrictEqual({
+        name: 'ValidationException',
+        code: 400,
+        message: 'An error ocurred performing a validation',
+        validations: [
+          {
+            field: 'id',
+            rule: 'regex',
+            message: 'This value must be valid according to the pattern: uuidV4',
+          },
+        ],
+      });
     });
   });
 });

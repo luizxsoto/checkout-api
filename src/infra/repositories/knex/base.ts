@@ -44,9 +44,9 @@ export abstract class KnexBaseRepository {
 
     const query = this.knex.table(this.tableName).insert(createModel);
 
-    const [result] = await this.baseRun<Model[]>(query.returning('*'));
+    const result = await this.baseRun<Model[]>(query.returning('*'));
 
-    return { ...createModel, ...result };
+    return { ...createModel, ...(typeof result === 'number' ? {} : result[0]) };
   }
 
   protected async baseUpdate<Model extends BaseModel>(
@@ -60,9 +60,9 @@ export abstract class KnexBaseRepository {
 
     const query = this.knex.table(this.tableName).update(updateModel).where(where);
 
-    const [result] = await this.baseRun<Model[]>(query.returning('*'));
+    const result = await this.baseRun<Model[]>(query.returning('*'));
 
-    return { ...updateModel, ...result };
+    return { ...updateModel, ...(typeof result === 'number' ? {} : result[0]) };
   }
 
   protected async baseRemove<Model extends BaseModel>(where: Partial<Model>): Promise<Model> {
@@ -73,8 +73,8 @@ export abstract class KnexBaseRepository {
 
     const query = this.knex.table(this.tableName).update(removeModel).where(where);
 
-    const [result] = await this.baseRun<Model[]>(query.returning('*'));
+    const result = await this.baseRun<Model[]>(query.returning('*'));
 
-    return { ...removeModel, ...result };
+    return { ...removeModel, ...(typeof result === 'number' ? {} : result[0]) };
   }
 }
