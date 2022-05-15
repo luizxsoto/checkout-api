@@ -5,6 +5,7 @@ import { KnexBaseRepository } from './base';
 import {
   CreateCustomerRepository,
   FindByCustomerRepository,
+  RemoveCustomerRepository,
   UpdateCustomerRepository,
 } from '@/data/contracts/repositories';
 import { GenerateUniqueIDService } from '@/data/contracts/services';
@@ -12,7 +13,8 @@ import { CustomerModel } from '@/domain/models';
 
 type Repositories = FindByCustomerRepository.Repository &
   CreateCustomerRepository.Repository &
-  UpdateCustomerRepository.Repository;
+  UpdateCustomerRepository.Repository &
+  RemoveCustomerRepository.Repository;
 
 export class KnexCustomerRepository extends KnexBaseRepository implements Repositories {
   constructor(knex: Knex, uuidService: GenerateUniqueIDService.Service) {
@@ -36,5 +38,11 @@ export class KnexCustomerRepository extends KnexBaseRepository implements Reposi
     ...requestModel: UpdateCustomerRepository.RequestModel
   ): Promise<UpdateCustomerRepository.ResponseModel> {
     return this.baseUpdate<CustomerModel>(...requestModel);
+  }
+
+  public async remove(
+    ...requestModel: RemoveCustomerRepository.RequestModel
+  ): Promise<RemoveCustomerRepository.ResponseModel> {
+    return this.baseRemove<CustomerModel>(...requestModel);
   }
 }
