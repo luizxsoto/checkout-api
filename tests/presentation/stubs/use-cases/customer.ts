@@ -5,3 +5,9 @@ export function makeCreateCustomerUseCaseStub() {
     execute: jest.fn(() => Promise.resolve(makeCustomerModelMock())),
   };
 }
+
+export function makeUpdateCustomerUseCaseStub() {
+  return {
+    execute: jest.fn(() => Promise.resolve(makeCustomerModelMock())),
+  };
+}
