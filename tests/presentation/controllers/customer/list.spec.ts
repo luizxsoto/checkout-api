@@ -26,4 +26,15 @@ describe(ListCustomerController.name, () => {
     expect(sutResult).toStrictEqual({ statusCode: 200, body: [customerMock] });
     expect(listCustomerUseCase.execute).toBeCalledWith(customerMock);
   });
+
+  test('Should sanitize page and perPage', async () => {
+    const { listCustomerUseCase, sut } = makeSut();
+
+    listCustomerUseCase.execute.mockReturnValueOnce(Promise.resolve([customerMock]));
+
+    const sutResult = await sut.handle({ ...customerMock, page: '1', perPage: '20' });
+
+    expect(sutResult).toStrictEqual({ statusCode: 200, body: [customerMock] });
+    expect(listCustomerUseCase.execute).toBeCalledWith({ ...customerMock, page: 1, perPage: 20 });
+  });
 });
