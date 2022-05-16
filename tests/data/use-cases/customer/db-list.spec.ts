@@ -1,3 +1,4 @@
+import { maxPerPage, minPerPage } from '@/data/constants';
 import { DbListCustomerUseCase } from '@/data/use-cases';
 import { ValidationException } from '@/infra/exceptions';
 import { makeCustomerRepositoryStub } from '@tests/data/stubs/repositories';
@@ -16,6 +17,8 @@ describe(DbListCustomerUseCase.name, () => {
     const { customerRepository, validatorService, sut } = makeSut();
 
     const requestModel = {
+      page: 1,
+      perPage: minPerPage,
       name: 'Any Name',
       email: 'any@email.com',
       anyWrongProp: 'anyValue',
@@ -32,6 +35,12 @@ describe(DbListCustomerUseCase.name, () => {
     expect(sutResult).toStrictEqual([responseModel]);
     expect(validatorService.validate).toBeCalledWith({
       schema: {
+        page: [validatorService.rules.number(), validatorService.rules.min({ value: 1 })],
+        perPage: [
+          validatorService.rules.number(),
+          validatorService.rules.min({ value: minPerPage }),
+          validatorService.rules.max({ value: maxPerPage }),
+        ],
         name: [
           validatorService.rules.string(),
           validatorService.rules.regex({ pattern: 'name' }),
