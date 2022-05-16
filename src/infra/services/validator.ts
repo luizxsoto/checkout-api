@@ -56,6 +56,7 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
   > = {
     required: (key, _options, model) => {
       if (model[key]) return null;
+
       return {
         field: key as string,
         rule: 'required',
@@ -63,7 +64,8 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
       };
     },
     string: (key, _options, model) => {
-      if (typeof model[key] === 'string') return null;
+      if (!model[key] || typeof model[key] === 'string') return null;
+
       return {
         field: key as string,
         rule: 'string',
@@ -71,6 +73,8 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
       };
     },
     regex: (key, options: Parameters<Rules['regex']>[0], model) => {
+      if (!model[key]) return null;
+
       const regexDict = {
         custom: options.customPattern ?? /^\w$/,
         name: /^([a-zA-Z\u00C0-\u00FF]+\s)*[a-zA-Z\u00C0-\u00FF]+$/,
@@ -93,6 +97,8 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
       return null;
     },
     length: (key, options: Parameters<Rules['length']>[0], model) => {
+      if (!model[key]) return null;
+
       if (
         String(model[key]).length < options.minLength ||
         String(model[key]).length > options.maxLength
@@ -107,6 +113,8 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
       return null;
     },
     unique: (key, options: Parameters<Rules['unique']>[0], model, data) => {
+      if (!model[key]) return null;
+
       const registerFinded = data[options.dataEntity].find((dataItem) =>
         options.props.every(
           (prop) => dataItem[prop.dataKey] === model[prop.modelKey as keyof Model],
@@ -129,6 +137,8 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
       };
     },
     exists: (key, options: Parameters<Rules['exists']>[0], model, data) => {
+      if (!model[key]) return null;
+
       const registerFinded = data[options.dataEntity].find((dataItem) =>
         options.props.every(
           (prop) => dataItem[prop.dataKey] === model[prop.modelKey as keyof Model],
