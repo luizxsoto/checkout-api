@@ -9,6 +9,7 @@ export function adaptRoute(makeController: () => Controller) {
       const request = {
         ...(req.body ?? {}),
         ...(req.params ?? {}),
+        ...(req.query ?? {}),
       };
 
       const controller = makeController();
