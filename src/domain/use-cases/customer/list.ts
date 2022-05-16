@@ -1,6 +1,6 @@
 import { CustomerModel } from '@/domain/models';
 
-export type RequestModel = Partial<
+export type RequestModel = { page?: number; perPage?: number } & Partial<
   Omit<CustomerModel, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>
 >;
 

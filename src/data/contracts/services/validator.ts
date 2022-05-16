@@ -1,6 +1,9 @@
 export interface Rules {
   required: (options?: null) => { name: 'required'; options: Parameters<Rules['required']>[0] };
   string: (options?: null) => { name: 'string'; options: Parameters<Rules['string']>[0] };
+  number: (options?: null) => { name: 'number'; options: Parameters<Rules['number']>[0] };
+  min: (options: { value: number }) => { name: 'min'; options: Parameters<Rules['min']>[0] };
+  max: (options: { value: number }) => { name: 'max'; options: Parameters<Rules['max']>[0] };
   regex: (options: { pattern: 'custom' | 'name' | 'email' | 'uuidV4'; customPattern?: RegExp }) => {
     name: 'regex';
     options: Parameters<Rules['regex']>[0];

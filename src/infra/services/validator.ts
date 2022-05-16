@@ -39,6 +39,9 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
   public rules: ValidatorService.Rules = {
     required: (options) => ({ name: 'required', options }),
     string: (options) => ({ name: 'string', options }),
+    number: (options) => ({ name: 'number', options }),
+    min: (options) => ({ name: 'min', options }),
+    max: (options) => ({ name: 'max', options }),
     regex: (options) => ({ name: 'regex', options }),
     length: (options) => ({ name: 'length', options }),
     unique: (options) => ({ name: 'unique', options }),
@@ -70,6 +73,41 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
         field: key as string,
         rule: 'string',
         message: 'This value must be a string',
+      };
+    },
+    number: (key, _options, model) => {
+      if (!model[key] || typeof model[key] === 'number') return null;
+
+      return {
+        field: key as string,
+        rule: 'number',
+        message: 'This value must be a number',
+      };
+    },
+    min: (key, options: Parameters<Rules['min']>[0], model) => {
+      if (
+        !model[key] ||
+        (typeof model[key] === 'number' && (model[key] as unknown as number) >= options.value)
+      )
+        return null;
+
+      return {
+        field: key as string,
+        rule: 'min',
+        message: `This value must be bigger than: ${options.value}`,
+      };
+    },
+    max: (key, options: Parameters<Rules['max']>[0], model) => {
+      if (
+        !model[key] ||
+        (typeof model[key] === 'number' && (model[key] as unknown as number) <= options.value)
+      )
+        return null;
+
+      return {
+        field: key as string,
+        rule: 'max',
+        message: `This value must be smaller than: ${options.value}`,
       };
     },
     regex: (key, options: Parameters<Rules['regex']>[0], model) => {

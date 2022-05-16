@@ -1,3 +1,4 @@
+import { maxPerPage, minPerPage } from '@/data/constants';
 import { FindByCustomerRepository } from '@/data/contracts/repositories';
 import { ValidatorService } from '@/data/contracts/services';
 import { CustomerModel } from '@/domain/models';
@@ -29,6 +30,9 @@ export class DbListCustomerUseCase implements ListCustomerUseCase.UseCase {
   ): ListCustomerUseCase.RequestModel {
     const sanitizedRequestModel: ListCustomerUseCase.RequestModel = {};
 
+    if (requestModel.page) sanitizedRequestModel.page = requestModel.page;
+    if (requestModel.perPage) sanitizedRequestModel.perPage = requestModel.perPage;
+
     if (requestModel.name) sanitizedRequestModel.name = requestModel.name;
     if (requestModel.email) sanitizedRequestModel.email = requestModel.email;
 
@@ -40,6 +44,12 @@ export class DbListCustomerUseCase implements ListCustomerUseCase.UseCase {
   ): Promise<void> {
     await this.validator.validate({
       schema: {
+        page: [this.validator.rules.number(), this.validator.rules.min({ value: 1 })],
+        perPage: [
+          this.validator.rules.number(),
+          this.validator.rules.min({ value: minPerPage }),
+          this.validator.rules.max({ value: maxPerPage }),
+        ],
         name: [
           this.validator.rules.string(),
           this.validator.rules.regex({ pattern: 'name' }),
