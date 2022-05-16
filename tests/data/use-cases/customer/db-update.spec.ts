@@ -89,15 +89,15 @@ describe(DbUpdateCustomerUseCase.name, () => {
   describe.each([
     // id
     {
-      properties: { id: undefined, email: 'any@email.com' },
+      properties: { id: undefined },
       validations: [{ field: 'id', rule: 'required', message: 'This value is required' }],
     },
     {
-      properties: { id: 1, email: 'any@email.com' },
+      properties: { id: 1 },
       validations: [{ field: 'id', rule: 'string', message: 'This value must be a string' }],
     },
     {
-      properties: { id: 'invalid_uuid', email: 'any@email.com' },
+      properties: { id: 'invalid_uuid' },
       validations: [
         {
           field: 'id',
@@ -108,11 +108,11 @@ describe(DbUpdateCustomerUseCase.name, () => {
     },
     // name
     {
-      properties: { name: 1, email: 'any@email.com' },
+      properties: { name: 1 },
       validations: [{ field: 'name', rule: 'string', message: 'This value must be a string' }],
     },
     {
-      properties: { name: ' InV@L1D n@m3 ', email: 'any@email.com' },
+      properties: { name: ' InV@L1D n@m3 ' },
       validations: [
         {
           field: 'name',
@@ -122,7 +122,7 @@ describe(DbUpdateCustomerUseCase.name, () => {
       ],
     },
     {
-      properties: { name: 'lower', email: 'any@email.com' },
+      properties: { name: 'lower' },
       validations: [
         { field: 'name', rule: 'length', message: 'This value length must be beetween 6 and 100' },
       ],
@@ -130,7 +130,6 @@ describe(DbUpdateCustomerUseCase.name, () => {
     {
       properties: {
         name: 'BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName',
-        email: 'any@email.com',
       },
       validations: [
         { field: 'name', rule: 'length', message: 'This value length must be beetween 6 and 100' },

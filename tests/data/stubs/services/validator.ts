@@ -67,9 +67,8 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
             },
             min: (key, options: Parameters<Rules['min']>[0], model) => {
               if (
-                !model[key] ||
-                (typeof model[key] === 'number' &&
-                  (model[key] as unknown as number) >= options.value)
+                typeof model[key] !== 'number' ||
+                (model[key] as unknown as number) >= options.value
               )
                 return null;
 
@@ -81,9 +80,8 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
             },
             max: (key, options: Parameters<Rules['max']>[0], model) => {
               if (
-                !model[key] ||
-                (typeof model[key] === 'number' &&
-                  (model[key] as unknown as number) <= options.value)
+                typeof model[key] !== 'number' ||
+                (model[key] as unknown as number) <= options.value
               )
                 return null;
 

@@ -1,4 +1,3 @@
-import { maxPerPage, minPerPage } from '@/data/constants';
 import { DbListCustomerUseCase } from '@/data/use-cases';
 import { ValidationException } from '@/infra/exceptions';
 import { makeCustomerRepositoryStub } from '@tests/data/stubs/repositories';
@@ -18,7 +17,7 @@ describe(DbListCustomerUseCase.name, () => {
 
     const requestModel = {
       page: 1,
-      perPage: minPerPage,
+      perPage: 20,
       name: 'Any Name',
       email: 'any@email.com',
       anyWrongProp: 'anyValue',
@@ -26,9 +25,11 @@ describe(DbListCustomerUseCase.name, () => {
     const sanitizedRequestModel = { ...requestModel };
     Reflect.deleteProperty(sanitizedRequestModel, 'anyWrongProp');
     const responseModel = { ...sanitizedRequestModel };
+    Reflect.deleteProperty(responseModel, 'page');
+    Reflect.deleteProperty(responseModel, 'perPage');
     const existsCustomer = { ...responseModel };
 
-    customerRepository.findBy.mockReturnValueOnce([existsCustomer]);
+    customerRepository.list.mockReturnValueOnce([existsCustomer]);
 
     const sutResult = await sut.execute(requestModel).catch();
 
@@ -38,8 +39,8 @@ describe(DbListCustomerUseCase.name, () => {
         page: [validatorService.rules.number(), validatorService.rules.min({ value: 1 })],
         perPage: [
           validatorService.rules.number(),
-          validatorService.rules.min({ value: minPerPage }),
-          validatorService.rules.max({ value: maxPerPage }),
+          validatorService.rules.min({ value: 20 }),
+          validatorService.rules.max({ value: 50 }),
         ],
         name: [
           validatorService.rules.string(),
@@ -55,17 +56,43 @@ describe(DbListCustomerUseCase.name, () => {
       model: sanitizedRequestModel,
       data: { customers: [] },
     });
-    expect(customerRepository.findBy).toBeCalledWith(sanitizedRequestModel);
+    expect(customerRepository.list).toBeCalledWith(sanitizedRequestModel);
   });
 
   describe.each([
+    // page
+    {
+      properties: { page: '1' },
+      validations: [{ field: 'page', rule: 'number', message: 'This value must be a number' }],
+    },
+    {
+      properties: { page: 0 },
+      validations: [{ field: 'page', rule: 'min', message: 'This value must be bigger than: 1' }],
+    },
+    // perPage
+    {
+      properties: { perPage: '1' },
+      validations: [{ field: 'perPage', rule: 'number', message: 'This value must be a number' }],
+    },
+    {
+      properties: { perPage: 19 },
+      validations: [
+        { field: 'perPage', rule: 'min', message: 'This value must be bigger than: 20' },
+      ],
+    },
+    {
+      properties: { perPage: 51 },
+      validations: [
+        { field: 'perPage', rule: 'max', message: 'This value must be smaller than: 50' },
+      ],
+    },
     // name
     {
-      properties: { name: 1, email: 'any@email.com' },
+      properties: { name: 1 },
       validations: [{ field: 'name', rule: 'string', message: 'This value must be a string' }],
     },
     {
-      properties: { name: ' InV@L1D n@m3 ', email: 'any@email.com' },
+      properties: { name: ' InV@L1D n@m3 ' },
       validations: [
         {
           field: 'name',
@@ -75,7 +102,7 @@ describe(DbListCustomerUseCase.name, () => {
       ],
     },
     {
-      properties: { name: 'lower', email: 'any@email.com' },
+      properties: { name: 'lower' },
       validations: [
         { field: 'name', rule: 'length', message: 'This value length must be beetween 6 and 100' },
       ],
@@ -83,7 +110,6 @@ describe(DbListCustomerUseCase.name, () => {
     {
       properties: {
         name: 'BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName',
-        email: 'any@email.com',
       },
       validations: [
         { field: 'name', rule: 'length', message: 'This value length must be beetween 6 and 100' },
@@ -124,7 +150,7 @@ describe(DbListCustomerUseCase.name, () => {
           { name: 'Any Name', email: 'any@email.com' },
           properties,
         );
-        const responseModel = { ...requestModel };
+        const responseModel = { ...(requestModel as any) };
 
         customerRepository.findBy.mockReturnValueOnce([responseModel]);
 

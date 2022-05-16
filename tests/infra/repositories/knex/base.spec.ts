@@ -16,6 +16,8 @@ function makeSut() {
 
     public find = this.baseFind;
 
+    public list = this.baseList;
+
     public create = this.baseCreate;
 
     public update = this.baseUpdate;
@@ -72,6 +74,59 @@ describe(KnexBaseRepository.name, () => {
       await sut.find(query, withDeleted);
 
       expect(knex.whereNull).not.toBeCalled();
+    });
+  });
+
+  describe('list()', () => {
+    test('Should list register and return correct values', async () => {
+      const { knex, tableName, sut } = makeSut();
+
+      const requestModel = { anyProp: 'anyValue', page: 1, perPage: 20 };
+      const responseModel = { anyProp: 'anyValue' };
+      knex.then.mockImplementationOnce((resolve) => resolve([responseModel]));
+
+      const sutResult = await sut.list(requestModel);
+
+      expect(sutResult).toStrictEqual([responseModel]);
+      expect(knex.whereNull).toBeCalledWith('deletedAt');
+      expect(knex.table).toBeCalledWith(tableName);
+      expect(knex.where).toBeCalledWith({ anyProp: 'anyValue' });
+      expect(knex.offset).toBeCalledWith(requestModel.perPage - 1 * requestModel.perPage);
+      expect(knex.limit).toBeCalledWith(requestModel.perPage);
+    });
+
+    test('Should use default values for page and perPage', async () => {
+      const { knex, tableName, sut } = makeSut();
+
+      const requestModel = { anyProp: 'anyValue' };
+      const responseModel = { anyProp: 'anyValue' };
+      knex.then.mockImplementationOnce((resolve) => resolve([responseModel]));
+
+      const sutResult = await sut.list(requestModel as any);
+
+      expect(sutResult).toStrictEqual([responseModel]);
+      expect(knex.whereNull).toBeCalledWith('deletedAt');
+      expect(knex.table).toBeCalledWith(tableName);
+      expect(knex.where).toBeCalledWith({ anyProp: 'anyValue' });
+      expect(knex.offset).toBeCalledWith(0 * 20);
+      expect(knex.limit).toBeCalledWith(20);
+    });
+
+    test('Should not filter whereNull deletedAt if withDeleted was informed', async () => {
+      const { knex, tableName, sut } = makeSut();
+
+      const requestModel = { anyProp: 'anyValue', page: 1, perPage: 20 };
+      const responseModel = { anyProp: 'anyValue' };
+      knex.then.mockImplementationOnce((resolve) => resolve([responseModel]));
+
+      const withDeleted = true;
+      await sut.list(requestModel, withDeleted);
+
+      expect(knex.whereNull).not.toBeCalled();
+      expect(knex.table).toBeCalledWith(tableName);
+      expect(knex.where).toBeCalledWith({ anyProp: 'anyValue' });
+      expect(knex.offset).toBeCalledWith(requestModel.perPage - 1 * requestModel.perPage);
+      expect(knex.limit).toBeCalledWith(requestModel.perPage);
     });
   });
 

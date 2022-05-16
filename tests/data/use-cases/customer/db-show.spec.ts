@@ -99,16 +99,10 @@ describe(DbShowCustomerUseCase.name, () => {
   test('Should throw ValidationException if id was not found', async () => {
     const { customerRepository, sut } = makeSut();
 
-    const requestModel = {
-      id: '00000000-0000-4000-8000-000000000002',
-      name: 'Any Name',
-      email: 'any@email.com',
-    };
+    const requestModel = { id: '00000000-0000-4000-8000-000000000002' };
     const responseModel = { ...requestModel, deletedAt: new Date() };
 
-    customerRepository.findBy.mockReturnValueOnce([
-      { ...responseModel, id: validUuidV4, email: 'other@email.com' },
-    ]);
+    customerRepository.findBy.mockReturnValueOnce([{ ...responseModel, id: validUuidV4 }]);
 
     const sutResult = await sut.execute(requestModel).catch((e) => e);
 

@@ -65,15 +65,15 @@ describe(DbCreateCustomerUseCase.name, () => {
   describe.each([
     // name
     {
-      properties: { name: undefined, email: 'any@email.com' },
+      properties: { name: undefined },
       validations: [{ field: 'name', rule: 'required', message: 'This value is required' }],
     },
     {
-      properties: { name: 1, email: 'any@email.com' },
+      properties: { name: 1 },
       validations: [{ field: 'name', rule: 'string', message: 'This value must be a string' }],
     },
     {
-      properties: { name: ' InV@L1D n@m3 ', email: 'any@email.com' },
+      properties: { name: ' InV@L1D n@m3 ' },
       validations: [
         {
           field: 'name',
@@ -83,7 +83,7 @@ describe(DbCreateCustomerUseCase.name, () => {
       ],
     },
     {
-      properties: { name: 'lower', email: 'any@email.com' },
+      properties: { name: 'lower' },
       validations: [
         { field: 'name', rule: 'length', message: 'This value length must be beetween 6 and 100' },
       ],
@@ -91,7 +91,6 @@ describe(DbCreateCustomerUseCase.name, () => {
     {
       properties: {
         name: 'BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName',
-        email: 'any@email.com',
       },
       validations: [
         { field: 'name', rule: 'length', message: 'This value length must be beetween 6 and 100' },
@@ -142,7 +141,7 @@ describe(DbCreateCustomerUseCase.name, () => {
           { name: 'Any Name', email: 'any@email.com' },
           properties,
         );
-        const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
+        const responseModel = { ...(requestModel as any), id: 'any_id', createdAt: new Date() };
 
         customerRepository.create.mockReturnValueOnce(responseModel);
 

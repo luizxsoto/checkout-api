@@ -11,6 +11,9 @@ export function makeCustomerRepositoryStub() {
     findBy: jest
       .fn()
       .mockImplementation((): FindByCustomerRepository.ResponseModel => [makeCustomerModelMock()]),
+    list: jest
+      .fn()
+      .mockImplementation((): FindByCustomerRepository.ResponseModel => [makeCustomerModelMock()]),
     create: jest
       .fn()
       .mockImplementation(
