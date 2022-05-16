@@ -1,12 +1,12 @@
 import { maxPerPage, minPerPage } from '@/data/constants';
-import { FindByCustomerRepository } from '@/data/contracts/repositories';
+import { ListCustomerRepository } from '@/data/contracts/repositories';
 import { ValidatorService } from '@/data/contracts/services';
 import { CustomerModel } from '@/domain/models';
 import { ListCustomerUseCase } from '@/domain/use-cases';
 
 export class DbListCustomerUseCase implements ListCustomerUseCase.UseCase {
   constructor(
-    private readonly findByCustomerRepository: FindByCustomerRepository.Repository,
+    private readonly findByCustomerRepository: ListCustomerRepository.Repository,
     private readonly validator: ValidatorService.Validator<
       ListCustomerUseCase.RequestModel,
       { customers: CustomerModel[] }
@@ -20,7 +20,7 @@ export class DbListCustomerUseCase implements ListCustomerUseCase.UseCase {
 
     await this.validateRequestModel(sanitizedRequestModel);
 
-    const customersBy = await this.findByCustomerRepository.findBy(sanitizedRequestModel);
+    const customersBy = await this.findByCustomerRepository.list(sanitizedRequestModel);
 
     return customersBy;
   }
@@ -28,10 +28,10 @@ export class DbListCustomerUseCase implements ListCustomerUseCase.UseCase {
   private sanitizeRequestModel(
     requestModel: ListCustomerUseCase.RequestModel,
   ): ListCustomerUseCase.RequestModel {
-    const sanitizedRequestModel: ListCustomerUseCase.RequestModel = {};
-
-    if (requestModel.page) sanitizedRequestModel.page = requestModel.page;
-    if (requestModel.perPage) sanitizedRequestModel.perPage = requestModel.perPage;
+    const sanitizedRequestModel: ListCustomerUseCase.RequestModel = {
+      page: requestModel.page,
+      perPage: requestModel.perPage,
+    };
 
     if (requestModel.name) sanitizedRequestModel.name = requestModel.name;
     if (requestModel.email) sanitizedRequestModel.email = requestModel.email;

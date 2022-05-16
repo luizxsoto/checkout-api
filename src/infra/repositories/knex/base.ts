@@ -1,5 +1,6 @@
 import { Knex } from 'knex';
 
+import { minPerPage } from '@/data/constants';
 import { GenerateUniqueIDService } from '@/data/contracts/services';
 import { BaseModel } from '@/domain/models';
 import { DatabaseException } from '@/infra/exceptions';
@@ -33,11 +34,30 @@ export abstract class KnexBaseRepository {
     return rows;
   }
 
+  protected async baseList<Model extends BaseModel>(
+    requestModel: { page?: number; perPage?: number } & Partial<Model>,
+    withDeleted = false,
+  ): Promise<Model[]> {
+    const { page = 1, perPage = minPerPage, ...restRequestModel } = requestModel;
+    const offset = (page - 1) * perPage;
+
+    const query = this.knex
+      .table(this.tableName)
+      .where(restRequestModel)
+      .offset(offset)
+      .limit(perPage);
+    if (!withDeleted) query.whereNull('deletedAt');
+
+    const rows = await this.baseRun<Model[]>(query);
+
+    return rows;
+  }
+
   protected async baseCreate<Model extends BaseModel>(
-    model: Omit<Model, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>,
+    requestModel: Omit<Model, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>,
   ): Promise<Model> {
     const createModel = {
-      ...model,
+      ...requestModel,
       id: this.uuidService.generateUniqueID(),
       createdAt: new Date(),
     } as Model;
@@ -51,10 +71,10 @@ export abstract class KnexBaseRepository {
 
   protected async baseUpdate<Model extends BaseModel>(
     where: Partial<Model>,
-    model: Partial<Omit<Model, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>>,
+    requestModel: Partial<Omit<Model, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>>,
   ): Promise<Model> {
     const updateModel = {
-      ...model,
+      ...requestModel,
       updatedAt: new Date(),
     } as Model;
 

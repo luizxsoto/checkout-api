@@ -5,6 +5,7 @@ import { KnexBaseRepository } from './base';
 import {
   CreateCustomerRepository,
   FindByCustomerRepository,
+  ListCustomerRepository,
   RemoveCustomerRepository,
   UpdateCustomerRepository,
 } from '@/data/contracts/repositories';
@@ -26,6 +27,12 @@ export class KnexCustomerRepository extends KnexBaseRepository implements Reposi
   ): Promise<FindByCustomerRepository.ResponseModel> {
     const query = this.knex.table(this.tableName).where(requestModel);
     return this.baseFind<CustomerModel>(query);
+  }
+
+  public async list(
+    requestModel: ListCustomerRepository.RequestModel,
+  ): Promise<ListCustomerRepository.ResponseModel> {
+    return this.baseList<CustomerModel>(requestModel);
   }
 
   public async create(

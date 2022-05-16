@@ -85,10 +85,7 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
       };
     },
     min: (key, options: Parameters<Rules['min']>[0], model) => {
-      if (
-        !model[key] ||
-        (typeof model[key] === 'number' && (model[key] as unknown as number) >= options.value)
-      )
+      if (typeof model[key] !== 'number' || (model[key] as unknown as number) >= options.value)
         return null;
 
       return {
@@ -98,10 +95,7 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
       };
     },
     max: (key, options: Parameters<Rules['max']>[0], model) => {
-      if (
-        !model[key] ||
-        (typeof model[key] === 'number' && (model[key] as unknown as number) <= options.value)
-      )
+      if (typeof model[key] !== 'number' || (model[key] as unknown as number) <= options.value)
         return null;
 
       return {
