@@ -74,6 +74,20 @@ describe(VanillaValidatorService.name, () => {
 
       expect(sutResult).toBeUndefined();
     });
+
+    test('Should not throw if is not informed a value', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: { anyProp: [sut.rules.string()] },
+          model: { anyProp: undefined },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
   });
 
   describe('Should throw if the value should match with a regex, but is not', () => {
@@ -180,6 +194,20 @@ describe(VanillaValidatorService.name, () => {
 
       expect(sutResult).toBeUndefined();
     });
+
+    test('Should not throw if is not informed a value', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: { anyProp: [sut.rules.regex({ pattern: 'name' })] },
+          model: { anyProp: undefined },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
   });
 
   describe('Should throw if the value is out of length', () => {
@@ -212,6 +240,20 @@ describe(VanillaValidatorService.name, () => {
         .validate({
           schema: { anyProp: [sut.rules.length({ minLength: 6, maxLength: 13 })] },
           model: { anyProp: 'correctLength' },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
+
+    test('Should not throw if is not informed a value', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: { anyProp: [sut.rules.length({ minLength: 6, maxLength: 13 })] },
+          model: { anyProp: undefined },
           data: { anyData: [] },
         })
         .catch((e) => e);
@@ -288,6 +330,28 @@ describe(VanillaValidatorService.name, () => {
 
       expect(sutResult).toBeUndefined();
     });
+
+    test('Should not throw if is not informed a value', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [
+              sut.rules.unique({
+                dataEntity: 'anyData',
+                ignoreProps: [{ modelKey: 'otherProp', dataKey: 'otherProp' }],
+                props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }],
+              }),
+            ],
+          },
+          model: { anyProp: undefined, otherProp: undefined },
+          data: { anyData: [{ anyProp: 'anyProp', otherProp: 'otherProp' }] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
   });
 
   describe('Should throw if the value was not found', () => {
@@ -330,6 +394,27 @@ describe(VanillaValidatorService.name, () => {
             ],
           },
           model: { anyProp: 'anyProp' },
+          data: { anyData: [{ anyProp: 'anyProp' }] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
+
+    test('Should not throw if is not informed a value', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [
+              sut.rules.exists({
+                dataEntity: 'anyData',
+                props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }],
+              }),
+            ],
+          },
+          model: { anyProp: undefined },
           data: { anyData: [{ anyProp: 'anyProp' }] },
         })
         .catch((e) => e);
