@@ -9,7 +9,7 @@ import { knexConfig } from '@/main/config';
 export function makeDbRemoveCustomerUseCase(): RemoveCustomerUseCase.UseCase {
   const repository = new KnexCustomerRepository(knexConfig, new UUIDService());
   const validatorService = new VanillaValidatorService<
-    Partial<RemoveCustomerUseCase.RequestModel>,
+    RemoveCustomerUseCase.RequestModel,
     { customers: CustomerModel[] }
   >();
   const useCase = new DbRemoveCustomerUseCase(repository, repository, validatorService);

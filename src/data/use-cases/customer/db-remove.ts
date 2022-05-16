@@ -8,7 +8,7 @@ export class DbRemoveCustomerUseCase implements RemoveCustomerUseCase.UseCase {
     private readonly removeCustomerRepository: RemoveCustomerRepository.Repository,
     private readonly findByCustomerRepository: FindByCustomerRepository.Repository,
     private readonly validator: ValidatorService.Validator<
-      Partial<RemoveCustomerUseCase.RequestModel>,
+      RemoveCustomerUseCase.RequestModel,
       { customers: CustomerModel[] }
     >,
   ) {}

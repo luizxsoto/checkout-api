@@ -8,7 +8,7 @@ export class DbUpdateCustomerUseCase implements UpdateCustomerUseCase.UseCase {
     private readonly updateCustomerRepository: UpdateCustomerRepository.Repository,
     private readonly findByCustomerRepository: FindByCustomerRepository.Repository,
     private readonly validator: ValidatorService.Validator<
-      Partial<UpdateCustomerUseCase.RequestModel>,
+      UpdateCustomerUseCase.RequestModel,
       { customers: CustomerModel[] }
     >,
   ) {}

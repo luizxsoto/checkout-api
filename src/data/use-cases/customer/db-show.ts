@@ -7,7 +7,7 @@ export class DbShowCustomerUseCase implements ShowCustomerUseCase.UseCase {
   constructor(
     private readonly findByCustomerRepository: FindByCustomerRepository.Repository,
     private readonly validator: ValidatorService.Validator<
-      Partial<ShowCustomerUseCase.RequestModel>,
+      ShowCustomerUseCase.RequestModel,
       { customers: CustomerModel[] }
     >,
   ) {}
