@@ -20,12 +20,13 @@ describe('Express adaptRoute', () => {
     jest.clearAllMocks();
   });
 
-  test('Should call controller with params / body and return correct values', async () => {
+  test('Should call controller with body / params / query and return correct values', async () => {
     const { handle, sut } = makeSut();
 
     const request = {
       body: { bodyProp: 'any_body' },
       params: { paramsProp: 'any_params' },
+      query: { queryProp: 'any_query' },
     };
     const response = {
       status: jest.fn().mockReturnThis(),
@@ -37,13 +38,13 @@ describe('Express adaptRoute', () => {
 
     const sutResult = await sut(request as unknown as Request, response as unknown as Response);
 
-    expect(handle).toBeCalledWith({ ...request.body, ...request.params });
+    expect(handle).toBeCalledWith({ ...request.body, ...request.params, ...request.query });
     expect(response.status).toBeCalledWith(200);
     expect(response.json).toBeCalledWith({ id: 'any_id' });
     expect(sutResult).toBeUndefined();
   });
 
-  test('Should not throw controller throws', async () => {
+  test('Should not throw if controller throws', async () => {
     const { handle, sut } = makeSut();
 
     const request = {};
