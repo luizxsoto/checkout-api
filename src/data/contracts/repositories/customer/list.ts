@@ -1,6 +1,11 @@
 import { CustomerModel } from '@/domain/models';
 
-export type RequestModel = { pege?: number; perPage?: number } & Partial<CustomerModel>;
+export type RequestModel = {
+  pege?: number;
+  perPage?: number;
+  orderBy?: string;
+  order?: string;
+} & Partial<CustomerModel>;
 
 export type ResponseModel = CustomerModel[];
 

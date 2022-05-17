@@ -31,6 +31,8 @@ export class DbListCustomerUseCase implements ListCustomerUseCase.UseCase {
     const sanitizedRequestModel: ListCustomerUseCase.RequestModel = {
       page: Number(requestModel.page) || requestModel.page,
       perPage: Number(requestModel.perPage) || requestModel.perPage,
+      orderBy: requestModel.orderBy,
+      order: requestModel.order,
     };
 
     if (requestModel.name) sanitizedRequestModel.name = requestModel.name;
@@ -49,6 +51,14 @@ export class DbListCustomerUseCase implements ListCustomerUseCase.UseCase {
           this.validator.rules.number(),
           this.validator.rules.min({ value: minPerPage }),
           this.validator.rules.max({ value: maxPerPage }),
+        ],
+        orderBy: [
+          this.validator.rules.string(),
+          this.validator.rules.in({ values: ['name', 'email', 'createdAt', 'updatedAt'] }),
+        ],
+        order: [
+          this.validator.rules.string(),
+          this.validator.rules.in({ values: ['asc', 'desc'] }),
         ],
         name: [
           this.validator.rules.string(),

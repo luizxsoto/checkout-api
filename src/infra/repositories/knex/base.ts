@@ -35,17 +35,29 @@ export abstract class KnexBaseRepository {
   }
 
   protected async baseList<Model extends BaseModel>(
-    requestModel: { page?: number; perPage?: number } & Partial<Model>,
+    requestModel: {
+      page?: number;
+      perPage?: number;
+      orderBy?: string;
+      order?: string;
+    } & Partial<Model>,
     withDeleted = false,
   ): Promise<Model[]> {
-    const { page = 1, perPage = minPerPage, ...restRequestModel } = requestModel;
+    const {
+      page = 1,
+      perPage = minPerPage,
+      orderBy = 'createdAt',
+      order = 'asc',
+      ...restRequestModel
+    } = requestModel;
     const offset = (page - 1) * perPage;
 
     const query = this.knex
       .table(this.tableName)
       .where(restRequestModel)
       .offset(offset)
-      .limit(perPage);
+      .limit(perPage)
+      .orderBy(orderBy, order);
     if (!withDeleted) query.whereNull('deletedAt');
 
     const rows = await this.baseRun<Model[]>(query);
