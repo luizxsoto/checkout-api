@@ -1,8 +1,11 @@
 import { Express, Router } from 'express';
 
-import * as routes from '@/main/routes';
+import { envConfig } from './env';
 
-export function setupRoutes(app: Express): void {
+import * as routes from '@/main/routes';
+import { notFound } from '@/presentation/helpers';
+
+export function setupRoutes(app: Express, setupNotFoundRoute = envConfig.nodeEnv !== 'test'): void {
   const router = Router();
 
   app.use('/api', router);
@@ -10,4 +13,12 @@ export function setupRoutes(app: Express): void {
   Object.values(routes)
     .filter((route) => typeof route === 'function')
     .forEach((route) => route(router));
+
+  if (setupNotFoundRoute) {
+    app.use((_req, res) => {
+      const httpResponse = notFound();
+
+      res.status(httpResponse.statusCode).json(httpResponse.body);
+    });
+  }
 }

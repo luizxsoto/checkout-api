@@ -9,6 +9,10 @@ export function created(data: any): HttpResponse {
   return { statusCode: 201, body: data };
 }
 
+export function notFound(): HttpResponse {
+  return { statusCode: 404, body: { message: 'Route not found' } };
+}
+
 export function serverError(error: Error): HttpResponse {
   let statusCode = 500;
   let body = new InternalException(error);
