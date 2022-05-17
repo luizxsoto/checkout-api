@@ -1,7 +1,7 @@
 export class ListCustomerDto {
-  public page?: string | number;
+  public page?: number;
 
-  public perPage?: string | number;
+  public perPage?: number;
 
   public name?: string;
 

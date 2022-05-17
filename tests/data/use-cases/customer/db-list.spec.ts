@@ -62,7 +62,7 @@ describe(DbListCustomerUseCase.name, () => {
   describe.each([
     // page
     {
-      properties: { page: '1' },
+      properties: { page: 'page' },
       validations: [{ field: 'page', rule: 'number', message: 'This value must be a number' }],
     },
     {
@@ -71,7 +71,7 @@ describe(DbListCustomerUseCase.name, () => {
     },
     // perPage
     {
-      properties: { perPage: '1' },
+      properties: { perPage: 'perPage' },
       validations: [{ field: 'perPage', rule: 'number', message: 'This value must be a number' }],
     },
     {

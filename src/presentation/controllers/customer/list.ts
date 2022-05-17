@@ -7,13 +7,7 @@ export class ListCustomerController implements Controller<ListCustomerDto> {
   constructor(private readonly listCustomerUseCase: ListCustomerUseCase.UseCase) {}
 
   public async handle(params: ListCustomerDto): Promise<HttpResponse> {
-    const sanitizedParams: ListCustomerUseCase.RequestModel = {
-      ...params,
-      page: params.page ? Number(params.page) : undefined,
-      perPage: params.perPage ? Number(params.perPage) : undefined,
-    };
-
-    const useCaseResult = await this.listCustomerUseCase.execute(sanitizedParams);
+    const useCaseResult = await this.listCustomerUseCase.execute(params);
 
     return ok(useCaseResult);
   }

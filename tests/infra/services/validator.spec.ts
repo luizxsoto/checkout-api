@@ -97,7 +97,7 @@ describe(VanillaValidatorService.name, () => {
       const sutResult = await sut
         .validate({
           schema: { anyProp: [sut.rules.number()] },
-          model: { anyProp: '1' },
+          model: { anyProp: 'anyProp' },
           data: { anyData: [] },
         })
         .catch((e) => e);

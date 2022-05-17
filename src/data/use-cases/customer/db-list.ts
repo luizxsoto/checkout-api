@@ -29,8 +29,8 @@ export class DbListCustomerUseCase implements ListCustomerUseCase.UseCase {
     requestModel: ListCustomerUseCase.RequestModel,
   ): ListCustomerUseCase.RequestModel {
     const sanitizedRequestModel: ListCustomerUseCase.RequestModel = {
-      page: requestModel.page,
-      perPage: requestModel.perPage,
+      page: Number(requestModel.page) || requestModel.page,
+      perPage: Number(requestModel.perPage) || requestModel.perPage,
     };
 
     if (requestModel.name) sanitizedRequestModel.name = requestModel.name;

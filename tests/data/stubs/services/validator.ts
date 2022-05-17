@@ -57,7 +57,7 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
               };
             },
             number: (key, _options, model) => {
-              if (!model[key] || typeof model[key] === 'number') return null;
+              if (!model[key] || !Number.isNaN(Number(model[key]))) return null;
 
               return {
                 field: key as string,
@@ -67,7 +67,7 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
             },
             min: (key, options: Parameters<Rules['min']>[0], model) => {
               if (
-                typeof model[key] !== 'number' ||
+                Number.isNaN(Number(model[key])) ||
                 (model[key] as unknown as number) >= options.value
               )
                 return null;
@@ -80,7 +80,7 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
             },
             max: (key, options: Parameters<Rules['max']>[0], model) => {
               if (
-                typeof model[key] !== 'number' ||
+                Number.isNaN(Number(model[key])) ||
                 (model[key] as unknown as number) <= options.value
               )
                 return null;
