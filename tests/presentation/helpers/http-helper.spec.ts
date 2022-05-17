@@ -1,5 +1,5 @@
 import { InternalException } from '@/main/exceptions';
-import { created, ok, serverError } from '@/presentation/helpers';
+import { created, notFound, ok, serverError } from '@/presentation/helpers';
 
 jest.mock('@/main/exceptions/application', () => ({
   ErrorCodes: { INTERNAL: 500 },
@@ -19,6 +19,12 @@ describe('Http Helpers', () => {
     const sutResult = created(body);
 
     expect(sutResult).toStrictEqual({ statusCode: 201, body });
+  });
+
+  test('Should return correct values for notFound()', () => {
+    const sutResult = notFound();
+
+    expect(sutResult).toStrictEqual({ statusCode: 404, body: { message: 'Route not found' } });
   });
 
   describe('Should return correct values for serverError()', () => {

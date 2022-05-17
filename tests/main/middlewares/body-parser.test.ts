@@ -1,7 +1,7 @@
 import { Express } from 'express';
 import request from 'supertest';
 
-import { setupApp } from '@/main/config/app';
+import { setupApp } from '@/main/config';
 
 let app: Express;
 

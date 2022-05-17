@@ -22,9 +22,21 @@ describe('Routes', () => {
     const { express, sut } = makeSut();
 
     const routeSpy = jest.spyOn(routes, 'customerRoutes');
+    sut(express as unknown as Express, true);
+
+    expect(express.use).toBeCalledWith('/api', expect.any(Function));
+    expect(express.use).toBeCalledWith(expect.any(Function));
+    expect(routeSpy).toBeCalledWith(expect.any(Function));
+  });
+
+  test('Should not setup not found route', async () => {
+    const { express, sut } = makeSut();
+
+    const routeSpy = jest.spyOn(routes, 'customerRoutes');
     sut(express as unknown as Express);
 
     expect(express.use).toBeCalledWith('/api', expect.any(Function));
+    expect(express.use).not.toBeCalledWith(expect.any(Function));
     expect(routeSpy).toBeCalledWith(expect.any(Function));
   });
 });

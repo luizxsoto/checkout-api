@@ -28,6 +28,6 @@ describe('App', () => {
     sut();
 
     expect(setupMiddlewaresSpy).toBeCalledWith(mockExpressApp);
-    expect(setupRoutesSpy).toBeCalledWith(mockExpressApp);
+    expect(setupRoutesSpy).toBeCalledWith(mockExpressApp, false);
   });
 });
