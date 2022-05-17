@@ -13,7 +13,7 @@ describe('Customer Routes', () => {
 
     await knexConfig.migrate
       .latest({ directory: resolve('database/migrations') })
-      .catch((error) => console.error('knexConfig.migrate', error));
+      .catch((error) => console.error('[knexConfig.migrate]', error));
   });
 
   afterEach(async () => {
@@ -36,7 +36,6 @@ describe('Customer Routes', () => {
       await knexConfig.table('customers').insert(requestModel);
 
       const result = await request(app).get(`/api/customers?email=${requestModel.email}`).send();
-      console.log(result.body);
 
       expect(result.status).toBe(200);
       expect(result.body[0]?.id).toBe(requestModel.id);

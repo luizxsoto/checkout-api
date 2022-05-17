@@ -15,7 +15,7 @@ export abstract class KnexBaseRepository {
   protected async baseRun<T>(query: Knex.QueryBuilder): Promise<T> {
     let queryStr = '';
     try {
-      queryStr = query.toQuery?.();
+      queryStr = query.toQuery();
       return (await query) as T;
     } catch (err) {
       console.error('[KnexBaseRepository.run]', err, queryStr);
