@@ -18,6 +18,8 @@ describe(DbListCustomerUseCase.name, () => {
     const requestModel = {
       page: 1,
       perPage: 20,
+      orderBy: 'name' as const,
+      order: 'asc' as const,
       name: 'Any Name',
       email: 'any@email.com',
       anyWrongProp: 'anyValue',
@@ -41,6 +43,14 @@ describe(DbListCustomerUseCase.name, () => {
           validatorService.rules.number(),
           validatorService.rules.min({ value: 20 }),
           validatorService.rules.max({ value: 50 }),
+        ],
+        orderBy: [
+          validatorService.rules.string(),
+          validatorService.rules.in({ values: ['name', 'email', 'createdAt', 'updatedAt'] }),
+        ],
+        order: [
+          validatorService.rules.string(),
+          validatorService.rules.in({ values: ['asc', 'desc'] }),
         ],
         name: [
           validatorService.rules.string(),
@@ -85,6 +95,30 @@ describe(DbListCustomerUseCase.name, () => {
       validations: [
         { field: 'perPage', rule: 'max', message: 'This value must be smaller than: 50' },
       ],
+    },
+    // orderBy
+    {
+      properties: { orderBy: 1 },
+      validations: [{ field: 'orderBy', rule: 'string', message: 'This value must be a string' }],
+    },
+    {
+      properties: { orderBy: 'orderBy' },
+      validations: [
+        {
+          field: 'orderBy',
+          rule: 'in',
+          message: 'This value must be in: name, email, createdAt, updatedAt',
+        },
+      ],
+    },
+    // order
+    {
+      properties: { order: 1 },
+      validations: [{ field: 'order', rule: 'string', message: 'This value must be a string' }],
+    },
+    {
+      properties: { order: 'order' },
+      validations: [{ field: 'order', rule: 'in', message: 'This value must be in: asc, desc' }],
     },
     // name
     {

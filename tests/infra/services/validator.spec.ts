@@ -90,6 +90,58 @@ describe(VanillaValidatorService.name, () => {
     });
   });
 
+  describe('Should throw if the value should be in, but is not', () => {
+    test('Should throw', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: { anyProp: [sut.rules.in({ values: ['anyValue', 'otherAnyValue'] })] },
+          model: { anyProp: 'someValue' },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toStrictEqual(
+        new ValidationException([
+          {
+            field: 'anyProp',
+            rule: 'in',
+            message: 'This value must be in: anyValue, otherAnyValue',
+          },
+        ]),
+      );
+    });
+
+    test('Should not throw', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: { anyProp: [sut.rules.in({ values: ['anyValue'] })] },
+          model: { anyProp: 'anyValue' },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
+
+    test('Should not throw if is not informed a value', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: { anyProp: [sut.rules.in({ values: ['anyValue'] })] },
+          model: { anyProp: undefined },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
+  });
+
   describe('Should throw if the value should be number, but is not', () => {
     test('Should throw', async () => {
       const { sut } = makeSut();

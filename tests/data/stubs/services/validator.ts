@@ -15,6 +15,7 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
     rules: {
       required: (options) => ({ name: 'required', options }),
       string: (options) => ({ name: 'string', options }),
+      in: (options) => ({ name: 'in', options }),
       number: (options) => ({ name: 'number', options }),
       min: (options) => ({ name: 'min', options }),
       max: (options) => ({ name: 'max', options }),
@@ -54,6 +55,16 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
                 field: key as string,
                 rule: 'string',
                 message: 'This value must be a string',
+              };
+            },
+            in: (key, options: Parameters<Rules['in']>[0], model) => {
+              if (!model[key] || options.values.includes(model[key] as unknown as string))
+                return null;
+
+              return {
+                field: key as string,
+                rule: 'in',
+                message: `This value must be in: ${options.values.join(', ')}`,
               };
             },
             number: (key, _options, model) => {

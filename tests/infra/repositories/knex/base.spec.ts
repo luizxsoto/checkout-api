@@ -81,7 +81,13 @@ describe(KnexBaseRepository.name, () => {
     test('Should list register and return correct values', async () => {
       const { knex, tableName, sut } = makeSut();
 
-      const requestModel = { anyProp: 'anyValue', page: 1, perPage: 20 };
+      const requestModel = {
+        anyProp: 'anyValue',
+        page: 1,
+        perPage: 20,
+        orderBy: 'orderBy',
+        order: 'desc',
+      };
       const responseModel = { anyProp: 'anyValue' };
       knex.then.mockImplementationOnce((resolve) => resolve([responseModel]));
 
@@ -93,6 +99,7 @@ describe(KnexBaseRepository.name, () => {
       expect(knex.where).toBeCalledWith({ anyProp: 'anyValue' });
       expect(knex.offset).toBeCalledWith(requestModel.perPage - 1 * requestModel.perPage);
       expect(knex.limit).toBeCalledWith(requestModel.perPage);
+      expect(knex.orderBy).toBeCalledWith(requestModel.orderBy, requestModel.order);
     });
 
     test('Should use default values for page and perPage', async () => {
@@ -110,6 +117,7 @@ describe(KnexBaseRepository.name, () => {
       expect(knex.where).toBeCalledWith({ anyProp: 'anyValue' });
       expect(knex.offset).toBeCalledWith(0 * 20);
       expect(knex.limit).toBeCalledWith(20);
+      expect(knex.orderBy).toBeCalledWith('createdAt', 'asc');
     });
 
     test('Should not filter whereNull deletedAt if withDeleted was informed', async () => {
