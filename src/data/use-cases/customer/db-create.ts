@@ -20,9 +20,9 @@ export class DbCreateCustomerUseCase implements CreateCustomerUseCase.UseCase {
 
     const restValidation = await this.validateRequestModel(sanitizedRequestModel);
 
-    const customers = await this.findByCustomerRepository.findBy({
-      email: sanitizedRequestModel.email,
-    });
+    const customers = await this.findByCustomerRepository.findBy([
+      { email: sanitizedRequestModel.email },
+    ]);
 
     await restValidation({ customers });
 

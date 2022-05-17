@@ -24,9 +24,22 @@ export abstract class KnexBaseRepository {
   }
 
   protected async baseFind<Model extends BaseModel>(
-    query: Knex.QueryBuilder,
+    requestModel: Partial<Model>[],
     withDeleted = false,
   ): Promise<Model[]> {
+    const query = this.knex.table(this.tableName);
+
+    query.where((builder) => {
+      requestModel.forEach((requestModelItem) => {
+        Object.keys(requestModelItem).forEach((requestModelKey) =>
+          builder.orWhere(
+            requestModelKey,
+            requestModelItem[requestModelKey as keyof Partial<Model>] as unknown as string,
+          ),
+        );
+      });
+    });
+
     if (!withDeleted) query.whereNull('deletedAt');
 
     const rows = await this.baseRun<Model[]>(query);

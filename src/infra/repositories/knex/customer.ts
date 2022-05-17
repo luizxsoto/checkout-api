@@ -25,8 +25,7 @@ export class KnexCustomerRepository extends KnexBaseRepository implements Reposi
   public async findBy(
     requestModel: FindByCustomerRepository.RequestModel,
   ): Promise<FindByCustomerRepository.ResponseModel> {
-    const query = this.knex.table(this.tableName).where(requestModel);
-    return this.baseFind<CustomerModel>(query);
+    return this.baseFind<CustomerModel>(requestModel);
   }
 
   public async list(

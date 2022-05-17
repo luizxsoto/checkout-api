@@ -20,21 +20,23 @@ export class DbUpdateCustomerUseCase implements UpdateCustomerUseCase.UseCase {
 
     const restValidation = await this.validateRequestModel(sanitizedRequestModel);
 
-    const customersById = await this.findByCustomerRepository.findBy({
-      id: sanitizedRequestModel.id,
-    });
-    const customersByEmail = await this.findByCustomerRepository.findBy({
-      email: sanitizedRequestModel.email,
-    });
+    const findedCustomers = await this.findByCustomerRepository.findBy([
+      { id: sanitizedRequestModel.id },
+      { email: sanitizedRequestModel.email },
+    ]);
 
-    await restValidation({ customers: [...customersById, ...customersByEmail] });
+    await restValidation({ customers: [...findedCustomers] });
 
     const repositoryResult = await this.updateCustomerRepository.update(
       { id: sanitizedRequestModel.id },
       sanitizedRequestModel,
     );
 
-    return { ...customersById[0], ...sanitizedRequestModel, ...repositoryResult };
+    const findedCustomerById = findedCustomers.find(
+      (findedCustomer) => findedCustomer.id === sanitizedRequestModel.id,
+    );
+
+    return { ...findedCustomerById, ...sanitizedRequestModel, ...repositoryResult };
   }
 
   private sanitizeRequestModel(

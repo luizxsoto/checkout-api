@@ -6,7 +6,7 @@ import { ListCustomerUseCase } from '@/domain/use-cases';
 
 export class DbListCustomerUseCase implements ListCustomerUseCase.UseCase {
   constructor(
-    private readonly findByCustomerRepository: ListCustomerRepository.Repository,
+    private readonly listCustomerRepository: ListCustomerRepository.Repository,
     private readonly validator: ValidatorService.Validator<
       ListCustomerUseCase.RequestModel,
       { customers: CustomerModel[] }
@@ -20,7 +20,7 @@ export class DbListCustomerUseCase implements ListCustomerUseCase.UseCase {
 
     await this.validateRequestModel(sanitizedRequestModel);
 
-    const customersBy = await this.findByCustomerRepository.list(sanitizedRequestModel);
+    const customersBy = await this.listCustomerRepository.list(sanitizedRequestModel);
 
     return customersBy;
   }
