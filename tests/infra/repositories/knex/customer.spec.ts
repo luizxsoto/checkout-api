@@ -30,7 +30,7 @@ describe(KnexCustomerRepository.name, () => {
       const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
       knex.then.mockImplementationOnce((resolve) => resolve([responseModel]));
 
-      const sutResult = await sut.findBy(requestModel);
+      const sutResult = await sut.findBy([requestModel]);
 
       expect(sutResult).toStrictEqual([responseModel]);
     });

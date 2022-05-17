@@ -55,7 +55,7 @@ describe(DbShowCustomerUseCase.name, () => {
       model: sanitizedRequestModel,
       data: { customers: [existsCustomer] },
     });
-    expect(customerRepository.findBy).toBeCalledWith({ id: sanitizedRequestModel.id });
+    expect(customerRepository.findBy).toBeCalledWith([{ id: sanitizedRequestModel.id }]);
   });
 
   describe.each([

@@ -186,7 +186,7 @@ describe(DbListCustomerUseCase.name, () => {
         );
         const responseModel = { ...(requestModel as any) };
 
-        customerRepository.findBy.mockReturnValueOnce([responseModel]);
+        customerRepository.list.mockReturnValueOnce([responseModel]);
 
         const sutResult = await sut.execute(requestModel).catch((e) => e);
 

@@ -1,6 +1,7 @@
 import {
   CreateCustomerRepository,
   FindByCustomerRepository,
+  ListCustomerRepository,
   RemoveCustomerRepository,
   UpdateCustomerRepository,
 } from '@/data/contracts/repositories';
@@ -13,7 +14,7 @@ export function makeCustomerRepositoryStub() {
       .mockImplementation((): FindByCustomerRepository.ResponseModel => [makeCustomerModelMock()]),
     list: jest
       .fn()
-      .mockImplementation((): FindByCustomerRepository.ResponseModel => [makeCustomerModelMock()]),
+      .mockImplementation((): ListCustomerRepository.ResponseModel => [makeCustomerModelMock()]),
     create: jest
       .fn()
       .mockImplementation(

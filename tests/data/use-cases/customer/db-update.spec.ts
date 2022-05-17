@@ -30,8 +30,7 @@ describe(DbUpdateCustomerUseCase.name, () => {
     const existsCustomer = { ...responseModel };
     const otherCustomer = { ...responseModel, email: 'valid@email.com' };
 
-    customerRepository.findBy.mockReturnValueOnce([existsCustomer]);
-    customerRepository.findBy.mockReturnValueOnce([otherCustomer]);
+    customerRepository.findBy.mockReturnValueOnce([existsCustomer, otherCustomer]);
     customerRepository.update.mockReturnValueOnce(responseModel);
 
     const sutResult = await sut.execute(requestModel).catch();
@@ -78,8 +77,10 @@ describe(DbUpdateCustomerUseCase.name, () => {
       model: sanitizedRequestModel,
       data: { customers: [existsCustomer, otherCustomer] },
     });
-    expect(customerRepository.findBy).toBeCalledWith({ id: sanitizedRequestModel.id });
-    expect(customerRepository.findBy).toBeCalledWith({ email: sanitizedRequestModel.email });
+    expect(customerRepository.findBy).toBeCalledWith([
+      { id: sanitizedRequestModel.id },
+      { email: sanitizedRequestModel.email },
+    ]);
     expect(customerRepository.update).toBeCalledWith(
       { id: sanitizedRequestModel.id },
       sanitizedRequestModel,
@@ -216,8 +217,8 @@ describe(DbUpdateCustomerUseCase.name, () => {
     };
     const responseModel = { ...requestModel, updatedAt: new Date() };
 
-    customerRepository.findBy.mockReturnValueOnce([{ ...responseModel, email: 'other@email.com' }]);
     customerRepository.findBy.mockReturnValueOnce([
+      { ...responseModel, email: 'other@email.com' },
       { ...responseModel, id: '00000000-0000-4000-8000-000000000002' },
     ]);
     customerRepository.update.mockReturnValueOnce(responseModel);

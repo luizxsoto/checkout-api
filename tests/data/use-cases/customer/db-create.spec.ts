@@ -59,7 +59,7 @@ describe(DbCreateCustomerUseCase.name, () => {
       data: { customers: [otherCustomer] },
     });
     expect(customerRepository.create).toBeCalledWith(sanitizedRequestModel);
-    expect(customerRepository.findBy).toBeCalledWith({ email: sanitizedRequestModel.email });
+    expect(customerRepository.findBy).toBeCalledWith([{ email: sanitizedRequestModel.email }]);
   });
 
   describe.each([
