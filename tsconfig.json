@@ -16,7 +16,6 @@
     "incremental": true,
     "paths": {
       "@tests/*": ["tests/*"],
-      "@db/*": ["database/*"],
       "@/*": ["src/*"]
     }
   }

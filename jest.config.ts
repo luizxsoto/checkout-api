@@ -18,7 +18,6 @@ const config: Config.InitialOptions = {
   roots: ['<rootDir>/src/', '<rootDir>/tests/'],
   moduleNameMapper: {
     '^@tests/(.*)': ['<rootDir>/tests/$1'],
-    '^@db/(.*)': ['<rootDir>/database/$1'],
     '^@/(.*)': ['<rootDir>/src/$1'],
   },
 };
