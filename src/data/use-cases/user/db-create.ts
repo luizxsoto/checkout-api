@@ -1,3 +1,4 @@
+import { Hasher } from '@/data/contracts/cryptography';
 import { CreateUserRepository, FindByUserRepository } from '@/data/contracts/repositories';
 import { ValidatorService } from '@/data/contracts/services';
 import { UserModel } from '@/domain/models';
@@ -11,6 +12,7 @@ export class DbCreateUserUseCase implements CreateUserUseCase.UseCase {
       Partial<CreateUserUseCase.RequestModel>,
       { users: UserModel[] }
     >,
+    private readonly hasher: Hasher,
   ) {}
 
   public async execute(
@@ -27,7 +29,10 @@ export class DbCreateUserUseCase implements CreateUserUseCase.UseCase {
 
     await restValidation({ users });
 
-    const repositoryResult = await this.createUserRepository.create(sanitizedRequestModel);
+    const repositoryResult = await this.createUserRepository.create({
+      ...sanitizedRequestModel,
+      password: await this.hasher.hash(sanitizedRequestModel.password),
+    });
 
     return { ...sanitizedRequestModel, ...repositoryResult };
   }

@@ -1,6 +1,7 @@
 import { DbUpdateUserUseCase } from '@/data/use-cases';
 import { UserModel } from '@/domain/models';
 import { ValidationException } from '@/infra/exceptions';
+import { makeHasherCryptographyStub } from '@tests/data/stubs/cryptography';
 import { makeUserRepositoryStub } from '@tests/data/stubs/repositories';
 import { makeValidatorServiceStub } from '@tests/data/stubs/services';
 
@@ -9,14 +10,20 @@ const validUuidV4 = '00000000-0000-4000-8000-000000000001';
 function makeSut() {
   const userRepository = makeUserRepositoryStub();
   const validatorService = makeValidatorServiceStub();
-  const sut = new DbUpdateUserUseCase(userRepository, userRepository, validatorService);
+  const hasherCryptography = makeHasherCryptographyStub();
+  const sut = new DbUpdateUserUseCase(
+    userRepository,
+    userRepository,
+    validatorService,
+    hasherCryptography,
+  );
 
-  return { userRepository, validatorService, sut };
+  return { userRepository, validatorService, hasherCryptography, sut };
 }
 
 describe(DbUpdateUserUseCase.name, () => {
   test('Should update user and return correct values', async () => {
-    const { userRepository, validatorService, sut } = makeSut();
+    const { userRepository, validatorService, hasherCryptography, sut } = makeSut();
 
     const requestModel = {
       id: validUuidV4,
@@ -28,7 +35,11 @@ describe(DbUpdateUserUseCase.name, () => {
     };
     const sanitizedRequestModel = { ...requestModel };
     Reflect.deleteProperty(sanitizedRequestModel, 'anyWrongProp');
-    const responseModel = { ...sanitizedRequestModel, updatedAt: new Date() };
+    const responseModel = {
+      ...sanitizedRequestModel,
+      updatedAt: new Date(),
+      password: 'hashed_password',
+    };
     const existsUser = { ...responseModel };
     const otherUser = {
       ...responseModel,
@@ -37,6 +48,7 @@ describe(DbUpdateUserUseCase.name, () => {
     };
 
     userRepository.findBy.mockReturnValueOnce([existsUser, otherUser]);
+    hasherCryptography.hash.mockReturnValueOnce(Promise.resolve('hashed_password'));
     userRepository.update.mockReturnValueOnce(responseModel);
 
     const sutResult = await sut.execute(requestModel).catch();
@@ -106,9 +118,10 @@ describe(DbUpdateUserUseCase.name, () => {
       model: sanitizedRequestModel,
       data: { users: [existsUser, otherUser] },
     });
+    expect(hasherCryptography.hash).toBeCalledWith(sanitizedRequestModel.password);
     expect(userRepository.update).toBeCalledWith(
       { id: sanitizedRequestModel.id },
-      sanitizedRequestModel,
+      { ...sanitizedRequestModel, password: 'hashed_password' },
     );
   });
 
@@ -191,17 +204,14 @@ describe(DbUpdateUserUseCase.name, () => {
       it(JSON.stringify(validations), async () => {
         const { userRepository, sut } = makeSut();
 
-        // eslint-disable-next-line prefer-object-spread
-        const requestModel: UserModel = Object.assign(
-          {
-            id: validUuidV4,
-            name: 'Any Name',
-            email: 'any@email.com',
-            username: 'any.username',
-            password: 'Password@123',
-          },
-          properties,
-        );
+        const requestModel = {
+          id: validUuidV4,
+          name: 'Any Name',
+          email: 'any@email.com',
+          username: 'any.username',
+          password: 'Password@123',
+          ...properties,
+        } as UserModel;
         const responseModel = { ...requestModel, updatedAt: new Date() };
 
         userRepository.findBy.mockReturnValueOnce([responseModel]);

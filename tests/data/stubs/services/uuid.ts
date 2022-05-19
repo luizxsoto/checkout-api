@@ -1,4 +1,4 @@
-export function makeUuidServiceSub() {
+export function makeUuidServiceStub() {
   return {
     generateUniqueID: jest.fn(() => 'any_id'),
   };

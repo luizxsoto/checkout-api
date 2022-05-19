@@ -1,3 +1,4 @@
+import { Hasher } from '@/data/contracts/cryptography';
 import { FindByUserRepository, UpdateUserRepository } from '@/data/contracts/repositories';
 import { ValidatorService } from '@/data/contracts/services';
 import { UserModel } from '@/domain/models';
@@ -11,6 +12,7 @@ export class DbUpdateUserUseCase implements UpdateUserUseCase.UseCase {
       UpdateUserUseCase.RequestModel,
       { users: UserModel[] }
     >,
+    private readonly hasher: Hasher,
   ) {}
 
   public async execute(
@@ -30,7 +32,12 @@ export class DbUpdateUserUseCase implements UpdateUserUseCase.UseCase {
 
     const repositoryResult = await this.updateUserRepository.update(
       { id: sanitizedRequestModel.id },
-      sanitizedRequestModel,
+      {
+        ...sanitizedRequestModel,
+        password:
+          sanitizedRequestModel.password &&
+          (await this.hasher.hash(sanitizedRequestModel.password)),
+      },
     );
 
     const findedUserById = findedUsers.find(

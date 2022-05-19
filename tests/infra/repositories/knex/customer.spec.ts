@@ -1,13 +1,13 @@
 import { Knex } from 'knex';
 
 import { KnexCustomerRepository } from '@/infra/repositories';
-import { makeUuidServiceSub } from '@tests/data/stubs/services/uuid';
+import { makeUuidServiceStub } from '@tests/data/stubs/services';
 import { makeCustomerModelMock } from '@tests/domain/mocks/models';
 import { makeKnexStub } from '@tests/infra/stubs';
 
 function makeSut() {
   const knex = makeKnexStub(makeCustomerModelMock() as unknown as Record<string, unknown>);
-  const uuidService = makeUuidServiceSub();
+  const uuidService = makeUuidServiceStub();
   const sut = new KnexCustomerRepository(knex as unknown as Knex, uuidService);
 
   return { knex, uuidService, sut };

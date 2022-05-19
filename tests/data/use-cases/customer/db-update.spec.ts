@@ -166,11 +166,12 @@ describe(DbUpdateCustomerUseCase.name, () => {
       it(JSON.stringify(validations), async () => {
         const { customerRepository, sut } = makeSut();
 
-        // eslint-disable-next-line prefer-object-spread
-        const requestModel: CustomerModel = Object.assign(
-          { id: validUuidV4, name: 'Any Name', email: 'any@email.com' },
-          properties,
-        );
+        const requestModel = {
+          id: validUuidV4,
+          name: 'Any Name',
+          email: 'any@email.com',
+          ...properties,
+        } as CustomerModel;
         const responseModel = { ...requestModel, updatedAt: new Date() };
 
         customerRepository.findBy.mockReturnValueOnce([responseModel]);

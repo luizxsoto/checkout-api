@@ -1,4 +1,5 @@
 import { DbCreateCustomerUseCase } from '@/data/use-cases';
+import { CustomerModel } from '@/domain/models';
 import { ValidationException } from '@/infra/exceptions';
 import { makeCustomerRepositoryStub } from '@tests/data/stubs/repositories';
 import { makeValidatorServiceStub } from '@tests/data/stubs/services';
@@ -136,12 +137,12 @@ describe(DbCreateCustomerUseCase.name, () => {
       it(JSON.stringify(validations), async () => {
         const { customerRepository, sut } = makeSut();
 
-        // eslint-disable-next-line prefer-object-spread
-        const requestModel = Object.assign(
-          { name: 'Any Name', email: 'any@email.com' },
-          properties,
-        );
-        const responseModel = { ...(requestModel as any), id: 'any_id', createdAt: new Date() };
+        const requestModel = {
+          name: 'Any Name',
+          email: 'any@email.com',
+          ...properties,
+        } as CustomerModel;
+        const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
 
         customerRepository.create.mockReturnValueOnce(responseModel);
 

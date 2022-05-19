@@ -1,4 +1,5 @@
 import { DbListCustomerUseCase } from '@/data/use-cases';
+import { CustomerModel } from '@/domain/models';
 import { ValidationException } from '@/infra/exceptions';
 import { makeCustomerRepositoryStub } from '@tests/data/stubs/repositories';
 import { makeValidatorServiceStub } from '@tests/data/stubs/services';
@@ -181,12 +182,12 @@ describe(DbListCustomerUseCase.name, () => {
       it(JSON.stringify(validations), async () => {
         const { customerRepository, sut } = makeSut();
 
-        // eslint-disable-next-line prefer-object-spread
-        const requestModel = Object.assign(
-          { name: 'Any Name', email: 'any@email.com' },
-          properties,
-        );
-        const responseModel = { ...(requestModel as any) };
+        const requestModel = {
+          name: 'Any Name',
+          email: 'any@email.com',
+          ...properties,
+        } as CustomerModel;
+        const responseModel = { ...requestModel };
 
         customerRepository.list.mockReturnValueOnce([responseModel]);
 

@@ -1,19 +1,27 @@
 import { DbCreateUserUseCase } from '@/data/use-cases';
+import { UserModel } from '@/domain/models';
 import { ValidationException } from '@/infra/exceptions';
+import { makeHasherCryptographyStub } from '@tests/data/stubs/cryptography';
 import { makeUserRepositoryStub } from '@tests/data/stubs/repositories';
 import { makeValidatorServiceStub } from '@tests/data/stubs/services';
 
 function makeSut() {
   const userRepository = makeUserRepositoryStub();
   const validatorService = makeValidatorServiceStub();
-  const sut = new DbCreateUserUseCase(userRepository, userRepository, validatorService);
+  const hasherCryptography = makeHasherCryptographyStub();
+  const sut = new DbCreateUserUseCase(
+    userRepository,
+    userRepository,
+    validatorService,
+    hasherCryptography,
+  );
 
-  return { userRepository, validatorService, sut };
+  return { userRepository, validatorService, hasherCryptography, sut };
 }
 
 describe(DbCreateUserUseCase.name, () => {
   test('Should create user and return correct values', async () => {
-    const { userRepository, validatorService, sut } = makeSut();
+    const { userRepository, validatorService, hasherCryptography, sut } = makeSut();
 
     const requestModel = {
       name: 'Any Name',
@@ -24,10 +32,16 @@ describe(DbCreateUserUseCase.name, () => {
     };
     const sanitizedRequestModel = { ...requestModel };
     Reflect.deleteProperty(sanitizedRequestModel, 'anyWrongProp');
-    const responseModel = { ...sanitizedRequestModel, id: 'any_id', createdAt: new Date() };
+    const responseModel = {
+      ...sanitizedRequestModel,
+      id: 'any_id',
+      createdAt: new Date(),
+      password: 'hashed_password',
+    };
     const otherUser = { ...responseModel, email: 'valid@email.com', username: 'other.username' };
 
     userRepository.findBy.mockReturnValueOnce([otherUser]);
+    hasherCryptography.hash.mockReturnValueOnce(Promise.resolve('hashed_password'));
     userRepository.create.mockReturnValueOnce(responseModel);
 
     const sutResult = await sut.execute(requestModel);
@@ -87,7 +101,11 @@ describe(DbCreateUserUseCase.name, () => {
       model: sanitizedRequestModel,
       data: { users: [otherUser] },
     });
-    expect(userRepository.create).toBeCalledWith(sanitizedRequestModel);
+    expect(hasherCryptography.hash).toBeCalledWith(sanitizedRequestModel.password);
+    expect(userRepository.create).toBeCalledWith({
+      ...sanitizedRequestModel,
+      password: 'hashed_password',
+    });
   });
 
   describe.each([
@@ -252,17 +270,14 @@ describe(DbCreateUserUseCase.name, () => {
       it(JSON.stringify(validations), async () => {
         const { userRepository, sut } = makeSut();
 
-        // eslint-disable-next-line prefer-object-spread
-        const requestModel = Object.assign(
-          {
-            name: 'Any Name',
-            email: 'any@email.com',
-            username: 'other.username',
-            password: 'Password@123',
-          },
-          properties,
-        );
-        const responseModel = { ...(requestModel as any), id: 'any_id', createdAt: new Date() };
+        const requestModel = {
+          name: 'Any Name',
+          email: 'any@email.com',
+          username: 'other.username',
+          password: 'Password@123',
+          ...properties,
+        } as UserModel;
+        const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
 
         userRepository.create.mockReturnValueOnce(responseModel);
 

@@ -3,13 +3,13 @@ import { Knex } from 'knex';
 import { BaseModel } from '@/domain/models';
 import { DatabaseException } from '@/infra/exceptions';
 import { KnexBaseRepository } from '@/infra/repositories';
-import { makeUuidServiceSub } from '@tests/data/stubs/services/uuid';
+import { makeUuidServiceStub } from '@tests/data/stubs/services';
 import { makeBaseModelMock } from '@tests/domain/mocks/models';
 import { makeKnexStub } from '@tests/infra/stubs';
 
 function makeSut() {
   const knex = makeKnexStub(makeBaseModelMock() as unknown as Record<string, unknown>);
-  const uuidService = makeUuidServiceSub();
+  const uuidService = makeUuidServiceStub();
   const tableName = 'tableName';
   const sut = new (class extends KnexBaseRepository {
     public run = this.baseRun;

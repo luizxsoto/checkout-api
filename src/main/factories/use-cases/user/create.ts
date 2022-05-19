@@ -1,6 +1,7 @@
 import { DbCreateUserUseCase } from '@/data/use-cases';
 import { UserModel } from '@/domain/models';
 import { CreateUserUseCase } from '@/domain/use-cases';
+import { BcryptCryptography } from '@/infra/cryptography';
 import { KnexUserRepository } from '@/infra/repositories';
 import { UUIDService } from '@/infra/services';
 import { VanillaValidatorService } from '@/infra/services/validator';
@@ -12,7 +13,14 @@ export function makeDbCreateUserUseCase(): CreateUserUseCase.UseCase {
     Partial<CreateUserUseCase.RequestModel>,
     { users: UserModel[] }
   >();
-  const useCase = new DbCreateUserUseCase(repository, repository, validatorService);
+  const salt = 12;
+  const bcryptCryptography = new BcryptCryptography(salt);
+  const useCase = new DbCreateUserUseCase(
+    repository,
+    repository,
+    validatorService,
+    bcryptCryptography,
+  );
 
   return useCase;
 }
