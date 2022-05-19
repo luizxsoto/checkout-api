@@ -30,7 +30,6 @@
     "test:integration": "npm test -- --watch -c jest-integration.config.ts",
     "pretest:cov": "rm -rf ./coverage",
     "test:cov": "npm test -- --coverage --silent",
-    "preknex": "npm run build",
     "knex": "knex --knexfile ./dist/database/knexfile.js",
     "prepare": "husky install",
     "commit": "cz",
