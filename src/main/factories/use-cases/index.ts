@@ -4,6 +4,8 @@ export * from './customer/remove';
 export * from './customer/show';
 export * from './customer/update';
 
+export * from './session/create';
+
 export * from './user/create';
 export * from './user/list';
 export * from './user/remove';

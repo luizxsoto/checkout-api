@@ -28,6 +28,10 @@ export interface Rules {
     name: 'exists';
     options: Parameters<Rules['exists']>[0];
   };
+  custom: (options: { validation: () => Promise<boolean>; rule: string; message: string }) => {
+    name: 'custom';
+    options: Parameters<Rules['custom']>[0];
+  };
 }
 
 export type Rule<Key extends keyof Rules = keyof Rules> = {

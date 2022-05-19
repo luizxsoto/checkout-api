@@ -1,0 +1,27 @@
+import { DbCreateSessionUseCase } from '@/data/use-cases';
+import { UserModel } from '@/domain/models';
+import { CreateSessionUseCase } from '@/domain/use-cases';
+import { BcryptCryptography, JwtCryptography } from '@/infra/cryptography';
+import { KnexUserRepository } from '@/infra/repositories';
+import { UUIDService } from '@/infra/services';
+import { VanillaValidatorService } from '@/infra/services/validator';
+import { envConfig, knexConfig } from '@/main/config';
+
+export function makeDbCreateSessionUseCase(): CreateSessionUseCase.UseCase {
+  const repository = new KnexUserRepository(knexConfig, new UUIDService());
+  const validatorService = new VanillaValidatorService<
+    Partial<CreateSessionUseCase.RequestModel>,
+    { users: UserModel[] }
+  >();
+  const salt = 12;
+  const bcryptCryptography = new BcryptCryptography(salt);
+  const jwtAdapter = new JwtCryptography(envConfig.jwtSecret);
+  const useCase = new DbCreateSessionUseCase(
+    repository,
+    bcryptCryptography,
+    jwtAdapter,
+    validatorService,
+  );
+
+  return useCase;
+}

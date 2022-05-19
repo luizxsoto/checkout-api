@@ -9,4 +9,5 @@ export const envConfig = {
   port: process.env.PORT ?? 3000,
   dbClient: process.env.DB_CLIENT ?? 'pg',
   dbURL: process.env.DB_URL ?? 'postgres://postgres:postgres@localhost:5432/checkout',
+  jwtSecret: process.env.JWT_SECRET ?? 'cH3cK0uT-@p1',
 };
