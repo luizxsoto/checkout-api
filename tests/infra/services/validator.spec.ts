@@ -355,6 +355,50 @@ describe(VanillaValidatorService.name, () => {
       );
     });
 
+    test('regex: username', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: { anyProp: [sut.rules.regex({ pattern: 'username' })] },
+          model: { anyProp: '.invalid_username.' },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toStrictEqual(
+        new ValidationException([
+          {
+            field: 'anyProp',
+            rule: 'regex',
+            message: 'This value must be valid according to the pattern: username',
+          },
+        ]),
+      );
+    });
+
+    test('regex: password', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: { anyProp: [sut.rules.regex({ pattern: 'password' })] },
+          model: { anyProp: 'invalid_password' },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toStrictEqual(
+        new ValidationException([
+          {
+            field: 'anyProp',
+            rule: 'regex',
+            message: 'This value must be valid according to the pattern: password',
+          },
+        ]),
+      );
+    });
+
     test('regex: uuidV4', async () => {
       const { sut } = makeSut();
 

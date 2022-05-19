@@ -1,37 +1,43 @@
-import { DbUpdateCustomerUseCase } from '@/data/use-cases';
-import { CustomerModel } from '@/domain/models';
+import { DbUpdateUserUseCase } from '@/data/use-cases';
+import { UserModel } from '@/domain/models';
 import { ValidationException } from '@/infra/exceptions';
-import { makeCustomerRepositoryStub } from '@tests/data/stubs/repositories';
+import { makeUserRepositoryStub } from '@tests/data/stubs/repositories';
 import { makeValidatorServiceStub } from '@tests/data/stubs/services';
 
 const validUuidV4 = '00000000-0000-4000-8000-000000000001';
 
 function makeSut() {
-  const customerRepository = makeCustomerRepositoryStub();
+  const userRepository = makeUserRepositoryStub();
   const validatorService = makeValidatorServiceStub();
-  const sut = new DbUpdateCustomerUseCase(customerRepository, customerRepository, validatorService);
+  const sut = new DbUpdateUserUseCase(userRepository, userRepository, validatorService);
 
-  return { customerRepository, validatorService, sut };
+  return { userRepository, validatorService, sut };
 }
 
-describe(DbUpdateCustomerUseCase.name, () => {
-  test('Should update customer and return correct values', async () => {
-    const { customerRepository, validatorService, sut } = makeSut();
+describe(DbUpdateUserUseCase.name, () => {
+  test('Should update user and return correct values', async () => {
+    const { userRepository, validatorService, sut } = makeSut();
 
     const requestModel = {
       id: validUuidV4,
       name: 'Any Name',
       email: 'any@email.com',
+      username: 'any.username',
+      password: 'Password@123',
       anyWrongProp: 'anyValue',
     };
     const sanitizedRequestModel = { ...requestModel };
     Reflect.deleteProperty(sanitizedRequestModel, 'anyWrongProp');
     const responseModel = { ...sanitizedRequestModel, updatedAt: new Date() };
-    const existsCustomer = { ...responseModel };
-    const otherCustomer = { ...responseModel, email: 'valid@email.com' };
+    const existsUser = { ...responseModel };
+    const otherUser = {
+      ...responseModel,
+      email: 'valid@email.com',
+      username: 'other.username',
+    };
 
-    customerRepository.findBy.mockReturnValueOnce([existsCustomer, otherCustomer]);
-    customerRepository.update.mockReturnValueOnce(responseModel);
+    userRepository.findBy.mockReturnValueOnce([existsUser, otherUser]);
+    userRepository.update.mockReturnValueOnce(responseModel);
 
     const sutResult = await sut.execute(requestModel).catch();
 
@@ -53,35 +59,54 @@ describe(DbUpdateCustomerUseCase.name, () => {
           validatorService.rules.regex({ pattern: 'email' }),
           validatorService.rules.length({ minLength: 6, maxLength: 100 }),
         ],
+        username: [
+          validatorService.rules.string(),
+          validatorService.rules.regex({ pattern: 'username' }),
+          validatorService.rules.length({ minLength: 6, maxLength: 20 }),
+        ],
+        password: [
+          validatorService.rules.string(),
+          validatorService.rules.regex({ pattern: 'password' }),
+          validatorService.rules.length({ minLength: 6, maxLength: 20 }),
+        ],
       },
       model: sanitizedRequestModel,
-      data: { customers: [] },
+      data: { users: [] },
     });
-    expect(customerRepository.findBy).toBeCalledWith([
+    expect(userRepository.findBy).toBeCalledWith([
       { id: sanitizedRequestModel.id },
       { email: sanitizedRequestModel.email },
+      { username: sanitizedRequestModel.username },
     ]);
     expect(validatorService.validate).toBeCalledWith({
       schema: {
         id: [
           validatorService.rules.exists({
-            dataEntity: 'customers',
+            dataEntity: 'users',
             props: [{ modelKey: 'id', dataKey: 'id' }],
           }),
         ],
         name: [],
         email: [
           validatorService.rules.unique({
-            dataEntity: 'customers',
+            dataEntity: 'users',
             ignoreProps: [{ modelKey: 'id', dataKey: 'id' }],
             props: [{ modelKey: 'email', dataKey: 'email' }],
           }),
         ],
+        username: [
+          validatorService.rules.unique({
+            dataEntity: 'users',
+            ignoreProps: [{ modelKey: 'id', dataKey: 'id' }],
+            props: [{ modelKey: 'username', dataKey: 'username' }],
+          }),
+        ],
+        password: [],
       },
       model: sanitizedRequestModel,
-      data: { customers: [existsCustomer, otherCustomer] },
+      data: { users: [existsUser, otherUser] },
     });
-    expect(customerRepository.update).toBeCalledWith(
+    expect(userRepository.update).toBeCalledWith(
       { id: sanitizedRequestModel.id },
       sanitizedRequestModel,
     );
@@ -161,20 +186,26 @@ describe(DbUpdateCustomerUseCase.name, () => {
       ],
     },
   ])(
-    'Should throw ValidationException for every customer invalid prop',
+    'Should throw ValidationException for every user invalid prop',
     ({ properties, validations }) => {
       it(JSON.stringify(validations), async () => {
-        const { customerRepository, sut } = makeSut();
+        const { userRepository, sut } = makeSut();
 
         // eslint-disable-next-line prefer-object-spread
-        const requestModel: CustomerModel = Object.assign(
-          { id: validUuidV4, name: 'Any Name', email: 'any@email.com' },
+        const requestModel: UserModel = Object.assign(
+          {
+            id: validUuidV4,
+            name: 'Any Name',
+            email: 'any@email.com',
+            username: 'any.username',
+            password: 'Password@123',
+          },
           properties,
         );
         const responseModel = { ...requestModel, updatedAt: new Date() };
 
-        customerRepository.findBy.mockReturnValueOnce([responseModel]);
-        customerRepository.update.mockReturnValueOnce(responseModel);
+        userRepository.findBy.mockReturnValueOnce([responseModel]);
+        userRepository.update.mockReturnValueOnce(responseModel);
 
         const sutResult = await sut.execute(requestModel).catch((e) => e);
 
@@ -184,19 +215,21 @@ describe(DbUpdateCustomerUseCase.name, () => {
   );
 
   test('Should throw ValidationException if id was not found', async () => {
-    const { customerRepository, sut } = makeSut();
+    const { userRepository, sut } = makeSut();
 
     const requestModel = {
       id: '00000000-0000-4000-8000-000000000002',
       name: 'Any Name',
       email: 'any@email.com',
+      username: 'any.username',
+      password: 'Password@123',
     };
     const responseModel = { ...requestModel, updatedAt: new Date() };
 
-    customerRepository.findBy.mockReturnValueOnce([
-      { ...responseModel, id: validUuidV4, email: 'other@email.com' },
+    userRepository.findBy.mockReturnValueOnce([
+      { ...responseModel, id: validUuidV4, email: 'other@email.com', username: 'other.username' },
     ]);
-    customerRepository.update.mockReturnValueOnce(responseModel);
+    userRepository.update.mockReturnValueOnce(responseModel);
 
     const sutResult = await sut.execute(requestModel).catch((e) => e);
 
@@ -208,26 +241,55 @@ describe(DbUpdateCustomerUseCase.name, () => {
   });
 
   test('Should throw ValidationException if email is already used', async () => {
-    const { customerRepository, sut } = makeSut();
+    const { userRepository, sut } = makeSut();
 
     const requestModel = {
       id: validUuidV4,
       name: 'Any Name',
       email: 'any@email.com',
+      username: 'any.username',
+      password: 'Password@123',
     };
     const responseModel = { ...requestModel, updatedAt: new Date() };
 
-    customerRepository.findBy.mockReturnValueOnce([
+    userRepository.findBy.mockReturnValueOnce([
       { ...responseModel, email: 'other@email.com' },
-      { ...responseModel, id: '00000000-0000-4000-8000-000000000002' },
+      { ...responseModel, id: '00000000-0000-4000-8000-000000000002', username: 'other.username' },
     ]);
-    customerRepository.update.mockReturnValueOnce(responseModel);
+    userRepository.update.mockReturnValueOnce(responseModel);
 
     const sutResult = await sut.execute(requestModel).catch((e) => e);
 
     expect(sutResult).toStrictEqual(
       new ValidationException([
         { field: 'email', rule: 'unique', message: 'This value has already been used' },
+      ]),
+    );
+  });
+
+  test('Should throw ValidationException if username is already used', async () => {
+    const { userRepository, sut } = makeSut();
+
+    const requestModel = {
+      id: validUuidV4,
+      name: 'Any Name',
+      email: 'any@email.com',
+      username: 'any.username',
+      password: 'Password@123',
+    };
+    const responseModel = { ...requestModel, updatedAt: new Date() };
+
+    userRepository.findBy.mockReturnValueOnce([
+      { ...responseModel, username: 'other.username' },
+      { ...responseModel, id: '00000000-0000-4000-8000-000000000002', email: 'other@email.com' },
+    ]);
+    userRepository.update.mockReturnValueOnce(responseModel);
+
+    const sutResult = await sut.execute(requestModel).catch((e) => e);
+
+    expect(sutResult).toStrictEqual(
+      new ValidationException([
+        { field: 'username', rule: 'unique', message: 'This value has already been used' },
       ]),
     );
   });

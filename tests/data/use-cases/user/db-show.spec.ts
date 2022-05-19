@@ -1,22 +1,22 @@
-import { DbShowCustomerUseCase } from '@/data/use-cases';
-import { ShowCustomerUseCase } from '@/domain/use-cases';
+import { DbShowUserUseCase } from '@/data/use-cases';
+import { ShowUserUseCase } from '@/domain/use-cases';
 import { ValidationException } from '@/infra/exceptions';
-import { makeCustomerRepositoryStub } from '@tests/data/stubs/repositories';
+import { makeUserRepositoryStub } from '@tests/data/stubs/repositories';
 import { makeValidatorServiceStub } from '@tests/data/stubs/services';
 
 const validUuidV4 = '00000000-0000-4000-8000-000000000001';
 
 function makeSut() {
-  const customerRepository = makeCustomerRepositoryStub();
+  const userRepository = makeUserRepositoryStub();
   const validatorService = makeValidatorServiceStub();
-  const sut = new DbShowCustomerUseCase(customerRepository, validatorService);
+  const sut = new DbShowUserUseCase(userRepository, validatorService);
 
-  return { customerRepository, validatorService, sut };
+  return { userRepository, validatorService, sut };
 }
 
-describe(DbShowCustomerUseCase.name, () => {
-  test('Should show customer and return correct values', async () => {
-    const { customerRepository, validatorService, sut } = makeSut();
+describe(DbShowUserUseCase.name, () => {
+  test('Should show user and return correct values', async () => {
+    const { userRepository, validatorService, sut } = makeSut();
 
     const requestModel = {
       id: validUuidV4,
@@ -25,9 +25,9 @@ describe(DbShowCustomerUseCase.name, () => {
     const sanitizedRequestModel = { ...requestModel };
     Reflect.deleteProperty(sanitizedRequestModel, 'anyWrongProp');
     const responseModel = { ...sanitizedRequestModel, updatedAt: new Date() };
-    const existsCustomer = { ...responseModel };
+    const existsUser = { ...responseModel };
 
-    customerRepository.findBy.mockReturnValueOnce([existsCustomer]);
+    userRepository.findBy.mockReturnValueOnce([existsUser]);
 
     const sutResult = await sut.execute(requestModel).catch();
 
@@ -41,20 +41,20 @@ describe(DbShowCustomerUseCase.name, () => {
         ],
       },
       model: sanitizedRequestModel,
-      data: { customers: [] },
+      data: { users: [] },
     });
-    expect(customerRepository.findBy).toBeCalledWith([{ id: sanitizedRequestModel.id }]);
+    expect(userRepository.findBy).toBeCalledWith([{ id: sanitizedRequestModel.id }]);
     expect(validatorService.validate).toBeCalledWith({
       schema: {
         id: [
           validatorService.rules.exists({
-            dataEntity: 'customers',
+            dataEntity: 'users',
             props: [{ modelKey: 'id', dataKey: 'id' }],
           }),
         ],
       },
       model: sanitizedRequestModel,
-      data: { customers: [existsCustomer] },
+      data: { users: [existsUser] },
     });
   });
 
@@ -79,15 +79,15 @@ describe(DbShowCustomerUseCase.name, () => {
       ],
     },
   ])(
-    'Should throw ValidationException for every customer invalid prop',
+    'Should throw ValidationException for every user invalid prop',
     ({ properties, validations }) => {
       it(JSON.stringify(validations), async () => {
-        const { customerRepository, sut } = makeSut();
+        const { userRepository, sut } = makeSut();
 
-        const requestModel = { ...properties } as ShowCustomerUseCase.RequestModel;
+        const requestModel = { ...properties } as ShowUserUseCase.RequestModel;
         const responseModel = { ...requestModel, deleteddAt: new Date() };
 
-        customerRepository.findBy.mockReturnValueOnce([responseModel]);
+        userRepository.findBy.mockReturnValueOnce([responseModel]);
 
         const sutResult = await sut.execute(requestModel).catch((e) => e);
 
@@ -97,12 +97,12 @@ describe(DbShowCustomerUseCase.name, () => {
   );
 
   test('Should throw ValidationException if id was not found', async () => {
-    const { customerRepository, sut } = makeSut();
+    const { userRepository, sut } = makeSut();
 
     const requestModel = { id: '00000000-0000-4000-8000-000000000002' };
     const responseModel = { ...requestModel, deletedAt: new Date() };
 
-    customerRepository.findBy.mockReturnValueOnce([{ ...responseModel, id: validUuidV4 }]);
+    userRepository.findBy.mockReturnValueOnce([{ ...responseModel, id: validUuidV4 }]);
 
     const sutResult = await sut.execute(requestModel).catch((e) => e);
 

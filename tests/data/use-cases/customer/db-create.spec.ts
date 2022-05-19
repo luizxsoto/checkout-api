@@ -45,6 +45,7 @@ describe(DbCreateCustomerUseCase.name, () => {
       model: sanitizedRequestModel,
       data: { customers: [] },
     });
+    expect(customerRepository.findBy).toBeCalledWith([{ email: sanitizedRequestModel.email }]);
     expect(validatorService.validate).toBeCalledWith({
       schema: {
         name: [],
@@ -59,7 +60,6 @@ describe(DbCreateCustomerUseCase.name, () => {
       data: { customers: [otherCustomer] },
     });
     expect(customerRepository.create).toBeCalledWith(sanitizedRequestModel);
-    expect(customerRepository.findBy).toBeCalledWith([{ email: sanitizedRequestModel.email }]);
   });
 
   describe.each([
@@ -90,7 +90,7 @@ describe(DbCreateCustomerUseCase.name, () => {
     },
     {
       properties: {
-        name: 'BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName',
+        name: 'Biggest Name Biggest Name Biggest Name Biggest Name Biggest Name Biggest Name Biggest Name Biggest Name',
       },
       validations: [
         { field: 'name', rule: 'length', message: 'This value length must be beetween 6 and 100' },

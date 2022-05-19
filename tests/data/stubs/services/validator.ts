@@ -109,6 +109,8 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
                 custom: options.customPattern ?? /^\w$/,
                 name: /^([a-zA-Z\u00C0-\u00FF]+\s)*[a-zA-Z\u00C0-\u00FF]+$/,
                 email: /^[\w+.]+@\w+\.\w{2,}(?:\.\w{2})?$/,
+                username: /^(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/,
+                password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
                 uuidV4: /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i,
               };
 

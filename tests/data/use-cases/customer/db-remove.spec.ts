@@ -44,6 +44,7 @@ describe(DbRemoveCustomerUseCase.name, () => {
       model: sanitizedRequestModel,
       data: { customers: [] },
     });
+    expect(customerRepository.findBy).toBeCalledWith([{ id: sanitizedRequestModel.id }]);
     expect(validatorService.validate).toBeCalledWith({
       schema: {
         id: [
@@ -56,7 +57,6 @@ describe(DbRemoveCustomerUseCase.name, () => {
       model: sanitizedRequestModel,
       data: { customers: [existsCustomer] },
     });
-    expect(customerRepository.findBy).toBeCalledWith([{ id: sanitizedRequestModel.id }]);
     expect(customerRepository.remove).toBeCalledWith({ id: sanitizedRequestModel.id });
   });
 

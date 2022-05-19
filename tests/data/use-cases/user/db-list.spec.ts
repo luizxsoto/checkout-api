@@ -1,19 +1,19 @@
-import { DbListCustomerUseCase } from '@/data/use-cases';
+import { DbListUserUseCase } from '@/data/use-cases';
 import { ValidationException } from '@/infra/exceptions';
-import { makeCustomerRepositoryStub } from '@tests/data/stubs/repositories';
+import { makeUserRepositoryStub } from '@tests/data/stubs/repositories';
 import { makeValidatorServiceStub } from '@tests/data/stubs/services';
 
 function makeSut() {
-  const customerRepository = makeCustomerRepositoryStub();
+  const userRepository = makeUserRepositoryStub();
   const validatorService = makeValidatorServiceStub();
-  const sut = new DbListCustomerUseCase(customerRepository, validatorService);
+  const sut = new DbListUserUseCase(userRepository, validatorService);
 
-  return { customerRepository, validatorService, sut };
+  return { userRepository, validatorService, sut };
 }
 
-describe(DbListCustomerUseCase.name, () => {
-  test('Should list customer and return correct values', async () => {
-    const { customerRepository, validatorService, sut } = makeSut();
+describe(DbListUserUseCase.name, () => {
+  test('Should list user and return correct values', async () => {
+    const { userRepository, validatorService, sut } = makeSut();
 
     const requestModel = {
       page: 1,
@@ -22,6 +22,7 @@ describe(DbListCustomerUseCase.name, () => {
       order: 'asc' as const,
       name: 'Any Name',
       email: 'any@email.com',
+      username: 'any.username',
       anyWrongProp: 'anyValue',
     };
     const sanitizedRequestModel = { ...requestModel };
@@ -31,9 +32,9 @@ describe(DbListCustomerUseCase.name, () => {
     Reflect.deleteProperty(responseModel, 'perPage');
     Reflect.deleteProperty(responseModel, 'orderBy');
     Reflect.deleteProperty(responseModel, 'order');
-    const existsCustomer = { ...responseModel };
+    const existsUser = { ...responseModel };
 
-    customerRepository.list.mockReturnValueOnce([existsCustomer]);
+    userRepository.list.mockReturnValueOnce([existsUser]);
 
     const sutResult = await sut.execute(requestModel).catch();
 
@@ -64,11 +65,16 @@ describe(DbListCustomerUseCase.name, () => {
           validatorService.rules.regex({ pattern: 'email' }),
           validatorService.rules.length({ minLength: 6, maxLength: 100 }),
         ],
+        username: [
+          validatorService.rules.string(),
+          validatorService.rules.regex({ pattern: 'username' }),
+          validatorService.rules.length({ minLength: 6, maxLength: 20 }),
+        ],
       },
       model: sanitizedRequestModel,
-      data: { customers: [] },
+      data: { users: [] },
     });
-    expect(customerRepository.list).toBeCalledWith(sanitizedRequestModel);
+    expect(userRepository.list).toBeCalledWith(sanitizedRequestModel);
   });
 
   describe.each([
@@ -175,11 +181,48 @@ describe(DbListCustomerUseCase.name, () => {
         { field: 'email', rule: 'length', message: 'This value length must be beetween 6 and 100' },
       ],
     },
+    // username
+    {
+      properties: { username: 1 },
+      validations: [{ field: 'username', rule: 'string', message: 'This value must be a string' }],
+    },
+    {
+      properties: { username: ' InV@L1D n@m3 ' },
+      validations: [
+        {
+          field: 'username',
+          rule: 'regex',
+          message: 'This value must be valid according to the pattern: username',
+        },
+      ],
+    },
+    {
+      properties: { username: 'lower' },
+      validations: [
+        {
+          field: 'username',
+          rule: 'length',
+          message: 'This value length must be beetween 6 and 20',
+        },
+      ],
+    },
+    {
+      properties: {
+        username: 'biggest.name.biggest.name.biggest.name',
+      },
+      validations: [
+        {
+          field: 'username',
+          rule: 'length',
+          message: 'This value length must be beetween 6 and 20',
+        },
+      ],
+    },
   ])(
-    'Should throw ValidationException for every customer invalid prop',
+    'Should throw ValidationException for every user invalid prop',
     ({ properties, validations }) => {
       it(JSON.stringify(validations), async () => {
-        const { customerRepository, sut } = makeSut();
+        const { userRepository, sut } = makeSut();
 
         // eslint-disable-next-line prefer-object-spread
         const requestModel = Object.assign(
@@ -188,7 +231,7 @@ describe(DbListCustomerUseCase.name, () => {
         );
         const responseModel = { ...(requestModel as any) };
 
-        customerRepository.list.mockReturnValueOnce([responseModel]);
+        userRepository.list.mockReturnValueOnce([responseModel]);
 
         const sutResult = await sut.execute(requestModel).catch((e) => e);
 
