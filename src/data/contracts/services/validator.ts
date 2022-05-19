@@ -6,7 +6,7 @@ export interface Rules {
   min: (options: { value: number }) => { name: 'min'; options: Parameters<Rules['min']>[0] };
   max: (options: { value: number }) => { name: 'max'; options: Parameters<Rules['max']>[0] };
   regex: (options: {
-    pattern: 'custom' | 'name' | 'email' | 'username' | 'password' | 'uuidV4';
+    pattern: 'custom' | 'name' | 'email' | 'password' | 'uuidV4';
     customPattern?: RegExp;
   }) => {
     name: 'regex';

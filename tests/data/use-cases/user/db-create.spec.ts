@@ -26,7 +26,6 @@ describe(DbCreateUserUseCase.name, () => {
     const requestModel = {
       name: 'Any Name',
       email: 'any@email.com',
-      username: 'any.username',
       password: 'Password@123',
       anyWrongProp: 'anyValue',
     };
@@ -38,7 +37,7 @@ describe(DbCreateUserUseCase.name, () => {
       createdAt: new Date(),
       password: 'hashed_password',
     };
-    const otherUser = { ...responseModel, email: 'valid@email.com', username: 'other.username' };
+    const otherUser = { ...responseModel, email: 'valid@email.com' };
 
     userRepository.findBy.mockReturnValueOnce([otherUser]);
     hasherCryptography.hash.mockReturnValueOnce(Promise.resolve('hashed_password'));
@@ -61,12 +60,6 @@ describe(DbCreateUserUseCase.name, () => {
           validatorService.rules.regex({ pattern: 'email' }),
           validatorService.rules.length({ minLength: 6, maxLength: 100 }),
         ],
-        username: [
-          validatorService.rules.required(),
-          validatorService.rules.string(),
-          validatorService.rules.regex({ pattern: 'username' }),
-          validatorService.rules.length({ minLength: 6, maxLength: 20 }),
-        ],
         password: [
           validatorService.rules.required(),
           validatorService.rules.string(),
@@ -77,10 +70,7 @@ describe(DbCreateUserUseCase.name, () => {
       model: sanitizedRequestModel,
       data: { users: [] },
     });
-    expect(userRepository.findBy).toBeCalledWith([
-      { email: sanitizedRequestModel.email },
-      { username: sanitizedRequestModel.username },
-    ]);
+    expect(userRepository.findBy).toBeCalledWith([{ email: sanitizedRequestModel.email }]);
     expect(validatorService.validate).toBeCalledWith({
       schema: {
         name: [],
@@ -88,12 +78,6 @@ describe(DbCreateUserUseCase.name, () => {
           validatorService.rules.unique({
             dataEntity: 'users',
             props: [{ modelKey: 'email', dataKey: 'email' }],
-          }),
-        ],
-        username: [
-          validatorService.rules.unique({
-            dataEntity: 'users',
-            props: [{ modelKey: 'username', dataKey: 'username' }],
           }),
         ],
         password: [],
@@ -176,53 +160,6 @@ describe(DbCreateUserUseCase.name, () => {
         { field: 'email', rule: 'unique', message: 'This value has already been used' },
       ],
     },
-    // username
-    {
-      properties: { username: undefined },
-      validations: [{ field: 'username', rule: 'required', message: 'This value is required' }],
-    },
-    {
-      properties: { username: 1 },
-      validations: [{ field: 'username', rule: 'string', message: 'This value must be a string' }],
-    },
-    {
-      properties: { username: ' InV@L1D n@m3 ' },
-      validations: [
-        {
-          field: 'username',
-          rule: 'regex',
-          message: 'This value must be valid according to the pattern: username',
-        },
-      ],
-    },
-    {
-      properties: { username: 'lower' },
-      validations: [
-        {
-          field: 'username',
-          rule: 'length',
-          message: 'This value length must be beetween 6 and 20',
-        },
-      ],
-    },
-    {
-      properties: {
-        username: 'biggest.name.biggest.name.biggest.name',
-      },
-      validations: [
-        {
-          field: 'username',
-          rule: 'length',
-          message: 'This value length must be beetween 6 and 20',
-        },
-      ],
-    },
-    {
-      properties: { username: 'any.username' },
-      validations: [
-        { field: 'username', rule: 'unique', message: 'This value has already been used' },
-      ],
-    },
     // password
     {
       properties: { password: undefined },
@@ -273,7 +210,6 @@ describe(DbCreateUserUseCase.name, () => {
         const requestModel = {
           name: 'Any Name',
           email: 'any@email.com',
-          username: 'other.username',
           password: 'Password@123',
           ...properties,
         } as UserModel;

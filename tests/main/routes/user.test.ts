@@ -30,8 +30,7 @@ describe('User Routes', () => {
         id: '00000000-0000-4000-8000-000000000001',
         name: 'Any Name',
         email: 'any@email.com',
-        username: 'any.username',
-        password: 'Password@123',
+        password: 'hashed_password',
         createdAt: new Date().toISOString(),
       };
 
@@ -43,7 +42,6 @@ describe('User Routes', () => {
       expect(result.body[0]?.id).toBe(requestModel.id);
       expect(result.body[0]?.name).toBe(requestModel.name);
       expect(result.body[0]?.email).toBe(requestModel.email);
-      expect(result.body[0]?.username).toBe(requestModel.username);
       expect(result.body[0]?.password).toBe(requestModel.password);
       expect(result.body[0]?.createdAt).toBe(requestModel.createdAt);
     });
@@ -77,8 +75,7 @@ describe('User Routes', () => {
         id: '00000000-0000-4000-8000-000000000001',
         name: 'Any Name',
         email: 'any@email.com',
-        username: 'any.username',
-        password: 'Password@123',
+        password: 'hashed_password',
         createdAt: new Date().toISOString(),
       };
 
@@ -90,7 +87,6 @@ describe('User Routes', () => {
       expect(result.body.id).toBe(requestModel.id);
       expect(result.body.name).toBe(requestModel.name);
       expect(result.body.email).toBe(requestModel.email);
-      expect(result.body.username).toBe(requestModel.username);
       expect(result.body.password).toBe(requestModel.password);
       expect(result.body.createdAt).toBe(requestModel.createdAt);
     });
@@ -123,7 +119,6 @@ describe('User Routes', () => {
       const requestModel = {
         name: 'Any Name',
         email: 'any@email.com',
-        username: 'any.username',
         password: 'Password@123',
       };
 
@@ -132,14 +127,13 @@ describe('User Routes', () => {
       expect(result.status).toBe(201);
       expect(result.body.name).toBe(requestModel.name);
       expect(result.body.email).toBe(requestModel.email);
-      expect(result.body.username).toBe(requestModel.username);
-      expect(result.body.password).toBe(requestModel.password);
+      expect(result.body.password).toBeDefined();
       expect(result.body.id).toBeDefined();
       expect(result.body.createdAt).toBeDefined();
     });
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
-      const requestModel = { name: 'Any Name', username: 'any.username', password: 'Password@123' };
+      const requestModel = { name: 'Any Name', password: 'Password@123' };
 
       const result = await request(app).post('/api/users').send(requestModel);
 
@@ -165,7 +159,6 @@ describe('User Routes', () => {
         id: '00000000-0000-4000-8000-000000000001',
         name: 'Any Name',
         email: 'any@email.com',
-        username: 'any.username',
         password: 'Password@123',
         createdAt: new Date().toISOString(),
       };
@@ -178,9 +171,8 @@ describe('User Routes', () => {
       expect(result.body.id).toBe(requestModel.id);
       expect(result.body.name).toBe(requestModel.name);
       expect(result.body.email).toBe(requestModel.email);
-      expect(result.body.username).toBe(requestModel.username);
-      expect(result.body.password).toBe(requestModel.password);
       expect(result.body.createdAt).toBe(requestModel.createdAt);
+      expect(result.body.password).toBeDefined();
       expect(result.body.updatedAt).toBeDefined();
     });
 
@@ -189,7 +181,6 @@ describe('User Routes', () => {
         id: 'invalid_id',
         name: 'Any Name',
         email: 'any@email.com',
-        username: 'any.username',
         password: 'Password@123',
         createdAt: new Date(),
       };
@@ -218,7 +209,6 @@ describe('User Routes', () => {
         id: '00000000-0000-4000-8000-000000000001',
         name: 'Any Name',
         email: 'any@email.com',
-        username: 'any.username',
         password: 'Password@123',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -232,10 +222,9 @@ describe('User Routes', () => {
       expect(result.body.id).toBe(requestModel.id);
       expect(result.body.name).toBe(requestModel.name);
       expect(result.body.email).toBe(requestModel.email);
-      expect(result.body.username).toBe(requestModel.username);
-      expect(result.body.password).toBe(requestModel.password);
       expect(result.body.createdAt).toBe(requestModel.createdAt);
       expect(result.body.updatedAt).toBe(requestModel.updatedAt);
+      expect(result.body.password).toBeDefined();
       expect(result.body.deletedAt).toBeDefined();
     });
 

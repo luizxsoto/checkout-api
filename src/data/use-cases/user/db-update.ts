@@ -25,7 +25,6 @@ export class DbUpdateUserUseCase implements UpdateUserUseCase.UseCase {
     const findedUsers = await this.findByUserRepository.findBy([
       { id: sanitizedRequestModel.id },
       { email: sanitizedRequestModel.email },
-      { username: sanitizedRequestModel.username },
     ]);
 
     await restValidation({ users: [...findedUsers] });
@@ -54,7 +53,6 @@ export class DbUpdateUserUseCase implements UpdateUserUseCase.UseCase {
       id: requestModel.id,
       name: requestModel.name,
       email: requestModel.email,
-      username: requestModel.username,
       password: requestModel.password,
     };
   }
@@ -78,11 +76,6 @@ export class DbUpdateUserUseCase implements UpdateUserUseCase.UseCase {
           this.validator.rules.string(),
           this.validator.rules.regex({ pattern: 'email' }),
           this.validator.rules.length({ minLength: 6, maxLength: 100 }),
-        ],
-        username: [
-          this.validator.rules.string(),
-          this.validator.rules.regex({ pattern: 'username' }),
-          this.validator.rules.length({ minLength: 6, maxLength: 20 }),
         ],
         password: [
           this.validator.rules.string(),
@@ -108,13 +101,6 @@ export class DbUpdateUserUseCase implements UpdateUserUseCase.UseCase {
               dataEntity: 'users',
               ignoreProps: [{ modelKey: 'id', dataKey: 'id' }],
               props: [{ modelKey: 'email', dataKey: 'email' }],
-            }),
-          ],
-          username: [
-            this.validator.rules.unique({
-              dataEntity: 'users',
-              ignoreProps: [{ modelKey: 'id', dataKey: 'id' }],
-              props: [{ modelKey: 'username', dataKey: 'username' }],
             }),
           ],
           password: [],

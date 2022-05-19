@@ -23,7 +23,6 @@ describe(DbListUserUseCase.name, () => {
       order: 'asc' as const,
       name: 'Any Name',
       email: 'any@email.com',
-      username: 'any.username',
       anyWrongProp: 'anyValue',
     };
     const sanitizedRequestModel = { ...requestModel };
@@ -65,11 +64,6 @@ describe(DbListUserUseCase.name, () => {
           validatorService.rules.string(),
           validatorService.rules.regex({ pattern: 'email' }),
           validatorService.rules.length({ minLength: 6, maxLength: 100 }),
-        ],
-        username: [
-          validatorService.rules.string(),
-          validatorService.rules.regex({ pattern: 'username' }),
-          validatorService.rules.length({ minLength: 6, maxLength: 20 }),
         ],
       },
       model: sanitizedRequestModel,
@@ -180,43 +174,6 @@ describe(DbListUserUseCase.name, () => {
       },
       validations: [
         { field: 'email', rule: 'length', message: 'This value length must be beetween 6 and 100' },
-      ],
-    },
-    // username
-    {
-      properties: { username: 1 },
-      validations: [{ field: 'username', rule: 'string', message: 'This value must be a string' }],
-    },
-    {
-      properties: { username: ' InV@L1D n@m3 ' },
-      validations: [
-        {
-          field: 'username',
-          rule: 'regex',
-          message: 'This value must be valid according to the pattern: username',
-        },
-      ],
-    },
-    {
-      properties: { username: 'lower' },
-      validations: [
-        {
-          field: 'username',
-          rule: 'length',
-          message: 'This value length must be beetween 6 and 20',
-        },
-      ],
-    },
-    {
-      properties: {
-        username: 'biggest.name.biggest.name.biggest.name',
-      },
-      validations: [
-        {
-          field: 'username',
-          rule: 'length',
-          message: 'This value length must be beetween 6 and 20',
-        },
       ],
     },
   ])(

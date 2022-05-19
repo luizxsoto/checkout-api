@@ -22,10 +22,7 @@ export class DbCreateUserUseCase implements CreateUserUseCase.UseCase {
 
     const restValidation = await this.validateRequestModel(sanitizedRequestModel);
 
-    const users = await this.findByUserRepository.findBy([
-      { email: sanitizedRequestModel.email },
-      { username: sanitizedRequestModel.username },
-    ]);
+    const users = await this.findByUserRepository.findBy([{ email: sanitizedRequestModel.email }]);
 
     await restValidation({ users });
 
@@ -43,7 +40,6 @@ export class DbCreateUserUseCase implements CreateUserUseCase.UseCase {
     return {
       name: requestModel.name,
       email: requestModel.email,
-      username: requestModel.username,
       password: requestModel.password,
     };
   }
@@ -65,12 +61,6 @@ export class DbCreateUserUseCase implements CreateUserUseCase.UseCase {
           this.validator.rules.regex({ pattern: 'email' }),
           this.validator.rules.length({ minLength: 6, maxLength: 100 }),
         ],
-        username: [
-          this.validator.rules.required(),
-          this.validator.rules.string(),
-          this.validator.rules.regex({ pattern: 'username' }),
-          this.validator.rules.length({ minLength: 6, maxLength: 20 }),
-        ],
         password: [
           this.validator.rules.required(),
           this.validator.rules.string(),
@@ -89,12 +79,6 @@ export class DbCreateUserUseCase implements CreateUserUseCase.UseCase {
             this.validator.rules.unique({
               dataEntity: 'users',
               props: [{ modelKey: 'email', dataKey: 'email' }],
-            }),
-          ],
-          username: [
-            this.validator.rules.unique({
-              dataEntity: 'users',
-              props: [{ modelKey: 'username', dataKey: 'username' }],
             }),
           ],
           password: [],

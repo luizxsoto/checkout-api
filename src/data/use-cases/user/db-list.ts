@@ -37,7 +37,6 @@ export class DbListUserUseCase implements ListUserUseCase.UseCase {
 
     if (requestModel.name) sanitizedRequestModel.name = requestModel.name;
     if (requestModel.email) sanitizedRequestModel.email = requestModel.email;
-    if (requestModel.username) sanitizedRequestModel.username = requestModel.username;
 
     return sanitizedRequestModel;
   }
@@ -68,11 +67,6 @@ export class DbListUserUseCase implements ListUserUseCase.UseCase {
           this.validator.rules.string(),
           this.validator.rules.regex({ pattern: 'email' }),
           this.validator.rules.length({ minLength: 6, maxLength: 100 }),
-        ],
-        username: [
-          this.validator.rules.string(),
-          this.validator.rules.regex({ pattern: 'username' }),
-          this.validator.rules.length({ minLength: 6, maxLength: 20 }),
         ],
       },
       model: requestModel,

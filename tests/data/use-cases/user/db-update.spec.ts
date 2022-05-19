@@ -29,7 +29,6 @@ describe(DbUpdateUserUseCase.name, () => {
       id: validUuidV4,
       name: 'Any Name',
       email: 'any@email.com',
-      username: 'any.username',
       password: 'Password@123',
       anyWrongProp: 'anyValue',
     };
@@ -41,11 +40,7 @@ describe(DbUpdateUserUseCase.name, () => {
       password: 'hashed_password',
     };
     const existsUser = { ...responseModel };
-    const otherUser = {
-      ...responseModel,
-      email: 'valid@email.com',
-      username: 'other.username',
-    };
+    const otherUser = { ...responseModel, email: 'valid@email.com' };
 
     userRepository.findBy.mockReturnValueOnce([existsUser, otherUser]);
     hasherCryptography.hash.mockReturnValueOnce(Promise.resolve('hashed_password'));
@@ -71,11 +66,6 @@ describe(DbUpdateUserUseCase.name, () => {
           validatorService.rules.regex({ pattern: 'email' }),
           validatorService.rules.length({ minLength: 6, maxLength: 100 }),
         ],
-        username: [
-          validatorService.rules.string(),
-          validatorService.rules.regex({ pattern: 'username' }),
-          validatorService.rules.length({ minLength: 6, maxLength: 20 }),
-        ],
         password: [
           validatorService.rules.string(),
           validatorService.rules.regex({ pattern: 'password' }),
@@ -88,7 +78,6 @@ describe(DbUpdateUserUseCase.name, () => {
     expect(userRepository.findBy).toBeCalledWith([
       { id: sanitizedRequestModel.id },
       { email: sanitizedRequestModel.email },
-      { username: sanitizedRequestModel.username },
     ]);
     expect(validatorService.validate).toBeCalledWith({
       schema: {
@@ -104,13 +93,6 @@ describe(DbUpdateUserUseCase.name, () => {
             dataEntity: 'users',
             ignoreProps: [{ modelKey: 'id', dataKey: 'id' }],
             props: [{ modelKey: 'email', dataKey: 'email' }],
-          }),
-        ],
-        username: [
-          validatorService.rules.unique({
-            dataEntity: 'users',
-            ignoreProps: [{ modelKey: 'id', dataKey: 'id' }],
-            props: [{ modelKey: 'username', dataKey: 'username' }],
           }),
         ],
         password: [],
@@ -208,7 +190,6 @@ describe(DbUpdateUserUseCase.name, () => {
           id: validUuidV4,
           name: 'Any Name',
           email: 'any@email.com',
-          username: 'any.username',
           password: 'Password@123',
           ...properties,
         } as UserModel;
@@ -231,13 +212,12 @@ describe(DbUpdateUserUseCase.name, () => {
       id: '00000000-0000-4000-8000-000000000002',
       name: 'Any Name',
       email: 'any@email.com',
-      username: 'any.username',
       password: 'Password@123',
     };
     const responseModel = { ...requestModel, updatedAt: new Date() };
 
     userRepository.findBy.mockReturnValueOnce([
-      { ...responseModel, id: validUuidV4, email: 'other@email.com', username: 'other.username' },
+      { ...responseModel, id: validUuidV4, email: 'other@email.com' },
     ]);
     userRepository.update.mockReturnValueOnce(responseModel);
 
@@ -257,14 +237,13 @@ describe(DbUpdateUserUseCase.name, () => {
       id: validUuidV4,
       name: 'Any Name',
       email: 'any@email.com',
-      username: 'any.username',
       password: 'Password@123',
     };
     const responseModel = { ...requestModel, updatedAt: new Date() };
 
     userRepository.findBy.mockReturnValueOnce([
       { ...responseModel, email: 'other@email.com' },
-      { ...responseModel, id: '00000000-0000-4000-8000-000000000002', username: 'other.username' },
+      { ...responseModel, id: '00000000-0000-4000-8000-000000000002' },
     ]);
     userRepository.update.mockReturnValueOnce(responseModel);
 
@@ -273,33 +252,6 @@ describe(DbUpdateUserUseCase.name, () => {
     expect(sutResult).toStrictEqual(
       new ValidationException([
         { field: 'email', rule: 'unique', message: 'This value has already been used' },
-      ]),
-    );
-  });
-
-  test('Should throw ValidationException if username is already used', async () => {
-    const { userRepository, sut } = makeSut();
-
-    const requestModel = {
-      id: validUuidV4,
-      name: 'Any Name',
-      email: 'any@email.com',
-      username: 'any.username',
-      password: 'Password@123',
-    };
-    const responseModel = { ...requestModel, updatedAt: new Date() };
-
-    userRepository.findBy.mockReturnValueOnce([
-      { ...responseModel, username: 'other.username' },
-      { ...responseModel, id: '00000000-0000-4000-8000-000000000002', email: 'other@email.com' },
-    ]);
-    userRepository.update.mockReturnValueOnce(responseModel);
-
-    const sutResult = await sut.execute(requestModel).catch((e) => e);
-
-    expect(sutResult).toStrictEqual(
-      new ValidationException([
-        { field: 'username', rule: 'unique', message: 'This value has already been used' },
       ]),
     );
   });

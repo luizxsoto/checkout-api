@@ -6,7 +6,6 @@ export function makeUserModelMock(extraData?: Partial<UserModel>) {
     createdAt: new Date(),
     name: 'Any Name',
     email: 'valid@email.com',
-    username: 'any.username',
     password: 'Password@123',
     ...extraData,
   });

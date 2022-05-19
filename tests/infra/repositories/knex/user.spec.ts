@@ -29,7 +29,6 @@ describe(KnexUserRepository.name, () => {
       const requestModel = {
         name: 'Any Name',
         email: 'any@email.com',
-        username: 'any.username',
         password: 'Password@123',
       };
       const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
@@ -48,7 +47,6 @@ describe(KnexUserRepository.name, () => {
       const requestModel = {
         name: 'Any Name',
         email: 'any@email.com',
-        username: 'any.username',
         password: 'Password@123',
       };
       const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
@@ -68,7 +66,6 @@ describe(KnexUserRepository.name, () => {
         id: 'any_id',
         name: 'Any Name',
         email: 'any@email.com',
-        username: 'any.username',
         password: 'Password@123',
         createdAt: new Date(),
       };

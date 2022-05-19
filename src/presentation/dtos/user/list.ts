@@ -6,6 +6,4 @@ export class ListUserDto {
   public name?: string;
 
   public email?: string;
-
-  public username?: string;
 }
