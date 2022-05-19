@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
 import { ValidatorService } from '@/data/contracts/services';
 import { Rules } from '@/data/contracts/services/validator';
@@ -23,6 +24,7 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
       length: (options) => ({ name: 'length', options }),
       unique: (options) => ({ name: 'unique', options }),
       exists: (options) => ({ name: 'exists', options }),
+      custom: (options) => ({ name: 'custom', options }),
     },
     validate: jest
       .fn()
@@ -37,7 +39,7 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
               options: any,
               model: ValidatorService.Params<Model, ValidatorData>['model'],
               data: ValidatorService.Params<Model, ValidatorData>['data'],
-            ) => null | ValidationItem
+            ) => null | ValidationItem | Promise<null | ValidationItem>
           > = {
             required: (key, _options, model) => {
               if (model[key]) return null;
@@ -185,16 +187,25 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
                 message: 'This value was not found',
               };
             },
+            custom: async (key, options: Parameters<Rules['custom']>[0]) => {
+              if (await options.validation()) return null;
+
+              return {
+                field: key as string,
+                rule: options.rule,
+                message: options.message,
+              };
+            },
           };
 
           const validations: ValidationItem[] = [];
 
           await Promise.allSettled(
-            Object.keys(params.schema).map((key) => {
+            Object.keys(params.schema).map(async (key) => {
               const parsedKey = key as keyof Model;
 
               for (const rule of params.schema[parsedKey]) {
-                const validation = validationRules[rule.name](
+                const validation = await validationRules[rule.name](
                   parsedKey,
                   rule.options,
                   params.model,
