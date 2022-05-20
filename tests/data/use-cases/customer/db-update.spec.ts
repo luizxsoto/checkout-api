@@ -1,10 +1,11 @@
 import { DbUpdateCustomerUseCase } from '@/data/use-cases';
-import { CustomerModel } from '@/domain/models';
+import { UpdateCustomerUseCase } from '@/domain/use-cases';
 import { ValidationException } from '@/infra/exceptions';
 import { makeCustomerRepositoryStub } from '@tests/data/stubs/repositories';
 import { makeValidatorServiceStub } from '@tests/data/stubs/services';
 
 const validUuidV4 = '00000000-0000-4000-8000-000000000001';
+const nonExistentId = '00000000-0000-4000-8000-000000000002';
 
 function makeSut() {
   const customerRepository = makeCustomerRepositoryStub();
@@ -107,6 +108,10 @@ describe(DbUpdateCustomerUseCase.name, () => {
         },
       ],
     },
+    {
+      properties: { id: nonExistentId },
+      validations: [{ field: 'id', rule: 'exists', message: 'This value was not found' }],
+    },
     // name
     {
       properties: { name: 1 },
@@ -160,22 +165,25 @@ describe(DbUpdateCustomerUseCase.name, () => {
         { field: 'email', rule: 'length', message: 'This value length must be beetween 6 and 100' },
       ],
     },
+    {
+      properties: { email: 'valid@email.com', id: nonExistentId },
+      validations: [
+        { field: 'id', rule: 'exists', message: 'This value was not found' },
+        { field: 'email', rule: 'unique', message: 'This value has already been used' },
+      ],
+    },
   ])(
     'Should throw ValidationException for every customer invalid prop',
     ({ properties, validations }) => {
       it(JSON.stringify(validations), async () => {
-        const { customerRepository, sut } = makeSut();
+        const { sut } = makeSut();
 
         const requestModel = {
           id: validUuidV4,
           name: 'Any Name',
           email: 'any@email.com',
           ...properties,
-        } as CustomerModel;
-        const responseModel = { ...requestModel, updatedAt: new Date() };
-
-        customerRepository.findBy.mockReturnValueOnce([responseModel]);
-        customerRepository.update.mockReturnValueOnce(responseModel);
+        } as UpdateCustomerUseCase.RequestModel;
 
         const sutResult = await sut.execute(requestModel).catch((e) => e);
 
@@ -183,53 +191,4 @@ describe(DbUpdateCustomerUseCase.name, () => {
       });
     },
   );
-
-  test('Should throw ValidationException if id was not found', async () => {
-    const { customerRepository, sut } = makeSut();
-
-    const requestModel = {
-      id: '00000000-0000-4000-8000-000000000002',
-      name: 'Any Name',
-      email: 'any@email.com',
-    };
-    const responseModel = { ...requestModel, updatedAt: new Date() };
-
-    customerRepository.findBy.mockReturnValueOnce([
-      { ...responseModel, id: validUuidV4, email: 'other@email.com' },
-    ]);
-    customerRepository.update.mockReturnValueOnce(responseModel);
-
-    const sutResult = await sut.execute(requestModel).catch((e) => e);
-
-    expect(sutResult).toStrictEqual(
-      new ValidationException([
-        { field: 'id', rule: 'exists', message: 'This value was not found' },
-      ]),
-    );
-  });
-
-  test('Should throw ValidationException if email is already used', async () => {
-    const { customerRepository, sut } = makeSut();
-
-    const requestModel = {
-      id: validUuidV4,
-      name: 'Any Name',
-      email: 'any@email.com',
-    };
-    const responseModel = { ...requestModel, updatedAt: new Date() };
-
-    customerRepository.findBy.mockReturnValueOnce([
-      { ...responseModel, email: 'other@email.com' },
-      { ...responseModel, id: '00000000-0000-4000-8000-000000000002' },
-    ]);
-    customerRepository.update.mockReturnValueOnce(responseModel);
-
-    const sutResult = await sut.execute(requestModel).catch((e) => e);
-
-    expect(sutResult).toStrictEqual(
-      new ValidationException([
-        { field: 'email', rule: 'unique', message: 'This value has already been used' },
-      ]),
-    );
-  });
 });

@@ -5,6 +5,7 @@ import { makeCustomerRepositoryStub } from '@tests/data/stubs/repositories';
 import { makeValidatorServiceStub } from '@tests/data/stubs/services';
 
 const validUuidV4 = '00000000-0000-4000-8000-000000000001';
+const nonExistentId = '00000000-0000-4000-8000-000000000002';
 
 function makeSut() {
   const customerRepository = makeCustomerRepositoryStub();
@@ -80,16 +81,17 @@ describe(DbRemoveCustomerUseCase.name, () => {
         },
       ],
     },
+    {
+      properties: { id: nonExistentId },
+      validations: [{ field: 'id', rule: 'exists', message: 'This value was not found' }],
+    },
   ])(
     'Should throw ValidationException for every customer invalid prop',
     ({ properties, validations }) => {
       it(JSON.stringify(validations), async () => {
-        const { customerRepository, sut } = makeSut();
+        const { sut } = makeSut();
 
         const requestModel = { ...properties } as RemoveCustomerUseCase.RequestModel;
-        const responseModel = { ...requestModel, deleteddAt: new Date() };
-
-        customerRepository.findBy.mockReturnValueOnce([responseModel]);
 
         const sutResult = await sut.execute(requestModel).catch((e) => e);
 
@@ -97,21 +99,4 @@ describe(DbRemoveCustomerUseCase.name, () => {
       });
     },
   );
-
-  test('Should throw ValidationException if id was not found', async () => {
-    const { customerRepository, sut } = makeSut();
-
-    const requestModel = { id: '00000000-0000-4000-8000-000000000002' };
-    const responseModel = { ...requestModel, deletedAt: new Date() };
-
-    customerRepository.findBy.mockReturnValueOnce([{ ...responseModel, id: validUuidV4 }]);
-
-    const sutResult = await sut.execute(requestModel).catch((e) => e);
-
-    expect(sutResult).toStrictEqual(
-      new ValidationException([
-        { field: 'id', rule: 'exists', message: 'This value was not found' },
-      ]),
-    );
-  });
 });

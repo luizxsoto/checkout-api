@@ -1,5 +1,5 @@
 import { DbCreateCustomerUseCase } from '@/data/use-cases';
-import { CustomerModel } from '@/domain/models';
+import { CreateCustomerUseCase } from '@/domain/use-cases';
 import { ValidationException } from '@/infra/exceptions';
 import { makeCustomerRepositoryStub } from '@tests/data/stubs/repositories';
 import { makeValidatorServiceStub } from '@tests/data/stubs/services';
@@ -135,16 +135,13 @@ describe(DbCreateCustomerUseCase.name, () => {
     'Should throw ValidationException for every customer invalid prop',
     ({ properties, validations }) => {
       it(JSON.stringify(validations), async () => {
-        const { customerRepository, sut } = makeSut();
+        const { sut } = makeSut();
 
         const requestModel = {
           name: 'Any Name',
           email: 'any@email.com',
           ...properties,
-        } as CustomerModel;
-        const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
-
-        customerRepository.create.mockReturnValueOnce(responseModel);
+        } as CreateCustomerUseCase.RequestModel;
 
         const sutResult = await sut.execute(requestModel).catch((e) => e);
 
