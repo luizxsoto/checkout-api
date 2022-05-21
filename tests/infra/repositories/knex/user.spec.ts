@@ -1,5 +1,6 @@
 import { Knex } from 'knex';
 
+import { Roles } from '@/domain/models';
 import { KnexUserRepository } from '@/infra/repositories';
 import { makeUuidServiceStub } from '@tests/data/stubs/services';
 import { makeUserModelMock } from '@tests/domain/mocks/models';
@@ -48,6 +49,7 @@ describe(KnexUserRepository.name, () => {
         name: 'Any Name',
         email: 'any@email.com',
         password: 'Password@123',
+        roles: ['admin'] as Roles[],
       };
       const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
       knex.then.mockImplementationOnce((resolve) => resolve([responseModel]));

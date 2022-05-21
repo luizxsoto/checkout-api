@@ -1,6 +1,6 @@
 import { DbCreateSessionUseCase } from '@/data/use-cases';
 import { CreateSessionUseCase } from '@/domain/use-cases';
-import { ValidationException } from '@/infra/exceptions';
+import { ValidationException } from '@/main/exceptions';
 import {
   makeEncrypterCryptographyStub,
   makeHashCompareCryptographyStub,
@@ -43,14 +43,15 @@ describe(DbCreateSessionUseCase.name, () => {
     const responseModel = {
       ...sanitizedRequestModel,
       id: 'any_id',
+      roles: ['any_role'],
       createdAt: new Date(),
       password: 'hashed_password',
-      accessToken: 'any_accessToken',
+      bearerToken: 'any_bearerToken',
     };
 
     userRepository.findBy.mockReturnValueOnce([responseModel]);
     hashCompareCryptography.compare.mockReturnValueOnce(Promise.resolve(true));
-    encrypterCryptography.encrypt.mockReturnValueOnce(Promise.resolve('any_accessToken'));
+    encrypterCryptography.encrypt.mockReturnValueOnce(Promise.resolve('any_bearerToken'));
 
     const sutResult = await sut.execute(requestModel);
 
@@ -105,7 +106,10 @@ describe(DbCreateSessionUseCase.name, () => {
       model: sanitizedRequestModel,
       data: { users: [] },
     });
-    expect(encrypterCryptography.encrypt).toBeCalledWith(responseModel.id);
+    expect(encrypterCryptography.encrypt).toBeCalledWith({
+      id: responseModel.id,
+      roles: responseModel.roles,
+    });
   });
 
   describe.each([

@@ -1,6 +1,7 @@
 import { DbUpdateUserUseCase } from '@/data/use-cases';
+import { Roles } from '@/domain/models';
 import { UpdateUserUseCase } from '@/domain/use-cases';
-import { ValidationException } from '@/infra/exceptions';
+import { ValidationException } from '@/main/exceptions';
 import { makeHasherCryptographyStub } from '@tests/data/stubs/cryptography';
 import { makeUserRepositoryStub } from '@tests/data/stubs/repositories';
 import { makeValidatorServiceStub } from '@tests/data/stubs/services';
@@ -31,6 +32,7 @@ describe(DbUpdateUserUseCase.name, () => {
       name: 'Any Name',
       email: 'any@email.com',
       password: 'Password@123',
+      roles: ['admin'] as Roles[],
       anyWrongProp: 'anyValue',
     };
     const sanitizedRequestModel = { ...requestModel };
@@ -72,6 +74,7 @@ describe(DbUpdateUserUseCase.name, () => {
           validatorService.rules.regex({ pattern: 'password' }),
           validatorService.rules.length({ minLength: 6, maxLength: 20 }),
         ],
+        roles: [],
       },
       model: sanitizedRequestModel,
       data: { users: [] },
@@ -97,6 +100,7 @@ describe(DbUpdateUserUseCase.name, () => {
           }),
         ],
         password: [],
+        roles: [],
       },
       model: sanitizedRequestModel,
       data: { users: [existsUser, otherUser] },

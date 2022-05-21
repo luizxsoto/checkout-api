@@ -2,7 +2,7 @@ import { CreateSessionController } from '@/presentation/controllers';
 import { makeUserModelMock } from '@tests/domain/mocks/models';
 import { makeCreateSessionUseCaseStub } from '@tests/presentation/stubs/use-cases';
 
-const sessionMock = { ...makeUserModelMock(), accessToken: 'any_accessToken' };
+const sessionMock = { ...makeUserModelMock(), bearerToken: 'any_bearerToken' };
 
 jest.mock('@/presentation/helpers/http-helper', () => ({
   created: jest.fn(() => ({ statusCode: 201, body: sessionMock })),

@@ -1,6 +1,6 @@
 import { DbCreateUserUseCase } from '@/data/use-cases';
-import { UserModel } from '@/domain/models';
-import { ValidationException } from '@/infra/exceptions';
+import { Roles, UserModel } from '@/domain/models';
+import { ValidationException } from '@/main/exceptions';
 import { makeHasherCryptographyStub } from '@tests/data/stubs/cryptography';
 import { makeUserRepositoryStub } from '@tests/data/stubs/repositories';
 import { makeValidatorServiceStub } from '@tests/data/stubs/services';
@@ -27,6 +27,7 @@ describe(DbCreateUserUseCase.name, () => {
       name: 'Any Name',
       email: 'any@email.com',
       password: 'Password@123',
+      roles: ['admin'] as Roles[],
       anyWrongProp: 'anyValue',
     };
     const sanitizedRequestModel = { ...requestModel };
@@ -66,6 +67,7 @@ describe(DbCreateUserUseCase.name, () => {
           validatorService.rules.regex({ pattern: 'password' }),
           validatorService.rules.length({ minLength: 6, maxLength: 20 }),
         ],
+        roles: [],
       },
       model: sanitizedRequestModel,
       data: { users: [] },
@@ -81,6 +83,7 @@ describe(DbCreateUserUseCase.name, () => {
           }),
         ],
         password: [],
+        roles: [],
       },
       model: sanitizedRequestModel,
       data: { users: [otherUser] },

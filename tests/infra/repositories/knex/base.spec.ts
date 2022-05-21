@@ -1,8 +1,8 @@
 import { Knex } from 'knex';
 
 import { BaseModel } from '@/domain/models';
-import { DatabaseException } from '@/infra/exceptions';
 import { KnexBaseRepository } from '@/infra/repositories';
+import { DatabaseException } from '@/main/exceptions';
 import { makeUuidServiceStub } from '@tests/data/stubs/services';
 import { makeBaseModelMock } from '@tests/domain/mocks/models';
 import { makeKnexStub } from '@tests/infra/stubs';

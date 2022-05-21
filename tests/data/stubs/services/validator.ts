@@ -2,7 +2,7 @@
 /* eslint-disable no-restricted-syntax */
 import { ValidatorService } from '@/data/contracts/services';
 import { Rules } from '@/data/contracts/services/validator';
-import { ValidationException, ValidationItem } from '@/infra/exceptions';
+import { ValidationException, ValidationItem } from '@/main/exceptions';
 
 export function makeValidatorServiceStub<Model, ValidatorData extends Record<string, any[]>>() {
   return <

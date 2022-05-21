@@ -4,6 +4,7 @@ import { Express } from 'express';
 import request from 'supertest';
 
 import { knexConfig, setupApp } from '@/main/config';
+import { makeBearerTokenMock } from '@tests/domain/mocks/models';
 
 let app: Express;
 
@@ -31,12 +32,16 @@ describe('User Routes', () => {
         name: 'Any Name',
         email: 'any@email.com',
         password: 'hashed_password',
+        roles: ['admin'],
         createdAt: new Date().toISOString(),
       };
 
       await knexConfig.table('users').insert(requestModel);
 
-      const result = await request(app).get(`/api/users?email=${requestModel.email}`).send();
+      const result = await request(app)
+        .get(`/api/users?email=${requestModel.email}`)
+        .set('authorization', await makeBearerTokenMock())
+        .send();
 
       expect(result.status).toBe(200);
       expect(result.body[0]?.id).toBe(requestModel.id);
@@ -51,7 +56,10 @@ describe('User Routes', () => {
         email: 'invalid_email',
       };
 
-      const result = await request(app).get(`/api/users?email=${requestModel.email}`).send();
+      const result = await request(app)
+        .get(`/api/users?email=${requestModel.email}`)
+        .set('authorization', await makeBearerTokenMock())
+        .send();
 
       expect(result.status).toBe(400);
       expect(result.body).toStrictEqual({
@@ -76,12 +84,16 @@ describe('User Routes', () => {
         name: 'Any Name',
         email: 'any@email.com',
         password: 'hashed_password',
+        roles: ['admin'],
         createdAt: new Date().toISOString(),
       };
 
       await knexConfig.table('users').insert(requestModel);
 
-      const result = await request(app).get(`/api/users/${requestModel.id}`).send();
+      const result = await request(app)
+        .get(`/api/users/${requestModel.id}`)
+        .set('authorization', await makeBearerTokenMock())
+        .send();
 
       expect(result.status).toBe(200);
       expect(result.body.id).toBe(requestModel.id);
@@ -96,7 +108,10 @@ describe('User Routes', () => {
         id: 'invalid_id',
       };
 
-      const result = await request(app).get(`/api/users/${requestModel.id}`).send();
+      const result = await request(app)
+        .get(`/api/users/${requestModel.id}`)
+        .set('authorization', await makeBearerTokenMock())
+        .send();
 
       expect(result.status).toBe(400);
       expect(result.body).toStrictEqual({
@@ -120,9 +135,13 @@ describe('User Routes', () => {
         name: 'Any Name',
         email: 'any@email.com',
         password: 'Password@123',
+        roles: ['admin'],
       };
 
-      const result = await request(app).post('/api/users').send(requestModel);
+      const result = await request(app)
+        .post('/api/users')
+        .set('authorization', await makeBearerTokenMock())
+        .send(requestModel);
 
       expect(result.status).toBe(201);
       expect(result.body.name).toBe(requestModel.name);
@@ -135,7 +154,10 @@ describe('User Routes', () => {
     test('Should return a correct body validation error if some prop is invalid', async () => {
       const requestModel = { name: 'Any Name', password: 'Password@123' };
 
-      const result = await request(app).post('/api/users').send(requestModel);
+      const result = await request(app)
+        .post('/api/users')
+        .set('authorization', await makeBearerTokenMock())
+        .send(requestModel);
 
       expect(result.status).toBe(400);
       expect(result.body).toStrictEqual({
@@ -160,12 +182,16 @@ describe('User Routes', () => {
         name: 'Any Name',
         email: 'any@email.com',
         password: 'Password@123',
+        roles: ['admin'],
         createdAt: new Date().toISOString(),
       };
 
       await knexConfig.table('users').insert(requestModel);
 
-      const result = await request(app).put(`/api/users/${requestModel.id}`).send(requestModel);
+      const result = await request(app)
+        .put(`/api/users/${requestModel.id}`)
+        .set('authorization', await makeBearerTokenMock())
+        .send(requestModel);
 
       expect(result.status).toBe(200);
       expect(result.body.id).toBe(requestModel.id);
@@ -185,7 +211,10 @@ describe('User Routes', () => {
         createdAt: new Date(),
       };
 
-      const result = await request(app).put(`/api/users/${requestModel.id}`).send(requestModel);
+      const result = await request(app)
+        .put(`/api/users/${requestModel.id}`)
+        .set('authorization', await makeBearerTokenMock())
+        .send(requestModel);
 
       expect(result.status).toBe(400);
       expect(result.body).toStrictEqual({
@@ -210,13 +239,17 @@ describe('User Routes', () => {
         name: 'Any Name',
         email: 'any@email.com',
         password: 'Password@123',
+        roles: ['admin'],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
 
       await knexConfig.table('users').insert(requestModel);
 
-      const result = await request(app).delete(`/api/users/${requestModel.id}`).send();
+      const result = await request(app)
+        .delete(`/api/users/${requestModel.id}`)
+        .set('authorization', await makeBearerTokenMock())
+        .send();
 
       expect(result.status).toBe(200);
       expect(result.body.id).toBe(requestModel.id);
@@ -233,7 +266,10 @@ describe('User Routes', () => {
         id: 'invalid_id',
       };
 
-      const result = await request(app).delete(`/api/users/${requestModel.id}`).send();
+      const result = await request(app)
+        .delete(`/api/users/${requestModel.id}`)
+        .set('authorization', await makeBearerTokenMock())
+        .send();
 
       expect(result.status).toBe(400);
       expect(result.body).toStrictEqual({

@@ -1,6 +1,6 @@
 import { DbListUserUseCase } from '@/data/use-cases';
 import { CustomerModel } from '@/domain/models';
-import { ValidationException } from '@/infra/exceptions';
+import { ValidationException } from '@/main/exceptions';
 import { makeUserRepositoryStub } from '@tests/data/stubs/repositories';
 import { makeValidatorServiceStub } from '@tests/data/stubs/services';
 

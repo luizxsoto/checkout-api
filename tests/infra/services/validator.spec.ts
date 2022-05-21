@@ -1,5 +1,5 @@
-import { ValidationException } from '@/infra/exceptions';
 import { VanillaValidatorService } from '@/infra/services/validator';
+import { ValidationException } from '@/main/exceptions';
 
 function makeSut() {
   const sut = new VanillaValidatorService();

@@ -1,6 +1,6 @@
 import { DbRemoveUserUseCase } from '@/data/use-cases';
 import { RemoveUserUseCase } from '@/domain/use-cases';
-import { ValidationException } from '@/infra/exceptions';
+import { ValidationException } from '@/main/exceptions';
 import { makeUserRepositoryStub } from '@tests/data/stubs/repositories';
 import { makeValidatorServiceStub } from '@tests/data/stubs/services';
 

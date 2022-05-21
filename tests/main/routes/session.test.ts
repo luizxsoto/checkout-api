@@ -34,6 +34,7 @@ describe('Session Routes', () => {
         name: 'Any Name',
         email: 'any@email.com',
         password,
+        roles: ['admin'],
         createdAt: new Date().toISOString(),
       };
 
@@ -47,7 +48,7 @@ describe('Session Routes', () => {
       expect(result.body.email).toBe(requestModel.email);
       expect(result.body.password).toBe(hashedPassword);
       expect(result.body.createdAt).toBe(requestModel.createdAt);
-      expect(result.body.accessToken).toBeDefined();
+      expect(result.body.bearerToken).toBeDefined();
     });
 
     test('Should return a correct body validation error if some prop is invalid', async () => {

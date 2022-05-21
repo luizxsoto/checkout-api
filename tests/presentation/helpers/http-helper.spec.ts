@@ -1,11 +1,6 @@
 import { InternalException } from '@/main/exceptions';
 import { created, notFound, ok, serverError } from '@/presentation/helpers';
 
-jest.mock('@/main/exceptions/application', () => ({
-  ErrorCodes: { INTERNAL: 500 },
-  ApplicationException: jest.fn(() => ({ code: 500 })),
-}));
-
 describe('Http Helpers', () => {
   test('Should return correct values for ok()', () => {
     const body = { anyProp: 'anyValue' };

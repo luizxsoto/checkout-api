@@ -56,9 +56,10 @@ describe('Express adaptRoute', () => {
       throw new Error();
     });
 
-    await sut(request as unknown as Request, response as unknown as Response);
+    const sutResult = await sut(request as unknown as Request, response as unknown as Response);
 
     expect(response.status).toBeCalledWith(500);
     expect(response.json).toBeCalledWith(mockErrorBody);
+    expect(sutResult).toBeUndefined();
   });
 });
