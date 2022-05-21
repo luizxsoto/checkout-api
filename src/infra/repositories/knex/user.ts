@@ -37,7 +37,12 @@ export class KnexUserRepository extends KnexBaseRepository implements Repositori
   public async create(
     requestModel: CreateUserRepository.RequestModel,
   ): Promise<CreateUserRepository.ResponseModel> {
-    return this.baseCreate<UserModel>(requestModel);
+    const result = await this.baseCreate<Omit<UserModel, 'roles'> & { roles: string }>({
+      ...requestModel,
+      roles: JSON.stringify(requestModel.roles),
+    });
+
+    return { ...result, roles: requestModel.roles };
   }
 
   public async update(

@@ -1,14 +1,10 @@
 import { envConfig } from '@/main/config';
-
-export enum ErrorCodes {
-  INTERNAL = 500,
-  BAD_REQUEST = 400,
-}
+import { StatusCodes } from '@/main/constants';
 
 export class ApplicationException {
   public name = 'ApplicationException';
 
-  public code = ErrorCodes.INTERNAL;
+  public code = StatusCodes.INTERNAL;
 
   public message = 'Something went wrong';
 

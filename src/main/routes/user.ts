@@ -8,11 +8,12 @@ import {
   makeShowUserController,
   makeUpdateUserController,
 } from '@/main/factories/controllers';
+import { auth } from '@/main/middlewares';
 
 export function userRoutes(router: Router): void {
-  router.get('/users', adaptRoute(makeListUserController));
-  router.get('/users/:id', adaptRoute(makeShowUserController));
-  router.post('/users', adaptRoute(makeCreateUserController));
-  router.put('/users/:id', adaptRoute(makeUpdateUserController));
-  router.delete('/users/:id', adaptRoute(makeRemoveUserController));
+  router.get('/users', auth(['admin']), adaptRoute(makeListUserController));
+  router.get('/users/:id', auth(['admin']), adaptRoute(makeShowUserController));
+  router.post('/users', auth(['admin']), adaptRoute(makeCreateUserController));
+  router.put('/users/:id', auth(['admin']), adaptRoute(makeUpdateUserController));
+  router.delete('/users/:id', auth(['admin']), adaptRoute(makeRemoveUserController));
 }

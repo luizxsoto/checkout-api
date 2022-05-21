@@ -8,11 +8,24 @@ import {
   makeShowCustomerController,
   makeUpdateCustomerController,
 } from '@/main/factories/controllers';
+import { auth } from '@/main/middlewares';
 
 export function customerRoutes(router: Router): void {
-  router.get('/customers', adaptRoute(makeListCustomerController));
-  router.get('/customers/:id', adaptRoute(makeShowCustomerController));
-  router.post('/customers', adaptRoute(makeCreateCustomerController));
-  router.put('/customers/:id', adaptRoute(makeUpdateCustomerController));
-  router.delete('/customers/:id', adaptRoute(makeRemoveCustomerController));
+  router.get('/customers', auth(['admin', 'moderator']), adaptRoute(makeListCustomerController));
+  router.get(
+    '/customers/:id',
+    auth(['admin', 'moderator']),
+    adaptRoute(makeShowCustomerController),
+  );
+  router.post('/customers', auth(['admin', 'moderator']), adaptRoute(makeCreateCustomerController));
+  router.put(
+    '/customers/:id',
+    auth(['admin', 'moderator']),
+    adaptRoute(makeUpdateCustomerController),
+  );
+  router.delete(
+    '/customers/:id',
+    auth(['admin', 'moderator']),
+    adaptRoute(makeRemoveCustomerController),
+  );
 }

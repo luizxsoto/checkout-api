@@ -54,6 +54,7 @@ export class DbUpdateUserUseCase implements UpdateUserUseCase.UseCase {
       name: requestModel.name,
       email: requestModel.email,
       password: requestModel.password,
+      roles: requestModel.roles,
     };
   }
 
@@ -82,6 +83,7 @@ export class DbUpdateUserUseCase implements UpdateUserUseCase.UseCase {
           this.validator.rules.regex({ pattern: 'password' }),
           this.validator.rules.length({ minLength: 6, maxLength: 20 }),
         ],
+        roles: [],
       },
       model: requestModel,
       data: { users: [] },
@@ -104,6 +106,7 @@ export class DbUpdateUserUseCase implements UpdateUserUseCase.UseCase {
             }),
           ],
           password: [],
+          roles: [],
         },
         model: requestModel,
         data: validationData,

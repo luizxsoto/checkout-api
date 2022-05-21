@@ -3,7 +3,7 @@ import { Knex } from 'knex';
 import { minPerPage } from '@/data/constants';
 import { GenerateUniqueIDService } from '@/data/contracts/services';
 import { BaseModel } from '@/domain/models';
-import { DatabaseException } from '@/infra/exceptions';
+import { DatabaseException } from '@/main/exceptions';
 
 export abstract class KnexBaseRepository {
   constructor(

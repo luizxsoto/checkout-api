@@ -30,9 +30,12 @@ export class DbCreateSessionUseCase implements CreateSessionUseCase.UseCase {
 
     await passwordValidation(findedUser);
 
-    const accessToken = await this.encrypter.encrypt(findedUser.id);
+    const bearerToken = await this.encrypter.encrypt({
+      id: findedUser.id,
+      roles: findedUser.roles,
+    });
 
-    return { ...findedUser, accessToken };
+    return { ...findedUser, bearerToken };
   }
 
   private sanitizeRequestModel(

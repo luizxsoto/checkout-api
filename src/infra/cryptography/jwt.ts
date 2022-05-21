@@ -1,11 +1,15 @@
 import jwt from 'jsonwebtoken';
 
-import { Encrypter } from '@/data/contracts/cryptography';
+import { Decrypter, Encrypter } from '@/data/contracts/cryptography';
 
-export class JwtCryptography implements Encrypter {
+export class JwtCryptography implements Encrypter, Decrypter {
   constructor(private readonly secret: string) {}
 
-  public async encrypt(plaintext: string): Promise<string> {
-    return jwt.sign({ id: plaintext }, this.secret);
+  public async encrypt(params: Record<string, unknown>): Promise<string> {
+    return jwt.sign(params, this.secret);
+  }
+
+  public async decrypt<ResponseT>(ciphertext: string): Promise<ResponseT> {
+    return jwt.verify(ciphertext, this.secret) as ResponseT;
   }
 }

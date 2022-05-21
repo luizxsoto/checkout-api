@@ -15,11 +15,11 @@ export function makeDbCreateSessionUseCase(): CreateSessionUseCase.UseCase {
   >();
   const salt = 12;
   const bcryptCryptography = new BcryptCryptography(salt);
-  const jwtAdapter = new JwtCryptography(envConfig.jwtSecret);
+  const jwtCryptography = new JwtCryptography(envConfig.jwtSecret);
   const useCase = new DbCreateSessionUseCase(
     repository,
     bcryptCryptography,
-    jwtAdapter,
+    jwtCryptography,
     validatorService,
   );
 

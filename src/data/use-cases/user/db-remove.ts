@@ -20,13 +20,13 @@ export class DbRemoveUserUseCase implements RemoveUserUseCase.UseCase {
 
     const restValidation = await this.validateRequestModel(sanitizedRequestModel);
 
-    const usersById = await this.findByUserRepository.findBy([{ id: sanitizedRequestModel.id }]);
+    const users = await this.findByUserRepository.findBy([{ id: sanitizedRequestModel.id }]);
 
-    await restValidation({ users: usersById });
+    await restValidation({ users });
 
     const repositoryResult = await this.removeUserRepository.remove(sanitizedRequestModel);
 
-    return { ...usersById[0], ...sanitizedRequestModel, ...repositoryResult };
+    return { ...users[0], ...sanitizedRequestModel, ...repositoryResult };
   }
 
   private sanitizeRequestModel(

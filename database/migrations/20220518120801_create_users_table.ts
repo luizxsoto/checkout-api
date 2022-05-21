@@ -11,6 +11,7 @@ export async function up(knex: Knex): Promise<void> {
       table.string('name', 100).notNullable();
       table.string('email', 100).notNullable();
       table.string('password', 100).notNullable();
+      table.jsonb('roles').notNullable();
     },
   });
 }

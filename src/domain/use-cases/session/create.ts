@@ -5,7 +5,7 @@ export type RequestModel = {
   password: string;
 };
 
-export type ResponseModel = CustomerModel & { accessToken: string };
+export type ResponseModel = CustomerModel & { bearerToken: string };
 
 export interface UseCase {
   execute: (requestModel: RequestModel) => Promise<ResponseModel>;
