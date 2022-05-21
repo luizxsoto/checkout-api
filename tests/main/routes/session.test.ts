@@ -30,7 +30,7 @@ describe('Session Routes', () => {
       const password = 'Password@123';
       const hashedPassword = await hash(password, 12);
       const requestModel = {
-        id: '00000000-0000-4000-8000-000000000001',
+        id: '10000000-0000-4000-8000-000000000001',
         name: 'Any Name',
         email: 'any@email.com',
         password,

@@ -28,7 +28,7 @@ describe('Customer Routes', () => {
   describe('list()', () => {
     test('Should list customer and return correct values', async () => {
       const requestModel = {
-        id: '00000000-0000-4000-8000-000000000001',
+        id: '10000000-0000-4000-8000-000000000001',
         name: 'Any Name',
         email: 'any@email.com',
         createdAt: new Date().toISOString(),
@@ -77,7 +77,7 @@ describe('Customer Routes', () => {
   describe('show()', () => {
     test('Should show customer and return correct values', async () => {
       const requestModel = {
-        id: '00000000-0000-4000-8000-000000000001',
+        id: '10000000-0000-4000-8000-000000000001',
         name: 'Any Name',
         email: 'any@email.com',
         createdAt: new Date().toISOString(),
@@ -166,7 +166,7 @@ describe('Customer Routes', () => {
   describe('update()', () => {
     test('Should update customer and return correct values', async () => {
       const requestModel = {
-        id: '00000000-0000-4000-8000-000000000001',
+        id: '10000000-0000-4000-8000-000000000001',
         name: 'Any Name',
         email: 'any@email.com',
         createdAt: new Date().toISOString(),
@@ -219,7 +219,7 @@ describe('Customer Routes', () => {
   describe('remove()', () => {
     test('Should remove customer and return correct values', async () => {
       const requestModel = {
-        id: '00000000-0000-4000-8000-000000000001',
+        id: '10000000-0000-4000-8000-000000000001',
         name: 'Any Name',
         email: 'any@email.com',
         createdAt: new Date().toISOString(),

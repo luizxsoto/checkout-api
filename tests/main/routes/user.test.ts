@@ -28,7 +28,7 @@ describe('User Routes', () => {
   describe('list()', () => {
     test('Should list user and return correct values', async () => {
       const requestModel = {
-        id: '00000000-0000-4000-8000-000000000001',
+        id: '10000000-0000-4000-8000-000000000001',
         name: 'Any Name',
         email: 'any@email.com',
         password: 'hashed_password',
@@ -80,7 +80,7 @@ describe('User Routes', () => {
   describe('show()', () => {
     test('Should show user and return correct values', async () => {
       const requestModel = {
-        id: '00000000-0000-4000-8000-000000000001',
+        id: '10000000-0000-4000-8000-000000000001',
         name: 'Any Name',
         email: 'any@email.com',
         password: 'hashed_password',
@@ -178,7 +178,7 @@ describe('User Routes', () => {
   describe('update()', () => {
     test('Should update user and return correct values', async () => {
       const requestModel = {
-        id: '00000000-0000-4000-8000-000000000001',
+        id: '10000000-0000-4000-8000-000000000001',
         name: 'Any Name',
         email: 'any@email.com',
         password: 'Password@123',
@@ -235,7 +235,7 @@ describe('User Routes', () => {
   describe('remove()', () => {
     test('Should remove user and return correct values', async () => {
       const requestModel = {
-        id: '00000000-0000-4000-8000-000000000001',
+        id: '10000000-0000-4000-8000-000000000001',
         name: 'Any Name',
         email: 'any@email.com',
         password: 'Password@123',
