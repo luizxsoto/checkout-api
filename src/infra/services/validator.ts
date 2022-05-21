@@ -70,7 +70,7 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
       };
     },
     string: (key, _options, model) => {
-      if (!model[key] || typeof model[key] === 'string') return null;
+      if (model[key] === undefined || typeof model[key] === 'string') return null;
 
       return {
         field: key as string,
@@ -79,7 +79,8 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
       };
     },
     in: (key, options: Parameters<Rules['in']>[0], model) => {
-      if (!model[key] || options.values.includes(model[key] as unknown as string)) return null;
+      if (model[key] === undefined || options.values.includes(model[key] as unknown as string))
+        return null;
 
       return {
         field: key as string,
@@ -88,7 +89,7 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
       };
     },
     number: (key, _options, model) => {
-      if (!model[key] || !Number.isNaN(Number(model[key]))) return null;
+      if (model[key] === undefined || !Number.isNaN(Number(model[key]))) return null;
 
       return {
         field: key as string,
@@ -117,7 +118,7 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
       };
     },
     regex: (key, options: Parameters<Rules['regex']>[0], model) => {
-      if (!model[key]) return null;
+      if (model[key] === undefined) return null;
 
       const regexDict = {
         custom: options.customPattern ?? /^\w$/,
@@ -142,7 +143,7 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
       return null;
     },
     length: (key, options: Parameters<Rules['length']>[0], model) => {
-      if (!model[key]) return null;
+      if (model[key] === undefined) return null;
 
       if (
         String(model[key]).length < options.minLength ||
@@ -158,7 +159,7 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
       return null;
     },
     unique: (key, options: Parameters<Rules['unique']>[0], model, data) => {
-      if (!model[key]) return null;
+      if (model[key] === undefined) return null;
 
       const registerFinded = data[options.dataEntity].find((dataItem) =>
         options.props.every(
@@ -182,7 +183,7 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
       };
     },
     exists: (key, options: Parameters<Rules['exists']>[0], model, data) => {
-      if (!model[key]) return null;
+      if (model[key] === undefined) return null;
 
       const registerFinded = data[options.dataEntity].find((dataItem) =>
         options.props.every(

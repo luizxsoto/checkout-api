@@ -51,7 +51,7 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
               };
             },
             string: (key, _options, model) => {
-              if (!model[key] || typeof model[key] === 'string') return null;
+              if (model[key] === undefined || typeof model[key] === 'string') return null;
 
               return {
                 field: key as string,
@@ -60,7 +60,10 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
               };
             },
             in: (key, options: Parameters<Rules['in']>[0], model) => {
-              if (!model[key] || options.values.includes(model[key] as unknown as string))
+              if (
+                model[key] === undefined ||
+                options.values.includes(model[key] as unknown as string)
+              )
                 return null;
 
               return {
@@ -70,7 +73,7 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
               };
             },
             number: (key, _options, model) => {
-              if (!model[key] || !Number.isNaN(Number(model[key]))) return null;
+              if (model[key] === undefined || !Number.isNaN(Number(model[key]))) return null;
 
               return {
                 field: key as string,
@@ -105,7 +108,7 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
               };
             },
             regex: (key, options: Parameters<Rules['regex']>[0], model) => {
-              if (!model[key]) return null;
+              if (model[key] === undefined) return null;
 
               const regexDict = {
                 custom: options.customPattern ?? /^\w$/,
@@ -130,7 +133,7 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
               return null;
             },
             length: (key, options: Parameters<Rules['length']>[0], model) => {
-              if (!model[key]) return null;
+              if (model[key] === undefined) return null;
 
               if (
                 String(model[key]).length < options.minLength ||
@@ -146,7 +149,7 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
               return null;
             },
             unique: (key, options: Parameters<Rules['unique']>[0], model, data) => {
-              if (!model[key]) return null;
+              if (model[key] === undefined) return null;
 
               const registerFinded = data[options.dataEntity].find((dataItem) =>
                 options.props.every(
@@ -171,7 +174,7 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
               };
             },
             exists: (key, options: Parameters<Rules['exists']>[0], model, data) => {
-              if (!model[key]) return null;
+              if (model[key] === undefined) return null;
 
               const registerFinded = data[options.dataEntity].find((dataItem) =>
                 options.props.every(
