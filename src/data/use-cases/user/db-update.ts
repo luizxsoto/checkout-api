@@ -22,10 +22,11 @@ export class DbUpdateUserUseCase implements UpdateUserUseCase.UseCase {
 
     const restValidation = await this.validateRequestModel(sanitizedRequestModel);
 
-    const findedUsers = await this.findByUserRepository.findBy([
-      { id: sanitizedRequestModel.id },
-      { email: sanitizedRequestModel.email },
-    ]);
+    const filters: Partial<UserModel>[] = [{ id: sanitizedRequestModel.id }];
+
+    if (sanitizedRequestModel.email) filters.push({ email: sanitizedRequestModel.email });
+
+    const findedUsers = await this.findByUserRepository.findBy(filters);
 
     await restValidation({ users: [...findedUsers] });
 
