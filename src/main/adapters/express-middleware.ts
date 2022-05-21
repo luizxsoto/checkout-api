@@ -7,7 +7,7 @@ export function adaptMiddleware(middleware: Middleware) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const request = {
-        ...(req.headers || {}),
+        ...(req.headers ?? {}),
         bearerToken: req.headers.authorization?.replace('Bearer ', ''),
       };
 

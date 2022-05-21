@@ -5,7 +5,7 @@ export type RequestModel = {
   perPage?: number;
   orderBy?: string;
   order?: string;
-} & Partial<UserModel>;
+} & Partial<Omit<UserModel, 'roles'>>;
 
 export type ResponseModel = UserModel[];
 

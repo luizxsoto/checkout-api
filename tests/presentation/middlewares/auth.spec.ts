@@ -5,7 +5,7 @@ import { makeDecrypterCryptographyStub } from '@tests/presentation/stubs/cryptog
 
 function makeSut(roles?: Roles[]) {
   const decrypter = makeDecrypterCryptographyStub();
-  const sut = new AuthMiddleware(decrypter, roles || []);
+  const sut = new AuthMiddleware(decrypter, roles ?? []);
 
   return { decrypter, sut };
 }

@@ -46,9 +46,15 @@ export class KnexUserRepository extends KnexBaseRepository implements Repositori
   }
 
   public async update(
-    ...requestModel: UpdateUserRepository.RequestModel
+    where: Partial<Omit<UserModel, 'roles'>>,
+    model: Partial<Omit<UserModel, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>>,
   ): Promise<UpdateUserRepository.ResponseModel> {
-    return this.baseUpdate<UserModel>(...requestModel);
+    const result = await this.baseUpdate<Omit<UserModel, 'roles'> & { roles: string }>(where, {
+      ...model,
+      roles: model.roles && JSON.stringify(model.roles),
+    });
+
+    return { ...result, roles: JSON.parse(JSON.stringify(model.roles ?? result.roles)) };
   }
 
   public async remove(
