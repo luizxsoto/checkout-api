@@ -12,11 +12,11 @@ export abstract class KnexBaseRepository {
     protected readonly tableName: string,
   ) {}
 
-  protected async baseRun<T>(query: Knex.QueryBuilder): Promise<T> {
+  protected async baseRun<ResponseT>(query: Knex.QueryBuilder): Promise<ResponseT> {
     let queryStr = '';
     try {
       queryStr = query.toQuery();
-      return (await query) as T;
+      return (await query) as ResponseT;
     } catch (err) {
       console.error('[KnexBaseRepository.run]', err, queryStr);
       throw new DatabaseException(err, queryStr);
@@ -34,7 +34,7 @@ export abstract class KnexBaseRepository {
         Object.keys(requestModelItem).forEach((requestModelKey) =>
           builder.orWhere(
             requestModelKey,
-            requestModelItem[requestModelKey as keyof Partial<Model>] as unknown as string,
+            requestModelItem[requestModelKey as keyof Partial<Model>] as any,
           ),
         );
       });

@@ -54,7 +54,7 @@ export class KnexUserRepository extends KnexBaseRepository implements Repositori
       roles: model.roles && JSON.stringify(model.roles),
     });
 
-    return { ...result, roles: JSON.parse(JSON.stringify(model.roles ?? result.roles)) };
+    return result as unknown as UpdateUserRepository.ResponseModel;
   }
 
   public async remove(
