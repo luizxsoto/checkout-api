@@ -32,11 +32,16 @@ describe('Express adaptRoute', () => {
       status: jest.fn().mockReturnThis(),
       json: jest.fn().mockReturnThis(),
     };
+    const next = jest.fn();
     handle.mockImplementationOnce(() =>
       Promise.resolve({ statusCode: 200, body: { id: 'any_id' } }),
     );
 
-    const sutResult = await sut(request as unknown as Request, response as unknown as Response);
+    const sutResult = await sut(
+      request as unknown as Request,
+      response as unknown as Response,
+      next,
+    );
 
     expect(handle).toBeCalledWith({ ...request.body, ...request.params, ...request.query });
     expect(response.status).toBeCalledWith(200);
@@ -52,14 +57,19 @@ describe('Express adaptRoute', () => {
       status: jest.fn().mockReturnThis(),
       json: jest.fn().mockReturnThis(),
     };
+    const next = jest.fn();
+    const error = new Error();
     handle.mockImplementationOnce(() => {
-      throw new Error();
+      throw error;
     });
 
-    const sutResult = await sut(request as unknown as Request, response as unknown as Response);
+    const sutResult = await sut(
+      request as unknown as Request,
+      response as unknown as Response,
+      next,
+    );
 
-    expect(response.status).toBeCalledWith(500);
-    expect(response.json).toBeCalledWith(mockErrorBody);
+    expect(next).toBeCalledWith(error);
     expect(sutResult).toBeUndefined();
   });
 });

@@ -52,14 +52,17 @@ describe('Express adaptMiddleware', () => {
   test('Should not throw if middleware throws', async () => {
     const { handle, sut } = makeSut();
 
-    const request = {};
+    const request = {
+      headers: { headersProp: 'any_headers', authorization: 'Bearer any_bearerToken' },
+    };
     const response = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn().mockReturnThis(),
     };
     const next = jest.fn();
+    const error = new Error();
     handle.mockImplementationOnce(() => {
-      throw new Error();
+      throw error;
     });
 
     const sutResult = await sut(
@@ -68,8 +71,7 @@ describe('Express adaptMiddleware', () => {
       next,
     );
 
-    expect(response.status).toBeCalledWith(500);
-    expect(response.json).toBeCalledWith(mockErrorBody);
+    expect(next).toBeCalledWith(error);
     expect(sutResult).toBeUndefined();
   });
 });
