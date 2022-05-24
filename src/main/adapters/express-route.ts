@@ -1,10 +1,9 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 import { Controller } from '@/presentation/contracts';
-import { serverError } from '@/presentation/helpers';
 
 export function adaptRoute(makeController: () => Controller) {
-  return async (req: Request, res: Response) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const request = {
         ...(req.body ?? {}),
@@ -17,10 +16,7 @@ export function adaptRoute(makeController: () => Controller) {
 
       res.status(httpResponse.statusCode).json(httpResponse.body);
     } catch (err) {
-      console.error('[Express.adaptRoute]', err);
-      const httpResponse = serverError(err);
-
-      res.status(httpResponse.statusCode).json(httpResponse.body);
+      next(err);
     }
   };
 }
