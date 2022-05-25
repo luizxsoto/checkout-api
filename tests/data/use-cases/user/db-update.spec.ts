@@ -1,5 +1,4 @@
 import { DbUpdateUserUseCase } from '@/data/use-cases';
-import { Roles } from '@/domain/models';
 import { UpdateUserUseCase } from '@/domain/use-cases';
 import { ValidationException } from '@/main/exceptions';
 import { makeHasherCryptographyStub } from '@tests/data/stubs/cryptography';
@@ -32,7 +31,7 @@ describe(DbUpdateUserUseCase.name, () => {
       name: 'Any Name',
       email: 'any@email.com',
       password: 'Password@123',
-      roles: ['admin'] as Roles[],
+      roles: [],
       anyWrongProp: 'anyValue',
     };
     const sanitizedRequestModel = { ...requestModel };
@@ -74,7 +73,14 @@ describe(DbUpdateUserUseCase.name, () => {
           validatorService.rules.regex({ pattern: 'password' }),
           validatorService.rules.length({ minLength: 6, maxLength: 20 }),
         ],
-        roles: [],
+        roles: [
+          validatorService.rules.array({
+            rules: [
+              validatorService.rules.string(),
+              validatorService.rules.in({ values: ['admin', 'moderator'] }),
+            ],
+          }),
+        ],
       },
       model: sanitizedRequestModel,
       data: { users: [] },
@@ -196,6 +202,62 @@ describe(DbUpdateUserUseCase.name, () => {
         { field: 'email', rule: 'unique', message: 'This value has already been used' },
       ],
     },
+    // password
+    {
+      properties: { password: 1 },
+      validations: [{ field: 'password', rule: 'string', message: 'This value must be a string' }],
+    },
+    {
+      properties: { password: ' InV@L1D n@m3 ' },
+      validations: [
+        {
+          field: 'password',
+          rule: 'regex',
+          message: 'This value must be valid according to the pattern: password',
+        },
+      ],
+    },
+    {
+      properties: { password: 'L0we!' },
+      validations: [
+        {
+          field: 'password',
+          rule: 'length',
+          message: 'This value length must be beetween 6 and 20',
+        },
+      ],
+    },
+    {
+      properties: {
+        password: 'Biggest.Password.Biggest.Password.Biggest.Password@1',
+      },
+      validations: [
+        {
+          field: 'password',
+          rule: 'length',
+          message: 'This value length must be beetween 6 and 20',
+        },
+      ],
+    },
+    // roles
+    {
+      properties: { roles: 'invalid_array' },
+      validations: [{ field: 'roles', rule: 'array', message: 'This value must be an array' }],
+    },
+    {
+      properties: { roles: [1, 2] },
+      validations: [
+        { field: 'roles.0', rule: 'string', message: 'This value must be a string' },
+        { field: 'roles.1', rule: 'string', message: 'This value must be a string' },
+      ],
+    },
+    {
+      properties: { roles: ['invalid_role', 'invalid_role'] },
+      validations: [
+        { field: 'roles.0', rule: 'in', message: 'This value must be in: admin, moderator' },
+        { field: 'roles.1', rule: 'in', message: 'This value must be in: admin, moderator' },
+      ],
+    },
   ])(
     'Should throw ValidationException for every user invalid prop',
     ({ properties, validations }) => {
@@ -207,6 +269,7 @@ describe(DbUpdateUserUseCase.name, () => {
           name: 'Any Name',
           email: 'any@email.com',
           password: 'Password@123',
+          roles: [],
           ...properties,
         } as UpdateUserUseCase.RequestModel;
 

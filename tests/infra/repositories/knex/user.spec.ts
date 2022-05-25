@@ -69,7 +69,7 @@ describe(KnexUserRepository.name, () => {
         name: 'Any Name',
         email: 'any@email.com',
         password: 'Password@123',
-        roles: ['admin'] as Roles[],
+        roles: [],
         createdAt: new Date(),
       };
       const responseModel = { ...requestModel, updatedAt: new Date() };

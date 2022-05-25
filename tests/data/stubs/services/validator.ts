@@ -1,8 +1,36 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
+import lodashGet from 'lodash.get';
+
 import { ValidatorService } from '@/data/contracts/services';
-import { Rules } from '@/data/contracts/services/validator';
+import { Rule, Rules } from '@/data/contracts/services/validator';
 import { ValidationException, ValidationItem } from '@/main/exceptions';
+
+async function performValidation<Model, ValidatorData extends Record<string, any[]>>(
+  rules: Rule[],
+  key: keyof Model,
+  model: Model,
+  data: ValidatorData,
+  validations: ValidationItem[],
+  validationRules: Record<
+    keyof ValidatorService.Rules,
+    (
+      key: keyof Model,
+      options: any,
+      model: ValidatorService.Params<Model, ValidatorData>['model'],
+      data: ValidatorService.Params<Model, ValidatorData>['data'],
+    ) => null | ValidationItem | Promise<null | ValidationItem>
+  >,
+) {
+  for (const rule of rules) {
+    const validation = await validationRules[rule.name](key, rule.options, model, data);
+
+    if (validation) {
+      validations.push(validation);
+      break;
+    }
+  }
+}
 
 export function makeValidatorServiceStub<Model, ValidatorData extends Record<string, any[]>>() {
   return <
@@ -25,6 +53,7 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
       unique: (options) => ({ name: 'unique', options }),
       exists: (options) => ({ name: 'exists', options }),
       custom: (options) => ({ name: 'custom', options }),
+      array: (options) => ({ name: 'array', options }),
     },
     validate: jest
       .fn()
@@ -32,6 +61,8 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
         async (
           params: ValidatorService.Params<Model, ValidatorData>,
         ): Promise<ValidatorService.Result> => {
+          const validations: ValidationItem[] = [];
+
           const validationRules: Record<
             keyof ValidatorService.Rules,
             (
@@ -42,7 +73,8 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
             ) => null | ValidationItem | Promise<null | ValidationItem>
           > = {
             required: (key, _options, model) => {
-              if (model[key]) return null;
+              const value = lodashGet(model, key);
+              if (value !== null && value !== undefined) return null;
 
               return {
                 field: key as string,
@@ -51,7 +83,8 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
               };
             },
             string: (key, _options, model) => {
-              if (model[key] === undefined || typeof model[key] === 'string') return null;
+              const value = lodashGet(model, key);
+              if (value === undefined || typeof value === 'string') return null;
 
               return {
                 field: key as string,
@@ -60,10 +93,8 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
               };
             },
             in: (key, options: Parameters<Rules['in']>[0], model) => {
-              if (
-                model[key] === undefined ||
-                options.values.includes(model[key] as unknown as string)
-              )
+              const value = lodashGet(model, key);
+              if (value === undefined || options.values.includes(value as unknown as string))
                 return null;
 
               return {
@@ -73,7 +104,8 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
               };
             },
             number: (key, _options, model) => {
-              if (model[key] === undefined || !Number.isNaN(Number(model[key]))) return null;
+              const value = lodashGet(model, key);
+              if (value === undefined || !Number.isNaN(Number(value))) return null;
 
               return {
                 field: key as string,
@@ -82,10 +114,8 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
               };
             },
             min: (key, options: Parameters<Rules['min']>[0], model) => {
-              if (
-                Number.isNaN(Number(model[key])) ||
-                (model[key] as unknown as number) >= options.value
-              )
+              const value = lodashGet(model, key);
+              if (Number.isNaN(Number(value)) || (value as unknown as number) >= options.value)
                 return null;
 
               return {
@@ -95,10 +125,8 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
               };
             },
             max: (key, options: Parameters<Rules['max']>[0], model) => {
-              if (
-                Number.isNaN(Number(model[key])) ||
-                (model[key] as unknown as number) <= options.value
-              )
+              const value = lodashGet(model, key);
+              if (Number.isNaN(Number(value)) || (value as unknown as number) <= options.value)
                 return null;
 
               return {
@@ -108,7 +136,8 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
               };
             },
             regex: (key, options: Parameters<Rules['regex']>[0], model) => {
-              if (model[key] === undefined) return null;
+              const value = lodashGet(model, key);
+              if (value === undefined) return null;
 
               const regexDict = {
                 custom: options.customPattern ?? /^\w$/,
@@ -119,8 +148,8 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
               };
 
               if (
-                typeof model[key] !== 'string' ||
-                !regexDict[options.pattern].test(model[key] as unknown as string)
+                typeof value !== 'string' ||
+                !regexDict[options.pattern].test(value as unknown as string)
               )
                 return {
                   field: key as string,
@@ -133,11 +162,14 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
               return null;
             },
             length: (key, options: Parameters<Rules['length']>[0], model) => {
-              if (model[key] === undefined) return null;
+              const value = lodashGet(model, key);
+              if (value === undefined) return null;
+
+              const parsedValue = value as unknown as string | Array<any>;
 
               if (
-                String(model[key]).length < options.minLength ||
-                String(model[key]).length > options.maxLength
+                parsedValue.length < options.minLength ||
+                parsedValue.length > options.maxLength
               ) {
                 return {
                   field: key as string,
@@ -149,7 +181,8 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
               return null;
             },
             unique: (key, options: Parameters<Rules['unique']>[0], model, data) => {
-              if (model[key] === undefined) return null;
+              const value = lodashGet(model, key);
+              if (value === undefined) return null;
 
               const registerFinded = data[options.dataEntity].find((dataItem) =>
                 options.props.every(
@@ -174,7 +207,8 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
               };
             },
             exists: (key, options: Parameters<Rules['exists']>[0], model, data) => {
-              if (model[key] === undefined) return null;
+              const value = lodashGet(model, key);
+              if (value === undefined) return null;
 
               const registerFinded = data[options.dataEntity].find((dataItem) =>
                 options.props.every(
@@ -199,30 +233,45 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
                 message: options.message,
               };
             },
-          };
+            array: async (key, options: Parameters<Rules['array']>[0], model, data) => {
+              const value = lodashGet(model, key);
+              if (value === undefined) return null;
 
-          const validations: ValidationItem[] = [];
+              if (!Array.isArray(value))
+                return {
+                  field: key as string,
+                  rule: 'array',
+                  message: 'This value must be an array',
+                };
 
-          await Promise.allSettled(
-            Object.keys(params.schema).map(async (key) => {
-              const parsedKey = key as keyof Model;
-
-              for (const rule of params.schema[parsedKey]) {
-                const validation = await validationRules[rule.name](
-                  parsedKey,
-                  rule.options,
-                  params.model,
-                  params.data,
-                );
-
-                if (validation) {
-                  validations.push(validation);
-                  break;
-                }
-              }
+              await Promise.allSettled(
+                value.map((_, index) =>
+                  performValidation(
+                    options.rules,
+                    `${key}.${index}` as keyof Model,
+                    model,
+                    data,
+                    validations,
+                    validationRules,
+                  ),
+                ),
+              );
 
               return null;
-            }),
+            },
+          };
+
+          await Promise.allSettled(
+            Object.keys(params.schema).map((key) =>
+              performValidation(
+                params.schema[key as keyof Model],
+                key as keyof Model,
+                params.model,
+                params.data,
+                validations,
+                validationRules,
+              ),
+            ),
           );
 
           if (validations.length) throw new ValidationException(validations);

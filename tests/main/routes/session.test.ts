@@ -34,7 +34,7 @@ describe('Session Routes', () => {
         name: 'Any Name',
         email: 'any@email.com',
         password,
-        roles: ['admin'],
+        roles: [],
         createdAt: new Date().toISOString(),
       };
 

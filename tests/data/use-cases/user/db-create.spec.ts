@@ -1,5 +1,5 @@
 import { DbCreateUserUseCase } from '@/data/use-cases';
-import { Roles, UserModel } from '@/domain/models';
+import { CreateUserUseCase } from '@/domain/use-cases';
 import { ValidationException } from '@/main/exceptions';
 import { makeHasherCryptographyStub } from '@tests/data/stubs/cryptography';
 import { makeUserRepositoryStub } from '@tests/data/stubs/repositories';
@@ -27,7 +27,7 @@ describe(DbCreateUserUseCase.name, () => {
       name: 'Any Name',
       email: 'any@email.com',
       password: 'Password@123',
-      roles: ['admin'] as Roles[],
+      roles: [],
       anyWrongProp: 'anyValue',
     };
     const sanitizedRequestModel = { ...requestModel };
@@ -67,7 +67,15 @@ describe(DbCreateUserUseCase.name, () => {
           validatorService.rules.regex({ pattern: 'password' }),
           validatorService.rules.length({ minLength: 6, maxLength: 20 }),
         ],
-        roles: [],
+        roles: [
+          validatorService.rules.required(),
+          validatorService.rules.array({
+            rules: [
+              validatorService.rules.string(),
+              validatorService.rules.in({ values: ['admin', 'moderator'] }),
+            ],
+          }),
+        ],
       },
       model: sanitizedRequestModel,
       data: { users: [] },
@@ -204,6 +212,29 @@ describe(DbCreateUserUseCase.name, () => {
         },
       ],
     },
+    // roles
+    {
+      properties: { roles: undefined },
+      validations: [{ field: 'roles', rule: 'required', message: 'This value is required' }],
+    },
+    {
+      properties: { roles: 'invalid_array' },
+      validations: [{ field: 'roles', rule: 'array', message: 'This value must be an array' }],
+    },
+    {
+      properties: { roles: [1, 2] },
+      validations: [
+        { field: 'roles.0', rule: 'string', message: 'This value must be a string' },
+        { field: 'roles.1', rule: 'string', message: 'This value must be a string' },
+      ],
+    },
+    {
+      properties: { roles: ['invalid_role', 'invalid_role'] },
+      validations: [
+        { field: 'roles.0', rule: 'in', message: 'This value must be in: admin, moderator' },
+        { field: 'roles.1', rule: 'in', message: 'This value must be in: admin, moderator' },
+      ],
+    },
   ])(
     'Should throw ValidationException for every user invalid prop',
     ({ properties, validations }) => {
@@ -214,8 +245,9 @@ describe(DbCreateUserUseCase.name, () => {
           name: 'Any Name',
           email: 'any@email.com',
           password: 'Password@123',
+          roles: [],
           ...properties,
-        } as UserModel;
+        } as CreateUserUseCase.RequestModel;
         const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
 
         userRepository.create.mockReturnValueOnce(responseModel);

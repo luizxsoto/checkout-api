@@ -32,7 +32,7 @@ describe('User Routes', () => {
         name: 'Any Name',
         email: 'any@email.com',
         password: 'hashed_password',
-        roles: ['admin'],
+        roles: [],
         createdAt: new Date().toISOString(),
       };
 
@@ -84,7 +84,7 @@ describe('User Routes', () => {
         name: 'Any Name',
         email: 'any@email.com',
         password: 'hashed_password',
-        roles: ['admin'],
+        roles: [],
         createdAt: new Date().toISOString(),
       };
 
@@ -135,7 +135,7 @@ describe('User Routes', () => {
         name: 'Any Name',
         email: 'any@email.com',
         password: 'Password@123',
-        roles: ['admin'],
+        roles: [],
       };
 
       const result = await request(app)
@@ -152,7 +152,11 @@ describe('User Routes', () => {
     });
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
-      const requestModel = { name: 'Any Name', password: 'Password@123' };
+      const requestModel = {
+        name: 'Any Name',
+        password: 'Password@123',
+        roles: [],
+      };
 
       const result = await request(app)
         .post('/api/users')
@@ -182,7 +186,7 @@ describe('User Routes', () => {
         name: 'Any Name',
         email: 'any@email.com',
         password: 'Password@123',
-        roles: ['admin'],
+        roles: [],
         createdAt: new Date().toISOString(),
       };
 
@@ -208,6 +212,7 @@ describe('User Routes', () => {
         name: 'Any Name',
         email: 'any@email.com',
         password: 'Password@123',
+        roles: [],
         createdAt: new Date(),
       };
 
@@ -239,7 +244,7 @@ describe('User Routes', () => {
         name: 'Any Name',
         email: 'any@email.com',
         password: 'Password@123',
-        roles: ['admin'],
+        roles: [],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };

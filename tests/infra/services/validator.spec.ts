@@ -451,13 +451,27 @@ describe(VanillaValidatorService.name, () => {
       );
     });
 
-    test('Should not throw', async () => {
+    test('Should not throw with string value', async () => {
       const { sut } = makeSut();
 
       const sutResult = await sut
         .validate({
           schema: { anyProp: [sut.rules.length({ minLength: 6, maxLength: 13 })] },
           model: { anyProp: 'correctLength' },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
+
+    test('Should not throw with array value', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: { anyProp: [sut.rules.length({ minLength: 6, maxLength: 13 })] },
+          model: { anyProp: ['c', 'o', 'r', 'r', 'e', 'c', 't', 'L', 'e', 'n', 'g', 't', 'h'] },
           data: { anyData: [] },
         })
         .catch((e) => e);
@@ -634,6 +648,80 @@ describe(VanillaValidatorService.name, () => {
           },
           model: { anyProp: undefined },
           data: { anyData: [{ anyProp: 'anyProp' }] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
+  });
+
+  describe('Should throw if an invalid array', () => {
+    test('Should throw', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [
+              sut.rules.array({
+                rules: [],
+              }),
+            ],
+          },
+          model: { anyProp: 'invalid_array' },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toStrictEqual(
+        new ValidationException([
+          { field: 'anyProp', rule: 'array', message: 'This value must be an array' },
+        ]),
+      );
+    });
+
+    test('Should not throw', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [sut.rules.array({ rules: [] })],
+          },
+          model: { anyProp: [] },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
+
+    test('Should not throw and performValidation for nested rules', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [sut.rules.array({ rules: [sut.rules.string()] })],
+          },
+          model: { anyProp: ['anyProp'] },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
+
+    test('Should not throw if is not informed a value', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [sut.rules.array({ rules: [] })],
+          },
+          model: { anyProp: undefined },
+          data: { anyData: [] },
         })
         .catch((e) => e);
 
