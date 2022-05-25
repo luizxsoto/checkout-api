@@ -68,7 +68,15 @@ export class DbCreateUserUseCase implements CreateUserUseCase.UseCase {
           this.validator.rules.regex({ pattern: 'password' }),
           this.validator.rules.length({ minLength: 6, maxLength: 20 }),
         ],
-        roles: [],
+        roles: [
+          this.validator.rules.required(),
+          this.validator.rules.array({
+            rules: [
+              this.validator.rules.string(),
+              this.validator.rules.in({ values: ['admin', 'moderator'] }),
+            ],
+          }),
+        ],
       },
       model: requestModel,
       data: { users: [] },

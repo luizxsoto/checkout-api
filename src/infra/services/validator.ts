@@ -1,40 +1,47 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
+import lodashGet from 'lodash.get';
+
 import { ValidatorService } from '@/data/contracts/services';
-import { Rules } from '@/data/contracts/services/validator';
+import { Rule, Rules } from '@/data/contracts/services/validator';
 import { ValidationException, ValidationItem } from '@/main/exceptions';
 
 export class VanillaValidatorService<Model, ValidatorData extends Record<string, any[]>>
   implements ValidatorService.Validator<Model, ValidatorData>
 {
+  private validations: ValidationItem[] = [];
+
+  private async performValidation(
+    rules: Rule[],
+    key: keyof Model,
+    model: Model,
+    data: ValidatorData,
+  ) {
+    for (const rule of rules) {
+      const validation = await this.validationRules[rule.name](key, rule.options, model, data);
+
+      if (validation) {
+        this.validations.push(validation);
+        break;
+      }
+    }
+  }
+
   public async validate(
     params: ValidatorService.Params<Model, ValidatorData>,
   ): Promise<ValidatorService.Result> {
-    const validations: ValidationItem[] = [];
-
     await Promise.allSettled(
-      Object.keys(params.schema).map(async (key) => {
-        const parsedKey = key as keyof Model;
-
-        for (const rule of params.schema[parsedKey]) {
-          const validation = await this.validationRules[rule.name](
-            parsedKey,
-            rule.options,
-            params.model,
-            params.data,
-          );
-
-          if (validation) {
-            validations.push(validation);
-            break;
-          }
-        }
-
-        return null;
-      }),
+      Object.keys(params.schema).map((key) =>
+        this.performValidation(
+          params.schema[key as keyof Model],
+          key as keyof Model,
+          params.model,
+          params.data,
+        ),
+      ),
     );
 
-    if (validations.length) throw new ValidationException(validations);
+    if (this.validations.length) throw new ValidationException(this.validations);
   }
 
   public rules: ValidatorService.Rules = {
@@ -49,6 +56,7 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
     unique: (options) => ({ name: 'unique', options }),
     exists: (options) => ({ name: 'exists', options }),
     custom: (options) => ({ name: 'custom', options }),
+    array: (options) => ({ name: 'array', options }),
   };
 
   private validationRules: Record<
@@ -61,7 +69,8 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
     ) => null | ValidationItem | Promise<null | ValidationItem>
   > = {
     required: (key, _options, model) => {
-      if (model[key]) return null;
+      const value = lodashGet(model, key);
+      if (value !== null && value !== undefined) return null;
 
       return {
         field: key as string,
@@ -70,7 +79,8 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
       };
     },
     string: (key, _options, model) => {
-      if (model[key] === undefined || typeof model[key] === 'string') return null;
+      const value = lodashGet(model, key);
+      if (value === undefined || typeof value === 'string') return null;
 
       return {
         field: key as string,
@@ -79,8 +89,8 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
       };
     },
     in: (key, options: Parameters<Rules['in']>[0], model) => {
-      if (model[key] === undefined || options.values.includes(model[key] as unknown as string))
-        return null;
+      const value = lodashGet(model, key);
+      if (value === undefined || options.values.includes(value as unknown as string)) return null;
 
       return {
         field: key as string,
@@ -89,7 +99,8 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
       };
     },
     number: (key, _options, model) => {
-      if (model[key] === undefined || !Number.isNaN(Number(model[key]))) return null;
+      const value = lodashGet(model, key);
+      if (value === undefined || !Number.isNaN(Number(value))) return null;
 
       return {
         field: key as string,
@@ -98,8 +109,8 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
       };
     },
     min: (key, options: Parameters<Rules['min']>[0], model) => {
-      if (Number.isNaN(Number(model[key])) || (model[key] as unknown as number) >= options.value)
-        return null;
+      const value = lodashGet(model, key);
+      if (Number.isNaN(Number(value)) || (value as unknown as number) >= options.value) return null;
 
       return {
         field: key as string,
@@ -108,8 +119,8 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
       };
     },
     max: (key, options: Parameters<Rules['max']>[0], model) => {
-      if (Number.isNaN(Number(model[key])) || (model[key] as unknown as number) <= options.value)
-        return null;
+      const value = lodashGet(model, key);
+      if (Number.isNaN(Number(value)) || (value as unknown as number) <= options.value) return null;
 
       return {
         field: key as string,
@@ -118,7 +129,8 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
       };
     },
     regex: (key, options: Parameters<Rules['regex']>[0], model) => {
-      if (model[key] === undefined) return null;
+      const value = lodashGet(model, key);
+      if (value === undefined) return null;
 
       const regexDict = {
         custom: options.customPattern ?? /^\w$/,
@@ -128,10 +140,7 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
         uuidV4: /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i,
       };
 
-      if (
-        typeof model[key] !== 'string' ||
-        !regexDict[options.pattern].test(model[key] as unknown as string)
-      )
+      if (typeof value !== 'string' || !regexDict[options.pattern].test(value as unknown as string))
         return {
           field: key as string,
           rule: 'regex',
@@ -143,12 +152,12 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
       return null;
     },
     length: (key, options: Parameters<Rules['length']>[0], model) => {
-      if (model[key] === undefined) return null;
+      const value = lodashGet(model, key);
+      if (value === undefined || (typeof value !== 'string' && !Array.isArray(value))) return null;
 
-      if (
-        String(model[key]).length < options.minLength ||
-        String(model[key]).length > options.maxLength
-      ) {
+      const parsedValue = value as unknown as string | Array<any>;
+
+      if (parsedValue.length < options.minLength || parsedValue.length > options.maxLength) {
         return {
           field: key as string,
           rule: 'length',
@@ -159,7 +168,8 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
       return null;
     },
     unique: (key, options: Parameters<Rules['unique']>[0], model, data) => {
-      if (model[key] === undefined) return null;
+      const value = lodashGet(model, key);
+      if (value === undefined) return null;
 
       const registerFinded = data[options.dataEntity].find((dataItem) =>
         options.props.every(
@@ -183,7 +193,8 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
       };
     },
     exists: (key, options: Parameters<Rules['exists']>[0], model, data) => {
-      if (model[key] === undefined) return null;
+      const value = lodashGet(model, key);
+      if (value === undefined) return null;
 
       const registerFinded = data[options.dataEntity].find((dataItem) =>
         options.props.every(
@@ -207,6 +218,25 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
         rule: options.rule,
         message: options.message,
       };
+    },
+    array: async (key, options: Parameters<Rules['array']>[0], model, data) => {
+      const value = lodashGet(model, key);
+      if (value === undefined) return null;
+
+      if (!Array.isArray(value))
+        return {
+          field: key as string,
+          rule: 'array',
+          message: 'This value must be an array',
+        };
+
+      await Promise.allSettled(
+        value.map((_, index) =>
+          this.performValidation(options.rules, `${key}.${index}` as keyof Model, model, data),
+        ),
+      );
+
+      return null;
     },
   };
 }

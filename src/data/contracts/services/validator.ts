@@ -1,3 +1,5 @@
+/* eslint-disable no-use-before-define */
+
 export interface Rules {
   required: (options?: null) => { name: 'required'; options: Parameters<Rules['required']>[0] };
   string: (options?: null) => { name: 'string'; options: Parameters<Rules['string']>[0] };
@@ -31,6 +33,10 @@ export interface Rules {
   custom: (options: { validation: () => Promise<boolean>; rule: string; message: string }) => {
     name: 'custom';
     options: Parameters<Rules['custom']>[0];
+  };
+  array: (options: { rules: Rule[] }) => {
+    name: 'array';
+    options: Parameters<Rules['array']>[0];
   };
 }
 
