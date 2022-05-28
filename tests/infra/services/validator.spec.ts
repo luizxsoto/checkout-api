@@ -729,6 +729,80 @@ describe(VanillaValidatorService.name, () => {
     });
   });
 
+  describe('Should throw if an invalid object', () => {
+    test('Should throw', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [
+              sut.rules.object({
+                schema: {},
+              }),
+            ],
+          },
+          model: { anyProp: 'invalid_object' },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toStrictEqual(
+        new ValidationException([
+          { field: 'anyProp', rule: 'object', message: 'This value must be an object' },
+        ]),
+      );
+    });
+
+    test('Should not throw', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [sut.rules.object({ schema: {} })],
+          },
+          model: { anyProp: {} },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
+
+    test('Should not throw and performValidation for nested rules', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [sut.rules.object({ schema: { otherProp: [sut.rules.string()] } })],
+          },
+          model: { anyProp: { otherProp: 'otherProp' } },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
+
+    test('Should not throw if is not informed a value', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [sut.rules.object({ schema: {} })],
+          },
+          model: { anyProp: undefined },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
+  });
+
   describe('Should throw if custom validation returns false', () => {
     test('Should throw', async () => {
       const { sut } = makeSut();
