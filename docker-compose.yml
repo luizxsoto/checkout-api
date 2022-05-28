@@ -10,6 +10,7 @@ services:
       - '${PORT}'
     ports:
       - '${PORT}:${PORT}'
+      - 9229:9229
     volumes:
       - .:/app
     env_file:
