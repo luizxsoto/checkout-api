@@ -30,13 +30,17 @@ export interface Rules {
     name: 'exists';
     options: Parameters<Rules['exists']>[0];
   };
-  custom: (options: { validation: () => Promise<boolean>; rule: string; message: string }) => {
-    name: 'custom';
-    options: Parameters<Rules['custom']>[0];
-  };
   array: (options: { rules: Rule[] }) => {
     name: 'array';
     options: Parameters<Rules['array']>[0];
+  };
+  object: <Model>(options: { schema: Record<keyof Model, Rule[]> }) => {
+    name: 'object';
+    options: Parameters<Rules['object']>[0];
+  };
+  custom: (options: { validation: () => Promise<boolean>; rule: string; message: string }) => {
+    name: 'custom';
+    options: Parameters<Rules['custom']>[0];
   };
 }
 

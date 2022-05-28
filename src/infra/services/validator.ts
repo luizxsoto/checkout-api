@@ -55,8 +55,9 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
     length: (options) => ({ name: 'length', options }),
     unique: (options) => ({ name: 'unique', options }),
     exists: (options) => ({ name: 'exists', options }),
-    custom: (options) => ({ name: 'custom', options }),
     array: (options) => ({ name: 'array', options }),
+    object: (options) => ({ name: 'object', options }),
+    custom: (options) => ({ name: 'custom', options }),
   };
 
   private validationRules: Record<
@@ -210,15 +211,6 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
         message: 'This value was not found',
       };
     },
-    custom: async (key, options: Parameters<Rules['custom']>[0]) => {
-      if (await options.validation()) return null;
-
-      return {
-        field: key as string,
-        rule: options.rule,
-        message: options.message,
-      };
-    },
     array: async (key, options: Parameters<Rules['array']>[0], model, data) => {
       const value = lodashGet(model, key);
       if (value === undefined) return null;
@@ -237,6 +229,34 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
       );
 
       return null;
+    },
+    object: async (key, options: Parameters<Rules['object']>[0], model, data) => {
+      const value = lodashGet(model, key);
+      if (value === undefined) return null;
+
+      if (typeof value !== 'object' || Array.isArray(value))
+        return {
+          field: key as string,
+          rule: 'array',
+          message: 'This value must be an object',
+        };
+
+      await this.validate({
+        model: value,
+        schema: options.schema as Record<keyof Model, Rule[]>,
+        data,
+      });
+
+      return null;
+    },
+    custom: async (key, options: Parameters<Rules['custom']>[0]) => {
+      if (await options.validation()) return null;
+
+      return {
+        field: key as string,
+        rule: options.rule,
+        message: options.message,
+      };
     },
   };
 }
