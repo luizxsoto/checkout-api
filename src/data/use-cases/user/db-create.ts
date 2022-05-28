@@ -8,7 +8,7 @@ export class DbCreateUserUseCase implements CreateUserUseCase.UseCase {
   constructor(
     private readonly createUserRepository: CreateUserRepository.Repository,
     private readonly findByUserRepository: FindByUserRepository.Repository,
-    private readonly validator: ValidatorService.Validator<
+    private readonly validatorService: ValidatorService.Validator<
       Partial<CreateUserUseCase.RequestModel>,
       { users: UserModel[] }
     >,
@@ -48,32 +48,32 @@ export class DbCreateUserUseCase implements CreateUserUseCase.UseCase {
   private async validateRequestModel(
     requestModel: CreateUserUseCase.RequestModel,
   ): Promise<(validationData: { users: UserModel[] }) => Promise<void>> {
-    await this.validator.validate({
+    await this.validatorService.validate({
       schema: {
         name: [
-          this.validator.rules.required(),
-          this.validator.rules.string(),
-          this.validator.rules.regex({ pattern: 'name' }),
-          this.validator.rules.length({ minLength: 6, maxLength: 100 }),
+          this.validatorService.rules.required(),
+          this.validatorService.rules.string(),
+          this.validatorService.rules.regex({ pattern: 'name' }),
+          this.validatorService.rules.length({ minLength: 6, maxLength: 100 }),
         ],
         email: [
-          this.validator.rules.required(),
-          this.validator.rules.string(),
-          this.validator.rules.regex({ pattern: 'email' }),
-          this.validator.rules.length({ minLength: 6, maxLength: 100 }),
+          this.validatorService.rules.required(),
+          this.validatorService.rules.string(),
+          this.validatorService.rules.regex({ pattern: 'email' }),
+          this.validatorService.rules.length({ minLength: 6, maxLength: 100 }),
         ],
         password: [
-          this.validator.rules.required(),
-          this.validator.rules.string(),
-          this.validator.rules.regex({ pattern: 'password' }),
-          this.validator.rules.length({ minLength: 6, maxLength: 20 }),
+          this.validatorService.rules.required(),
+          this.validatorService.rules.string(),
+          this.validatorService.rules.regex({ pattern: 'password' }),
+          this.validatorService.rules.length({ minLength: 6, maxLength: 20 }),
         ],
         roles: [
-          this.validator.rules.required(),
-          this.validator.rules.array({
+          this.validatorService.rules.required(),
+          this.validatorService.rules.array({
             rules: [
-              this.validator.rules.string(),
-              this.validator.rules.in({ values: ['admin', 'moderator'] }),
+              this.validatorService.rules.string(),
+              this.validatorService.rules.in({ values: ['admin', 'moderator'] }),
             ],
           }),
         ],
@@ -82,11 +82,11 @@ export class DbCreateUserUseCase implements CreateUserUseCase.UseCase {
       data: { users: [] },
     });
     return (validationData) =>
-      this.validator.validate({
+      this.validatorService.validate({
         schema: {
           name: [],
           email: [
-            this.validator.rules.unique({
+            this.validatorService.rules.unique({
               dataEntity: 'users',
               props: [{ modelKey: 'email', dataKey: 'email' }],
             }),

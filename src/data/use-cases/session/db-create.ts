@@ -9,7 +9,7 @@ export class DbCreateSessionUseCase implements CreateSessionUseCase.UseCase {
     private readonly findByUserRepository: FindByUserRepository.Repository,
     private readonly hashComparer: HashComparer,
     private readonly encrypter: Encrypter,
-    private readonly validator: ValidatorService.Validator<
+    private readonly validatorService: ValidatorService.Validator<
       Partial<CreateSessionUseCase.RequestModel>,
       { users: UserModel[] }
     >,
@@ -52,29 +52,29 @@ export class DbCreateSessionUseCase implements CreateSessionUseCase.UseCase {
   ): Promise<
     (validationData: { users: UserModel[] }) => Promise<(findedUser: UserModel) => Promise<void>>
   > {
-    await this.validator.validate({
+    await this.validatorService.validate({
       schema: {
         email: [
-          this.validator.rules.required(),
-          this.validator.rules.string(),
-          this.validator.rules.regex({ pattern: 'email' }),
-          this.validator.rules.length({ minLength: 6, maxLength: 100 }),
+          this.validatorService.rules.required(),
+          this.validatorService.rules.string(),
+          this.validatorService.rules.regex({ pattern: 'email' }),
+          this.validatorService.rules.length({ minLength: 6, maxLength: 100 }),
         ],
         password: [
-          this.validator.rules.required(),
-          this.validator.rules.string(),
-          this.validator.rules.regex({ pattern: 'password' }),
-          this.validator.rules.length({ minLength: 6, maxLength: 20 }),
+          this.validatorService.rules.required(),
+          this.validatorService.rules.string(),
+          this.validatorService.rules.regex({ pattern: 'password' }),
+          this.validatorService.rules.length({ minLength: 6, maxLength: 20 }),
         ],
       },
       model: requestModel,
       data: { users: [] },
     });
     return async (validationData) => {
-      await this.validator.validate({
+      await this.validatorService.validate({
         schema: {
           email: [
-            this.validator.rules.exists({
+            this.validatorService.rules.exists({
               dataEntity: 'users',
               props: [{ modelKey: 'email', dataKey: 'email' }],
             }),
@@ -85,11 +85,11 @@ export class DbCreateSessionUseCase implements CreateSessionUseCase.UseCase {
         data: validationData,
       });
       return (findedUser) =>
-        this.validator.validate({
+        this.validatorService.validate({
           schema: {
             email: [],
             password: [
-              this.validator.rules.custom({
+              this.validatorService.rules.custom({
                 validation: () =>
                   this.hashComparer.compare(requestModel.password, findedUser.password),
                 rule: 'password',

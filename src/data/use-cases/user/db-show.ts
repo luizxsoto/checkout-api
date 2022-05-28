@@ -6,7 +6,7 @@ import { ShowUserUseCase } from '@/domain/use-cases';
 export class DbShowUserUseCase implements ShowUserUseCase.UseCase {
   constructor(
     private readonly findByUserRepository: FindByUserRepository.Repository,
-    private readonly validator: ValidatorService.Validator<
+    private readonly validatorService: ValidatorService.Validator<
       ShowUserUseCase.RequestModel,
       { users: UserModel[] }
     >,
@@ -35,22 +35,22 @@ export class DbShowUserUseCase implements ShowUserUseCase.UseCase {
   private async validateRequestModel(
     requestModel: ShowUserUseCase.RequestModel,
   ): Promise<(validationData: { users: UserModel[] }) => Promise<void>> {
-    await this.validator.validate({
+    await this.validatorService.validate({
       schema: {
         id: [
-          this.validator.rules.required(),
-          this.validator.rules.string(),
-          this.validator.rules.regex({ pattern: 'uuidV4' }),
+          this.validatorService.rules.required(),
+          this.validatorService.rules.string(),
+          this.validatorService.rules.regex({ pattern: 'uuidV4' }),
         ],
       },
       model: requestModel,
       data: { users: [] },
     });
     return (validationData) =>
-      this.validator.validate({
+      this.validatorService.validate({
         schema: {
           id: [
-            this.validator.rules.exists({
+            this.validatorService.rules.exists({
               dataEntity: 'users',
               props: [{ modelKey: 'id', dataKey: 'id' }],
             }),

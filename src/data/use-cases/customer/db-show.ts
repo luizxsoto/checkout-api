@@ -6,7 +6,7 @@ import { ShowCustomerUseCase } from '@/domain/use-cases';
 export class DbShowCustomerUseCase implements ShowCustomerUseCase.UseCase {
   constructor(
     private readonly findByCustomerRepository: FindByCustomerRepository.Repository,
-    private readonly validator: ValidatorService.Validator<
+    private readonly validatorService: ValidatorService.Validator<
       ShowCustomerUseCase.RequestModel,
       { customers: CustomerModel[] }
     >,
@@ -37,22 +37,22 @@ export class DbShowCustomerUseCase implements ShowCustomerUseCase.UseCase {
   private async validateRequestModel(
     requestModel: ShowCustomerUseCase.RequestModel,
   ): Promise<(validationData: { customers: CustomerModel[] }) => Promise<void>> {
-    await this.validator.validate({
+    await this.validatorService.validate({
       schema: {
         id: [
-          this.validator.rules.required(),
-          this.validator.rules.string(),
-          this.validator.rules.regex({ pattern: 'uuidV4' }),
+          this.validatorService.rules.required(),
+          this.validatorService.rules.string(),
+          this.validatorService.rules.regex({ pattern: 'uuidV4' }),
         ],
       },
       model: requestModel,
       data: { customers: [] },
     });
     return (validationData) =>
-      this.validator.validate({
+      this.validatorService.validate({
         schema: {
           id: [
-            this.validator.rules.exists({
+            this.validatorService.rules.exists({
               dataEntity: 'customers',
               props: [{ modelKey: 'id', dataKey: 'id' }],
             }),

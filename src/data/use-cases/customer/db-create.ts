@@ -7,7 +7,7 @@ export class DbCreateCustomerUseCase implements CreateCustomerUseCase.UseCase {
   constructor(
     private readonly createCustomerRepository: CreateCustomerRepository.Repository,
     private readonly findByCustomerRepository: FindByCustomerRepository.Repository,
-    private readonly validator: ValidatorService.Validator<
+    private readonly validatorService: ValidatorService.Validator<
       Partial<CreateCustomerUseCase.RequestModel>,
       { customers: CustomerModel[] }
     >,
@@ -43,30 +43,30 @@ export class DbCreateCustomerUseCase implements CreateCustomerUseCase.UseCase {
   private async validateRequestModel(
     requestModel: CreateCustomerUseCase.RequestModel,
   ): Promise<(validationData: { customers: CustomerModel[] }) => Promise<void>> {
-    await this.validator.validate({
+    await this.validatorService.validate({
       schema: {
         name: [
-          this.validator.rules.required(),
-          this.validator.rules.string(),
-          this.validator.rules.regex({ pattern: 'name' }),
-          this.validator.rules.length({ minLength: 6, maxLength: 100 }),
+          this.validatorService.rules.required(),
+          this.validatorService.rules.string(),
+          this.validatorService.rules.regex({ pattern: 'name' }),
+          this.validatorService.rules.length({ minLength: 6, maxLength: 100 }),
         ],
         email: [
-          this.validator.rules.required(),
-          this.validator.rules.string(),
-          this.validator.rules.regex({ pattern: 'email' }),
-          this.validator.rules.length({ minLength: 6, maxLength: 100 }),
+          this.validatorService.rules.required(),
+          this.validatorService.rules.string(),
+          this.validatorService.rules.regex({ pattern: 'email' }),
+          this.validatorService.rules.length({ minLength: 6, maxLength: 100 }),
         ],
       },
       model: requestModel,
       data: { customers: [] },
     });
     return (validationData) =>
-      this.validator.validate({
+      this.validatorService.validate({
         schema: {
           name: [],
           email: [
-            this.validator.rules.unique({
+            this.validatorService.rules.unique({
               dataEntity: 'customers',
               props: [{ modelKey: 'email', dataKey: 'email' }],
             }),
