@@ -53,6 +53,7 @@ export abstract class KnexBaseRepository {
       perPage?: number;
       orderBy?: string;
       order?: string;
+      filters?: string;
     } & Partial<Model>,
     withDeleted = false,
   ): Promise<Model[]> {
@@ -60,14 +61,47 @@ export abstract class KnexBaseRepository {
       page = 1,
       perPage = minPerPage,
       orderBy = 'createdAt',
-      order = 'asc',
-      ...restRequestModel
+      order = 'desc',
+      filters = '[]',
     } = requestModel;
     const offset = (page - 1) * perPage;
 
+    type PrimitiveType = string | number;
+    type FilterType = [PrimitiveType, PrimitiveType, PrimitiveType | PrimitiveType[]];
+    type OperatorType = [string, ...(OperatorType | FilterType)[]];
+
+    function buildQuery(builder: Knex.QueryBuilder, filter: OperatorType | FilterType) {
+      const [operator, field, values] = filter;
+      const [, ...fieldOrFilters] = filter;
+
+      const operatorsQueryDict: Record<string, () => void> = {
+        '&': () =>
+          fieldOrFilters.forEach((fieldOrFilter) => {
+            builder.where((build) => buildQuery(build, fieldOrFilter as OperatorType | FilterType));
+          }),
+        '|': () =>
+          fieldOrFilters.forEach((fieldOrFilter) => {
+            builder.orWhere((build) =>
+              buildQuery(build, fieldOrFilter as OperatorType | FilterType),
+            );
+          }),
+        '=': () => builder.where(field as string, values as PrimitiveType),
+        '!=': () => builder.whereNot(field as string, values as PrimitiveType),
+        '>': () => builder.where(field as string, '>', values as PrimitiveType),
+        '>=': () => builder.where(field as string, '>=', values as PrimitiveType),
+        '<': () => builder.where(field as string, '<', values as PrimitiveType),
+        '<=': () => builder.where(field as string, '<=', values as PrimitiveType),
+        ':': () => builder.whereRaw(`"${field}" ~* '${values}'`),
+        '!:': () => builder.whereRaw(`"${field}" !~* '${values}'`),
+        in: () => builder.whereIn(field as string, values as PrimitiveType[]),
+      };
+
+      operatorsQueryDict[operator]?.();
+    }
+
     const query = this.knex
       .table(this.tableName)
-      .where(restRequestModel)
+      .where((builder) => buildQuery(builder, JSON.parse(filters.replace(/'/g, "''"))))
       .offset(offset)
       .limit(perPage)
       .orderBy(orderBy, order);

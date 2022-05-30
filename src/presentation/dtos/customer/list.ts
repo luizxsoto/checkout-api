@@ -3,7 +3,5 @@ export class ListCustomerDto {
 
   public perPage?: number;
 
-  public name?: string;
-
-  public email?: string;
+  public filters?: string;
 }

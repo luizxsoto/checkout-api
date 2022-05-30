@@ -38,6 +38,10 @@ export interface Rules {
     name: 'object';
     options: Parameters<Rules['object']>[0];
   };
+  listFilters: <Model>(options: { schema: Record<keyof Model, [Rule<'array'>]> }) => {
+    name: 'listFilters';
+    options: Parameters<Rules['listFilters']>[0];
+  };
   custom: (options: { validation: () => Promise<boolean>; rule: string; message: string }) => {
     name: 'custom';
     options: Parameters<Rules['custom']>[0];

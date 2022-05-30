@@ -5,7 +5,8 @@ export type RequestModel = {
   perPage?: number;
   orderBy?: 'name' | 'email' | 'createdAt' | 'updatedAt';
   order?: 'asc' | 'desc';
-} & Partial<Omit<UserModel, 'id' | 'password' | 'roles' | 'createdAt' | 'updatedAt' | 'deletedAt'>>;
+  filters?: string;
+};
 
 export type ResponseModel = UserModel[];
 

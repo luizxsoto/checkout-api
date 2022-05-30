@@ -7,7 +7,7 @@ import { ListUserUseCase } from '@/domain/use-cases';
 export class DbListUserUseCase implements ListUserUseCase.UseCase {
   constructor(
     private readonly listUserRepository: ListUserRepository.Repository,
-    private readonly validator: ValidatorService.Validator<
+    private readonly validatorService: ValidatorService.Validator<
       ListUserUseCase.RequestModel,
       { users: UserModel[] }
     >,
@@ -33,40 +33,54 @@ export class DbListUserUseCase implements ListUserUseCase.UseCase {
       perPage: Number(requestModel.perPage) || requestModel.perPage,
       orderBy: requestModel.orderBy,
       order: requestModel.order,
+      filters: requestModel.filters,
     };
-
-    if (requestModel.name) sanitizedRequestModel.name = requestModel.name;
-    if (requestModel.email) sanitizedRequestModel.email = requestModel.email;
 
     return sanitizedRequestModel;
   }
 
   private async validateRequestModel(requestModel: ListUserUseCase.RequestModel): Promise<void> {
-    await this.validator.validate({
+    await this.validatorService.validate({
       schema: {
-        page: [this.validator.rules.number(), this.validator.rules.min({ value: 1 })],
+        page: [this.validatorService.rules.number(), this.validatorService.rules.min({ value: 1 })],
         perPage: [
-          this.validator.rules.number(),
-          this.validator.rules.min({ value: minPerPage }),
-          this.validator.rules.max({ value: maxPerPage }),
+          this.validatorService.rules.number(),
+          this.validatorService.rules.min({ value: minPerPage }),
+          this.validatorService.rules.max({ value: maxPerPage }),
         ],
         orderBy: [
-          this.validator.rules.string(),
-          this.validator.rules.in({ values: ['name', 'email', 'createdAt', 'updatedAt'] }),
+          this.validatorService.rules.string(),
+          this.validatorService.rules.in({ values: ['name', 'email', 'createdAt', 'updatedAt'] }),
         ],
         order: [
-          this.validator.rules.string(),
-          this.validator.rules.in({ values: ['asc', 'desc'] }),
+          this.validatorService.rules.string(),
+          this.validatorService.rules.in({ values: ['asc', 'desc'] }),
         ],
-        name: [
-          this.validator.rules.string(),
-          this.validator.rules.regex({ pattern: 'name' }),
-          this.validator.rules.length({ minLength: 6, maxLength: 100 }),
-        ],
-        email: [
-          this.validator.rules.string(),
-          this.validator.rules.regex({ pattern: 'email' }),
-          this.validator.rules.length({ minLength: 6, maxLength: 100 }),
+        filters: [
+          this.validatorService.rules.listFilters<
+            Omit<UserModel, 'id' | 'password' | 'roles' | 'createdAt' | 'updatedAt' | 'deletedAt'>
+          >({
+            schema: {
+              name: [
+                this.validatorService.rules.array({
+                  rules: [
+                    this.validatorService.rules.string(),
+                    this.validatorService.rules.regex({ pattern: 'name' }),
+                    this.validatorService.rules.length({ minLength: 6, maxLength: 100 }),
+                  ],
+                }),
+              ],
+              email: [
+                this.validatorService.rules.array({
+                  rules: [
+                    this.validatorService.rules.string(),
+                    this.validatorService.rules.regex({ pattern: 'email' }),
+                    this.validatorService.rules.length({ minLength: 6, maxLength: 100 }),
+                  ],
+                }),
+              ],
+            },
+          }),
         ],
       },
       model: requestModel,

@@ -33,10 +33,8 @@ export class DbListCustomerUseCase implements ListCustomerUseCase.UseCase {
       perPage: Number(requestModel.perPage) || requestModel.perPage,
       orderBy: requestModel.orderBy,
       order: requestModel.order,
+      filters: requestModel.filters,
     };
-
-    if (requestModel.name) sanitizedRequestModel.name = requestModel.name;
-    if (requestModel.email) sanitizedRequestModel.email = requestModel.email;
 
     return sanitizedRequestModel;
   }
@@ -60,15 +58,34 @@ export class DbListCustomerUseCase implements ListCustomerUseCase.UseCase {
           this.validatorService.rules.string(),
           this.validatorService.rules.in({ values: ['asc', 'desc'] }),
         ],
-        name: [
-          this.validatorService.rules.string(),
-          this.validatorService.rules.regex({ pattern: 'name' }),
-          this.validatorService.rules.length({ minLength: 6, maxLength: 100 }),
-        ],
-        email: [
-          this.validatorService.rules.string(),
-          this.validatorService.rules.regex({ pattern: 'email' }),
-          this.validatorService.rules.length({ minLength: 6, maxLength: 100 }),
+        filters: [
+          this.validatorService.rules.listFilters<
+            Omit<
+              CustomerModel,
+              'id' | 'password' | 'roles' | 'createdAt' | 'updatedAt' | 'deletedAt'
+            >
+          >({
+            schema: {
+              name: [
+                this.validatorService.rules.array({
+                  rules: [
+                    this.validatorService.rules.string(),
+                    this.validatorService.rules.regex({ pattern: 'name' }),
+                    this.validatorService.rules.length({ minLength: 6, maxLength: 100 }),
+                  ],
+                }),
+              ],
+              email: [
+                this.validatorService.rules.array({
+                  rules: [
+                    this.validatorService.rules.string(),
+                    this.validatorService.rules.regex({ pattern: 'email' }),
+                    this.validatorService.rules.length({ minLength: 6, maxLength: 100 }),
+                  ],
+                }),
+              ],
+            },
+          }),
         ],
       },
       model: requestModel,

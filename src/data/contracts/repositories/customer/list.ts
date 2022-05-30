@@ -5,7 +5,8 @@ export type RequestModel = {
   perPage?: number;
   orderBy?: string;
   order?: string;
-} & Partial<CustomerModel>;
+  filters?: string;
+};
 
 export type ResponseModel = CustomerModel[];
 
