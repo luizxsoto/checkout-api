@@ -37,7 +37,8 @@ describe('Customer Routes', () => {
       await knexConfig.table('customers').insert(requestModel);
 
       const result = await request(app)
-        .get(`/api/customers?email=${requestModel.email}`)
+        .get('/api/customers')
+        .query({ filters: `["=", "email", "${requestModel.email}"]` })
         .set('authorization', await makeBearerTokenMock())
         .send();
 
@@ -50,11 +51,12 @@ describe('Customer Routes', () => {
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
       const requestModel = {
-        email: 'invalid_email',
+        filters: 'invalid_filters',
       };
 
       const result = await request(app)
-        .get(`/api/customers?email=${requestModel.email}`)
+        .get('/api/customers')
+        .query(requestModel)
         .set('authorization', await makeBearerTokenMock())
         .send();
 
@@ -65,9 +67,10 @@ describe('Customer Routes', () => {
         message: 'An error ocurred performing a validation',
         validations: [
           {
-            field: 'email',
-            rule: 'regex',
-            message: 'This value must be valid according to the pattern: email',
+            field: 'filters',
+            rule: 'listFilters',
+            message:
+              'This value must be a valid list filters and with this posible fields: name, email',
           },
         ],
       });

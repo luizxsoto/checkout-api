@@ -1,5 +1,6 @@
 import { DbListUserUseCase } from '@/data/use-cases';
-import { CustomerModel } from '@/domain/models';
+import { UserModel } from '@/domain/models';
+import { ListUserUseCase } from '@/domain/use-cases';
 import { ValidationException } from '@/main/exceptions';
 import { makeUserRepositoryStub } from '@tests/data/stubs/repositories';
 import { makeValidatorServiceStub } from '@tests/data/stubs/services';
@@ -21,8 +22,7 @@ describe(DbListUserUseCase.name, () => {
       perPage: 20,
       orderBy: 'name' as const,
       order: 'asc' as const,
-      name: 'Any Name',
-      email: 'any@email.com',
+      filters: '[]',
       anyWrongProp: 'anyValue',
     };
     const sanitizedRequestModel = { ...requestModel };
@@ -32,6 +32,7 @@ describe(DbListUserUseCase.name, () => {
     Reflect.deleteProperty(responseModel, 'perPage');
     Reflect.deleteProperty(responseModel, 'orderBy');
     Reflect.deleteProperty(responseModel, 'order');
+    Reflect.deleteProperty(responseModel, 'filters');
     const existsUser = { ...responseModel };
 
     userRepository.list.mockReturnValueOnce([existsUser]);
@@ -55,15 +56,31 @@ describe(DbListUserUseCase.name, () => {
           validatorService.rules.string(),
           validatorService.rules.in({ values: ['asc', 'desc'] }),
         ],
-        name: [
-          validatorService.rules.string(),
-          validatorService.rules.regex({ pattern: 'name' }),
-          validatorService.rules.length({ minLength: 6, maxLength: 100 }),
-        ],
-        email: [
-          validatorService.rules.string(),
-          validatorService.rules.regex({ pattern: 'email' }),
-          validatorService.rules.length({ minLength: 6, maxLength: 100 }),
+        filters: [
+          validatorService.rules.listFilters<
+            Omit<UserModel, 'id' | 'password' | 'roles' | 'createdAt' | 'updatedAt' | 'deletedAt'>
+          >({
+            schema: {
+              name: [
+                validatorService.rules.array({
+                  rules: [
+                    validatorService.rules.string(),
+                    validatorService.rules.regex({ pattern: 'name' }),
+                    validatorService.rules.length({ minLength: 6, maxLength: 100 }),
+                  ],
+                }),
+              ],
+              email: [
+                validatorService.rules.array({
+                  rules: [
+                    validatorService.rules.string(),
+                    validatorService.rules.regex({ pattern: 'email' }),
+                    validatorService.rules.length({ minLength: 6, maxLength: 100 }),
+                  ],
+                }),
+              ],
+            },
+          }),
         ],
       },
       model: sanitizedRequestModel,
@@ -125,43 +142,52 @@ describe(DbListUserUseCase.name, () => {
     },
     // name
     {
-      properties: { name: 1 },
-      validations: [{ field: 'name', rule: 'string', message: 'This value must be a string' }],
+      properties: { filters: '["=", "name", 1]' },
+      validations: [{ field: 'name.0', rule: 'string', message: 'This value must be a string' }],
     },
     {
-      properties: { name: ' InV@L1D n@m3 ' },
+      properties: { filters: '["=", "name", " InV@L1D n@m3 "]' },
       validations: [
         {
-          field: 'name',
+          field: 'name.0',
           rule: 'regex',
           message: 'This value must be valid according to the pattern: name',
         },
       ],
     },
     {
-      properties: { name: 'lower' },
+      properties: { filters: '["=", "name", "lower"]' },
       validations: [
-        { field: 'name', rule: 'length', message: 'This value length must be beetween 6 and 100' },
+        {
+          field: 'name.0',
+          rule: 'length',
+          message: 'This value length must be beetween 6 and 100',
+        },
       ],
     },
     {
       properties: {
-        name: 'BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName',
+        filters:
+          '["=", "name", "BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName"]',
       },
       validations: [
-        { field: 'name', rule: 'length', message: 'This value length must be beetween 6 and 100' },
+        {
+          field: 'name.0',
+          rule: 'length',
+          message: 'This value length must be beetween 6 and 100',
+        },
       ],
     },
     // email
     {
-      properties: { email: 1 },
-      validations: [{ field: 'email', rule: 'string', message: 'This value must be a string' }],
+      properties: { filters: '["=", "email", 1]' },
+      validations: [{ field: 'email.0', rule: 'string', message: 'This value must be a string' }],
     },
     {
-      properties: { email: ' InV@L1D eM@1L ' },
+      properties: { filters: '["=", "email", " InV@L1D eM@1L "]' },
       validations: [
         {
-          field: 'email',
+          field: 'email.0',
           rule: 'regex',
           message: 'This value must be valid according to the pattern: email',
         },
@@ -169,11 +195,15 @@ describe(DbListUserUseCase.name, () => {
     },
     {
       properties: {
-        email:
-          'biggest_email_biggest_email_biggest_email_biggest_email_biggest_email_biggest_email_biggest_email@invalid.com',
+        filters:
+          '["=", "email", "biggest_email_biggest_email_biggest_email_biggest_email_biggest_email_biggest_email_biggest_email@invalid.com"]',
       },
       validations: [
-        { field: 'email', rule: 'length', message: 'This value length must be beetween 6 and 100' },
+        {
+          field: 'email.0',
+          rule: 'length',
+          message: 'This value length must be beetween 6 and 100',
+        },
       ],
     },
   ])(
@@ -183,13 +213,11 @@ describe(DbListUserUseCase.name, () => {
         const { userRepository, sut } = makeSut();
 
         const requestModel = {
-          name: 'Any Name',
-          email: 'any@email.com',
+          filters: '[]',
           ...properties,
-        } as CustomerModel;
-        const responseModel = { ...requestModel };
+        } as ListUserUseCase.RequestModel;
 
-        userRepository.list.mockReturnValueOnce([responseModel]);
+        userRepository.list.mockReturnValueOnce([]);
 
         const sutResult = await sut.execute(requestModel).catch((e) => e);
 

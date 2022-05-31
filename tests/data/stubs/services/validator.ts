@@ -46,6 +46,7 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
     exists: (options) => ({ name: 'exists', options }),
     array: (options) => ({ name: 'array', options }),
     object: (options) => ({ name: 'object', options }),
+    listFilters: (options) => ({ name: 'listFilters', options }),
     custom: (options) => ({ name: 'custom', options }),
   };
 
@@ -249,6 +250,134 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
         });
 
         return null;
+      },
+      listFilters: async (key, options: Parameters<Rules['listFilters']>[0], model, data) => {
+        const value = lodashGet(model, key);
+        if (value === undefined) return null;
+
+        type PrimitiveType = string | number;
+        type FilterType = [PrimitiveType, PrimitiveType, PrimitiveType | PrimitiveType[]];
+        type OperatorType = [string, ...(OperatorType | FilterType)[]];
+
+        let arrayValue!: OperatorType;
+
+        const posibleFields = Object.keys(options.schema);
+        const validationError = {
+          field: key as string,
+          rule: 'listFilters',
+          message: `This value must be a valid list filters and with this posible fields: ${posibleFields.join(
+            ', ',
+          )}`,
+        };
+
+        try {
+          arrayValue = JSON.parse(value.replace(/'/g, "''"));
+        } catch {
+          return validationError;
+        }
+
+        if (!Array.isArray(arrayValue)) return validationError;
+        if (!arrayValue.length) return null;
+
+        const modelToValidate = {} as Record<keyof Model, PrimitiveType[]>;
+        posibleFields.forEach((posibleField) => {
+          modelToValidate[posibleField as keyof Model] = [] as PrimitiveType[];
+        });
+
+        function addValueToModel(
+          operator: string,
+          fieldOrFilter: OperatorType | FilterType,
+          values: OperatorType | FilterType,
+        ) {
+          const filterOperators = ['&', '|'];
+          const isFieldOperator =
+            typeof fieldOrFilter === 'string' && !filterOperators.includes(operator as string);
+
+          if (isFieldOperator) {
+            const valuesToPush = (Array.isArray(values) ? values : [values]) as PrimitiveType[];
+
+            modelToValidate[fieldOrFilter as keyof Model].push(...valuesToPush);
+          }
+        }
+
+        const operatorsValidationDict: Record<
+          string,
+          (item: OperatorType | FilterType) => boolean
+        > = {
+          '&': (item: OperatorType | FilterType) => {
+            const [, ...restItems] = item;
+
+            const isAllRestItemsValid = (restItems as (OperatorType | FilterType)[]).every(
+              (restItem) => {
+                if (!Array.isArray(restItem) || !restItem.length) return false;
+
+                const [operator, fieldOrFilter, values] = restItem;
+
+                if (!operatorsValidationDict[operator]?.(restItem)) return false;
+
+                addValueToModel(
+                  operator as string,
+                  fieldOrFilter as OperatorType | FilterType,
+                  values as OperatorType | FilterType,
+                );
+
+                return true;
+              },
+            );
+
+            return isAllRestItemsValid && !!restItems.length;
+          },
+          '|': (item: OperatorType | FilterType) => operatorsValidationDict['&'](item),
+          '=': (item: OperatorType | FilterType) => {
+            const [, field, values] = item;
+
+            if (
+              typeof field !== 'string' ||
+              !posibleFields.includes(field) ||
+              (typeof values !== 'string' && typeof values !== 'number')
+            ) {
+              return false;
+            }
+
+            return true;
+          },
+          '!=': (item: OperatorType | FilterType) => operatorsValidationDict['='](item),
+          '>': (item: OperatorType | FilterType) => operatorsValidationDict['='](item),
+          '>=': (item: OperatorType | FilterType) => operatorsValidationDict['='](item),
+          '<': (item: OperatorType | FilterType) => operatorsValidationDict['='](item),
+          '<=': (item: OperatorType | FilterType) => operatorsValidationDict['='](item),
+          ':': (item: OperatorType | FilterType) => operatorsValidationDict['='](item),
+          '!:': (item: OperatorType | FilterType) => operatorsValidationDict['='](item),
+          in: (item: OperatorType | FilterType) => {
+            const [, field, values] = item;
+
+            if (
+              typeof field !== 'string' ||
+              !posibleFields.includes(field) ||
+              !Array.isArray(values) ||
+              (values as []).some(
+                (valuesItem) => typeof valuesItem !== 'string' && typeof valuesItem !== 'number',
+              )
+            ) {
+              return false;
+            }
+
+            return true;
+          },
+        };
+
+        const [operator, fieldOrFilter, values] = arrayValue;
+
+        if (!operatorsValidationDict[operator]?.(arrayValue)) return validationError;
+
+        addValueToModel(operator, fieldOrFilter, values);
+
+        return validationRules.object(
+          'modelToValidate' as keyof Model,
+          options,
+          { modelToValidate } as unknown as Model,
+          data,
+        );
       },
       custom: async (key, options: Parameters<Rules['custom']>[0]) => {
         if (await options.validation()) return null;

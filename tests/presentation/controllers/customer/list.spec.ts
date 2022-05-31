@@ -21,9 +21,9 @@ describe(ListCustomerController.name, () => {
 
     listCustomerUseCase.execute.mockReturnValueOnce(Promise.resolve([customerMock]));
 
-    const sutResult = await sut.handle(customerMock);
+    const sutResult = await sut.handle({});
 
     expect(sutResult).toStrictEqual({ statusCode: 200, body: [customerMock] });
-    expect(listCustomerUseCase.execute).toBeCalledWith(customerMock);
+    expect(listCustomerUseCase.execute).toBeCalledWith({});
   });
 });

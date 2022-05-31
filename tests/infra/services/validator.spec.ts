@@ -190,7 +190,7 @@ describe(VanillaValidatorService.name, () => {
     });
   });
 
-  describe('Should throw if the value is not bigger than necessary', () => {
+  describe('Should throw if the value is smaller than min', () => {
     test('Should throw', async () => {
       const { sut } = makeSut();
 
@@ -238,7 +238,7 @@ describe(VanillaValidatorService.name, () => {
     });
   });
 
-  describe('Should throw if the value is not smaller than necessary', () => {
+  describe('Should throw if the value is bigger than max', () => {
     test('Should throw', async () => {
       const { sut } = makeSut();
 
@@ -286,7 +286,7 @@ describe(VanillaValidatorService.name, () => {
     });
   });
 
-  describe('Should throw if the value should match with a regex, but is not', () => {
+  describe('Should throw if the value does not match with a regex', () => {
     test('regex: custom', async () => {
       const { sut } = makeSut();
 
@@ -655,7 +655,7 @@ describe(VanillaValidatorService.name, () => {
     });
   });
 
-  describe('Should throw if an invalid array', () => {
+  describe('Should throw if the value is an invalid array', () => {
     test('Should throw', async () => {
       const { sut } = makeSut();
 
@@ -678,22 +678,6 @@ describe(VanillaValidatorService.name, () => {
           { field: 'anyProp', rule: 'array', message: 'This value must be an array' },
         ]),
       );
-    });
-
-    test('Should not throw', async () => {
-      const { sut } = makeSut();
-
-      const sutResult = await sut
-        .validate({
-          schema: {
-            anyProp: [sut.rules.array({ rules: [] })],
-          },
-          model: { anyProp: [] },
-          data: { anyData: [] },
-        })
-        .catch((e) => e);
-
-      expect(sutResult).toBeUndefined();
     });
 
     test('Should not throw and performValidation for nested rules', async () => {
@@ -729,7 +713,7 @@ describe(VanillaValidatorService.name, () => {
     });
   });
 
-  describe('Should throw if an invalid object', () => {
+  describe('Should throw if the value is an invalid object', () => {
     test('Should throw', async () => {
       const { sut } = makeSut();
 
@@ -752,22 +736,6 @@ describe(VanillaValidatorService.name, () => {
           { field: 'anyProp', rule: 'object', message: 'This value must be an object' },
         ]),
       );
-    });
-
-    test('Should not throw', async () => {
-      const { sut } = makeSut();
-
-      const sutResult = await sut
-        .validate({
-          schema: {
-            anyProp: [sut.rules.object({ schema: {} })],
-          },
-          model: { anyProp: {} },
-          data: { anyData: [] },
-        })
-        .catch((e) => e);
-
-      expect(sutResult).toBeUndefined();
     });
 
     test('Should not throw and performValidation for nested rules', async () => {
@@ -795,6 +763,265 @@ describe(VanillaValidatorService.name, () => {
             anyProp: [sut.rules.object({ schema: {} })],
           },
           model: { anyProp: undefined },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
+  });
+
+  describe('Should throw if the value is an invalid list filters', () => {
+    test('Should throw if JSON.parse throw', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [sut.rules.listFilters({ schema: {} })],
+          },
+          model: { anyProp: 'invalid_filter' },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toStrictEqual(
+        new ValidationException([
+          {
+            field: 'anyProp',
+            rule: 'listFilters',
+            message: 'This value must be a valid list filters and with this posible fields: ',
+          },
+        ]),
+      );
+    });
+
+    test('Should throw if JSON.parse result is not an array', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [sut.rules.listFilters({ schema: {} })],
+          },
+          model: { anyProp: '{}' },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toStrictEqual(
+        new ValidationException([
+          {
+            field: 'anyProp',
+            rule: 'listFilters',
+            message: 'This value must be a valid list filters and with this posible fields: ',
+          },
+        ]),
+      );
+    });
+
+    test('Should throw if was informed an invalid operator', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [sut.rules.listFilters({ schema: {} })],
+          },
+          model: { anyProp: '["invalid_operator"]' },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toStrictEqual(
+        new ValidationException([
+          {
+            field: 'anyProp',
+            rule: 'listFilters',
+            message: 'This value must be a valid list filters and with this posible fields: ',
+          },
+        ]),
+      );
+    });
+
+    test('Should throw if was informed an item that is not array for filter operators', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [sut.rules.listFilters({ schema: {} })],
+          },
+          model: { anyProp: '["&", "invalid array"]' },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toStrictEqual(
+        new ValidationException([
+          {
+            field: 'anyProp',
+            rule: 'listFilters',
+            message: 'This value must be a valid list filters and with this posible fields: ',
+          },
+        ]),
+      );
+    });
+
+    test('Should throw if was informed an item that is array without length for filter operators', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [sut.rules.listFilters({ schema: {} })],
+          },
+          model: { anyProp: '["&", []]' },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toStrictEqual(
+        new ValidationException([
+          {
+            field: 'anyProp',
+            rule: 'listFilters',
+            message: 'This value must be a valid list filters and with this posible fields: ',
+          },
+        ]),
+      );
+    });
+
+    test('Should throw if was informed an item that is array with invalid operator for filter operators', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [sut.rules.listFilters({ schema: {} })],
+          },
+          model: { anyProp: '["&", ["invalid_operator"]]' },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toStrictEqual(
+        new ValidationException([
+          {
+            field: 'anyProp',
+            rule: 'listFilters',
+            message: 'This value must be a valid list filters and with this posible fields: ',
+          },
+        ]),
+      );
+    });
+
+    test('Should throw if was informed an invalid item for field operators', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [
+              sut.rules.listFilters({
+                schema: { otherProp: [sut.rules.array({ rules: [sut.rules.string()] })] },
+              }),
+            ],
+          },
+          model: { anyProp: '["=", "otherProp", ["invalid_value"]]' },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toStrictEqual(
+        new ValidationException([
+          {
+            field: 'anyProp',
+            rule: 'listFilters',
+            message:
+              'This value must be a valid list filters and with this posible fields: otherProp',
+          },
+        ]),
+      );
+    });
+
+    test('Should throw if was informed an invalid item for `in` operator', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [
+              sut.rules.listFilters({
+                schema: { otherProp: [sut.rules.array({ rules: [sut.rules.string()] })] },
+              }),
+            ],
+          },
+          model: { anyProp: '["in", "otherProp", [["invalid_array_inside_value"]]]' },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toStrictEqual(
+        new ValidationException([
+          {
+            field: 'anyProp',
+            rule: 'listFilters',
+            message:
+              'This value must be a valid list filters and with this posible fields: otherProp',
+          },
+        ]),
+      );
+    });
+
+    test('Should not throw and performValidation for nested rules', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [
+              sut.rules.listFilters({
+                schema: { otherProp: [sut.rules.array({ rules: [sut.rules.string()] })] },
+              }),
+            ],
+          },
+          model: {
+            anyProp:
+              '["&", ["|", ["=", "otherProp", "anyValue"], ["!=", "otherProp", "anyValue"], [">", "otherProp", "anyValue"], [">=", "otherProp", "anyValue"], ["<", "otherProp", "anyValue"], ["<=", "otherProp", "anyValue"], [":", "otherProp", "anyValue"], ["!:", "otherProp", "anyValue"], ["in", "otherProp", ["anyValue"]]]]',
+          },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
+
+    test('Should not throw if is not informed a value', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [sut.rules.listFilters({ schema: {} })],
+          },
+          model: { anyProp: undefined },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
+
+    test('Should not throw if JSON.parse returns an empty array', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [sut.rules.listFilters({ schema: {} })],
+          },
+          model: { anyProp: '[]' },
           data: { anyData: [] },
         })
         .catch((e) => e);

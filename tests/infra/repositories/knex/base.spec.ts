@@ -82,57 +82,77 @@ describe(KnexBaseRepository.name, () => {
       const { knex, tableName, sut } = makeSut();
 
       const requestModel = {
-        anyProp: 'anyValue',
         page: 1,
         perPage: 20,
         orderBy: 'orderBy',
         order: 'desc',
+        filters:
+          '["&", ["|", ["=", "anyProp", "anyValue"], ["!=", "anyProp", "anyValue"], [">", "anyProp", "anyValue"], [">=", "anyProp", "anyValue"], ["<", "anyProp", "anyValue"], ["<=", "anyProp", "anyValue"], [":", "anyProp", "anyValue"], ["!:", "anyProp", "anyValue"], ["in", "anyProp", ["anyValue"]]]]',
       };
       const responseModel = { anyProp: 'anyValue' };
+
       knex.then.mockImplementationOnce((resolve) => resolve([responseModel]));
+      knex.where.mockImplementation((cb) => {
+        if (typeof cb === 'function') cb(knex);
+        return knex;
+      });
+      knex.orWhere.mockImplementation((cb) => {
+        if (typeof cb === 'function') cb(knex);
+        return knex;
+      });
 
       const sutResult = await sut.list(requestModel);
 
       expect(sutResult).toStrictEqual([responseModel]);
       expect(knex.whereNull).toBeCalledWith('deletedAt');
       expect(knex.table).toBeCalledWith(tableName);
-      expect(knex.where).toBeCalledWith({ anyProp: 'anyValue' });
+      expect(knex.where).toBeCalledWith('anyProp', 'anyValue');
       expect(knex.offset).toBeCalledWith(requestModel.perPage - 1 * requestModel.perPage);
       expect(knex.limit).toBeCalledWith(requestModel.perPage);
       expect(knex.orderBy).toBeCalledWith(requestModel.orderBy, requestModel.order);
+      knex.where.mockReset();
+      knex.orWhere.mockReset();
     });
 
-    test('Should use default values for page and perPage', async () => {
+    test('Should use default values for page, perPage, orderBy, order and filters', async () => {
       const { knex, tableName, sut } = makeSut();
 
-      const requestModel = { anyProp: 'anyValue' };
+      const requestModel = {};
       const responseModel = { anyProp: 'anyValue' };
       knex.then.mockImplementationOnce((resolve) => resolve([responseModel]));
+      knex.where.mockImplementationOnce((cb) => {
+        cb(knex);
+        return knex;
+      });
 
       const sutResult = await sut.list(requestModel as any);
 
       expect(sutResult).toStrictEqual([responseModel]);
       expect(knex.whereNull).toBeCalledWith('deletedAt');
       expect(knex.table).toBeCalledWith(tableName);
-      expect(knex.where).toBeCalledWith({ anyProp: 'anyValue' });
+      expect(knex.where).toBeCalledWith(expect.any(Function));
       expect(knex.offset).toBeCalledWith(0 * 20);
       expect(knex.limit).toBeCalledWith(20);
-      expect(knex.orderBy).toBeCalledWith('createdAt', 'asc');
+      expect(knex.orderBy).toBeCalledWith('createdAt', 'desc');
     });
 
     test('Should not filter whereNull deletedAt if withDeleted was informed', async () => {
       const { knex, tableName, sut } = makeSut();
 
-      const requestModel = { anyProp: 'anyValue', page: 1, perPage: 20 };
+      const requestModel = { page: 1, perPage: 20 };
       const responseModel = { anyProp: 'anyValue' };
       knex.then.mockImplementationOnce((resolve) => resolve([responseModel]));
+      knex.where.mockImplementationOnce((cb) => {
+        cb(knex);
+        return knex;
+      });
 
       const withDeleted = true;
       await sut.list(requestModel, withDeleted);
 
       expect(knex.whereNull).not.toBeCalled();
       expect(knex.table).toBeCalledWith(tableName);
-      expect(knex.where).toBeCalledWith({ anyProp: 'anyValue' });
+      expect(knex.where).toBeCalledWith(expect.any(Function));
       expect(knex.offset).toBeCalledWith(requestModel.perPage - 1 * requestModel.perPage);
       expect(knex.limit).toBeCalledWith(requestModel.perPage);
     });
