@@ -91,8 +91,18 @@ export abstract class KnexBaseRepository {
         '>=': () => builder.where(field as string, '>=', values as PrimitiveType),
         '<': () => builder.where(field as string, '<', values as PrimitiveType),
         '<=': () => builder.where(field as string, '<=', values as PrimitiveType),
-        ':': () => builder.whereRaw(`"${field}" ~* '${values}'`),
-        '!:': () => builder.whereRaw(`"${field}" !~* '${values}'`),
+        ':': () =>
+          builder.whereRaw(
+            `"${field}" ~* '${values}|${String(values)
+              .normalize('NFD')
+              .replace(/[\u0300-\u036f]/g, '')}'`,
+          ),
+        '!:': () =>
+          builder.whereRaw(
+            `"${field}" !~* '${values}|${String(values)
+              .normalize('NFD')
+              .replace(/[\u0300-\u036f]/g, '')}'`,
+          ),
         in: () => builder.whereIn(field as string, values as PrimitiveType[]),
       };
 
