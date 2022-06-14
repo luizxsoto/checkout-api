@@ -1,9 +1,10 @@
+import { makeBaseModelMock } from './base';
+
 import { CustomerModel } from '@/domain/models';
 
 export function makeCustomerModelMock(extraData?: Partial<CustomerModel>) {
   return new CustomerModel({
-    id: 'any_id',
-    createdAt: new Date(),
+    ...makeBaseModelMock(extraData),
     name: 'Any Name',
     email: 'valid@email.com',
     ...extraData,

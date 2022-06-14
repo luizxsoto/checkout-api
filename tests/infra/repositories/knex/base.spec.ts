@@ -162,7 +162,10 @@ describe(KnexBaseRepository.name, () => {
     test('Should create register and return correct values', async () => {
       const { knex, uuidService, tableName, sut } = makeSut();
 
-      const requestModel = { anyProp: 'anyValue' };
+      const requestModel = {
+        anyProp: 'anyValue',
+        createUserId: '00000000-0000-4000-8000-000000000001',
+      };
       const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
       uuidService.generateUniqueID.mockReturnValueOnce('any_id');
 
@@ -177,7 +180,10 @@ describe(KnexBaseRepository.name, () => {
     test('Should validate if repository result is a number', async () => {
       const { knex, uuidService, tableName, sut } = makeSut();
 
-      const requestModel = { anyProp: 'anyValue' };
+      const requestModel = {
+        anyProp: 'anyValue',
+        createUserId: '00000000-0000-4000-8000-000000000001',
+      };
       const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
       uuidService.generateUniqueID.mockReturnValueOnce('any_id');
       knex.then.mockImplementationOnce((resolve) => resolve(1));

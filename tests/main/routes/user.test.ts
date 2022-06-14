@@ -33,6 +33,7 @@ describe('User Routes', () => {
         email: 'any@email.com',
         password: 'hashed_password',
         roles: [],
+        createUserId: '00000000-0000-4000-8000-000000000001',
         createdAt: new Date().toISOString(),
       };
 
@@ -49,6 +50,7 @@ describe('User Routes', () => {
       expect(result.body[0]?.name).toBe(requestModel.name);
       expect(result.body[0]?.email).toBe(requestModel.email);
       expect(result.body[0]?.password).toBe(requestModel.password);
+      expect(result.body[0]?.createUserId).toBe(requestModel.createUserId);
       expect(result.body[0]?.createdAt).toBe(requestModel.createdAt);
     });
 
@@ -73,7 +75,7 @@ describe('User Routes', () => {
             field: 'filters',
             rule: 'listFilters',
             message:
-              'This value must be a valid list filters and with this posible fields: name, email',
+              'This value must be a valid list filters and with this posible fields: name, email, createUserId',
           },
         ],
       });
@@ -88,6 +90,7 @@ describe('User Routes', () => {
         email: 'any@email.com',
         password: 'hashed_password',
         roles: [],
+        createUserId: '00000000-0000-4000-8000-000000000001',
         createdAt: new Date().toISOString(),
       };
 
@@ -103,6 +106,7 @@ describe('User Routes', () => {
       expect(result.body.name).toBe(requestModel.name);
       expect(result.body.email).toBe(requestModel.email);
       expect(result.body.password).toBe(requestModel.password);
+      expect(result.body.createUserId).toBe(requestModel.createUserId);
       expect(result.body.createdAt).toBe(requestModel.createdAt);
     });
 
@@ -151,6 +155,7 @@ describe('User Routes', () => {
       expect(result.body.email).toBe(requestModel.email);
       expect(result.body.password).toBeDefined();
       expect(result.body.id).toBeDefined();
+      expect(result.body.createUserId).toBe('00000000-0000-4000-8000-000000000001');
       expect(result.body.createdAt).toBeDefined();
     });
 
@@ -190,6 +195,7 @@ describe('User Routes', () => {
         email: 'any@email.com',
         password: 'Password@123',
         roles: [],
+        createUserId: '00000000-0000-4000-8000-000000000001',
         createdAt: new Date().toISOString(),
       };
 
@@ -204,6 +210,7 @@ describe('User Routes', () => {
       expect(result.body.id).toBe(requestModel.id);
       expect(result.body.name).toBe(requestModel.name);
       expect(result.body.email).toBe(requestModel.email);
+      expect(result.body.createUserId).toBe(requestModel.createUserId);
       expect(result.body.createdAt).toBe(requestModel.createdAt);
       expect(result.body.password).toBeDefined();
       expect(result.body.updatedAt).toBeDefined();
@@ -248,6 +255,7 @@ describe('User Routes', () => {
         email: 'any@email.com',
         password: 'Password@123',
         roles: [],
+        createUserId: '00000000-0000-4000-8000-000000000001',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
@@ -263,6 +271,7 @@ describe('User Routes', () => {
       expect(result.body.id).toBe(requestModel.id);
       expect(result.body.name).toBe(requestModel.name);
       expect(result.body.email).toBe(requestModel.email);
+      expect(result.body.createUserId).toBe(requestModel.createUserId);
       expect(result.body.createdAt).toBe(requestModel.createdAt);
       expect(result.body.updatedAt).toBe(requestModel.updatedAt);
       expect(result.body.password).toBeDefined();

@@ -31,6 +31,7 @@ describe('Customer Routes', () => {
         id: '10000000-0000-4000-8000-000000000001',
         name: 'Any Name',
         email: 'any@email.com',
+        createUserId: '00000000-0000-4000-8000-000000000001',
         createdAt: new Date().toISOString(),
       };
 
@@ -46,6 +47,7 @@ describe('Customer Routes', () => {
       expect(result.body[0]?.id).toBe(requestModel.id);
       expect(result.body[0]?.name).toBe(requestModel.name);
       expect(result.body[0]?.email).toBe(requestModel.email);
+      expect(result.body[0]?.createUserId).toBe(requestModel.createUserId);
       expect(result.body[0]?.createdAt).toBe(requestModel.createdAt);
     });
 
@@ -70,7 +72,7 @@ describe('Customer Routes', () => {
             field: 'filters',
             rule: 'listFilters',
             message:
-              'This value must be a valid list filters and with this posible fields: name, email',
+              'This value must be a valid list filters and with this posible fields: name, email, createUserId',
           },
         ],
       });
@@ -83,6 +85,7 @@ describe('Customer Routes', () => {
         id: '10000000-0000-4000-8000-000000000001',
         name: 'Any Name',
         email: 'any@email.com',
+        createUserId: '00000000-0000-4000-8000-000000000001',
         createdAt: new Date().toISOString(),
       };
 
@@ -97,6 +100,7 @@ describe('Customer Routes', () => {
       expect(result.body.id).toBe(requestModel.id);
       expect(result.body.name).toBe(requestModel.name);
       expect(result.body.email).toBe(requestModel.email);
+      expect(result.body.createUserId).toBe(requestModel.createUserId);
       expect(result.body.createdAt).toBe(requestModel.createdAt);
     });
 
@@ -138,6 +142,7 @@ describe('Customer Routes', () => {
       expect(result.status).toBe(201);
       expect(result.body.name).toBe(requestModel.name);
       expect(result.body.email).toBe(requestModel.email);
+      expect(result.body.createUserId).toBe('00000000-0000-4000-8000-000000000001');
       expect(result.body.id).toBeDefined();
       expect(result.body.createdAt).toBeDefined();
     });
@@ -172,6 +177,7 @@ describe('Customer Routes', () => {
         id: '10000000-0000-4000-8000-000000000001',
         name: 'Any Name',
         email: 'any@email.com',
+        createUserId: '00000000-0000-4000-8000-000000000001',
         createdAt: new Date().toISOString(),
       };
 
@@ -186,6 +192,7 @@ describe('Customer Routes', () => {
       expect(result.body.id).toBe(requestModel.id);
       expect(result.body.name).toBe(requestModel.name);
       expect(result.body.email).toBe(requestModel.email);
+      expect(result.body.createUserId).toBe(requestModel.createUserId);
       expect(result.body.createdAt).toBe(requestModel.createdAt);
       expect(result.body.updatedAt).toBeDefined();
     });
@@ -225,6 +232,7 @@ describe('Customer Routes', () => {
         id: '10000000-0000-4000-8000-000000000001',
         name: 'Any Name',
         email: 'any@email.com',
+        createUserId: '00000000-0000-4000-8000-000000000001',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
@@ -240,6 +248,7 @@ describe('Customer Routes', () => {
       expect(result.body.id).toBe(requestModel.id);
       expect(result.body.name).toBe(requestModel.name);
       expect(result.body.email).toBe(requestModel.email);
+      expect(result.body.createUserId).toBe(requestModel.createUserId);
       expect(result.body.createdAt).toBe(requestModel.createdAt);
       expect(result.body.updatedAt).toBe(requestModel.updatedAt);
       expect(result.body.deletedAt).toBeDefined();

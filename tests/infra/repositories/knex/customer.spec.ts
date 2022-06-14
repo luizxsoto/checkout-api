@@ -40,7 +40,11 @@ describe(KnexCustomerRepository.name, () => {
     test('Should create customer and return correct values', async () => {
       const { knex, sut } = makeSut();
 
-      const requestModel = { name: 'Any Name', email: 'any@email.com' };
+      const requestModel = {
+        name: 'Any Name',
+        email: 'any@email.com',
+        createUserId: '00000000-0000-4000-8000-000000000001',
+      };
       const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
       knex.then.mockImplementationOnce((resolve) => resolve([responseModel]));
 

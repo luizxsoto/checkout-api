@@ -35,6 +35,7 @@ describe('Session Routes', () => {
         email: 'any@email.com',
         password,
         roles: [],
+        createUserId: '00000000-0000-4000-8000-000000000001',
         createdAt: new Date().toISOString(),
       };
 
@@ -47,6 +48,7 @@ describe('Session Routes', () => {
       expect(result.body.name).toBe(requestModel.name);
       expect(result.body.email).toBe(requestModel.email);
       expect(result.body.password).toBe(hashedPassword);
+      expect(result.body.createUserId).toBe(requestModel.createUserId);
       expect(result.body.createdAt).toBe(requestModel.createdAt);
       expect(result.body.bearerToken).toBeDefined();
     });

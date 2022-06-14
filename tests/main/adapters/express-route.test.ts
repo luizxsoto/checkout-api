@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 
 import { adaptRoute } from '@/main/adapters';
+import { makeSessionModelMock } from '@tests/domain/mocks/models';
 
 const mockErrorBody = { error: { message: 'error message' } };
 
@@ -10,9 +11,10 @@ jest.mock('@/presentation/helpers/http-helper', () => ({
 
 function makeSut() {
   const handle = jest.fn(() => Promise.resolve({ statusCode: 200, body: {} }));
-  const sut = adaptRoute(() => ({ handle }));
+  const makeController = jest.fn(() => ({ handle }));
+  const sut = adaptRoute(makeController);
 
-  return { handle, sut };
+  return { handle, makeController, sut };
 }
 
 describe('Express adaptRoute', () => {
@@ -21,12 +23,13 @@ describe('Express adaptRoute', () => {
   });
 
   test('Should call controller with body / params / query and return correct values', async () => {
-    const { handle, sut } = makeSut();
+    const { handle, makeController, sut } = makeSut();
 
     const request = {
       body: { bodyProp: 'any_body' },
       params: { paramsProp: 'any_params' },
       query: { queryProp: 'any_query' },
+      session: makeSessionModelMock(),
     };
     const response = {
       status: jest.fn().mockReturnThis(),
@@ -43,6 +46,7 @@ describe('Express adaptRoute', () => {
       next,
     );
 
+    expect(makeController).toBeCalledWith(request.session);
     expect(handle).toBeCalledWith({ ...request.body, ...request.params, ...request.query });
     expect(response.status).toBeCalledWith(200);
     expect(response.json).toBeCalledWith({ id: 'any_id' });

@@ -50,6 +50,7 @@ describe(KnexUserRepository.name, () => {
         email: 'any@email.com',
         password: 'Password@123',
         roles: ['admin'] as Roles[],
+        createUserId: '00000000-0000-4000-8000-000000000001',
       };
       const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
       knex.then.mockImplementationOnce((resolve) => resolve([responseModel]));

@@ -82,6 +82,14 @@ describe(DbListCustomerUseCase.name, () => {
                   ],
                 }),
               ],
+              createUserId: [
+                validatorService.rules.array({
+                  rules: [
+                    validatorService.rules.string(),
+                    validatorService.rules.regex({ pattern: 'uuidV4' }),
+                  ],
+                }),
+              ],
             },
           }),
         ],
@@ -206,6 +214,23 @@ describe(DbListCustomerUseCase.name, () => {
           field: 'email.0',
           rule: 'length',
           message: 'This value length must be beetween 6 and 100',
+        },
+      ],
+    },
+    // createUserId
+    {
+      properties: { filters: '["=", "createUserId", 1]' },
+      validations: [
+        { field: 'createUserId.0', rule: 'string', message: 'This value must be a string' },
+      ],
+    },
+    {
+      properties: { filters: '["=", "createUserId", "invalid_uuid"]' },
+      validations: [
+        {
+          field: 'createUserId.0',
+          rule: 'regex',
+          message: 'This value must be valid according to the pattern: uuidV4',
         },
       ],
     },

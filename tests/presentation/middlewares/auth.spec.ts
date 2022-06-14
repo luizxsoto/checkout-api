@@ -1,6 +1,7 @@
 import { Roles } from '@/domain/models';
 import { InvalidCredentials, InvalidPermissions } from '@/main/exceptions';
 import { AuthMiddleware } from '@/presentation/middlewares';
+import { makeSessionModelMock } from '@tests/domain/mocks/models';
 import { makeDecrypterCryptographyStub } from '@tests/presentation/stubs/cryptography';
 
 function makeSut(roles?: Roles[]) {
@@ -14,7 +15,7 @@ describe(AuthMiddleware.name, () => {
   test('Should decrypt the bearerToken return user', async () => {
     const { decrypter, sut } = makeSut();
 
-    const decryptResult = { id: 'any_id', roles: ['any_role'] };
+    const decryptResult = makeSessionModelMock();
     decrypter.decrypt.mockReturnValueOnce(Promise.resolve(decryptResult));
 
     const request = { bearerToken: 'Bearer valid_bearerToken' };
@@ -22,7 +23,7 @@ describe(AuthMiddleware.name, () => {
 
     expect(decrypter.decrypt).toBeCalledWith(request.bearerToken.replace('Bearer ', ''));
 
-    expect(sutResult).toStrictEqual({ user: decryptResult });
+    expect(sutResult).toStrictEqual({ session: { ...decryptResult } });
   });
 
   test('Should throw InvalidCredentials if no bearerToken was informed', async () => {
@@ -43,10 +44,22 @@ describe(AuthMiddleware.name, () => {
     expect(sutResult).toStrictEqual(new InvalidCredentials());
   });
 
+  test('Should throw InvalidCredentials if decryptResult is invalid', async () => {
+    const { decrypter, sut } = makeSut();
+
+    const decryptResult = { invalid: 'result' };
+    decrypter.decrypt.mockReturnValueOnce(Promise.resolve(decryptResult));
+
+    const request = { bearerToken: 'Bearer valid_bearerToken' };
+    const sutResult = await sut.handle(request).catch((e) => e);
+
+    expect(sutResult).toStrictEqual(new InvalidCredentials());
+  });
+
   test('Should throw InvalidPermissions if an required role was not informed', async () => {
     const { decrypter, sut } = makeSut(['admin']);
 
-    const decryptResult = { id: 'any_id', roles: ['any_role'] };
+    const decryptResult = makeSessionModelMock({ roles: [] });
     decrypter.decrypt.mockReturnValueOnce(Promise.resolve(decryptResult));
 
     const request = { bearerToken: 'Bearer valid_bearerToken' };

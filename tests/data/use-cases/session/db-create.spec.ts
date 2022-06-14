@@ -46,6 +46,7 @@ describe(DbCreateSessionUseCase.name, () => {
       roles: ['any_role'],
       createdAt: new Date(),
       password: 'hashed_password',
+      createUserId: '00000000-0000-4000-8000-000000000001',
       bearerToken: 'any_bearerToken',
     };
 
@@ -107,7 +108,7 @@ describe(DbCreateSessionUseCase.name, () => {
       data: { users: [] },
     });
     expect(encrypterCryptography.encrypt).toBeCalledWith({
-      id: responseModel.id,
+      userId: responseModel.id,
       roles: responseModel.roles,
     });
   });

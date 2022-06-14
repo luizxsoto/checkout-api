@@ -4,12 +4,16 @@ import { ValidationException } from '@/main/exceptions';
 import { makeHasherCryptographyStub } from '@tests/data/stubs/cryptography';
 import { makeUserRepositoryStub } from '@tests/data/stubs/repositories';
 import { makeValidatorServiceStub } from '@tests/data/stubs/services';
+import { makeSessionModelMock } from '@tests/domain/mocks/models';
+
+const sessionMock = makeSessionModelMock();
 
 function makeSut() {
   const userRepository = makeUserRepositoryStub();
   const validatorService = makeValidatorServiceStub();
   const hasherCryptography = makeHasherCryptographyStub();
   const sut = new DbCreateUserUseCase(
+    sessionMock,
     userRepository,
     userRepository,
     validatorService,
@@ -30,7 +34,10 @@ describe(DbCreateUserUseCase.name, () => {
       roles: [],
       anyWrongProp: 'anyValue',
     };
-    const sanitizedRequestModel = { ...requestModel };
+    const sanitizedRequestModel = {
+      ...requestModel,
+      createUserId: sessionMock.userId,
+    };
     Reflect.deleteProperty(sanitizedRequestModel, 'anyWrongProp');
     const responseModel = {
       ...sanitizedRequestModel,
