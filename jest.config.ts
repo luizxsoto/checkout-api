@@ -9,6 +9,7 @@ const config: Config.InitialOptions = {
     '<rootDir>/src/**/*.ts',
     '!<rootDir>/src/domain/**',
     '!<rootDir>/src/main/config/env.ts',
+    '!<rootDir>/src/main/config/*.d.ts',
     '!<rootDir>/src/main/server.ts',
     '!<rootDir>/src/presentation/dtos/**',
     '!<rootDir>/src/**/contracts/**',
