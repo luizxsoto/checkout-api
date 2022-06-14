@@ -140,7 +140,9 @@ export abstract class KnexBaseRepository {
 
   protected async baseUpdate<Model extends BaseModel>(
     where: Partial<Model>,
-    requestModel: Partial<Omit<Model, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>>,
+    requestModel: Partial<
+      Omit<Model, 'id' | 'createUserId' | 'createdAt' | 'updatedAt' | 'deletedAt'>
+    >,
   ): Promise<Model> {
     const updateModel = {
       ...requestModel,

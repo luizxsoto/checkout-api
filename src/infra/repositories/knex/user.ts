@@ -47,7 +47,9 @@ export class KnexUserRepository extends KnexBaseRepository implements Repositori
 
   public async update(
     where: Partial<Omit<UserModel, 'roles'>>,
-    model: Partial<Omit<UserModel, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>>,
+    model: Partial<
+      Omit<UserModel, 'id' | 'createUserId' | 'createdAt' | 'updatedAt' | 'deletedAt'>
+    >,
   ): Promise<UpdateUserRepository.ResponseModel> {
     const result = await this.baseUpdate<Omit<UserModel, 'roles'> & { roles: string }>(where, {
       ...model,

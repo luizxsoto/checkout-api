@@ -84,6 +84,14 @@ export class DbListCustomerUseCase implements ListCustomerUseCase.UseCase {
                   ],
                 }),
               ],
+              createUserId: [
+                this.validatorService.rules.array({
+                  rules: [
+                    this.validatorService.rules.string(),
+                    this.validatorService.rules.regex({ pattern: 'uuidV4' }),
+                  ],
+                }),
+              ],
             },
           }),
         ],

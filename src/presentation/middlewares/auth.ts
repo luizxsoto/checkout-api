@@ -1,5 +1,5 @@
 import { Decrypter } from '@/data/contracts/cryptography';
-import { Roles } from '@/domain/models';
+import { Roles, SessionModel } from '@/domain/models';
 import { InvalidCredentials, InvalidPermissions } from '@/main/exceptions';
 import { Middleware } from '@/presentation/contracts';
 
@@ -13,20 +13,24 @@ export class AuthMiddleware implements Middleware {
   async handle(request: AuthMiddlewareRequest): Promise<Record<string, unknown>> {
     if (!request.bearerToken) throw new InvalidCredentials();
 
-    const user = {} as { id: string; roles: Roles[] };
+    const session = {} as SessionModel;
     try {
-      const decryptResult = await this.decrypter.decrypt<{ id: string; roles: Roles[] }>(
+      const decryptResult = await this.decrypter.decrypt<{ userId: string; roles: Roles[] }>(
         request.bearerToken.replace('Bearer ', ''),
       );
-      user.id = decryptResult.id;
-      user.roles = decryptResult.roles;
+      session.userId = decryptResult.userId;
+      session.roles = decryptResult.roles;
     } catch {
       throw new InvalidCredentials();
     }
 
-    if (this.roles.length && !this.roles.some((role) => user.roles.includes(role)))
+    const propsToValidateSession = ['userId', 'roles'];
+    if (!propsToValidateSession.every((prop) => Boolean(session[prop as keyof SessionModel])))
+      throw new InvalidCredentials();
+
+    if (this.roles.length && !this.roles.some((role) => session.roles.includes(role)))
       throw new InvalidPermissions();
 
-    return { user };
+    return { session };
   }
 }

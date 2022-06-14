@@ -3,7 +3,9 @@ import { UserModel } from '@/domain/models';
 export type RequestModel = Parameters<
   (
     where: Partial<Omit<UserModel, 'roles'>>,
-    model: Partial<Omit<UserModel, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>>,
+    model: Partial<
+      Omit<UserModel, 'id' | 'createUserId' | 'createdAt' | 'updatedAt' | 'deletedAt'>
+    >,
   ) => void
 >;
 
