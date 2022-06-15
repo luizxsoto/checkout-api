@@ -47,6 +47,7 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
   public rules: ValidatorService.Rules = {
     required: (options) => ({ name: 'required', options }),
     string: (options) => ({ name: 'string', options }),
+    date: (options) => ({ name: 'date', options }),
     in: (options) => ({ name: 'in', options }),
     number: (options) => ({ name: 'number', options }),
     min: (options) => ({ name: 'min', options }),
@@ -70,7 +71,7 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
       data: ValidatorService.Params<Model, ValidatorData>['data'],
     ) => null | ValidationItem | Promise<null | ValidationItem>
   > = {
-    required: (key, _options, model) => {
+    required: (key, _options: Parameters<Rules['required']>[0], model) => {
       const value = lodashGet(model, key);
       if (value !== null && value !== undefined) return null;
 
@@ -80,7 +81,7 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
         message: 'This value is required',
       };
     },
-    string: (key, _options, model) => {
+    string: (key, _options: Parameters<Rules['string']>[0], model) => {
       const value = lodashGet(model, key);
       if (value === undefined || typeof value === 'string') return null;
 
@@ -89,6 +90,33 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
         rule: 'string',
         message: 'This value must be a string',
       };
+    },
+    date: (key, _options: Parameters<Rules['date']>[0], model) => {
+      const value = lodashGet(model, key);
+      if (value === undefined) return null;
+
+      const datePatterns = [
+        /^(\d{3}[1-9]|\d{2}[1-9]\d)-([0][1-9]|1[0-2])-(0[1-9]|[1-2]\d|3[0-1])$/,
+        /^(\d{3}[1-9]|\d{2}[1-9]\d)-([0][1-9]|1[0-2])-(0[1-9]|[1-2]\d|3[0-1])T([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d\.\d{3}Z$/,
+      ];
+      if (typeof value !== 'string' || !datePatterns.some((datePattern) => datePattern.test(value)))
+        return {
+          field: key as string,
+          rule: 'date',
+          message: 'This value must be a valid date',
+        };
+
+      const [dateYear, dateMonth, dateDay] = new Date(value).toISOString().split(/-|T/);
+      const [year, month, day] = value.split('-');
+
+      if (dateYear !== year || dateMonth !== month || dateDay !== day)
+        return {
+          field: key as string,
+          rule: 'date',
+          message: 'This value must be a valid date',
+        };
+
+      return null;
     },
     in: (key, options: Parameters<Rules['in']>[0], model) => {
       const value = lodashGet(model, key);
@@ -100,7 +128,7 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
         message: `This value must be in: ${options.values.join(', ')}`,
       };
     },
-    number: (key, _options, model) => {
+    number: (key, _options: Parameters<Rules['number']>[0], model) => {
       const value = lodashGet(model, key);
       if (value === undefined || !Number.isNaN(Number(value))) return null;
 
@@ -225,7 +253,12 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
 
       await Promise.all(
         value.map((_, index) =>
-          this.performValidation(options.rules, `${key}.${index}` as keyof Model, model, data),
+          this.performValidation(
+            options.rules,
+            `${String(key)}.${index}` as keyof Model,
+            model,
+            data,
+          ),
         ),
       );
 

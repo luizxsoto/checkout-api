@@ -3,6 +3,7 @@
 export interface Rules {
   required: (options?: null) => { name: 'required'; options: Parameters<Rules['required']>[0] };
   string: (options?: null) => { name: 'string'; options: Parameters<Rules['string']>[0] };
+  date: (options?: null) => { name: 'date'; options: Parameters<Rules['date']>[0] };
   in: (options: { values: string[] }) => { name: 'in'; options: Parameters<Rules['in']>[0] };
   number: (options?: null) => { name: 'number'; options: Parameters<Rules['number']>[0] };
   min: (options: { value: number }) => { name: 'min'; options: Parameters<Rules['min']>[0] };
