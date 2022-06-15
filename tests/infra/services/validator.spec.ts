@@ -90,6 +90,72 @@ describe(VanillaValidatorService.name, () => {
     });
   });
 
+  describe('Should throw if the value should be a valid date, but is not', () => {
+    test('Should throw', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: { anyProp: [sut.rules.date()] },
+          model: { anyProp: 'invalid_date' },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toStrictEqual(
+        new ValidationException([
+          { field: 'anyProp', rule: 'date', message: 'This value must be a valid date' },
+        ]),
+      );
+    });
+
+    test('Should throw if is nonexistent date', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: { anyProp: [sut.rules.date()] },
+          model: { anyProp: '0001-02-31' },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toStrictEqual(
+        new ValidationException([
+          { field: 'anyProp', rule: 'date', message: 'This value must be a valid date' },
+        ]),
+      );
+    });
+
+    test('Should not throw', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: { anyProp: [sut.rules.date()] },
+          model: { anyProp: '0001-01-01' },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
+
+    test('Should not throw if is not informed a value', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: { anyProp: [sut.rules.date()] },
+          model: { anyProp: undefined },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
+  });
+
   describe('Should throw if the value should be in, but is not', () => {
     test('Should throw', async () => {
       const { sut } = makeSut();
