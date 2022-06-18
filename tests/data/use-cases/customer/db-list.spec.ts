@@ -58,10 +58,7 @@ describe(DbListCustomerUseCase.name, () => {
         ],
         filters: [
           validatorService.rules.listFilters<
-            Omit<
-              CustomerModel,
-              'id' | 'password' | 'roles' | 'createdAt' | 'updatedAt' | 'deletedAt'
-            >
+            Omit<CustomerModel, 'id' | 'password' | 'roles' | 'deletedAt'>
           >({
             schema: {
               name: [
@@ -88,6 +85,16 @@ describe(DbListCustomerUseCase.name, () => {
                     validatorService.rules.string(),
                     validatorService.rules.regex({ pattern: 'uuidV4' }),
                   ],
+                }),
+              ],
+              createdAt: [
+                validatorService.rules.array({
+                  rules: [validatorService.rules.string(), validatorService.rules.date()],
+                }),
+              ],
+              updatedAt: [
+                validatorService.rules.array({
+                  rules: [validatorService.rules.string(), validatorService.rules.date()],
                 }),
               ],
             },
@@ -231,6 +238,40 @@ describe(DbListCustomerUseCase.name, () => {
           field: 'createUserId.0',
           rule: 'regex',
           message: 'This value must be valid according to the pattern: uuidV4',
+        },
+      ],
+    },
+    // createdAt
+    {
+      properties: { filters: '["=", "createdAt", 1]' },
+      validations: [
+        { field: 'createdAt.0', rule: 'string', message: 'This value must be a string' },
+      ],
+    },
+    {
+      properties: { filters: '["=", "createdAt", "invalid_date"]' },
+      validations: [
+        {
+          field: 'createdAt.0',
+          rule: 'date',
+          message: 'This value must be a valid date',
+        },
+      ],
+    },
+    // updatedAt
+    {
+      properties: { filters: '["=", "updatedAt", 1]' },
+      validations: [
+        { field: 'updatedAt.0', rule: 'string', message: 'This value must be a string' },
+      ],
+    },
+    {
+      properties: { filters: '["=", "updatedAt", "invalid_date"]' },
+      validations: [
+        {
+          field: 'updatedAt.0',
+          rule: 'date',
+          message: 'This value must be a valid date',
         },
       ],
     },

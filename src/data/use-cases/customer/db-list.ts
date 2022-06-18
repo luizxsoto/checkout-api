@@ -60,10 +60,7 @@ export class DbListCustomerUseCase implements ListCustomerUseCase.UseCase {
         ],
         filters: [
           this.validatorService.rules.listFilters<
-            Omit<
-              CustomerModel,
-              'id' | 'password' | 'roles' | 'createdAt' | 'updatedAt' | 'deletedAt'
-            >
+            Omit<CustomerModel, 'id' | 'password' | 'roles' | 'deletedAt'>
           >({
             schema: {
               name: [
@@ -90,6 +87,16 @@ export class DbListCustomerUseCase implements ListCustomerUseCase.UseCase {
                     this.validatorService.rules.string(),
                     this.validatorService.rules.regex({ pattern: 'uuidV4' }),
                   ],
+                }),
+              ],
+              createdAt: [
+                this.validatorService.rules.array({
+                  rules: [this.validatorService.rules.string(), this.validatorService.rules.date()],
+                }),
+              ],
+              updatedAt: [
+                this.validatorService.rules.array({
+                  rules: [this.validatorService.rules.string(), this.validatorService.rules.date()],
                 }),
               ],
             },

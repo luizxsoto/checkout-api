@@ -58,7 +58,7 @@ export class DbListUserUseCase implements ListUserUseCase.UseCase {
         ],
         filters: [
           this.validatorService.rules.listFilters<
-            Omit<UserModel, 'id' | 'password' | 'roles' | 'createdAt' | 'updatedAt' | 'deletedAt'>
+            Omit<UserModel, 'id' | 'password' | 'roles' | 'deletedAt'>
           >({
             schema: {
               name: [
@@ -85,6 +85,16 @@ export class DbListUserUseCase implements ListUserUseCase.UseCase {
                     this.validatorService.rules.string(),
                     this.validatorService.rules.regex({ pattern: 'uuidV4' }),
                   ],
+                }),
+              ],
+              createdAt: [
+                this.validatorService.rules.array({
+                  rules: [this.validatorService.rules.string(), this.validatorService.rules.date()],
+                }),
+              ],
+              updatedAt: [
+                this.validatorService.rules.array({
+                  rules: [this.validatorService.rules.string(), this.validatorService.rules.date()],
                 }),
               ],
             },
