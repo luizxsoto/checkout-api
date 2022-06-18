@@ -153,9 +153,11 @@ describe('User Routes', () => {
       expect(result.status).toBe(201);
       expect(result.body.name).toBe(requestModel.name);
       expect(result.body.email).toBe(requestModel.email);
-      expect(result.body.password).toBeDefined();
-      expect(result.body.id).toBeDefined();
       expect(result.body.createUserId).toBe('00000000-0000-4000-8000-000000000001');
+      expect(result.body.id).toMatch(
+        /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i,
+      );
+      expect(result.body.password).toBeDefined();
       expect(result.body.createdAt).toBeDefined();
     });
 
