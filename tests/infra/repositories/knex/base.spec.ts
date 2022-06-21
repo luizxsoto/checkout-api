@@ -202,7 +202,10 @@ describe(KnexBaseRepository.name, () => {
       const { knex, tableName, sut } = makeSut();
 
       const where = { anyProp: 'anyValue' };
-      const requestModel = { anyProp: 'otherValue' };
+      const requestModel = {
+        anyProp: 'otherValue',
+        updateUserId: '00000000-0000-4000-8000-000000000001',
+      };
       const updateModel = { ...requestModel, updatedAt: new Date() };
 
       await sut.update(where as unknown as BaseModel, requestModel);
@@ -216,7 +219,10 @@ describe(KnexBaseRepository.name, () => {
       const { knex, tableName, sut } = makeSut();
 
       const where = { anyProp: 'anyValue' };
-      const requestModel = { anyProp: 'otherValue' };
+      const requestModel = {
+        anyProp: 'otherValue',
+        updateUserId: '00000000-0000-4000-8000-000000000001',
+      };
       const updateModel = { ...requestModel, updatedAt: new Date() };
       knex.then.mockImplementationOnce((resolve) => resolve(1));
 

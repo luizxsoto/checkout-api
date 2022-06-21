@@ -87,6 +87,14 @@ describe(DbListUserUseCase.name, () => {
                   ],
                 }),
               ],
+              updateUserId: [
+                validatorService.rules.array({
+                  rules: [
+                    validatorService.rules.string(),
+                    validatorService.rules.regex({ pattern: 'uuidV4' }),
+                  ],
+                }),
+              ],
               createdAt: [
                 validatorService.rules.array({
                   rules: [validatorService.rules.string(), validatorService.rules.date()],
@@ -236,6 +244,23 @@ describe(DbListUserUseCase.name, () => {
       validations: [
         {
           field: 'createUserId.0',
+          rule: 'regex',
+          message: 'This value must be valid according to the pattern: uuidV4',
+        },
+      ],
+    },
+    // updateUserId
+    {
+      properties: { filters: '["=", "updateUserId", 1]' },
+      validations: [
+        { field: 'updateUserId.0', rule: 'string', message: 'This value must be a string' },
+      ],
+    },
+    {
+      properties: { filters: '["=", "updateUserId", "invalid_uuid"]' },
+      validations: [
+        {
+          field: 'updateUserId.0',
           rule: 'regex',
           message: 'This value must be valid according to the pattern: uuidV4',
         },

@@ -62,6 +62,7 @@ describe(KnexCustomerRepository.name, () => {
         id: 'any_id',
         name: 'Any Name',
         email: 'any@email.com',
+        updateUserId: '00000000-0000-4000-8000-000000000001',
         createdAt: new Date(),
       };
       const responseModel = { ...requestModel, updatedAt: new Date() };

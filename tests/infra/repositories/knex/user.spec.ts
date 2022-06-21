@@ -71,6 +71,7 @@ describe(KnexUserRepository.name, () => {
         email: 'any@email.com',
         password: 'Password@123',
         roles: [],
+        updateUserId: '00000000-0000-4000-8000-000000000001',
         createdAt: new Date(),
       };
       const responseModel = { ...requestModel, updatedAt: new Date() };

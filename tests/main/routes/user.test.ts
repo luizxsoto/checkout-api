@@ -34,6 +34,7 @@ describe('User Routes', () => {
         password: 'hashed_password',
         roles: [],
         createUserId: '00000000-0000-4000-8000-000000000001',
+        updateUserId: null,
         createdAt: new Date().toISOString(),
       };
 
@@ -51,6 +52,7 @@ describe('User Routes', () => {
       expect(result.body[0]?.email).toBe(requestModel.email);
       expect(result.body[0]?.password).toBe(requestModel.password);
       expect(result.body[0]?.createUserId).toBe(requestModel.createUserId);
+      expect(result.body[0]?.updateUserId).toBe(requestModel.updateUserId);
       expect(result.body[0]?.createdAt).toBe(requestModel.createdAt);
     });
 
@@ -75,7 +77,7 @@ describe('User Routes', () => {
             field: 'filters',
             rule: 'listFilters',
             message:
-              'This value must be a valid list filters and with this posible fields: name, email, createUserId, createdAt, updatedAt',
+              'This value must be a valid list filters and with this posible fields: name, email, createUserId, updateUserId, createdAt, updatedAt',
           },
         ],
       });
@@ -91,6 +93,7 @@ describe('User Routes', () => {
         password: 'hashed_password',
         roles: [],
         createUserId: '00000000-0000-4000-8000-000000000001',
+        updateUserId: null,
         createdAt: new Date().toISOString(),
       };
 
@@ -107,6 +110,7 @@ describe('User Routes', () => {
       expect(result.body.email).toBe(requestModel.email);
       expect(result.body.password).toBe(requestModel.password);
       expect(result.body.createUserId).toBe(requestModel.createUserId);
+      expect(result.body.updateUserId).toBe(requestModel.updateUserId);
       expect(result.body.createdAt).toBe(requestModel.createdAt);
     });
 
@@ -144,16 +148,17 @@ describe('User Routes', () => {
         password: 'Password@123',
         roles: [],
       };
+      const createUserId = '00000000-0000-4000-8000-000000000001';
 
       const result = await request(app)
         .post('/api/users')
-        .set('authorization', await makeBearerTokenMock())
+        .set('authorization', await makeBearerTokenMock({ userId: createUserId }))
         .send(requestModel);
 
       expect(result.status).toBe(201);
       expect(result.body.name).toBe(requestModel.name);
       expect(result.body.email).toBe(requestModel.email);
-      expect(result.body.createUserId).toBe('00000000-0000-4000-8000-000000000001');
+      expect(result.body.createUserId).toBe(createUserId);
       expect(result.body.id).toMatch(
         /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i,
       );
@@ -200,12 +205,13 @@ describe('User Routes', () => {
         createUserId: '00000000-0000-4000-8000-000000000001',
         createdAt: new Date().toISOString(),
       };
+      const updateUserId = '00000000-0000-4000-8000-000000000001';
 
       await knexConfig.table('users').insert(requestModel);
 
       const result = await request(app)
         .put(`/api/users/${requestModel.id}`)
-        .set('authorization', await makeBearerTokenMock())
+        .set('authorization', await makeBearerTokenMock({ userId: updateUserId }))
         .send(requestModel);
 
       expect(result.status).toBe(200);
@@ -213,9 +219,10 @@ describe('User Routes', () => {
       expect(result.body.name).toBe(requestModel.name);
       expect(result.body.email).toBe(requestModel.email);
       expect(result.body.createUserId).toBe(requestModel.createUserId);
+      expect(result.body.updateUserId).toBe(updateUserId);
       expect(result.body.createdAt).toBe(requestModel.createdAt);
-      expect(result.body.password).toBeDefined();
       expect(result.body.updatedAt).toBeDefined();
+      expect(result.body.password).toBeDefined();
     });
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
@@ -258,6 +265,7 @@ describe('User Routes', () => {
         password: 'Password@123',
         roles: [],
         createUserId: '00000000-0000-4000-8000-000000000001',
+        updateUserId: null,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
@@ -274,10 +282,11 @@ describe('User Routes', () => {
       expect(result.body.name).toBe(requestModel.name);
       expect(result.body.email).toBe(requestModel.email);
       expect(result.body.createUserId).toBe(requestModel.createUserId);
+      expect(result.body.updateUserId).toBe(requestModel.updateUserId);
       expect(result.body.createdAt).toBe(requestModel.createdAt);
       expect(result.body.updatedAt).toBe(requestModel.updatedAt);
-      expect(result.body.password).toBeDefined();
       expect(result.body.deletedAt).toBeDefined();
+      expect(result.body.password).toBeDefined();
     });
 
     test('Should return a correct body validation error if some prop is invalid', async () => {

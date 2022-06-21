@@ -25,7 +25,7 @@ describe(DbShowUserUseCase.name, () => {
     };
     const sanitizedRequestModel = { ...requestModel };
     Reflect.deleteProperty(sanitizedRequestModel, 'anyWrongProp');
-    const responseModel = { ...sanitizedRequestModel, updatedAt: new Date() };
+    const responseModel = { ...sanitizedRequestModel };
     const existsUser = { ...responseModel };
 
     userRepository.findBy.mockReturnValueOnce([existsUser]);

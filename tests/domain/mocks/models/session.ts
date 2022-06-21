@@ -1,6 +1,6 @@
 import { sign } from 'jsonwebtoken';
 
-import { Roles, SessionModel } from '@/domain/models';
+import { SessionModel } from '@/domain/models';
 import { envConfig } from '@/main/config';
 
 export function makeSessionModelMock(extraData?: Partial<SessionModel>) {
@@ -11,8 +11,8 @@ export function makeSessionModelMock(extraData?: Partial<SessionModel>) {
   });
 }
 
-export async function makeBearerTokenMock(roles: Roles[] = ['admin']) {
-  const bearerToken = sign({ ...makeSessionModelMock({ roles }) }, envConfig.jwtSecret);
+export async function makeBearerTokenMock(extraData?: Partial<SessionModel>) {
+  const bearerToken = sign({ ...makeSessionModelMock(extraData) }, envConfig.jwtSecret);
 
   return bearerToken;
 }
