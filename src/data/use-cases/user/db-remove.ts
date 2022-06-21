@@ -32,7 +32,9 @@ export class DbRemoveUserUseCase implements RemoveUserUseCase.UseCase {
   private sanitizeRequestModel(
     requestModel: RemoveUserUseCase.RequestModel,
   ): RemoveUserUseCase.RequestModel {
-    return { id: requestModel.id };
+    return {
+      id: requestModel.id,
+    };
   }
 
   private async validateRequestModel(

@@ -109,12 +109,9 @@ export abstract class KnexBaseRepository {
       operatorsQueryDict[operator]?.();
     }
 
-    const query = this.knex
-      .table(this.tableName)
-      .where((builder) => buildQuery(builder, JSON.parse(filters.replace(/'/g, "''"))))
-      .offset(offset)
-      .limit(perPage)
-      .orderBy(orderBy, order);
+    const query = this.knex.table(this.tableName);
+    buildQuery(query, JSON.parse(filters.replace(/'/g, "''")));
+    query.offset(offset).limit(perPage).orderBy(orderBy, order);
     if (!withDeleted) query.whereNull('deletedAt');
 
     const rows = await this.baseRun<Model[]>(query);
@@ -123,7 +120,10 @@ export abstract class KnexBaseRepository {
   }
 
   protected async baseCreate<Model extends BaseModel>(
-    requestModel: Omit<Model, 'id' | 'updateUserId' | 'createdAt' | 'updatedAt' | 'deletedAt'>,
+    requestModel: Omit<
+      Model,
+      'id' | 'updateUserId' | 'deleteUserId' | 'createdAt' | 'updatedAt' | 'deletedAt'
+    >,
   ): Promise<Model> {
     const createModel = {
       ...requestModel,
@@ -141,7 +141,7 @@ export abstract class KnexBaseRepository {
   protected async baseUpdate<Model extends BaseModel>(
     where: Partial<Model>,
     requestModel: Partial<
-      Omit<Model, 'id' | 'createUserId' | 'createdAt' | 'updatedAt' | 'deletedAt'>
+      Omit<Model, 'id' | 'createUserId' | 'deleteUserId' | 'createdAt' | 'updatedAt' | 'deletedAt'>
     >,
   ): Promise<Model> {
     const updateModel = {

@@ -34,7 +34,7 @@ export class DbCreateCustomerUseCase implements CreateCustomerUseCase.UseCase {
 
   private sanitizeRequestModel(
     requestModel: CreateCustomerUseCase.RequestModel,
-  ): CreateCustomerRepository.RequestModel {
+  ): CreateCustomerUseCase.RequestModel & { createUserId: string } {
     return {
       name: requestModel.name,
       email: requestModel.email,

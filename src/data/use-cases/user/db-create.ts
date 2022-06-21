@@ -37,7 +37,7 @@ export class DbCreateUserUseCase implements CreateUserUseCase.UseCase {
 
   private sanitizeRequestModel(
     requestModel: CreateUserUseCase.RequestModel,
-  ): CreateUserRepository.RequestModel {
+  ): CreateUserUseCase.RequestModel & { createUserId: string } {
     return {
       name: requestModel.name,
       email: requestModel.email,

@@ -60,7 +60,7 @@ export class DbListCustomerUseCase implements ListCustomerUseCase.UseCase {
         ],
         filters: [
           this.validatorService.rules.listFilters<
-            Omit<CustomerModel, 'id' | 'password' | 'roles' | 'deletedAt'>
+            Omit<CustomerModel, 'id' | 'deleteUserId' | 'deletedAt'>
           >({
             schema: {
               name: [

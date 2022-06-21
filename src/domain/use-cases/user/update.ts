@@ -1,7 +1,16 @@
 import { UserModel } from '@/domain/models';
 
 export type RequestModel = { id: string } & Partial<
-  Omit<UserModel, 'id' | 'createUserId' | 'updateUserId' | 'createdAt' | 'updatedAt' | 'deletedAt'>
+  Omit<
+    UserModel,
+    | 'id'
+    | 'createUserId'
+    | 'updateUserId'
+    | 'deleteUserId'
+    | 'createdAt'
+    | 'updatedAt'
+    | 'deletedAt'
+  >
 >;
 
 export type ResponseModel = UserModel;

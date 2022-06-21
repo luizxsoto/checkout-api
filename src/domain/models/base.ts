@@ -5,6 +5,8 @@ export abstract class BaseModel {
 
   public updateUserId?: string;
 
+  public deleteUserId?: string;
+
   public createdAt!: Date;
 
   public updatedAt?: Date;

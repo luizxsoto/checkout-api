@@ -13,6 +13,7 @@ export async function createDefaultTable(knex: Knex, options: CreateTableOptions
 
     table.uuid('createUserId').notNullable().references('id').inTable('users');
     table.uuid('updateUserId').nullable().references('id').inTable('users');
+    table.uuid('deleteUserId').nullable().references('id').inTable('users');
     table.timestamp('createdAt').notNullable();
     table.timestamp('updatedAt').nullable();
     table.timestamp('deletedAt').nullable();

@@ -4,7 +4,10 @@ export type RequestModel = Parameters<
   (
     where: Partial<CustomerModel>,
     model: Partial<
-      Omit<CustomerModel, 'id' | 'createUserId' | 'createdAt' | 'updatedAt' | 'deletedAt'>
+      Omit<
+        CustomerModel,
+        'id' | 'createUserId' | 'deleteUserId' | 'createdAt' | 'updatedAt' | 'deletedAt'
+      >
     >,
   ) => void
 >;
