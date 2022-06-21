@@ -2,7 +2,7 @@ import { UserModel } from '@/domain/models';
 
 export type RequestModel = Omit<
   UserModel,
-  'id' | 'createUserId' | 'createdAt' | 'updatedAt' | 'deletedAt'
+  'id' | 'createUserId' | 'updateUserId' | 'createdAt' | 'updatedAt' | 'deletedAt'
 >;
 
 export type ResponseModel = UserModel;

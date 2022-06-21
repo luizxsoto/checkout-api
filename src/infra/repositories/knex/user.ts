@@ -51,7 +51,7 @@ export class KnexUserRepository extends KnexBaseRepository implements Repositori
       Omit<UserModel, 'id' | 'createUserId' | 'createdAt' | 'updatedAt' | 'deletedAt'>
     >,
   ): Promise<UpdateUserRepository.ResponseModel> {
-    const result = await this.baseUpdate<Omit<UserModel, 'roles'> & { roles: string }>(where, {
+    const result = await this.baseUpdate<Omit<UserModel, 'roles'> & { roles?: string }>(where, {
       ...model,
       roles: model.roles && JSON.stringify(model.roles),
     });

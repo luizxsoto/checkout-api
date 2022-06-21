@@ -1,11 +1,12 @@
 import { Hasher } from '@/data/contracts/cryptography';
 import { FindByUserRepository, UpdateUserRepository } from '@/data/contracts/repositories';
 import { ValidatorService } from '@/data/contracts/services';
-import { UserModel } from '@/domain/models';
+import { SessionModel, UserModel } from '@/domain/models';
 import { UpdateUserUseCase } from '@/domain/use-cases';
 
 export class DbUpdateUserUseCase implements UpdateUserUseCase.UseCase {
   constructor(
+    private readonly session: SessionModel,
     private readonly updateUserRepository: UpdateUserRepository.Repository,
     private readonly findByUserRepository: FindByUserRepository.Repository,
     private readonly validatorService: ValidatorService.Validator<
@@ -49,13 +50,14 @@ export class DbUpdateUserUseCase implements UpdateUserUseCase.UseCase {
 
   private sanitizeRequestModel(
     requestModel: UpdateUserUseCase.RequestModel,
-  ): UpdateUserUseCase.RequestModel {
+  ): UpdateUserUseCase.RequestModel & { updateUserId: string } {
     return {
       id: requestModel.id,
       name: requestModel.name,
       email: requestModel.email,
       password: requestModel.password,
       roles: requestModel.roles,
+      updateUserId: this.session.userId,
     };
   }
 

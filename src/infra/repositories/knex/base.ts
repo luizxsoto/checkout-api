@@ -123,7 +123,7 @@ export abstract class KnexBaseRepository {
   }
 
   protected async baseCreate<Model extends BaseModel>(
-    requestModel: Omit<Model, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>,
+    requestModel: Omit<Model, 'id' | 'updateUserId' | 'createdAt' | 'updatedAt' | 'deletedAt'>,
   ): Promise<Model> {
     const createModel = {
       ...requestModel,

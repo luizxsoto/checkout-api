@@ -6,6 +6,7 @@ const users = [
   {
     id: '00000000-0000-4000-8000-000000000001',
     createUserId: '00000000-0000-4000-8000-000000000001',
+    updateUserId: null,
     createdAt: new Date().toISOString(),
     updatedAt: null,
     deletedAt: null,
@@ -16,6 +17,7 @@ const users = [
   {
     id: '00000000-0000-4000-8000-000000000002',
     createUserId: '00000000-0000-4000-8000-000000000001',
+    updateUserId: null,
     createdAt: new Date().toISOString(),
     updatedAt: null,
     deletedAt: null,
@@ -26,6 +28,7 @@ const users = [
   {
     id: '00000000-0000-4000-8000-000000000003',
     createUserId: '00000000-0000-4000-8000-000000000001',
+    updateUserId: null,
     createdAt: new Date().toISOString(),
     updatedAt: null,
     deletedAt: null,
