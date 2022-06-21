@@ -1,3 +1,1 @@
 # Checkout API
-
-- [ ] Adicionar tradução
