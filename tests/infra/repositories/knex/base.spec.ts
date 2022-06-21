@@ -130,7 +130,6 @@ describe(KnexBaseRepository.name, () => {
       expect(sutResult).toStrictEqual([responseModel]);
       expect(knex.whereNull).toBeCalledWith('deletedAt');
       expect(knex.table).toBeCalledWith(tableName);
-      expect(knex.where).toBeCalledWith(expect.any(Function));
       expect(knex.offset).toBeCalledWith(0 * 20);
       expect(knex.limit).toBeCalledWith(20);
       expect(knex.orderBy).toBeCalledWith('createdAt', 'desc');
@@ -152,7 +151,6 @@ describe(KnexBaseRepository.name, () => {
 
       expect(knex.whereNull).not.toBeCalled();
       expect(knex.table).toBeCalledWith(tableName);
-      expect(knex.where).toBeCalledWith(expect.any(Function));
       expect(knex.offset).toBeCalledWith(requestModel.perPage - 1 * requestModel.perPage);
       expect(knex.limit).toBeCalledWith(requestModel.perPage);
     });
@@ -238,7 +236,7 @@ describe(KnexBaseRepository.name, () => {
     test('Should remove register correctly', async () => {
       const { knex, tableName, sut } = makeSut();
 
-      const where = { anyProp: 'anyValue' };
+      const where = { anyProp: 'anyValue', deleteUserId: '00000000-0000-4000-8000-000000000001' };
       const removeModel = { ...where, deletedAt: new Date() };
 
       await sut.remove(where as unknown as BaseModel);
@@ -251,7 +249,7 @@ describe(KnexBaseRepository.name, () => {
     test('Should validate if repository result is a number', async () => {
       const { knex, tableName, sut } = makeSut();
 
-      const where = { anyProp: 'anyValue' };
+      const where = { anyProp: 'anyValue', deleteUserId: '00000000-0000-4000-8000-000000000001' };
       const removeModel = { ...where, deletedAt: new Date() };
       knex.then.mockImplementationOnce((resolve) => resolve(1));
 

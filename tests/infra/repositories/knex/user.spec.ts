@@ -87,7 +87,7 @@ describe(KnexUserRepository.name, () => {
     test('Should remove user and return correct values', async () => {
       const { knex, sut } = makeSut();
 
-      const requestModel = { id: 'any_id' };
+      const requestModel = { id: 'any_id', deleteUserId: '00000000-0000-4000-8000-000000000001' };
       const responseModel = { ...requestModel, deletedAt: new Date() };
       knex.then.mockImplementationOnce((resolve) => resolve([responseModel]));
 

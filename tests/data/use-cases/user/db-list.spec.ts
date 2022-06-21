@@ -58,7 +58,7 @@ describe(DbListUserUseCase.name, () => {
         ],
         filters: [
           validatorService.rules.listFilters<
-            Omit<UserModel, 'id' | 'password' | 'roles' | 'deletedAt'>
+            Omit<UserModel, 'id' | 'password' | 'roles' | 'deleteUserId' | 'deletedAt'>
           >({
             schema: {
               name: [

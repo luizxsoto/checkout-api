@@ -23,7 +23,9 @@ describe(DbRemoveCustomerUseCase.name, () => {
       id: validUuidV4,
       anyWrongProp: 'anyValue',
     };
-    const sanitizedRequestModel = { ...requestModel };
+    const sanitizedRequestModel = {
+      ...requestModel,
+    };
     Reflect.deleteProperty(sanitizedRequestModel, 'anyWrongProp');
     const responseModel = { ...sanitizedRequestModel, deletedAt: new Date() };
     const existsCustomer = { ...responseModel };

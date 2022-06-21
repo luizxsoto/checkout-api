@@ -269,12 +269,13 @@ describe('User Routes', () => {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
+      const deleteUserId = '00000000-0000-4000-8000-000000000001';
 
       await knexConfig.table('users').insert(requestModel);
 
       const result = await request(app)
         .delete(`/api/users/${requestModel.id}`)
-        .set('authorization', await makeBearerTokenMock())
+        .set('authorization', await makeBearerTokenMock({ userId: deleteUserId }))
         .send();
 
       expect(result.status).toBe(200);
@@ -283,6 +284,7 @@ describe('User Routes', () => {
       expect(result.body.email).toBe(requestModel.email);
       expect(result.body.createUserId).toBe(requestModel.createUserId);
       expect(result.body.updateUserId).toBe(requestModel.updateUserId);
+      expect(result.body.deleteUserId).toBe(deleteUserId);
       expect(result.body.createdAt).toBe(requestModel.createdAt);
       expect(result.body.updatedAt).toBe(requestModel.updatedAt);
       expect(result.body.deletedAt).toBeDefined();
