@@ -30,7 +30,7 @@ export class DbUpdateUserUseCase implements UpdateUserUseCase.UseCase {
 
     await restValidation({ users: [...findedUsers] });
 
-    const repositoryResult = await this.updateUserRepository.update(
+    const [repositoryResult] = await this.updateUserRepository.update(
       { id: sanitizedRequestModel.id },
       {
         ...sanitizedRequestModel,

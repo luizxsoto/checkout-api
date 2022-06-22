@@ -28,7 +28,7 @@ export class DbUpdateCustomerUseCase implements UpdateCustomerUseCase.UseCase {
 
     await restValidation({ customers: [...findedCustomers] });
 
-    const repositoryResult = await this.updateCustomerRepository.update(
+    const [repositoryResult] = await this.updateCustomerRepository.update(
       { id: sanitizedRequestModel.id },
       sanitizedRequestModel,
     );

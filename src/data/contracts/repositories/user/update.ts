@@ -18,7 +18,7 @@ export type RequestModel = Parameters<
   ) => void
 >;
 
-export type ResponseModel = UserModel;
+export type ResponseModel = UserModel[];
 
 export interface Repository {
   update: (...requestModel: RequestModel) => Promise<ResponseModel>;

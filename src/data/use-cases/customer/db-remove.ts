@@ -26,7 +26,7 @@ export class DbRemoveCustomerUseCase implements RemoveCustomerUseCase.UseCase {
 
     await restValidation({ customers });
 
-    const repositoryResult = await this.removeCustomerRepository.remove(sanitizedRequestModel);
+    const [repositoryResult] = await this.removeCustomerRepository.remove(sanitizedRequestModel);
 
     return { ...customers[0], ...sanitizedRequestModel, ...repositoryResult };
   }

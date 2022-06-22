@@ -160,7 +160,7 @@ export abstract class KnexBaseRepository {
         | 'deletedAt'
       >
     >,
-  ): Promise<Model> {
+  ): Promise<Model[]> {
     const updateModel = {
       ...requestModel,
       updateUserId: this.session.userId,
@@ -171,10 +171,12 @@ export abstract class KnexBaseRepository {
 
     const result = await this.baseRun<Model[]>(query.returning('*'));
 
-    return { ...updateModel, ...(typeof result === 'number' ? {} : result[0]) };
+    return typeof result === 'number'
+      ? [updateModel]
+      : result.map((item) => ({ ...updateModel, ...item }));
   }
 
-  protected async baseRemove<Model extends BaseModel>(where: Partial<Model>): Promise<Model> {
+  protected async baseRemove<Model extends BaseModel>(where: Partial<Model>): Promise<Model[]> {
     const removeModel = {
       ...where,
       deleteUserId: this.session.userId,
@@ -185,6 +187,8 @@ export abstract class KnexBaseRepository {
 
     const result = await this.baseRun<Model[]>(query.returning('*'));
 
-    return { ...removeModel, ...(typeof result === 'number' ? {} : result[0]) };
+    return typeof result === 'number'
+      ? [removeModel]
+      : result.map((item) => ({ ...removeModel, ...item }));
   }
 }
