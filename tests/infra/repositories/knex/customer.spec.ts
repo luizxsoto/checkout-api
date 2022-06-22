@@ -77,7 +77,7 @@ describe(KnexCustomerRepository.name, () => {
 
       const sutResult = await sut.update({ id: requestModel.id }, requestModel);
 
-      expect(sutResult).toStrictEqual(responseModel);
+      expect(sutResult).toStrictEqual([responseModel]);
     });
   });
 
@@ -91,7 +91,7 @@ describe(KnexCustomerRepository.name, () => {
 
       const sutResult = await sut.remove(requestModel);
 
-      expect(sutResult).toStrictEqual(responseModel);
+      expect(sutResult).toStrictEqual([responseModel]);
     });
   });
 });

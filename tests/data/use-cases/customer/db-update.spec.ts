@@ -34,7 +34,7 @@ describe(DbUpdateCustomerUseCase.name, () => {
     const otherCustomer = { ...responseModel, email: 'valid@email.com' };
 
     customerRepository.findBy.mockReturnValueOnce([existsCustomer, otherCustomer]);
-    customerRepository.update.mockReturnValueOnce(responseModel);
+    customerRepository.update.mockReturnValueOnce([responseModel]);
 
     const sutResult = await sut.execute(requestModel).catch();
 

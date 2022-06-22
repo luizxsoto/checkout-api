@@ -48,7 +48,7 @@ describe(DbUpdateUserUseCase.name, () => {
 
     userRepository.findBy.mockReturnValueOnce([existsUser, otherUser]);
     hasherCryptography.hash.mockReturnValueOnce(Promise.resolve('hashed_password'));
-    userRepository.update.mockReturnValueOnce(responseModel);
+    userRepository.update.mockReturnValueOnce([responseModel]);
 
     const sutResult = await sut.execute(requestModel).catch();
 

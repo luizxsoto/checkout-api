@@ -31,7 +31,7 @@ describe(DbRemoveUserUseCase.name, () => {
     const existsUser = { ...responseModel };
 
     userRepository.findBy.mockReturnValueOnce([existsUser]);
-    userRepository.remove.mockReturnValueOnce(responseModel);
+    userRepository.remove.mockReturnValueOnce([responseModel]);
 
     const sutResult = await sut.execute(requestModel).catch();
 

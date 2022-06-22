@@ -27,14 +27,14 @@ export function makeCustomerRepositoryStub() {
       .mockImplementation(
         (
           requestModel: UpdateCustomerRepository.RequestModel,
-        ): UpdateCustomerRepository.ResponseModel => makeCustomerModelMock(requestModel[1]),
+        ): UpdateCustomerRepository.ResponseModel => [makeCustomerModelMock(requestModel[1])],
       ),
     remove: jest
       .fn()
       .mockImplementation(
         (
           requestModel: RemoveCustomerRepository.RequestModel,
-        ): RemoveCustomerRepository.ResponseModel => makeCustomerModelMock(requestModel[0]),
+        ): RemoveCustomerRepository.ResponseModel => [makeCustomerModelMock(requestModel[0])],
       ),
   };
 }

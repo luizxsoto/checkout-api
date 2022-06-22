@@ -24,14 +24,16 @@ export function makeUserRepositoryStub() {
     update: jest
       .fn()
       .mockImplementation(
-        (requestModel: UpdateUserRepository.RequestModel): UpdateUserRepository.ResponseModel =>
+        (requestModel: UpdateUserRepository.RequestModel): UpdateUserRepository.ResponseModel => [
           makeUserModelMock(requestModel[1]),
+        ],
       ),
     remove: jest
       .fn()
       .mockImplementation(
-        (requestModel: RemoveUserRepository.RequestModel): RemoveUserRepository.ResponseModel =>
+        (requestModel: RemoveUserRepository.RequestModel): RemoveUserRepository.ResponseModel => [
           makeUserModelMock(requestModel[0]),
+        ],
       ),
   };
 }
