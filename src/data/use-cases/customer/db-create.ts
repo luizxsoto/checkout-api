@@ -1,11 +1,10 @@
 import { CreateCustomerRepository, FindByCustomerRepository } from '@/data/contracts/repositories';
 import { ValidatorService } from '@/data/contracts/services';
-import { CustomerModel, SessionModel } from '@/domain/models';
+import { CustomerModel } from '@/domain/models';
 import { CreateCustomerUseCase } from '@/domain/use-cases';
 
 export class DbCreateCustomerUseCase implements CreateCustomerUseCase.UseCase {
   constructor(
-    private readonly session: SessionModel,
     private readonly createCustomerRepository: CreateCustomerRepository.Repository,
     private readonly findByCustomerRepository: FindByCustomerRepository.Repository,
     private readonly validatorService: ValidatorService.Validator<
@@ -34,11 +33,10 @@ export class DbCreateCustomerUseCase implements CreateCustomerUseCase.UseCase {
 
   private sanitizeRequestModel(
     requestModel: CreateCustomerUseCase.RequestModel,
-  ): CreateCustomerUseCase.RequestModel & { createUserId: string } {
+  ): CreateCustomerUseCase.RequestModel {
     return {
       name: requestModel.name,
       email: requestModel.email,
-      createUserId: this.session.userId,
     };
   }
 

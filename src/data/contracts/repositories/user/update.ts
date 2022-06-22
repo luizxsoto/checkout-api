@@ -6,7 +6,13 @@ export type RequestModel = Parameters<
     model: Partial<
       Omit<
         UserModel,
-        'id' | 'createUserId' | 'deleteUserId' | 'createdAt' | 'updatedAt' | 'deletedAt'
+        | 'id'
+        | 'createUserId'
+        | 'updateUserId'
+        | 'deleteUserId'
+        | 'createdAt'
+        | 'updatedAt'
+        | 'deletedAt'
       >
     >,
   ) => void

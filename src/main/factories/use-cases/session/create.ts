@@ -1,5 +1,5 @@
 import { DbCreateSessionUseCase } from '@/data/use-cases';
-import { UserModel } from '@/domain/models';
+import { SessionModel, UserModel } from '@/domain/models';
 import { CreateSessionUseCase } from '@/domain/use-cases';
 import { BcryptCryptography, JwtCryptography } from '@/infra/cryptography';
 import { KnexUserRepository } from '@/infra/repositories';
@@ -8,7 +8,7 @@ import { VanillaValidatorService } from '@/infra/services/validator';
 import { envConfig, knexConfig } from '@/main/config';
 
 export function makeDbCreateSessionUseCase(): CreateSessionUseCase.UseCase {
-  const repository = new KnexUserRepository(knexConfig, new UUIDService());
+  const repository = new KnexUserRepository({} as SessionModel, knexConfig, new UUIDService());
   const validatorService = new VanillaValidatorService<
     Partial<CreateSessionUseCase.RequestModel>,
     { users: UserModel[] }

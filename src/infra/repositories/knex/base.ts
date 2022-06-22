@@ -2,11 +2,12 @@ import { Knex } from 'knex';
 
 import { minPerPage } from '@/data/constants';
 import { GenerateUniqueIDService } from '@/data/contracts/services';
-import { BaseModel } from '@/domain/models';
+import { BaseModel, SessionModel } from '@/domain/models';
 import { DatabaseException } from '@/main/exceptions';
 
 export abstract class KnexBaseRepository {
   constructor(
+    protected readonly session: SessionModel,
     protected readonly knex: Knex,
     protected readonly uuidService: GenerateUniqueIDService.Service,
     protected readonly tableName: string,
@@ -122,12 +123,19 @@ export abstract class KnexBaseRepository {
   protected async baseCreate<Model extends BaseModel>(
     requestModel: Omit<
       Model,
-      'id' | 'updateUserId' | 'deleteUserId' | 'createdAt' | 'updatedAt' | 'deletedAt'
+      | 'id'
+      | 'createUserId'
+      | 'updateUserId'
+      | 'deleteUserId'
+      | 'createdAt'
+      | 'updatedAt'
+      | 'deletedAt'
     >,
   ): Promise<Model> {
     const createModel = {
       ...requestModel,
       id: this.uuidService.generateUniqueID(),
+      createUserId: this.session.userId,
       createdAt: new Date(),
     } as Model;
 
@@ -141,11 +149,21 @@ export abstract class KnexBaseRepository {
   protected async baseUpdate<Model extends BaseModel>(
     where: Partial<Model>,
     requestModel: Partial<
-      Omit<Model, 'id' | 'createUserId' | 'deleteUserId' | 'createdAt' | 'updatedAt' | 'deletedAt'>
+      Omit<
+        Model,
+        | 'id'
+        | 'createUserId'
+        | 'updateUserId'
+        | 'deleteUserId'
+        | 'createdAt'
+        | 'updatedAt'
+        | 'deletedAt'
+      >
     >,
   ): Promise<Model> {
     const updateModel = {
       ...requestModel,
+      updateUserId: this.session.userId,
       updatedAt: new Date(),
     } as Model;
 
@@ -159,6 +177,7 @@ export abstract class KnexBaseRepository {
   protected async baseRemove<Model extends BaseModel>(where: Partial<Model>): Promise<Model> {
     const removeModel = {
       ...where,
+      deleteUserId: this.session.userId,
       deletedAt: new Date(),
     } as Model;
 

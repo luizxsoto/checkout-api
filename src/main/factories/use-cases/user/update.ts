@@ -8,7 +8,7 @@ import { VanillaValidatorService } from '@/infra/services/validator';
 import { knexConfig } from '@/main/config';
 
 export function makeDbUpdateUserUseCase(session: SessionModel): UpdateUserUseCase.UseCase {
-  const repository = new KnexUserRepository(knexConfig, new UUIDService());
+  const repository = new KnexUserRepository(session, knexConfig, new UUIDService());
   const validatorService = new VanillaValidatorService<
     UpdateUserUseCase.RequestModel,
     { users: UserModel[] }
@@ -16,7 +16,6 @@ export function makeDbUpdateUserUseCase(session: SessionModel): UpdateUserUseCas
   const salt = 12;
   const bcryptCryptography = new BcryptCryptography(salt);
   const useCase = new DbUpdateUserUseCase(
-    session,
     repository,
     repository,
     validatorService,

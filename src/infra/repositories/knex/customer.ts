@@ -10,7 +10,7 @@ import {
   UpdateCustomerRepository,
 } from '@/data/contracts/repositories';
 import { GenerateUniqueIDService } from '@/data/contracts/services';
-import { CustomerModel } from '@/domain/models';
+import { CustomerModel, SessionModel } from '@/domain/models';
 
 type Repositories = FindByCustomerRepository.Repository &
   CreateCustomerRepository.Repository &
@@ -18,8 +18,8 @@ type Repositories = FindByCustomerRepository.Repository &
   RemoveCustomerRepository.Repository;
 
 export class KnexCustomerRepository extends KnexBaseRepository implements Repositories {
-  constructor(knex: Knex, uuidService: GenerateUniqueIDService.Service) {
-    super(knex, uuidService, 'customers');
+  constructor(session: SessionModel, knex: Knex, uuidService: GenerateUniqueIDService.Service) {
+    super(session, knex, uuidService, 'customers');
   }
 
   public async findBy(
