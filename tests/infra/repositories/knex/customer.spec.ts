@@ -2,13 +2,16 @@ import { Knex } from 'knex';
 
 import { KnexCustomerRepository } from '@/infra/repositories';
 import { makeUuidServiceStub } from '@tests/data/stubs/services';
-import { makeCustomerModelMock } from '@tests/domain/mocks/models';
+import { makeCustomerModelMock, makeSessionModelMock } from '@tests/domain/mocks/models';
 import { makeKnexStub } from '@tests/infra/stubs';
+
+const userId = '00000000-0000-4000-8000-000000000001';
+const session = makeSessionModelMock({ userId });
 
 function makeSut() {
   const knex = makeKnexStub(makeCustomerModelMock() as unknown as Record<string, unknown>);
   const uuidService = makeUuidServiceStub();
-  const sut = new KnexCustomerRepository(knex as unknown as Knex, uuidService);
+  const sut = new KnexCustomerRepository(session, knex as unknown as Knex, uuidService);
 
   return { knex, uuidService, sut };
 }
@@ -27,8 +30,8 @@ describe(KnexCustomerRepository.name, () => {
       const { knex, sut } = makeSut();
 
       const requestModel = { name: 'Any Name', email: 'any@email.com' };
-      const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
-      knex.then.mockImplementationOnce((resolve) => resolve([responseModel]));
+      knex.then.mockImplementationOnce((resolve) => resolve([requestModel]));
+      const responseModel = { ...requestModel };
 
       const sutResult = await sut.findBy([requestModel]);
 
@@ -43,10 +46,14 @@ describe(KnexCustomerRepository.name, () => {
       const requestModel = {
         name: 'Any Name',
         email: 'any@email.com',
-        createUserId: '00000000-0000-4000-8000-000000000001',
       };
-      const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
-      knex.then.mockImplementationOnce((resolve) => resolve([responseModel]));
+      knex.then.mockImplementationOnce((resolve) => resolve([requestModel]));
+      const responseModel = {
+        ...requestModel,
+        id: 'any_id',
+        createUserId: userId,
+        createdAt: new Date(),
+      };
 
       const sutResult = await sut.create(requestModel);
 
@@ -65,8 +72,8 @@ describe(KnexCustomerRepository.name, () => {
         updateUserId: '00000000-0000-4000-8000-000000000001',
         createdAt: new Date(),
       };
-      const responseModel = { ...requestModel, updatedAt: new Date() };
-      knex.then.mockImplementationOnce((resolve) => resolve([responseModel]));
+      knex.then.mockImplementationOnce((resolve) => resolve([requestModel]));
+      const responseModel = { ...requestModel, updateUserId: userId, updatedAt: new Date() };
 
       const sutResult = await sut.update({ id: requestModel.id }, requestModel);
 
@@ -78,9 +85,9 @@ describe(KnexCustomerRepository.name, () => {
     test('Should remove customer and return correct values', async () => {
       const { knex, sut } = makeSut();
 
-      const requestModel = { id: 'any_id', deleteUserId: '00000000-0000-4000-8000-000000000001' };
-      const responseModel = { ...requestModel, deletedAt: new Date() };
-      knex.then.mockImplementationOnce((resolve) => resolve([responseModel]));
+      const requestModel = { id: 'any_id' };
+      knex.then.mockImplementationOnce((resolve) => resolve([requestModel]));
+      const responseModel = { ...requestModel, deleteUserId: userId, deletedAt: new Date() };
 
       const sutResult = await sut.remove(requestModel);
 

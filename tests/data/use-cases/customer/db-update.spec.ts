@@ -3,22 +3,14 @@ import { UpdateCustomerUseCase } from '@/domain/use-cases';
 import { ValidationException } from '@/main/exceptions';
 import { makeCustomerRepositoryStub } from '@tests/data/stubs/repositories';
 import { makeValidatorServiceStub } from '@tests/data/stubs/services';
-import { makeSessionModelMock } from '@tests/domain/mocks/models';
 
 const validUuidV4 = '00000000-0000-4000-8000-000000000001';
 const nonExistentId = '00000000-0000-4000-8000-000000000002';
 
-const sessionMock = makeSessionModelMock();
-
 function makeSut() {
   const customerRepository = makeCustomerRepositoryStub();
   const validatorService = makeValidatorServiceStub();
-  const sut = new DbUpdateCustomerUseCase(
-    sessionMock,
-    customerRepository,
-    customerRepository,
-    validatorService,
-  );
+  const sut = new DbUpdateCustomerUseCase(customerRepository, customerRepository, validatorService);
 
   return { customerRepository, validatorService, sut };
 }
@@ -35,7 +27,6 @@ describe(DbUpdateCustomerUseCase.name, () => {
     };
     const sanitizedRequestModel = {
       ...requestModel,
-      updateUserId: sessionMock.userId,
     };
     Reflect.deleteProperty(sanitizedRequestModel, 'anyWrongProp');
     const responseModel = { ...sanitizedRequestModel, updatedAt: new Date() };

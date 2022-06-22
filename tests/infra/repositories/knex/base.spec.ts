@@ -4,8 +4,11 @@ import { BaseModel } from '@/domain/models';
 import { KnexBaseRepository } from '@/infra/repositories';
 import { DatabaseException } from '@/main/exceptions';
 import { makeUuidServiceStub } from '@tests/data/stubs/services';
-import { makeBaseModelMock } from '@tests/domain/mocks/models';
+import { makeBaseModelMock, makeSessionModelMock } from '@tests/domain/mocks/models';
 import { makeKnexStub } from '@tests/infra/stubs';
+
+const userId = '00000000-0000-4000-8000-000000000001';
+const session = makeSessionModelMock({ userId });
 
 function makeSut() {
   const knex = makeKnexStub(makeBaseModelMock() as unknown as Record<string, unknown>);
@@ -23,7 +26,7 @@ function makeSut() {
     public update = this.baseUpdate;
 
     public remove = this.baseRemove;
-  })(knex as unknown as Knex, uuidService, tableName);
+  })(session, knex as unknown as Knex, uuidService, tableName);
 
   return { knex, uuidService, tableName, sut };
 }
@@ -162,9 +165,13 @@ describe(KnexBaseRepository.name, () => {
 
       const requestModel = {
         anyProp: 'anyValue',
-        createUserId: '00000000-0000-4000-8000-000000000001',
       };
-      const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
+      const responseModel = {
+        ...requestModel,
+        id: 'any_id',
+        createUserId: '00000000-0000-4000-8000-000000000001',
+        createdAt: new Date(),
+      };
       uuidService.generateUniqueID.mockReturnValueOnce('any_id');
 
       const sutResult = await sut.create(requestModel);
@@ -180,9 +187,13 @@ describe(KnexBaseRepository.name, () => {
 
       const requestModel = {
         anyProp: 'anyValue',
-        createUserId: '00000000-0000-4000-8000-000000000001',
       };
-      const responseModel = { ...requestModel, id: 'any_id', createdAt: new Date() };
+      const responseModel = {
+        ...requestModel,
+        id: 'any_id',
+        createUserId: '00000000-0000-4000-8000-000000000001',
+        createdAt: new Date(),
+      };
       uuidService.generateUniqueID.mockReturnValueOnce('any_id');
       knex.then.mockImplementationOnce((resolve) => resolve(1));
 
@@ -202,9 +213,12 @@ describe(KnexBaseRepository.name, () => {
       const where = { anyProp: 'anyValue' };
       const requestModel = {
         anyProp: 'otherValue',
-        updateUserId: '00000000-0000-4000-8000-000000000001',
       };
-      const updateModel = { ...requestModel, updatedAt: new Date() };
+      const updateModel = {
+        ...requestModel,
+        updateUserId: '00000000-0000-4000-8000-000000000001',
+        updatedAt: new Date(),
+      };
 
       await sut.update(where as unknown as BaseModel, requestModel);
 
@@ -219,9 +233,12 @@ describe(KnexBaseRepository.name, () => {
       const where = { anyProp: 'anyValue' };
       const requestModel = {
         anyProp: 'otherValue',
-        updateUserId: '00000000-0000-4000-8000-000000000001',
       };
-      const updateModel = { ...requestModel, updatedAt: new Date() };
+      const updateModel = {
+        ...requestModel,
+        updateUserId: '00000000-0000-4000-8000-000000000001',
+        updatedAt: new Date(),
+      };
       knex.then.mockImplementationOnce((resolve) => resolve(1));
 
       await sut.update(where as unknown as BaseModel, requestModel);
@@ -236,8 +253,12 @@ describe(KnexBaseRepository.name, () => {
     test('Should remove register correctly', async () => {
       const { knex, tableName, sut } = makeSut();
 
-      const where = { anyProp: 'anyValue', deleteUserId: '00000000-0000-4000-8000-000000000001' };
-      const removeModel = { ...where, deletedAt: new Date() };
+      const where = { anyProp: 'anyValue' };
+      const removeModel = {
+        ...where,
+        deleteUserId: '00000000-0000-4000-8000-000000000001',
+        deletedAt: new Date(),
+      };
 
       await sut.remove(where as unknown as BaseModel);
 
@@ -249,8 +270,12 @@ describe(KnexBaseRepository.name, () => {
     test('Should validate if repository result is a number', async () => {
       const { knex, tableName, sut } = makeSut();
 
-      const where = { anyProp: 'anyValue', deleteUserId: '00000000-0000-4000-8000-000000000001' };
-      const removeModel = { ...where, deletedAt: new Date() };
+      const where = { anyProp: 'anyValue' };
+      const removeModel = {
+        ...where,
+        deleteUserId: '00000000-0000-4000-8000-000000000001',
+        deletedAt: new Date(),
+      };
       knex.then.mockImplementationOnce((resolve) => resolve(1));
 
       await sut.remove(where as unknown as BaseModel);
