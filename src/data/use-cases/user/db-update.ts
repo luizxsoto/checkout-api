@@ -26,11 +26,11 @@ export class DbUpdateUserUseCase implements UpdateUserUseCase.UseCase {
 
     if (sanitizedRequestModel.email) filters.push({ email: sanitizedRequestModel.email });
 
-    const findedUsers = await this.findByUserRepository.findBy(filters);
+    const users = await this.findByUserRepository.findBy(filters);
 
-    await restValidation({ users: [...findedUsers] });
+    await restValidation({ users });
 
-    const [repositoryResult] = await this.updateUserRepository.update(
+    const [userUpdated] = await this.updateUserRepository.update(
       { id: sanitizedRequestModel.id },
       {
         ...sanitizedRequestModel,
@@ -40,11 +40,9 @@ export class DbUpdateUserUseCase implements UpdateUserUseCase.UseCase {
       },
     );
 
-    const findedUserById = findedUsers.find(
-      (findedUser) => findedUser.id === sanitizedRequestModel.id,
-    );
+    const findedUserById = users.find((user) => user.id === sanitizedRequestModel.id);
 
-    return { ...findedUserById, ...sanitizedRequestModel, ...repositoryResult };
+    return { ...findedUserById, ...sanitizedRequestModel, ...userUpdated };
   }
 
   private sanitizeRequestModel(

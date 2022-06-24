@@ -9,7 +9,7 @@ import { knexConfig } from '@/main/config';
 export function makeDbShowUserUseCase(session: SessionModel): ShowUserUseCase.UseCase {
   const repository = new KnexUserRepository(session, knexConfig, new UUIDService());
   const validatorService = new VanillaValidatorService<
-    Partial<ShowUserUseCase.RequestModel>,
+    ShowUserUseCase.RequestModel,
     { users: UserModel[] }
   >();
   const useCase = new DbShowUserUseCase(repository, validatorService);

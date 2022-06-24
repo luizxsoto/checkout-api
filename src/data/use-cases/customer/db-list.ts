@@ -20,9 +20,9 @@ export class DbListCustomerUseCase implements ListCustomerUseCase.UseCase {
 
     await this.validateRequestModel(sanitizedRequestModel);
 
-    const customersBy = await this.listCustomerRepository.list(sanitizedRequestModel);
+    const customers = await this.listCustomerRepository.list(sanitizedRequestModel);
 
-    return customersBy;
+    return customers;
   }
 
   private sanitizeRequestModel(

@@ -9,7 +9,7 @@ import { knexConfig } from '@/main/config';
 export function makeDbCreateCustomerUseCase(session: SessionModel): CreateCustomerUseCase.UseCase {
   const repository = new KnexCustomerRepository(session, knexConfig, new UUIDService());
   const validatorService = new VanillaValidatorService<
-    Partial<CreateCustomerUseCase.RequestModel>,
+    CreateCustomerUseCase.RequestModel,
     { customers: CustomerModel[] }
   >();
   const useCase = new DbCreateCustomerUseCase(repository, repository, validatorService);

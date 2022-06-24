@@ -8,7 +8,7 @@ export class DbCreateCustomerUseCase implements CreateCustomerUseCase.UseCase {
     private readonly createCustomerRepository: CreateCustomerRepository.Repository,
     private readonly findByCustomerRepository: FindByCustomerRepository.Repository,
     private readonly validatorService: ValidatorService.Validator<
-      Partial<CreateCustomerUseCase.RequestModel>,
+      CreateCustomerUseCase.RequestModel,
       { customers: CustomerModel[] }
     >,
   ) {}
@@ -26,9 +26,9 @@ export class DbCreateCustomerUseCase implements CreateCustomerUseCase.UseCase {
 
     await restValidation({ customers });
 
-    const repositoryResult = await this.createCustomerRepository.create(sanitizedRequestModel);
+    const customerCreated = await this.createCustomerRepository.create(sanitizedRequestModel);
 
-    return { ...sanitizedRequestModel, ...repositoryResult };
+    return { ...sanitizedRequestModel, ...customerCreated };
   }
 
   private sanitizeRequestModel(

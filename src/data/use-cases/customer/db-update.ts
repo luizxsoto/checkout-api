@@ -24,20 +24,20 @@ export class DbUpdateCustomerUseCase implements UpdateCustomerUseCase.UseCase {
 
     if (sanitizedRequestModel.email) filters.push({ email: sanitizedRequestModel.email });
 
-    const findedCustomers = await this.findByCustomerRepository.findBy(filters);
+    const customers = await this.findByCustomerRepository.findBy(filters);
 
-    await restValidation({ customers: [...findedCustomers] });
+    await restValidation({ customers });
 
-    const [repositoryResult] = await this.updateCustomerRepository.update(
+    const [customerUpdated] = await this.updateCustomerRepository.update(
       { id: sanitizedRequestModel.id },
       sanitizedRequestModel,
     );
 
-    const findedCustomerById = findedCustomers.find(
-      (findedCustomer) => findedCustomer.id === sanitizedRequestModel.id,
+    const findedCustomerById = customers.find(
+      (customer) => customer.id === sanitizedRequestModel.id,
     );
 
-    return { ...findedCustomerById, ...sanitizedRequestModel, ...repositoryResult };
+    return { ...findedCustomerById, ...sanitizedRequestModel, ...customerUpdated };
   }
 
   private sanitizeRequestModel(

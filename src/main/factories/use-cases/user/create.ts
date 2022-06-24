@@ -10,7 +10,7 @@ import { knexConfig } from '@/main/config';
 export function makeDbCreateUserUseCase(session: SessionModel): CreateUserUseCase.UseCase {
   const repository = new KnexUserRepository(session, knexConfig, new UUIDService());
   const validatorService = new VanillaValidatorService<
-    Partial<CreateUserUseCase.RequestModel>,
+    CreateUserUseCase.RequestModel,
     { users: UserModel[] }
   >();
   const salt = 12;

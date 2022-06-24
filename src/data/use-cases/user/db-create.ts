@@ -9,7 +9,7 @@ export class DbCreateUserUseCase implements CreateUserUseCase.UseCase {
     private readonly createUserRepository: CreateUserRepository.Repository,
     private readonly findByUserRepository: FindByUserRepository.Repository,
     private readonly validatorService: ValidatorService.Validator<
-      Partial<CreateUserUseCase.RequestModel>,
+      CreateUserUseCase.RequestModel,
       { users: UserModel[] }
     >,
     private readonly hasher: Hasher,
@@ -26,12 +26,12 @@ export class DbCreateUserUseCase implements CreateUserUseCase.UseCase {
 
     await restValidation({ users });
 
-    const repositoryResult = await this.createUserRepository.create({
+    const userCreated = await this.createUserRepository.create({
       ...sanitizedRequestModel,
       password: await this.hasher.hash(sanitizedRequestModel.password),
     });
 
-    return { ...sanitizedRequestModel, ...repositoryResult };
+    return { ...sanitizedRequestModel, ...userCreated };
   }
 
   private sanitizeRequestModel(
