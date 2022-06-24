@@ -11,10 +11,8 @@ export function makeDbUpdatePaymentProfileUseCase(
 ): UpdatePaymentProfileUseCase.UseCase {
   const repository = new KnexPaymentProfileRepository(session, knexConfig, new UUIDService());
   const validatorService = new VanillaValidatorService<
-    Omit<UpdatePaymentProfileUseCase.RequestModel, 'data'> & {
-      data?: string | PaymentProfileModel['data'];
-    },
-    { paymentProfiles: (Omit<PaymentProfileModel, 'data'> & { data: string })[] }
+    UpdatePaymentProfileUseCase.RequestModel,
+    { paymentProfiles: PaymentProfileModel[] }
   >();
   const useCase = new DbUpdatePaymentProfileUseCase(repository, repository, validatorService);
 

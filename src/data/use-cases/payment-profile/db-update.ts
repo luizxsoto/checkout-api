@@ -12,10 +12,8 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
     private readonly updatePaymentProfileRepository: UpdatePaymentProfileRepository.Repository,
     private readonly findByPaymentProfileRepository: FindByPaymentProfileRepository.Repository,
     private readonly validatorService: ValidatorService.Validator<
-      Omit<UpdatePaymentProfileUseCase.RequestModel, 'data'> & {
-        data?: string | PaymentProfileModel['data'];
-      },
-      { paymentProfiles: (Omit<PaymentProfileModel, 'data'> & { data: string })[] }
+      UpdatePaymentProfileUseCase.RequestModel,
+      { paymentProfiles: PaymentProfileModel[] }
     >,
   ) {}
 
@@ -30,12 +28,7 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
       { customerId: sanitizedRequestModel.customerId },
     ]);
 
-    await restValidation({
-      paymentProfiles: paymentProfiles.map((paymentProfile) => ({
-        ...paymentProfile,
-        data: JSON.stringify(paymentProfile.data),
-      })),
-    });
+    await restValidation({ paymentProfiles });
 
     const [paymentProfileUpdated] = await this.updatePaymentProfileRepository.update(
       { id: sanitizedRequestModel.id },
@@ -62,12 +55,8 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
 
   private async validateRequestModel(
     requestModel: UpdatePaymentProfileUseCase.RequestModel,
-  ): Promise<
-    (validationData: {
-      paymentProfiles: (Omit<PaymentProfileModel, 'data'> & { data: string })[];
-    }) => Promise<void>
-  > {
-    const data: Rule[] = [];
+  ): Promise<(validationData: { paymentProfiles: PaymentProfileModel[] }) => Promise<void>> {
+    const data: Rule[] = [this.validatorService.rules.required()];
     if (requestModel.type === 'CARD_PAYMENT') {
       data.push(
         this.validatorService.rules.object({
@@ -149,6 +138,7 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
           this.validatorService.rules.regex({ pattern: 'uuidV4' }),
         ],
         type: [
+          this.validatorService.rules.required(),
           this.validatorService.rules.string(),
           this.validatorService.rules.in({ values: ['CARD_PAYMENT', 'PHONE_PAYMENT'] }),
         ],
@@ -183,11 +173,17 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
             this.validatorService.rules.unique({
               dataEntity: 'paymentProfiles',
               ignoreProps: [{ modelKey: 'id', dataKey: 'id' }],
-              props: [{ modelKey: 'data', dataKey: 'data' }],
+              props: [
+                { modelKey: 'data.type', dataKey: 'data.type' },
+                { modelKey: 'data.brand', dataKey: 'data.brand' },
+                { modelKey: 'data.cardNumber', dataKey: 'data.cardNumber' },
+                { modelKey: 'data.expiryMonth', dataKey: 'data.expiryMonth' },
+                { modelKey: 'data.expiryYear', dataKey: 'data.expiryYear' },
+              ],
             }),
           ],
         },
-        model: { ...requestModel, data: JSON.stringify(requestModel.data) },
+        model: requestModel,
         data: validationData,
       });
     };

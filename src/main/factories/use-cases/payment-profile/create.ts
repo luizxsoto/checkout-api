@@ -12,12 +12,10 @@ export function makeDbCreatePaymentProfileUseCase(
   const repository = new KnexPaymentProfileRepository(session, knexConfig, new UUIDService());
   const customerRepository = new KnexCustomerRepository(session, knexConfig, new UUIDService());
   const validatorService = new VanillaValidatorService<
-    Omit<CreatePaymentProfileUseCase.RequestModel, 'data'> & {
-      data: string | PaymentProfileModel['data'];
-    },
+    CreatePaymentProfileUseCase.RequestModel,
     {
       customers: CustomerModel[];
-      paymentProfiles: (Omit<PaymentProfileModel, 'data'> & { data: string })[];
+      paymentProfiles: PaymentProfileModel[];
     }
   >();
   const useCase = new DbCreatePaymentProfileUseCase(

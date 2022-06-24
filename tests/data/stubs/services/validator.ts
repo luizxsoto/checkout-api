@@ -201,7 +201,7 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
 
         const registerFinded = data[options.dataEntity].find((dataItem) =>
           options.props.every(
-            (prop) => dataItem[prop.dataKey] === model[prop.modelKey as keyof Model],
+            (prop) => lodashGet(dataItem, prop.dataKey) === lodashGet(model, prop.modelKey),
           ),
         );
 
@@ -226,7 +226,7 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
 
         const registerFinded = data[options.dataEntity].find((dataItem) =>
           options.props.every(
-            (prop) => dataItem[prop.dataKey] === model[prop.modelKey as keyof Model],
+            (prop) => lodashGet(dataItem, prop.dataKey) === lodashGet(model, prop.modelKey),
           ),
         );
 

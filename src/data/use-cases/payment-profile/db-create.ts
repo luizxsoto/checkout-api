@@ -14,12 +14,10 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
     private readonly findByPaymentProfileRepository: FindByPaymentProfileRepository.Repository,
     private readonly findByCustomerRepository: FindByCustomerRepository.Repository,
     private readonly validatorService: ValidatorService.Validator<
-      Omit<CreatePaymentProfileUseCase.RequestModel, 'data'> & {
-        data: string | PaymentProfileModel['data'];
-      },
+      CreatePaymentProfileUseCase.RequestModel,
       {
         customers: CustomerModel[];
-        paymentProfiles: (Omit<PaymentProfileModel, 'data'> & { data: string })[];
+        paymentProfiles: PaymentProfileModel[];
       }
     >,
   ) {}
@@ -39,13 +37,7 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
       { customerId: sanitizedRequestModel.customerId },
     ]);
 
-    await restValidation({
-      customers,
-      paymentProfiles: paymentProfiles.map((paymentProfile) => ({
-        ...paymentProfile,
-        data: JSON.stringify(paymentProfile.data),
-      })),
-    });
+    await restValidation({ customers, paymentProfiles });
 
     const paymentProfileCreated = await this.createPaymentProfileRepository.create(
       sanitizedRequestModel,
@@ -69,7 +61,7 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
   ): Promise<
     (validationData: {
       customers: CustomerModel[];
-      paymentProfiles: (Omit<PaymentProfileModel, 'data'> & { data: string })[];
+      paymentProfiles: PaymentProfileModel[];
     }) => Promise<void>
   > {
     const data: Rule[] = [this.validatorService.rules.required()];
@@ -171,11 +163,17 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
           data: [
             this.validatorService.rules.unique({
               dataEntity: 'paymentProfiles',
-              props: [{ modelKey: 'data', dataKey: 'data' }],
+              props: [
+                { modelKey: 'data.type', dataKey: 'data.type' },
+                { modelKey: 'data.brand', dataKey: 'data.brand' },
+                { modelKey: 'data.cardNumber', dataKey: 'data.cardNumber' },
+                { modelKey: 'data.expiryMonth', dataKey: 'data.expiryMonth' },
+                { modelKey: 'data.expiryYear', dataKey: 'data.expiryYear' },
+              ],
             }),
           ],
         },
-        model: { ...requestModel, data: JSON.stringify(requestModel.data) },
+        model: requestModel,
         data: validationData,
       });
     };
