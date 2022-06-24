@@ -39,6 +39,20 @@ describe(KnexCustomerRepository.name, () => {
     });
   });
 
+  describe('list()', () => {
+    test('Should list customer and return correct values', async () => {
+      const { knex, sut } = makeSut();
+
+      const requestModel = { name: 'Any Name', email: 'any@email.com' };
+      knex.then.mockImplementationOnce((resolve) => resolve([requestModel]));
+      const responseModel = { ...requestModel };
+
+      const sutResult = await sut.list({});
+
+      expect(sutResult).toStrictEqual([responseModel]);
+    });
+  });
+
   describe('create()', () => {
     test('Should create customer and return correct values', async () => {
       const { knex, sut } = makeSut();

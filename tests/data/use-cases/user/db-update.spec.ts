@@ -43,6 +43,7 @@ describe(DbUpdateUserUseCase.name, () => {
       updatedAt: new Date(),
       password: 'hashed_password',
     };
+    Reflect.deleteProperty(responseModel, 'password');
     const existsUser = { ...responseModel };
     const otherUser = { ...responseModel, email: 'valid@email.com' };
 
@@ -87,10 +88,10 @@ describe(DbUpdateUserUseCase.name, () => {
       model: sanitizedRequestModel,
       data: { users: [] },
     });
-    expect(userRepository.findBy).toBeCalledWith([
-      { id: sanitizedRequestModel.id },
-      { email: sanitizedRequestModel.email },
-    ]);
+    expect(userRepository.findBy).toBeCalledWith(
+      [{ id: sanitizedRequestModel.id }, { email: sanitizedRequestModel.email }],
+      true,
+    );
     expect(validatorService.validate).toBeCalledWith({
       schema: {
         id: [

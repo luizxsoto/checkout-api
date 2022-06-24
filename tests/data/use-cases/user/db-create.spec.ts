@@ -40,6 +40,7 @@ describe(DbCreateUserUseCase.name, () => {
       createdAt: new Date(),
       password: 'hashed_password',
     };
+    Reflect.deleteProperty(responseModel, 'password');
     const otherUser = { ...responseModel, email: 'valid@email.com' };
 
     userRepository.findBy.mockReturnValueOnce([otherUser]);
@@ -82,7 +83,7 @@ describe(DbCreateUserUseCase.name, () => {
       model: sanitizedRequestModel,
       data: { users: [] },
     });
-    expect(userRepository.findBy).toBeCalledWith([{ email: sanitizedRequestModel.email }]);
+    expect(userRepository.findBy).toBeCalledWith([{ email: sanitizedRequestModel.email }], true);
     expect(validatorService.validate).toBeCalledWith({
       schema: {
         name: [],

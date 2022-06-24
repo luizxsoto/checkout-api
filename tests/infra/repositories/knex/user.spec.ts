@@ -42,6 +42,40 @@ describe(KnexUserRepository.name, () => {
 
       expect(sutResult).toStrictEqual([responseModel]);
     });
+
+    test('Should findBy user and return correct sanitized values', async () => {
+      const { knex, sut } = makeSut();
+
+      const requestModel = {
+        name: 'Any Name',
+        email: 'any@email.com',
+        password: 'Password@123',
+      };
+      knex.then.mockImplementationOnce((resolve) => resolve([requestModel]));
+      const responseModel = { ...requestModel };
+      Reflect.deleteProperty(responseModel, 'password');
+
+      const sutResult = await sut.findBy([requestModel], true);
+
+      expect(sutResult).toStrictEqual([responseModel]);
+    });
+  });
+
+  describe('list()', () => {
+    test('Should list user and return correct values', async () => {
+      const { knex, sut } = makeSut();
+
+      const requestModel = {
+        password: 'Password@123',
+      };
+      knex.then.mockImplementationOnce((resolve) => resolve([requestModel]));
+      const responseModel = { ...requestModel };
+      Reflect.deleteProperty(responseModel, 'password');
+
+      const sutResult = await sut.list({});
+
+      expect(sutResult).toStrictEqual([responseModel]);
+    });
   });
 
   describe('create()', () => {

@@ -50,10 +50,10 @@ describe('User Routes', () => {
       expect(result.body[0]?.id).toBe(requestModel.id);
       expect(result.body[0]?.name).toBe(requestModel.name);
       expect(result.body[0]?.email).toBe(requestModel.email);
-      expect(result.body[0]?.password).toBe(requestModel.password);
       expect(result.body[0]?.createUserId).toBe(requestModel.createUserId);
       expect(result.body[0]?.updateUserId).toBe(requestModel.updateUserId);
       expect(result.body[0]?.createdAt).toBe(requestModel.createdAt);
+      expect(result.body[0]?.password).toBeUndefined();
     });
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
@@ -108,10 +108,10 @@ describe('User Routes', () => {
       expect(result.body.id).toBe(requestModel.id);
       expect(result.body.name).toBe(requestModel.name);
       expect(result.body.email).toBe(requestModel.email);
-      expect(result.body.password).toBe(requestModel.password);
       expect(result.body.createUserId).toBe(requestModel.createUserId);
       expect(result.body.updateUserId).toBe(requestModel.updateUserId);
       expect(result.body.createdAt).toBe(requestModel.createdAt);
+      expect(result.body[0]?.password).toBeUndefined();
     });
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
@@ -162,8 +162,8 @@ describe('User Routes', () => {
       expect(result.body.id).toMatch(
         /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i,
       );
-      expect(result.body.password).toBeDefined();
       expect(result.body.createdAt).toBeDefined();
+      expect(result.body.password).toBeUndefined();
     });
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
@@ -222,7 +222,7 @@ describe('User Routes', () => {
       expect(result.body.updateUserId).toBe(updateUserId);
       expect(result.body.createdAt).toBe(requestModel.createdAt);
       expect(result.body.updatedAt).toBeDefined();
-      expect(result.body.password).toBeDefined();
+      expect(result.body.password).toBeUndefined();
     });
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
@@ -288,7 +288,7 @@ describe('User Routes', () => {
       expect(result.body.createdAt).toBe(requestModel.createdAt);
       expect(result.body.updatedAt).toBe(requestModel.updatedAt);
       expect(result.body.deletedAt).toBeDefined();
-      expect(result.body.password).toBeDefined();
+      expect(result.body[0]?.password).toBeUndefined();
     });
 
     test('Should return a correct body validation error if some prop is invalid', async () => {

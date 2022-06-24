@@ -47,10 +47,10 @@ describe('Session Routes', () => {
       expect(result.body.id).toBe(requestModel.id);
       expect(result.body.name).toBe(requestModel.name);
       expect(result.body.email).toBe(requestModel.email);
-      expect(result.body.password).toBe(hashedPassword);
       expect(result.body.createUserId).toBe(requestModel.createUserId);
       expect(result.body.createdAt).toBe(requestModel.createdAt);
       expect(result.body.bearerToken).toBeDefined();
+      expect(result.body.password).toBeUndefined();
     });
 
     test('Should return a correct body validation error if some prop is invalid', async () => {

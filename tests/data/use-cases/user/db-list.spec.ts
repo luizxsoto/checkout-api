@@ -110,7 +110,7 @@ describe(DbListUserUseCase.name, () => {
         ],
       },
       model: sanitizedRequestModel,
-      data: { users: [] },
+      data: {},
     });
     expect(userRepository.list).toBeCalledWith(sanitizedRequestModel);
   });
