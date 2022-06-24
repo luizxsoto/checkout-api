@@ -9,7 +9,7 @@ export class DbRemoveUserUseCase implements RemoveUserUseCase.UseCase {
     private readonly findByUserRepository: FindByUserRepository.Repository,
     private readonly validatorService: ValidatorService.Validator<
       RemoveUserUseCase.RequestModel,
-      { users: UserModel[] }
+      { users: Omit<UserModel, 'password'>[] }
     >,
   ) {}
 
@@ -20,13 +20,16 @@ export class DbRemoveUserUseCase implements RemoveUserUseCase.UseCase {
 
     const restValidation = await this.validateRequestModel(sanitizedRequestModel);
 
-    const users = await this.findByUserRepository.findBy([{ id: sanitizedRequestModel.id }]);
+    const users = await this.findByUserRepository.findBy([{ id: sanitizedRequestModel.id }], true);
 
     await restValidation({ users });
 
     const [userRemoved] = await this.removeUserRepository.remove(sanitizedRequestModel);
 
-    return { ...users[0], ...sanitizedRequestModel, ...userRemoved };
+    const responseModel = { ...users[0], ...sanitizedRequestModel, ...userRemoved };
+    Reflect.deleteProperty(responseModel, 'password');
+
+    return responseModel;
   }
 
   private sanitizeRequestModel(
@@ -39,7 +42,7 @@ export class DbRemoveUserUseCase implements RemoveUserUseCase.UseCase {
 
   private async validateRequestModel(
     requestModel: RemoveUserUseCase.RequestModel,
-  ): Promise<(validationData: { users: UserModel[] }) => Promise<void>> {
+  ): Promise<(validationData: { users: Omit<UserModel, 'password'>[] }) => Promise<void>> {
     await this.validatorService.validate({
       schema: {
         id: [

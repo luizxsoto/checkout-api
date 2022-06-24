@@ -12,26 +12,38 @@ import {
 import { GenerateUniqueIDService } from '@/data/contracts/services';
 import { SessionModel, UserModel } from '@/domain/models';
 
-type Repositories = FindByUserRepository.Repository &
-  CreateUserRepository.Repository &
-  UpdateUserRepository.Repository &
-  RemoveUserRepository.Repository;
+type Repositories<FindByType = 'NORMAL' | 'SANITIZED'> =
+  FindByUserRepository.Repository<FindByType> &
+    CreateUserRepository.Repository &
+    UpdateUserRepository.Repository &
+    RemoveUserRepository.Repository;
 
-export class KnexUserRepository extends KnexBaseRepository implements Repositories {
+export class KnexUserRepository<FindByType = 'NORMAL' | 'SANITIZED'>
+  extends KnexBaseRepository
+  implements Repositories<FindByType>
+{
   constructor(session: SessionModel, knex: Knex, uuidService: GenerateUniqueIDService.Service) {
     super(session, knex, uuidService, 'users');
   }
 
+  private sanitizeResponse(users: UserModel[]) {
+    return users.map(({ password, ...user }) => user);
+  }
+
   public async findBy(
-    requestModel: FindByUserRepository.RequestModel,
-  ): Promise<FindByUserRepository.ResponseModel> {
-    return this.baseFind<UserModel>(requestModel);
+    where: Partial<UserModel>[],
+    sanitizeResponse?: boolean,
+  ): Promise<FindByUserRepository.ResponseModel<FindByType>> {
+    const users = await this.baseFind<UserModel>(where);
+    if (sanitizeResponse)
+      return this.sanitizeResponse(users) as FindByUserRepository.ResponseModel<FindByType>;
+    return users;
   }
 
   public async list(
     requestModel: ListUserRepository.RequestModel,
   ): Promise<ListUserRepository.ResponseModel> {
-    return this.baseList<UserModel>(requestModel);
+    return this.baseList<UserModel>(requestModel).then(this.sanitizeResponse);
   }
 
   public async create(

@@ -10,7 +10,7 @@ export function makeDbRemoveUserUseCase(session: SessionModel): RemoveUserUseCas
   const repository = new KnexUserRepository(session, knexConfig, new UUIDService());
   const validatorService = new VanillaValidatorService<
     RemoveUserUseCase.RequestModel,
-    { users: UserModel[] }
+    { users: Omit<UserModel, 'password'>[] }
   >();
   const useCase = new DbRemoveUserUseCase(repository, repository, validatorService);
 

@@ -9,7 +9,7 @@ export class DbListPaymentProfileUseCase implements ListPaymentProfileUseCase.Us
     private readonly listPaymentProfileRepository: ListPaymentProfileRepository.Repository,
     private readonly validatorService: ValidatorService.Validator<
       ListPaymentProfileUseCase.RequestModel,
-      { paymentProfiles: PaymentProfileModel[] }
+      Record<string, unknown[]>
     >,
   ) {}
 
@@ -110,7 +110,7 @@ export class DbListPaymentProfileUseCase implements ListPaymentProfileUseCase.Us
         ],
       },
       model: requestModel,
-      data: { paymentProfiles: [] },
+      data: {},
     });
   }
 }

@@ -1,3 +1,4 @@
+import { Hasher } from '@/data/contracts/cryptography';
 import {
   CreatePaymentProfileRepository,
   FindByCustomerRepository,
@@ -17,9 +18,12 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
       CreatePaymentProfileUseCase.RequestModel,
       {
         customers: CustomerModel[];
-        paymentProfiles: PaymentProfileModel[];
+        paymentProfiles: (Omit<PaymentProfileModel, 'data'> & {
+          data: Omit<PaymentProfileModel['data'], 'number' | 'cvv'> & { number?: string };
+        })[];
       }
     >,
+    private readonly hasher: Hasher,
   ) {}
 
   public async execute(
@@ -39,21 +43,74 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
 
     await restValidation({ customers, paymentProfiles });
 
-    const paymentProfileCreated = await this.createPaymentProfileRepository.create(
-      sanitizedRequestModel,
-    );
+    const sanitizedData = await this.sanitizeData(sanitizedRequestModel);
 
-    return { ...sanitizedRequestModel, ...paymentProfileCreated };
+    const paymentProfileCreated = await this.createPaymentProfileRepository.create({
+      ...sanitizedRequestModel,
+      data: sanitizedData,
+    });
+
+    const responseModel = { ...sanitizedRequestModel, ...paymentProfileCreated };
+    Reflect.deleteProperty(responseModel.data, 'cvv');
+    if (responseModel.type !== 'PHONE_PAYMENT') {
+      Reflect.deleteProperty(responseModel.data, 'number');
+    }
+
+    return responseModel;
   }
 
   private sanitizeRequestModel(
     requestModel: CreatePaymentProfileUseCase.RequestModel,
   ): CreatePaymentProfileUseCase.RequestModel {
-    return {
+    const sanitizedRequestModel = {
       customerId: requestModel.customerId,
       type: requestModel.type,
-      data: requestModel.data,
+      data: <PaymentProfileModel['data']>{},
     };
+
+    if (typeof requestModel.data === 'object' || !Array.isArray(requestModel.data)) {
+      if (requestModel.type === 'CARD_PAYMENT') {
+        const cardPaymentData = requestModel.data as PaymentProfileModel<'CARD_PAYMENT'>['data'];
+        sanitizedRequestModel.data = <PaymentProfileModel<'CARD_PAYMENT'>['data']>{
+          type: cardPaymentData.type,
+          brand: cardPaymentData.brand,
+          holderName: cardPaymentData.holderName,
+          number: cardPaymentData.number,
+          cvv: cardPaymentData.cvv,
+          expiryMonth: cardPaymentData.expiryMonth,
+          expiryYear: cardPaymentData.expiryYear,
+        };
+      }
+      if (requestModel.type === 'PHONE_PAYMENT') {
+        const phonePaymentData = requestModel.data as PaymentProfileModel<'PHONE_PAYMENT'>['data'];
+        sanitizedRequestModel.data = <PaymentProfileModel<'PHONE_PAYMENT'>['data']>{
+          countryCode: phonePaymentData.countryCode,
+          areaCode: phonePaymentData.areaCode,
+          number: phonePaymentData.number,
+        };
+      }
+    }
+
+    return sanitizedRequestModel;
+  }
+
+  private async sanitizeData(
+    requestModel: CreatePaymentProfileUseCase.RequestModel,
+  ): Promise<PaymentProfileModel['data']> {
+    let sanitizedData = requestModel.data as PaymentProfileModel['data'];
+
+    if (requestModel.type === 'CARD_PAYMENT') {
+      const cardPaymentData = requestModel.data as PaymentProfileModel<'CARD_PAYMENT'>['data'];
+      sanitizedData = <PaymentProfileModel<'CARD_PAYMENT'>['data']>{
+        ...sanitizedData,
+        firstSix: cardPaymentData.number.slice(0, 6),
+        lastFour: cardPaymentData.number.slice(-4),
+        number: await this.hasher.hash(cardPaymentData.number),
+        cvv: await this.hasher.hash(cardPaymentData.cvv),
+      };
+    }
+
+    return sanitizedData;
   }
 
   private async validateRequestModel(
@@ -61,12 +118,14 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
   ): Promise<
     (validationData: {
       customers: CustomerModel[];
-      paymentProfiles: PaymentProfileModel[];
+      paymentProfiles: (Omit<PaymentProfileModel, 'data'> & {
+        data: Omit<PaymentProfileModel['data'], 'number' | 'cvv'> & { number?: string };
+      })[];
     }) => Promise<void>
   > {
-    const data: Rule[] = [this.validatorService.rules.required()];
+    const dataPayload: Rule[] = [this.validatorService.rules.required()];
     if (requestModel.type === 'CARD_PAYMENT') {
-      data.push(
+      dataPayload.push(
         this.validatorService.rules.object({
           schema: {
             type: [
@@ -84,12 +143,12 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
               this.validatorService.rules.string(),
               this.validatorService.rules.length({ minLength: 1, maxLength: 15 }),
             ],
-            cardNumber: [
+            number: [
               this.validatorService.rules.required(),
               this.validatorService.rules.string(),
               this.validatorService.rules.length({ minLength: 16, maxLength: 16 }),
             ],
-            cardCVV: [
+            cvv: [
               this.validatorService.rules.required(),
               this.validatorService.rules.string(),
               this.validatorService.rules.length({ minLength: 3, maxLength: 3 }),
@@ -111,7 +170,7 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
       );
     }
     if (requestModel.type === 'PHONE_PAYMENT') {
-      data.push(
+      dataPayload.push(
         this.validatorService.rules.object({
           schema: {
             countryCode: [
@@ -145,12 +204,39 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
           this.validatorService.rules.string(),
           this.validatorService.rules.in({ values: ['CARD_PAYMENT', 'PHONE_PAYMENT'] }),
         ],
-        data,
+        data: dataPayload,
       },
       model: requestModel,
       data: { customers: [], paymentProfiles: [] },
     });
     return (validationData) => {
+      const dataUnique: Rule[] = [];
+      if (requestModel.type === 'CARD_PAYMENT') {
+        dataUnique.push(
+          this.validatorService.rules.unique({
+            dataEntity: 'paymentProfiles',
+            props: [
+              { modelKey: 'data.type', dataKey: 'data.type' },
+              { modelKey: 'data.brand', dataKey: 'data.brand' },
+              { modelKey: 'data.number', dataKey: 'data.number' },
+              { modelKey: 'data.expiryMonth', dataKey: 'data.expiryMonth' },
+              { modelKey: 'data.expiryYear', dataKey: 'data.expiryYear' },
+            ],
+          }),
+        );
+      }
+      if (requestModel.type === 'PHONE_PAYMENT') {
+        dataUnique.push(
+          this.validatorService.rules.unique({
+            dataEntity: 'paymentProfiles',
+            props: [
+              { modelKey: 'data.countryCode', dataKey: 'data.countryCode' },
+              { modelKey: 'data.areaCode', dataKey: 'data.areaCode' },
+              { modelKey: 'data.number', dataKey: 'data.number' },
+            ],
+          }),
+        );
+      }
       return this.validatorService.validate({
         schema: {
           customerId: [
@@ -160,18 +246,7 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
             }),
           ],
           type: [],
-          data: [
-            this.validatorService.rules.unique({
-              dataEntity: 'paymentProfiles',
-              props: [
-                { modelKey: 'data.type', dataKey: 'data.type' },
-                { modelKey: 'data.brand', dataKey: 'data.brand' },
-                { modelKey: 'data.cardNumber', dataKey: 'data.cardNumber' },
-                { modelKey: 'data.expiryMonth', dataKey: 'data.expiryMonth' },
-                { modelKey: 'data.expiryYear', dataKey: 'data.expiryYear' },
-              ],
-            }),
-          ],
+          data: dataUnique,
         },
         model: requestModel,
         data: validationData,

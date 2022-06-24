@@ -1,5 +1,5 @@
 import { DbListCustomerUseCase } from '@/data/use-cases';
-import { CustomerModel, SessionModel } from '@/domain/models';
+import { SessionModel } from '@/domain/models';
 import { ListCustomerUseCase } from '@/domain/use-cases';
 import { KnexCustomerRepository } from '@/infra/repositories';
 import { UUIDService } from '@/infra/services';
@@ -10,7 +10,7 @@ export function makeDbListCustomerUseCase(session: SessionModel): ListCustomerUs
   const repository = new KnexCustomerRepository(session, knexConfig, new UUIDService());
   const validatorService = new VanillaValidatorService<
     ListCustomerUseCase.RequestModel,
-    { customers: CustomerModel[] }
+    Record<string, unknown[]>
   >();
   const useCase = new DbListCustomerUseCase(repository, validatorService);
 

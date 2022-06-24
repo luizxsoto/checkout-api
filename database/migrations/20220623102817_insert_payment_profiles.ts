@@ -1,12 +1,15 @@
+import { hash } from 'bcrypt';
 import { Knex } from 'knex';
 
 import { PaymentProfileModel } from '@/domain/models';
 import { envConfig } from '@/main/config';
 
 const tableName = 'payment_profiles';
-const customers: (Omit<PaymentProfileModel, 'createdAt'> & {
-  createdAt: string;
-})[] = [
+const customers: () => Promise<
+  (Omit<PaymentProfileModel, 'createdAt'> & {
+    createdAt: string;
+  })[]
+> = async () => [
   <
     Omit<PaymentProfileModel<'CARD_PAYMENT'>, 'createdAt'> & {
       createdAt: string;
@@ -21,8 +24,10 @@ const customers: (Omit<PaymentProfileModel, 'createdAt'> & {
       type: 'CREDIT',
       brand: 'brand',
       holderName: 'holderName',
-      cardNumber: '1234567890123456',
-      cardCVV: '123',
+      number: await hash('1234567890123456', 12),
+      firstSix: '123456',
+      lastFour: '3456',
+      cvv: await hash('123', 12),
       expiryMonth: '12',
       expiryYear: '1234',
     },
@@ -48,13 +53,13 @@ const customers: (Omit<PaymentProfileModel, 'createdAt'> & {
 export async function up(knex: Knex): Promise<void> {
   if (envConfig.nodeEnv === 'production') return;
 
-  await knex.table(tableName).insert(customers);
+  await knex.table(tableName).insert(await customers());
 }
 
 export async function down(knex: Knex): Promise<void> {
   if (envConfig.nodeEnv === 'production') return;
 
-  const customerIds = customers.map((customer) => customer.id);
+  const customerIds = (await customers()).map((customer) => customer.id);
 
   await knex.table(tableName).whereIn('id', customerIds).delete();
 }

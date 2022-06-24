@@ -1,9 +1,13 @@
 import { UserModel } from '@/domain/models';
 
-export type RequestModel = Partial<Omit<UserModel, 'roles'>>[];
+export type RequestModel = Parameters<
+  (where: Partial<UserModel>[], sanitizeResponse?: boolean) => void
+>;
 
-export type ResponseModel = UserModel[];
+export type ResponseModel<Type = 'NORMAL' | 'SANITIZED'> = Type extends 'NORMAL'
+  ? UserModel[]
+  : Omit<UserModel, 'password'>[];
 
-export interface Repository {
-  findBy: (requestModel: RequestModel) => Promise<ResponseModel>;
+export interface Repository<Type = 'NORMAL' | 'SANITIZED'> {
+  findBy: (...requestModel: RequestModel) => Promise<ResponseModel<Type>>;
 }

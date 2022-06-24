@@ -10,7 +10,7 @@ export class DbUpdateUserUseCase implements UpdateUserUseCase.UseCase {
     private readonly findByUserRepository: FindByUserRepository.Repository,
     private readonly validatorService: ValidatorService.Validator<
       UpdateUserUseCase.RequestModel,
-      { users: UserModel[] }
+      { users: Omit<UserModel, 'password'>[] }
     >,
     private readonly hasher: Hasher,
   ) {}
@@ -26,7 +26,7 @@ export class DbUpdateUserUseCase implements UpdateUserUseCase.UseCase {
 
     if (sanitizedRequestModel.email) filters.push({ email: sanitizedRequestModel.email });
 
-    const users = await this.findByUserRepository.findBy(filters);
+    const users = await this.findByUserRepository.findBy(filters, true);
 
     await restValidation({ users });
 
@@ -42,7 +42,10 @@ export class DbUpdateUserUseCase implements UpdateUserUseCase.UseCase {
 
     const findedUserById = users.find((user) => user.id === sanitizedRequestModel.id);
 
-    return { ...findedUserById, ...sanitizedRequestModel, ...userUpdated };
+    const responseModel = { ...findedUserById, ...sanitizedRequestModel, ...userUpdated };
+    Reflect.deleteProperty(responseModel, 'password');
+
+    return responseModel;
   }
 
   private sanitizeRequestModel(
@@ -59,7 +62,7 @@ export class DbUpdateUserUseCase implements UpdateUserUseCase.UseCase {
 
   private async validateRequestModel(
     requestModel: UpdateUserUseCase.RequestModel,
-  ): Promise<(validationData: { users: UserModel[] }) => Promise<void>> {
+  ): Promise<(validationData: { users: Omit<UserModel, 'password'>[] }) => Promise<void>> {
     await this.validatorService.validate({
       schema: {
         id: [

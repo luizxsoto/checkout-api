@@ -6,7 +6,7 @@ import { CreateSessionUseCase } from '@/domain/use-cases';
 
 export class DbCreateSessionUseCase implements CreateSessionUseCase.UseCase {
   constructor(
-    private readonly findByUserRepository: FindByUserRepository.Repository,
+    private readonly findByUserRepository: FindByUserRepository.Repository<'NORMAL'>,
     private readonly hashComparer: HashComparer,
     private readonly encrypter: Encrypter,
     private readonly validatorService: ValidatorService.Validator<
@@ -35,7 +35,10 @@ export class DbCreateSessionUseCase implements CreateSessionUseCase.UseCase {
       roles: findedUser.roles,
     });
 
-    return { ...findedUser, bearerToken };
+    const responseModel = { ...findedUser, bearerToken };
+    Reflect.deleteProperty(responseModel, 'password');
+
+    return responseModel;
   }
 
   private sanitizeRequestModel(

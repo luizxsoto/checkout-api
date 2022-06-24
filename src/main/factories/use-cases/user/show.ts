@@ -10,7 +10,7 @@ export function makeDbShowUserUseCase(session: SessionModel): ShowUserUseCase.Us
   const repository = new KnexUserRepository(session, knexConfig, new UUIDService());
   const validatorService = new VanillaValidatorService<
     ShowUserUseCase.RequestModel,
-    { users: UserModel[] }
+    { users: Omit<UserModel, 'password'>[] }
   >();
   const useCase = new DbShowUserUseCase(repository, validatorService);
 

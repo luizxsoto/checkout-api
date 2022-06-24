@@ -1,6 +1,7 @@
 import { DbCreatePaymentProfileUseCase } from '@/data/use-cases';
 import { CustomerModel, PaymentProfileModel, SessionModel } from '@/domain/models';
 import { CreatePaymentProfileUseCase } from '@/domain/use-cases';
+import { BcryptCryptography } from '@/infra/cryptography';
 import { KnexCustomerRepository, KnexPaymentProfileRepository } from '@/infra/repositories';
 import { UUIDService } from '@/infra/services';
 import { VanillaValidatorService } from '@/infra/services/validator';
@@ -15,14 +16,19 @@ export function makeDbCreatePaymentProfileUseCase(
     CreatePaymentProfileUseCase.RequestModel,
     {
       customers: CustomerModel[];
-      paymentProfiles: PaymentProfileModel[];
+      paymentProfiles: (Omit<PaymentProfileModel, 'data'> & {
+        data: Omit<PaymentProfileModel['data'], 'number' | 'cvv'> & { number?: string };
+      })[];
     }
   >();
+  const salt = 12;
+  const bcryptCryptography = new BcryptCryptography(salt);
   const useCase = new DbCreatePaymentProfileUseCase(
     repository,
     repository,
     customerRepository,
     validatorService,
+    bcryptCryptography,
   );
 
   return useCase;

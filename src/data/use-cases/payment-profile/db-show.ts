@@ -8,7 +8,11 @@ export class DbShowPaymentProfileUseCase implements ShowPaymentProfileUseCase.Us
     private readonly findByPaymentProfileRepository: FindByPaymentProfileRepository.Repository,
     private readonly validatorService: ValidatorService.Validator<
       ShowPaymentProfileUseCase.RequestModel,
-      { paymentProfiles: PaymentProfileModel[] }
+      {
+        paymentProfiles: (Omit<PaymentProfileModel, 'data'> & {
+          data: Omit<PaymentProfileModel['data'], 'number' | 'cvv'> & { number?: string };
+        })[];
+      }
     >,
   ) {}
 
@@ -19,9 +23,10 @@ export class DbShowPaymentProfileUseCase implements ShowPaymentProfileUseCase.Us
 
     const restValidation = await this.validateRequestModel(sanitizedRequestModel);
 
-    const paymentProfiles = await this.findByPaymentProfileRepository.findBy([
-      { id: sanitizedRequestModel.id },
-    ]);
+    const paymentProfiles = await this.findByPaymentProfileRepository.findBy(
+      [{ id: sanitizedRequestModel.id }],
+      true,
+    );
 
     await restValidation({ paymentProfiles });
 
@@ -34,9 +39,13 @@ export class DbShowPaymentProfileUseCase implements ShowPaymentProfileUseCase.Us
     return { id: requestModel.id };
   }
 
-  private async validateRequestModel(
-    requestModel: ShowPaymentProfileUseCase.RequestModel,
-  ): Promise<(validationData: { paymentProfiles: PaymentProfileModel[] }) => Promise<void>> {
+  private async validateRequestModel(requestModel: ShowPaymentProfileUseCase.RequestModel): Promise<
+    (validationData: {
+      paymentProfiles: (Omit<PaymentProfileModel, 'data'> & {
+        data: Omit<PaymentProfileModel['data'], 'number' | 'cvv'> & { number?: string };
+      })[];
+    }) => Promise<void>
+  > {
     await this.validatorService.validate({
       schema: {
         id: [

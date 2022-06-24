@@ -8,7 +8,7 @@ export class DbShowUserUseCase implements ShowUserUseCase.UseCase {
     private readonly findByUserRepository: FindByUserRepository.Repository,
     private readonly validatorService: ValidatorService.Validator<
       ShowUserUseCase.RequestModel,
-      { users: UserModel[] }
+      { users: Omit<UserModel, 'password'>[] }
     >,
   ) {}
 
@@ -19,7 +19,7 @@ export class DbShowUserUseCase implements ShowUserUseCase.UseCase {
 
     const restValidation = await this.validateRequestModel(sanitizedRequestModel);
 
-    const users = await this.findByUserRepository.findBy([{ id: sanitizedRequestModel.id }]);
+    const users = await this.findByUserRepository.findBy([{ id: sanitizedRequestModel.id }], true);
 
     await restValidation({ users });
 
@@ -34,7 +34,7 @@ export class DbShowUserUseCase implements ShowUserUseCase.UseCase {
 
   private async validateRequestModel(
     requestModel: ShowUserUseCase.RequestModel,
-  ): Promise<(validationData: { users: UserModel[] }) => Promise<void>> {
+  ): Promise<(validationData: { users: Omit<UserModel, 'password'>[] }) => Promise<void>> {
     await this.validatorService.validate({
       schema: {
         id: [

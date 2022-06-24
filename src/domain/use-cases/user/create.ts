@@ -5,7 +5,7 @@ export type RequestModel = Omit<
   'id' | 'createUserId' | 'updateUserId' | 'deleteUserId' | 'createdAt' | 'updatedAt' | 'deletedAt'
 >;
 
-export type ResponseModel = UserModel;
+export type ResponseModel = Omit<UserModel, 'password'>;
 
 export interface UseCase {
   execute: (requestModel: RequestModel) => Promise<ResponseModel>;

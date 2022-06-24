@@ -12,7 +12,11 @@ export function makeDbRemovePaymentProfileUseCase(
   const repository = new KnexPaymentProfileRepository(session, knexConfig, new UUIDService());
   const validatorService = new VanillaValidatorService<
     RemovePaymentProfileUseCase.RequestModel,
-    { paymentProfiles: PaymentProfileModel[] }
+    {
+      paymentProfiles: (Omit<PaymentProfileModel, 'data'> & {
+        data: Omit<PaymentProfileModel['data'], 'number' | 'cvv'> & { number?: string };
+      })[];
+    }
   >();
   const useCase = new DbRemovePaymentProfileUseCase(repository, repository, validatorService);
 

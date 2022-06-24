@@ -1,5 +1,5 @@
 import { DbListPaymentProfileUseCase } from '@/data/use-cases';
-import { PaymentProfileModel, SessionModel } from '@/domain/models';
+import { SessionModel } from '@/domain/models';
 import { ListPaymentProfileUseCase } from '@/domain/use-cases';
 import { KnexPaymentProfileRepository } from '@/infra/repositories';
 import { UUIDService } from '@/infra/services';
@@ -12,7 +12,7 @@ export function makeDbListPaymentProfileUseCase(
   const repository = new KnexPaymentProfileRepository(session, knexConfig, new UUIDService());
   const validatorService = new VanillaValidatorService<
     ListPaymentProfileUseCase.RequestModel,
-    { paymentProfiles: PaymentProfileModel[] }
+    Record<string, unknown[]>
   >();
   const useCase = new DbListPaymentProfileUseCase(repository, validatorService);
 

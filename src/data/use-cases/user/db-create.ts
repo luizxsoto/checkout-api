@@ -10,7 +10,7 @@ export class DbCreateUserUseCase implements CreateUserUseCase.UseCase {
     private readonly findByUserRepository: FindByUserRepository.Repository,
     private readonly validatorService: ValidatorService.Validator<
       CreateUserUseCase.RequestModel,
-      { users: UserModel[] }
+      { users: Omit<UserModel, 'password'>[] }
     >,
     private readonly hasher: Hasher,
   ) {}
@@ -22,7 +22,10 @@ export class DbCreateUserUseCase implements CreateUserUseCase.UseCase {
 
     const restValidation = await this.validateRequestModel(sanitizedRequestModel);
 
-    const users = await this.findByUserRepository.findBy([{ email: sanitizedRequestModel.email }]);
+    const users = await this.findByUserRepository.findBy(
+      [{ email: sanitizedRequestModel.email }],
+      true,
+    );
 
     await restValidation({ users });
 
@@ -31,7 +34,10 @@ export class DbCreateUserUseCase implements CreateUserUseCase.UseCase {
       password: await this.hasher.hash(sanitizedRequestModel.password),
     });
 
-    return { ...sanitizedRequestModel, ...userCreated };
+    const responseModel = { ...sanitizedRequestModel, ...userCreated };
+    Reflect.deleteProperty(responseModel, 'password');
+
+    return responseModel;
   }
 
   private sanitizeRequestModel(
@@ -47,7 +53,7 @@ export class DbCreateUserUseCase implements CreateUserUseCase.UseCase {
 
   private async validateRequestModel(
     requestModel: CreateUserUseCase.RequestModel,
-  ): Promise<(validationData: { users: UserModel[] }) => Promise<void>> {
+  ): Promise<(validationData: { users: Omit<UserModel, 'password'>[] }) => Promise<void>> {
     await this.validatorService.validate({
       schema: {
         name: [

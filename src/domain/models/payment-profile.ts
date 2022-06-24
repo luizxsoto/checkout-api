@@ -10,8 +10,10 @@ export class PaymentProfileModel<Type = 'CARD_PAYMENT' | 'PHONE_PAYMENT'> extend
         type: 'CREDIT' | 'DEBIT';
         brand: string;
         holderName: string;
-        cardNumber: string;
-        cardCVV: string;
+        number: string;
+        firstSix: string;
+        lastFour: string;
+        cvv: string;
         expiryMonth: string;
         expiryYear: string;
       }

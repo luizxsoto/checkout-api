@@ -5,16 +5,19 @@ import { UserModel } from '@/domain/models';
 import { envConfig } from '@/main/config';
 
 const tableName = 'users';
-const users: (Omit<UserModel, 'password' | 'roles' | 'createdAt'> & {
-  createdAt: string;
-  roles: string;
-})[] = [
+const users: () => Promise<
+  (Omit<UserModel, 'roles' | 'createdAt'> & {
+    createdAt: string;
+    roles: string;
+  })[]
+> = async () => [
   {
     id: '00000000-0000-4000-8000-000000000001',
     createUserId: '00000000-0000-4000-8000-000000000001',
     createdAt: new Date().toISOString(),
     name: 'Admin',
     email: 'admin@email.com',
+    password: await hash('Password@123', 12),
     roles: JSON.stringify(['admin']),
   },
   {
@@ -23,6 +26,7 @@ const users: (Omit<UserModel, 'password' | 'roles' | 'createdAt'> & {
     createdAt: new Date().toISOString(),
     name: 'Moderator',
     email: 'moderator@email.com',
+    password: await hash('Password@123', 12),
     roles: JSON.stringify(['moderator']),
   },
   {
@@ -31,6 +35,7 @@ const users: (Omit<UserModel, 'password' | 'roles' | 'createdAt'> & {
     createdAt: new Date().toISOString(),
     name: 'Normal',
     email: 'normal@email.com',
+    password: await hash('Password@123', 12),
     roles: JSON.stringify([]),
   },
 ];
@@ -38,15 +43,13 @@ const users: (Omit<UserModel, 'password' | 'roles' | 'createdAt'> & {
 export async function up(knex: Knex): Promise<void> {
   if (envConfig.nodeEnv === 'production') return;
 
-  const password = await hash('Password@123', 12);
-
-  await knex.table(tableName).insert(users.map((user) => ({ ...user, password })));
+  await knex.table(tableName).insert(await users());
 }
 
 export async function down(knex: Knex): Promise<void> {
   if (envConfig.nodeEnv === 'production') return;
 
-  const userIds = users.map((user) => user.id);
+  const userIds = (await users()).map((user) => user.id);
 
   await knex.table(tableName).whereIn('id', userIds).delete();
 }

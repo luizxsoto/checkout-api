@@ -12,7 +12,11 @@ export class DbRemovePaymentProfileUseCase implements RemovePaymentProfileUseCas
     private readonly findByPaymentProfileRepository: FindByPaymentProfileRepository.Repository,
     private readonly validatorService: ValidatorService.Validator<
       RemovePaymentProfileUseCase.RequestModel,
-      { paymentProfiles: PaymentProfileModel[] }
+      {
+        paymentProfiles: (Omit<PaymentProfileModel, 'data'> & {
+          data: Omit<PaymentProfileModel['data'], 'number' | 'cvv'> & { number?: string };
+        })[];
+      }
     >,
   ) {}
 
@@ -23,9 +27,10 @@ export class DbRemovePaymentProfileUseCase implements RemovePaymentProfileUseCas
 
     const restValidation = await this.validateRequestModel(sanitizedRequestModel);
 
-    const paymentProfiles = await this.findByPaymentProfileRepository.findBy([
-      { id: sanitizedRequestModel.id },
-    ]);
+    const paymentProfiles = await this.findByPaymentProfileRepository.findBy(
+      [{ id: sanitizedRequestModel.id }],
+      true,
+    );
 
     await restValidation({ paymentProfiles });
 
@@ -33,7 +38,17 @@ export class DbRemovePaymentProfileUseCase implements RemovePaymentProfileUseCas
       sanitizedRequestModel,
     );
 
-    return { ...paymentProfiles[0], ...sanitizedRequestModel, ...paymentProfileRemoved };
+    const responseModel = {
+      ...paymentProfiles[0],
+      ...sanitizedRequestModel,
+      ...paymentProfileRemoved,
+    };
+    Reflect.deleteProperty(responseModel.data, 'cvv');
+    if (responseModel.type !== 'PHONE_PAYMENT') {
+      Reflect.deleteProperty(responseModel.data, 'number');
+    }
+
+    return responseModel;
   }
 
   private sanitizeRequestModel(
@@ -46,7 +61,13 @@ export class DbRemovePaymentProfileUseCase implements RemovePaymentProfileUseCas
 
   private async validateRequestModel(
     requestModel: RemovePaymentProfileUseCase.RequestModel,
-  ): Promise<(validationData: { paymentProfiles: PaymentProfileModel[] }) => Promise<void>> {
+  ): Promise<
+    (validationData: {
+      paymentProfiles: (Omit<PaymentProfileModel, 'data'> & {
+        data: Omit<PaymentProfileModel['data'], 'number' | 'cvv'> & { number?: string };
+      })[];
+    }) => Promise<void>
+  > {
     await this.validatorService.validate({
       schema: {
         id: [

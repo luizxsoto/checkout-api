@@ -8,7 +8,9 @@ export type RequestModel = {
   filters?: string;
 };
 
-export type ResponseModel = PaymentProfileModel[];
+export type ResponseModel = (Omit<PaymentProfileModel, 'data'> & {
+  data: Omit<PaymentProfileModel['data'], 'number' | 'cvv'> & { number?: string };
+})[];
 
 export interface UseCase {
   execute: (requestModel: RequestModel) => Promise<ResponseModel>;

@@ -22,16 +22,32 @@ export class KnexPaymentProfileRepository extends KnexBaseRepository implements 
     super(session, knex, uuidService, 'payment_profiles');
   }
 
+  private sanitizeResponse(paymentProfiles: PaymentProfileModel[]) {
+    return paymentProfiles.map(({ data, ...paymentProfile }) => {
+      const { number, cvv, ...restData } = data as PaymentProfileModel<'CARD_PAYMENT'>['data'];
+      return {
+        ...paymentProfile,
+        data: {
+          ...restData,
+          number: paymentProfile.type === 'PHONE_PAYMENT' ? number : undefined,
+        },
+      };
+    });
+  }
+
   public async findBy(
-    requestModel: FindByPaymentProfileRepository.RequestModel,
+    where: Partial<PaymentProfileModel>[],
+    sanitizeResponse?: boolean,
   ): Promise<FindByPaymentProfileRepository.ResponseModel> {
-    return this.baseFind<PaymentProfileModel>(requestModel);
+    const paymentProfiles = await this.baseFind<PaymentProfileModel>(where);
+    if (sanitizeResponse) return this.sanitizeResponse(paymentProfiles);
+    return paymentProfiles;
   }
 
   public async list(
     requestModel: ListPaymentProfileRepository.RequestModel,
   ): Promise<ListPaymentProfileRepository.ResponseModel> {
-    return this.baseList<PaymentProfileModel>(requestModel);
+    return this.baseList<PaymentProfileModel>(requestModel).then(this.sanitizeResponse);
   }
 
   public async create(

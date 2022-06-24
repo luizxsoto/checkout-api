@@ -9,7 +9,7 @@ export class DbListCustomerUseCase implements ListCustomerUseCase.UseCase {
     private readonly listCustomerRepository: ListCustomerRepository.Repository,
     private readonly validatorService: ValidatorService.Validator<
       ListCustomerUseCase.RequestModel,
-      { customers: CustomerModel[] }
+      Record<string, unknown[]>
     >,
   ) {}
 
@@ -112,7 +112,7 @@ export class DbListCustomerUseCase implements ListCustomerUseCase.UseCase {
         ],
       },
       model: requestModel,
-      data: { customers: [] },
+      data: {},
     });
   }
 }

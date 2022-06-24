@@ -11,7 +11,7 @@ export function makeDbUpdateUserUseCase(session: SessionModel): UpdateUserUseCas
   const repository = new KnexUserRepository(session, knexConfig, new UUIDService());
   const validatorService = new VanillaValidatorService<
     UpdateUserUseCase.RequestModel,
-    { users: UserModel[] }
+    { users: Omit<UserModel, 'password'>[] }
   >();
   const salt = 12;
   const bcryptCryptography = new BcryptCryptography(salt);
