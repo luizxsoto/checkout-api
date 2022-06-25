@@ -87,7 +87,6 @@ describe(KnexUserRepository.name, () => {
         email: 'any@email.com',
         password: 'Password@123',
         roles: ['admin'] as Roles[],
-        createUserId: '00000000-0000-4000-8000-000000000001',
       };
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]));
       const responseModel = {
@@ -113,7 +112,6 @@ describe(KnexUserRepository.name, () => {
         email: 'any@email.com',
         password: 'Password@123',
         roles: [],
-        updateUserId: '00000000-0000-4000-8000-000000000001',
         createdAt: new Date(),
       };
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]));
@@ -129,7 +127,7 @@ describe(KnexUserRepository.name, () => {
     test('Should remove user and return correct values', async () => {
       const { knex, sut } = makeSut();
 
-      const requestModel = { id: 'any_id', deleteUserId: '00000000-0000-4000-8000-000000000001' };
+      const requestModel = { id: 'any_id' };
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]));
       const responseModel = { ...requestModel, deleteUserId: userId, deletedAt: new Date() };
 

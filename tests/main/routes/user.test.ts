@@ -6,6 +6,7 @@ import request from 'supertest';
 import { knexConfig, setupApp } from '@/main/config';
 import { makeBearerTokenMock } from '@tests/domain/mocks/models';
 
+const userId = '00000000-0000-4000-8000-000000000001';
 let app: Express;
 
 describe('User Routes', () => {
@@ -33,7 +34,7 @@ describe('User Routes', () => {
         email: 'any@email.com',
         password: 'hashed_password',
         roles: [],
-        createUserId: '00000000-0000-4000-8000-000000000001',
+        createUserId: userId,
         updateUserId: null,
         createdAt: new Date().toISOString(),
       };
@@ -92,7 +93,7 @@ describe('User Routes', () => {
         email: 'any@email.com',
         password: 'hashed_password',
         roles: [],
-        createUserId: '00000000-0000-4000-8000-000000000001',
+        createUserId: userId,
         updateUserId: null,
         createdAt: new Date().toISOString(),
       };
@@ -148,7 +149,7 @@ describe('User Routes', () => {
         password: 'Password@123',
         roles: [],
       };
-      const createUserId = '00000000-0000-4000-8000-000000000001';
+      const createUserId = userId;
 
       const result = await request(app)
         .post('/api/users')
@@ -202,10 +203,10 @@ describe('User Routes', () => {
         email: 'any@email.com',
         password: 'Password@123',
         roles: [],
-        createUserId: '00000000-0000-4000-8000-000000000001',
+        createUserId: userId,
         createdAt: new Date().toISOString(),
       };
-      const updateUserId = '00000000-0000-4000-8000-000000000001';
+      const updateUserId = userId;
 
       await knexConfig.table('users').insert(requestModel);
 
@@ -264,12 +265,12 @@ describe('User Routes', () => {
         email: 'any@email.com',
         password: 'Password@123',
         roles: [],
-        createUserId: '00000000-0000-4000-8000-000000000001',
+        createUserId: userId,
         updateUserId: null,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-      const deleteUserId = '00000000-0000-4000-8000-000000000001';
+      const deleteUserId = userId;
 
       await knexConfig.table('users').insert(requestModel);
 

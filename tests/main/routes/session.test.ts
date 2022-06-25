@@ -6,6 +6,7 @@ import request from 'supertest';
 
 import { knexConfig, setupApp } from '@/main/config';
 
+const userId = '00000000-0000-4000-8000-000000000001';
 let app: Express;
 
 describe('Session Routes', () => {
@@ -35,7 +36,7 @@ describe('Session Routes', () => {
         email: 'any@email.com',
         password,
         roles: [],
-        createUserId: '00000000-0000-4000-8000-000000000001',
+        createUserId: userId,
         createdAt: new Date().toISOString(),
       };
 

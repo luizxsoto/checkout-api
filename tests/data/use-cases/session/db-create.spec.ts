@@ -46,7 +46,6 @@ describe(DbCreateSessionUseCase.name, () => {
       roles: ['any_role'],
       createdAt: new Date(),
       password: 'hashed_password',
-      createUserId: '00000000-0000-4000-8000-000000000001',
       bearerToken: 'any_bearerToken',
     };
     Reflect.deleteProperty(responseModel, 'password');

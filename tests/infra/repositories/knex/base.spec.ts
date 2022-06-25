@@ -169,7 +169,7 @@ describe(KnexBaseRepository.name, () => {
       const responseModel = {
         ...requestModel,
         id: 'any_id',
-        createUserId: '00000000-0000-4000-8000-000000000001',
+        createUserId: userId,
         createdAt: new Date(),
       };
       uuidService.generateUniqueID.mockReturnValueOnce('any_id');
@@ -191,7 +191,7 @@ describe(KnexBaseRepository.name, () => {
       const responseModel = {
         ...requestModel,
         id: 'any_id',
-        createUserId: '00000000-0000-4000-8000-000000000001',
+        createUserId: userId,
         createdAt: new Date(),
       };
       uuidService.generateUniqueID.mockReturnValueOnce('any_id');
@@ -216,12 +216,14 @@ describe(KnexBaseRepository.name, () => {
       };
       const updateModel = {
         ...requestModel,
-        updateUserId: '00000000-0000-4000-8000-000000000001',
+        updateUserId: userId,
         updatedAt: new Date(),
       };
+      knex.then.mockImplementationOnce((resolve) => resolve([updateModel]));
 
-      await sut.update(where as unknown as BaseModel, requestModel);
+      const sutResult = await sut.update(where as unknown as BaseModel, requestModel);
 
+      expect(sutResult).toStrictEqual([updateModel]);
       expect(knex.table).toBeCalledWith(tableName);
       expect(knex.update).toBeCalledWith(updateModel);
       expect(knex.where).toBeCalledWith(where);
@@ -236,13 +238,14 @@ describe(KnexBaseRepository.name, () => {
       };
       const updateModel = {
         ...requestModel,
-        updateUserId: '00000000-0000-4000-8000-000000000001',
+        updateUserId: userId,
         updatedAt: new Date(),
       };
       knex.then.mockImplementationOnce((resolve) => resolve(1));
 
-      await sut.update(where as unknown as BaseModel, requestModel);
+      const sutResult = await sut.update(where as unknown as BaseModel, requestModel);
 
+      expect(sutResult).toStrictEqual([updateModel]);
       expect(knex.table).toBeCalledWith(tableName);
       expect(knex.update).toBeCalledWith(updateModel);
       expect(knex.where).toBeCalledWith(where);
@@ -256,12 +259,14 @@ describe(KnexBaseRepository.name, () => {
       const where = { anyProp: 'anyValue' };
       const removeModel = {
         ...where,
-        deleteUserId: '00000000-0000-4000-8000-000000000001',
+        deleteUserId: userId,
         deletedAt: new Date(),
       };
+      knex.then.mockImplementationOnce((resolve) => resolve([removeModel]));
 
-      await sut.remove(where as unknown as BaseModel);
+      const sutResult = await sut.remove(where as unknown as BaseModel);
 
+      expect(sutResult).toStrictEqual([removeModel]);
       expect(knex.table).toBeCalledWith(tableName);
       expect(knex.update).toBeCalledWith(removeModel);
       expect(knex.where).toBeCalledWith(where);
@@ -273,13 +278,14 @@ describe(KnexBaseRepository.name, () => {
       const where = { anyProp: 'anyValue' };
       const removeModel = {
         ...where,
-        deleteUserId: '00000000-0000-4000-8000-000000000001',
+        deleteUserId: userId,
         deletedAt: new Date(),
       };
       knex.then.mockImplementationOnce((resolve) => resolve(1));
 
-      await sut.remove(where as unknown as BaseModel);
+      const sutResult = await sut.remove(where as unknown as BaseModel);
 
+      expect(sutResult).toStrictEqual([removeModel]);
       expect(knex.table).toBeCalledWith(tableName);
       expect(knex.update).toBeCalledWith(removeModel);
       expect(knex.where).toBeCalledWith(where);
