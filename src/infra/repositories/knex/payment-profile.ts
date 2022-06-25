@@ -25,13 +25,9 @@ export class KnexPaymentProfileRepository extends KnexBaseRepository implements 
   private sanitizeResponse(paymentProfiles: PaymentProfileModel[]) {
     return paymentProfiles.map(({ data, ...paymentProfile }) => {
       const { number, cvv, ...restData } = data as PaymentProfileModel<'CARD_PAYMENT'>['data'];
-      return {
-        ...paymentProfile,
-        data: {
-          ...restData,
-          number: paymentProfile.type === 'PHONE_PAYMENT' ? number : undefined,
-        },
-      };
+      const parsedData = restData as PaymentProfileModel<'CARD_PAYMENT'>['data'];
+      if (paymentProfile.type === 'PHONE_PAYMENT') parsedData.number = number;
+      return { ...paymentProfile, data: parsedData };
     });
   }
 
