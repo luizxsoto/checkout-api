@@ -169,13 +169,15 @@ describe(DbListCustomerUseCase.name, () => {
     // name
     {
       properties: { filters: '["=", "name", 1]' },
-      validations: [{ field: 'name.0', rule: 'string', message: 'This value must be a string' }],
+      validations: [
+        { field: 'filters.name.0', rule: 'string', message: 'This value must be a string' },
+      ],
     },
     {
       properties: { filters: '["=", "name", " InV@L1D n@m3 "]' },
       validations: [
         {
-          field: 'name.0',
+          field: 'filters.name.0',
           rule: 'regex',
           message: 'This value must be valid according to the pattern: name',
         },
@@ -185,7 +187,7 @@ describe(DbListCustomerUseCase.name, () => {
       properties: { filters: '["=", "name", "lower"]' },
       validations: [
         {
-          field: 'name.0',
+          field: 'filters.name.0',
           rule: 'length',
           message: 'This value length must be beetween 6 and 100',
         },
@@ -198,7 +200,7 @@ describe(DbListCustomerUseCase.name, () => {
       },
       validations: [
         {
-          field: 'name.0',
+          field: 'filters.name.0',
           rule: 'length',
           message: 'This value length must be beetween 6 and 100',
         },
@@ -207,13 +209,15 @@ describe(DbListCustomerUseCase.name, () => {
     // email
     {
       properties: { filters: '["=", "email", 1]' },
-      validations: [{ field: 'email.0', rule: 'string', message: 'This value must be a string' }],
+      validations: [
+        { field: 'filters.email.0', rule: 'string', message: 'This value must be a string' },
+      ],
     },
     {
       properties: { filters: '["=", "email", " InV@L1D eM@1L "]' },
       validations: [
         {
-          field: 'email.0',
+          field: 'filters.email.0',
           rule: 'regex',
           message: 'This value must be valid according to the pattern: email',
         },
@@ -226,7 +230,7 @@ describe(DbListCustomerUseCase.name, () => {
       },
       validations: [
         {
-          field: 'email.0',
+          field: 'filters.email.0',
           rule: 'length',
           message: 'This value length must be beetween 6 and 100',
         },
@@ -236,14 +240,14 @@ describe(DbListCustomerUseCase.name, () => {
     {
       properties: { filters: '["=", "createUserId", 1]' },
       validations: [
-        { field: 'createUserId.0', rule: 'string', message: 'This value must be a string' },
+        { field: 'filters.createUserId.0', rule: 'string', message: 'This value must be a string' },
       ],
     },
     {
       properties: { filters: '["=", "createUserId", "invalid_uuid"]' },
       validations: [
         {
-          field: 'createUserId.0',
+          field: 'filters.createUserId.0',
           rule: 'regex',
           message: 'This value must be valid according to the pattern: uuidV4',
         },
@@ -253,14 +257,14 @@ describe(DbListCustomerUseCase.name, () => {
     {
       properties: { filters: '["=", "updateUserId", 1]' },
       validations: [
-        { field: 'updateUserId.0', rule: 'string', message: 'This value must be a string' },
+        { field: 'filters.updateUserId.0', rule: 'string', message: 'This value must be a string' },
       ],
     },
     {
       properties: { filters: '["=", "updateUserId", "invalid_uuid"]' },
       validations: [
         {
-          field: 'updateUserId.0',
+          field: 'filters.updateUserId.0',
           rule: 'regex',
           message: 'This value must be valid according to the pattern: uuidV4',
         },
@@ -270,14 +274,14 @@ describe(DbListCustomerUseCase.name, () => {
     {
       properties: { filters: '["=", "createdAt", 1]' },
       validations: [
-        { field: 'createdAt.0', rule: 'string', message: 'This value must be a string' },
+        { field: 'filters.createdAt.0', rule: 'string', message: 'This value must be a string' },
       ],
     },
     {
       properties: { filters: '["=", "createdAt", "invalid_date"]' },
       validations: [
         {
-          field: 'createdAt.0',
+          field: 'filters.createdAt.0',
           rule: 'date',
           message: 'This value must be a valid date',
         },
@@ -287,14 +291,14 @@ describe(DbListCustomerUseCase.name, () => {
     {
       properties: { filters: '["=", "updatedAt", 1]' },
       validations: [
-        { field: 'updatedAt.0', rule: 'string', message: 'This value must be a string' },
+        { field: 'filters.updatedAt.0', rule: 'string', message: 'This value must be a string' },
       ],
     },
     {
       properties: { filters: '["=", "updatedAt", "invalid_date"]' },
       validations: [
         {
-          field: 'updatedAt.0',
+          field: 'filters.updatedAt.0',
           rule: 'date',
           message: 'This value must be a valid date',
         },

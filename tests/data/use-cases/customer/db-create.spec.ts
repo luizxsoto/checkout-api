@@ -26,7 +26,7 @@ describe(DbCreateCustomerUseCase.name, () => {
     };
     Reflect.deleteProperty(sanitizedRequestModel, 'anyWrongProp');
     const responseModel = { ...sanitizedRequestModel, id: 'any_id', createdAt: new Date() };
-    const otherCustomer = { ...responseModel, email: 'valid@email.com' };
+    const otherCustomer = { ...responseModel, email: 'other@email.com' };
 
     customerRepository.findBy.mockReturnValueOnce([otherCustomer]);
     customerRepository.create.mockReturnValueOnce(responseModel);
