@@ -35,13 +35,16 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
       true,
     );
 
-    await restValidation({ paymentProfiles });
+    const requestModelWithSanitizedData = {
+      ...sanitizedRequestModel,
+      data: await this.sanitizeData(sanitizedRequestModel),
+    };
 
-    const sanitizedData = await this.sanitizeData(sanitizedRequestModel);
+    await restValidation(requestModelWithSanitizedData, { paymentProfiles });
 
     const [paymentProfileUpdated] = await this.updatePaymentProfileRepository.update(
       { id: sanitizedRequestModel.id },
-      { ...sanitizedRequestModel, data: sanitizedData },
+      requestModelWithSanitizedData,
     );
 
     const findedPaymentProfileById = paymentProfiles.find(
@@ -68,10 +71,15 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
       id: requestModel.id,
       customerId: requestModel.customerId,
       type: requestModel.type,
-      data: <PaymentProfileModel['data']>{},
+      data: requestModel.data,
     };
 
-    if (typeof requestModel.data === 'object' || !Array.isArray(requestModel.data)) {
+    if (
+      requestModel.data &&
+      typeof requestModel.data === 'object' &&
+      !Array.isArray(requestModel.data)
+    ) {
+      sanitizedRequestModel.data = <PaymentProfileModel['data']>{};
       if (requestModel.type === 'CARD_PAYMENT') {
         const cardPaymentData = requestModel.data as PaymentProfileModel<'CARD_PAYMENT'>['data'];
         sanitizedRequestModel.data = <PaymentProfileModel<'CARD_PAYMENT'>['data']>{
@@ -79,8 +87,6 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
           brand: cardPaymentData.brand,
           holderName: cardPaymentData.holderName,
           number: cardPaymentData.number,
-          firstSix: cardPaymentData.number.slice(0, 6),
-          lastFour: cardPaymentData.number.slice(-4),
           cvv: cardPaymentData.cvv,
           expiryMonth: cardPaymentData.expiryMonth,
           expiryYear: cardPaymentData.expiryYear,
@@ -109,6 +115,8 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
       sanitizedData = <PaymentProfileModel<'CARD_PAYMENT'>['data']>{
         ...sanitizedData,
         number: await this.hasher.hash(cardPaymentData.number),
+        firstSix: cardPaymentData.number.slice(0, 6),
+        lastFour: cardPaymentData.number.slice(-4),
         cvv: await this.hasher.hash(cardPaymentData.cvv),
       };
     }
@@ -119,11 +127,14 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
   private async validateRequestModel(
     requestModel: UpdatePaymentProfileUseCase.RequestModel,
   ): Promise<
-    (validationData: {
-      paymentProfiles: (Omit<PaymentProfileModel, 'data'> & {
-        data: Omit<PaymentProfileModel['data'], 'number' | 'cvv'> & { number?: string };
-      })[];
-    }) => Promise<void>
+    (
+      sanitizedRequestModel: Omit<PaymentProfileModel, 'createUserId' | 'createdAt'>,
+      validationData: {
+        paymentProfiles: (Omit<PaymentProfileModel, 'data'> & {
+          data: Omit<PaymentProfileModel['data'], 'number' | 'cvv'> & { number?: string };
+        })[];
+      },
+    ) => Promise<void>
   > {
     const dataPayload: Rule[] = [this.validatorService.rules.required()];
     if (requestModel.type === 'CARD_PAYMENT') {
@@ -216,7 +227,7 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
       model: requestModel,
       data: { paymentProfiles: [] },
     });
-    return (validationData) => {
+    return (sanitizedRequestModel, validationData) => {
       const dataUnique: Rule[] = [];
       if (requestModel.type === 'CARD_PAYMENT') {
         dataUnique.push(
@@ -268,7 +279,7 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
           type: [],
           data: dataUnique,
         },
-        model: requestModel,
+        model: sanitizedRequestModel,
         data: validationData,
       });
     };

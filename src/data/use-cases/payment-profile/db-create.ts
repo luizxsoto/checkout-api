@@ -41,14 +41,16 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
       { customerId: sanitizedRequestModel.customerId },
     ]);
 
-    await restValidation({ customers, paymentProfiles });
-
-    const sanitizedData = await this.sanitizeData(sanitizedRequestModel);
-
-    const paymentProfileCreated = await this.createPaymentProfileRepository.create({
+    const requestModelWithSanitizedData = {
       ...sanitizedRequestModel,
-      data: sanitizedData,
-    });
+      data: await this.sanitizeData(sanitizedRequestModel),
+    };
+
+    await restValidation(requestModelWithSanitizedData, { customers, paymentProfiles });
+
+    const paymentProfileCreated = await this.createPaymentProfileRepository.create(
+      requestModelWithSanitizedData,
+    );
 
     const responseModel = { ...sanitizedRequestModel, ...paymentProfileCreated };
     Reflect.deleteProperty(responseModel.data, 'cvv');
@@ -65,10 +67,15 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
     const sanitizedRequestModel = {
       customerId: requestModel.customerId,
       type: requestModel.type,
-      data: <PaymentProfileModel['data']>{},
+      data: requestModel.data,
     };
 
-    if (typeof requestModel.data === 'object' || !Array.isArray(requestModel.data)) {
+    if (
+      requestModel.data &&
+      typeof requestModel.data === 'object' &&
+      !Array.isArray(requestModel.data)
+    ) {
+      sanitizedRequestModel.data = <PaymentProfileModel['data']>{};
       if (requestModel.type === 'CARD_PAYMENT') {
         const cardPaymentData = requestModel.data as PaymentProfileModel<'CARD_PAYMENT'>['data'];
         sanitizedRequestModel.data = <PaymentProfileModel<'CARD_PAYMENT'>['data']>{
@@ -76,8 +83,6 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
           brand: cardPaymentData.brand,
           holderName: cardPaymentData.holderName,
           number: cardPaymentData.number,
-          firstSix: cardPaymentData.number.slice(0, 6),
-          lastFour: cardPaymentData.number.slice(-4),
           cvv: cardPaymentData.cvv,
           expiryMonth: cardPaymentData.expiryMonth,
           expiryYear: cardPaymentData.expiryYear,
@@ -106,6 +111,8 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
       sanitizedData = <PaymentProfileModel<'CARD_PAYMENT'>['data']>{
         ...sanitizedData,
         number: await this.hasher.hash(cardPaymentData.number),
+        firstSix: cardPaymentData.number.slice(0, 6),
+        lastFour: cardPaymentData.number.slice(-4),
         cvv: await this.hasher.hash(cardPaymentData.cvv),
       };
     }
@@ -116,12 +123,15 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
   private async validateRequestModel(
     requestModel: CreatePaymentProfileUseCase.RequestModel,
   ): Promise<
-    (validationData: {
-      customers: CustomerModel[];
-      paymentProfiles: (Omit<PaymentProfileModel, 'data'> & {
-        data: Omit<PaymentProfileModel['data'], 'number' | 'cvv'> & { number?: string };
-      })[];
-    }) => Promise<void>
+    (
+      sanitizedRequestModel: Omit<PaymentProfileModel, 'id' | 'createUserId' | 'createdAt'>,
+      validationData: {
+        customers: CustomerModel[];
+        paymentProfiles: (Omit<PaymentProfileModel, 'data'> & {
+          data: Omit<PaymentProfileModel['data'], 'number' | 'cvv'> & { number?: string };
+        })[];
+      },
+    ) => Promise<void>
   > {
     const dataPayload: Rule[] = [this.validatorService.rules.required()];
     if (requestModel.type === 'CARD_PAYMENT') {
@@ -145,23 +155,23 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
             ],
             number: [
               this.validatorService.rules.required(),
-              this.validatorService.rules.string(),
+              this.validatorService.rules.numberString(),
               this.validatorService.rules.length({ minLength: 16, maxLength: 16 }),
             ],
             cvv: [
               this.validatorService.rules.required(),
-              this.validatorService.rules.string(),
+              this.validatorService.rules.numberString(),
               this.validatorService.rules.length({ minLength: 3, maxLength: 3 }),
             ],
             expiryMonth: [
               this.validatorService.rules.required(),
-              this.validatorService.rules.string(),
+              this.validatorService.rules.numberString(),
               this.validatorService.rules.min({ value: 1 }),
               this.validatorService.rules.max({ value: 12 }),
             ],
             expiryYear: [
               this.validatorService.rules.required(),
-              this.validatorService.rules.string(),
+              this.validatorService.rules.numberString(),
               this.validatorService.rules.min({ value: 1 }),
               this.validatorService.rules.max({ value: 9999 }),
             ],
@@ -175,17 +185,17 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
           schema: {
             countryCode: [
               this.validatorService.rules.required(),
-              this.validatorService.rules.string(),
+              this.validatorService.rules.numberString(),
               this.validatorService.rules.length({ minLength: 1, maxLength: 4 }),
             ],
             areaCode: [
               this.validatorService.rules.required(),
-              this.validatorService.rules.string(),
+              this.validatorService.rules.numberString(),
               this.validatorService.rules.length({ minLength: 1, maxLength: 4 }),
             ],
             number: [
               this.validatorService.rules.required(),
-              this.validatorService.rules.string(),
+              this.validatorService.rules.numberString(),
               this.validatorService.rules.length({ minLength: 1, maxLength: 10 }),
             ],
           },
@@ -209,7 +219,7 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
       model: requestModel,
       data: { customers: [], paymentProfiles: [] },
     });
-    return (validationData) => {
+    return (sanitizedRequestModel, validationData) => {
       const dataUnique: Rule[] = [];
       if (requestModel.type === 'CARD_PAYMENT') {
         dataUnique.push(
@@ -249,7 +259,7 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
           type: [],
           data: dataUnique,
         },
-        model: requestModel,
+        model: sanitizedRequestModel,
         data: validationData,
       });
     };
