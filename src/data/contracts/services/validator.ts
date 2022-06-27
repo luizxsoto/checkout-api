@@ -6,6 +6,10 @@ export interface Rules {
   date: (options?: null) => { name: 'date'; options: Parameters<Rules['date']>[0] };
   in: (options: { values: string[] }) => { name: 'in'; options: Parameters<Rules['in']>[0] };
   number: (options?: null) => { name: 'number'; options: Parameters<Rules['number']>[0] };
+  numberString: (options?: null) => {
+    name: 'numberString';
+    options: Parameters<Rules['numberString']>[0];
+  };
   min: (options: { value: number }) => { name: 'min'; options: Parameters<Rules['min']>[0] };
   max: (options: { value: number }) => { name: 'max'; options: Parameters<Rules['max']>[0] };
   regex: (options: {
@@ -35,7 +39,7 @@ export interface Rules {
     name: 'array';
     options: Parameters<Rules['array']>[0];
   };
-  object: <Model>(options: { schema: Record<keyof Model, Rule[]> }) => {
+  object: (options: { schema: Record<string, Rule[]> }) => {
     name: 'object';
     options: Parameters<Rules['object']>[0];
   };

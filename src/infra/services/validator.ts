@@ -50,6 +50,7 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
     date: (options) => ({ name: 'date', options }),
     in: (options) => ({ name: 'in', options }),
     number: (options) => ({ name: 'number', options }),
+    numberString: (options) => ({ name: 'numberString', options }),
     min: (options) => ({ name: 'min', options }),
     max: (options) => ({ name: 'max', options }),
     regex: (options) => ({ name: 'regex', options }),
@@ -130,12 +131,23 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
     },
     number: (key, _options: Parameters<Rules['number']>[0], model) => {
       const value = lodashGet(model, key);
-      if (value === undefined || !Number.isNaN(Number(value))) return null;
+      if (value === undefined || typeof value === 'number') return null;
 
       return {
         field: key as string,
         rule: 'number',
         message: 'This value must be a number',
+      };
+    },
+    numberString: (key, _options: Parameters<Rules['number']>[0], model) => {
+      const value = lodashGet(model, key);
+      const numberRgx = /^\d*$/;
+      if (value === undefined || (typeof value === 'string' && numberRgx.test(value))) return null;
+
+      return {
+        field: key as string,
+        rule: 'numberString',
+        message: 'This value must be a number in a string',
       };
     },
     min: (key, options: Parameters<Rules['min']>[0], model) => {
@@ -275,11 +287,13 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
           message: 'This value must be an object',
         };
 
-      await this.validate({
-        model: value,
-        schema: options.schema as Record<keyof Model, Rule[]>,
-        data,
+      const parsedSchema = {} as Record<keyof Model, Rule[]>;
+
+      Object.keys(options.schema).forEach((nestedKey) => {
+        parsedSchema[`${String(key)}.${nestedKey}` as keyof Model] = options.schema[nestedKey];
       });
+
+      await this.validate({ model, schema: parsedSchema, data });
 
       return null;
     },
@@ -311,9 +325,9 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
       if (!Array.isArray(arrayValue)) return validationError;
       if (!arrayValue.length) return null;
 
-      const modelToValidate = {} as Record<keyof Model, PrimitiveType[]>;
+      const filters = {} as Record<keyof Model, PrimitiveType[]>;
       posibleFields.forEach((posibleField) => {
-        modelToValidate[posibleField as keyof Model] = [] as PrimitiveType[];
+        filters[posibleField as keyof Model] = [] as PrimitiveType[];
       });
 
       function addValueToModel(
@@ -328,7 +342,7 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
         if (isFieldOperator) {
           const valuesToPush = (Array.isArray(values) ? values : [values]) as PrimitiveType[];
 
-          modelToValidate[fieldOrFilter as keyof Model].push(...valuesToPush);
+          filters[fieldOrFilter as keyof Model].push(...valuesToPush);
         }
       }
 
@@ -403,9 +417,9 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
       addValueToModel(operator, fieldOrFilter, values);
 
       return this.validationRules.object(
-        'modelToValidate' as keyof Model,
+        'filters' as keyof Model,
         options,
-        { modelToValidate } as unknown as Model,
+        { filters } as unknown as Model,
         data,
       );
     },
