@@ -1,7 +1,7 @@
 import { PaymentProfileModel } from '@/domain/models';
 
-export type RequestModel = {
-  data: Omit<PaymentProfileModel['data'], 'firstSix' | 'lastFour'>;
+export type RequestModel<Type = 'CARD_PAYMENT' | 'PHONE_PAYMENT'> = {
+  data: Omit<PaymentProfileModel<Type>['data'], 'firstSix' | 'lastFour'>;
 } & Omit<
   PaymentProfileModel,
   | 'id'

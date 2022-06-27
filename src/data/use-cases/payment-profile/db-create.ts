@@ -52,7 +52,7 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
 
     const responseModel = { ...sanitizedRequestModel, ...paymentProfileCreated };
     Reflect.deleteProperty(responseModel.data, 'cvv');
-    if (responseModel.type !== 'PHONE_PAYMENT') {
+    if (responseModel.type === 'CARD_PAYMENT') {
       Reflect.deleteProperty(responseModel.data, 'number');
     }
 
@@ -76,6 +76,8 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
           brand: cardPaymentData.brand,
           holderName: cardPaymentData.holderName,
           number: cardPaymentData.number,
+          firstSix: cardPaymentData.number.slice(0, 6),
+          lastFour: cardPaymentData.number.slice(-4),
           cvv: cardPaymentData.cvv,
           expiryMonth: cardPaymentData.expiryMonth,
           expiryYear: cardPaymentData.expiryYear,
@@ -103,8 +105,6 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
       const cardPaymentData = requestModel.data as PaymentProfileModel<'CARD_PAYMENT'>['data'];
       sanitizedData = <PaymentProfileModel<'CARD_PAYMENT'>['data']>{
         ...sanitizedData,
-        firstSix: cardPaymentData.number.slice(0, 6),
-        lastFour: cardPaymentData.number.slice(-4),
         number: await this.hasher.hash(cardPaymentData.number),
         cvv: await this.hasher.hash(cardPaymentData.cvv),
       };
@@ -218,7 +218,8 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
             props: [
               { modelKey: 'data.type', dataKey: 'data.type' },
               { modelKey: 'data.brand', dataKey: 'data.brand' },
-              { modelKey: 'data.number', dataKey: 'data.number' },
+              { modelKey: 'data.firstSix', dataKey: 'data.firstSix' },
+              { modelKey: 'data.lastFour', dataKey: 'data.lastFour' },
               { modelKey: 'data.expiryMonth', dataKey: 'data.expiryMonth' },
               { modelKey: 'data.expiryYear', dataKey: 'data.expiryYear' },
             ],

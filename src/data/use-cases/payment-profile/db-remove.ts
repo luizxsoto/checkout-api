@@ -44,7 +44,7 @@ export class DbRemovePaymentProfileUseCase implements RemovePaymentProfileUseCas
       ...paymentProfileRemoved,
     };
     Reflect.deleteProperty(responseModel.data, 'cvv');
-    if (responseModel.type !== 'PHONE_PAYMENT') {
+    if (responseModel.type === 'CARD_PAYMENT') {
       Reflect.deleteProperty(responseModel.data, 'number');
     }
 
