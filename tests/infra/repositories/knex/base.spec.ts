@@ -7,7 +7,8 @@ import { makeUuidServiceStub } from '@tests/data/stubs/services';
 import { makeBaseModelMock, makeSessionModelMock } from '@tests/domain/mocks/models';
 import { makeKnexStub } from '@tests/infra/stubs';
 
-const userId = '00000000-0000-4000-8000-000000000001';
+const validUuidV4 = '00000000-0000-4000-8000-000000000001';
+const userId = validUuidV4;
 const session = makeSessionModelMock({ userId });
 
 function makeSut() {
@@ -168,11 +169,11 @@ describe(KnexBaseRepository.name, () => {
       };
       const responseModel = {
         ...requestModel,
-        id: 'any_id',
+        id: validUuidV4,
         createUserId: userId,
         createdAt: new Date(),
       };
-      uuidService.generateUniqueID.mockReturnValueOnce('any_id');
+      uuidService.generateUniqueID.mockReturnValueOnce(validUuidV4);
 
       const sutResult = await sut.create(requestModel);
 
@@ -190,11 +191,11 @@ describe(KnexBaseRepository.name, () => {
       };
       const responseModel = {
         ...requestModel,
-        id: 'any_id',
+        id: validUuidV4,
         createUserId: userId,
         createdAt: new Date(),
       };
-      uuidService.generateUniqueID.mockReturnValueOnce('any_id');
+      uuidService.generateUniqueID.mockReturnValueOnce(validUuidV4);
       knex.then.mockImplementationOnce((resolve) => resolve(1));
 
       const sutResult = await sut.create(requestModel);
