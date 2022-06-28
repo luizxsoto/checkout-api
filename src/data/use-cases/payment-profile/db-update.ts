@@ -158,23 +158,23 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
             ],
             number: [
               this.validatorService.rules.required(),
-              this.validatorService.rules.string(),
+              this.validatorService.rules.numberString(),
               this.validatorService.rules.length({ minLength: 16, maxLength: 16 }),
             ],
             cvv: [
               this.validatorService.rules.required(),
-              this.validatorService.rules.string(),
+              this.validatorService.rules.numberString(),
               this.validatorService.rules.length({ minLength: 3, maxLength: 3 }),
             ],
             expiryMonth: [
               this.validatorService.rules.required(),
-              this.validatorService.rules.string(),
+              this.validatorService.rules.numberString(),
               this.validatorService.rules.min({ value: 1 }),
               this.validatorService.rules.max({ value: 12 }),
             ],
             expiryYear: [
               this.validatorService.rules.required(),
-              this.validatorService.rules.string(),
+              this.validatorService.rules.numberString(),
               this.validatorService.rules.min({ value: 1 }),
               this.validatorService.rules.max({ value: 9999 }),
             ],
@@ -188,17 +188,17 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
           schema: {
             countryCode: [
               this.validatorService.rules.required(),
-              this.validatorService.rules.string(),
+              this.validatorService.rules.numberString(),
               this.validatorService.rules.length({ minLength: 1, maxLength: 4 }),
             ],
             areaCode: [
               this.validatorService.rules.required(),
-              this.validatorService.rules.string(),
+              this.validatorService.rules.numberString(),
               this.validatorService.rules.length({ minLength: 1, maxLength: 4 }),
             ],
             number: [
               this.validatorService.rules.required(),
-              this.validatorService.rules.string(),
+              this.validatorService.rules.numberString(),
               this.validatorService.rules.length({ minLength: 1, maxLength: 10 }),
             ],
           },
@@ -233,6 +233,7 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
         dataUnique.push(
           this.validatorService.rules.unique({
             dataEntity: 'paymentProfiles',
+            ignoreProps: [{ modelKey: 'id', dataKey: 'id' }],
             props: [
               { modelKey: 'data.type', dataKey: 'data.type' },
               { modelKey: 'data.brand', dataKey: 'data.brand' },
@@ -248,6 +249,7 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
         dataUnique.push(
           this.validatorService.rules.unique({
             dataEntity: 'paymentProfiles',
+            ignoreProps: [{ modelKey: 'id', dataKey: 'id' }],
             props: [
               { modelKey: 'data.countryCode', dataKey: 'data.countryCode' },
               { modelKey: 'data.areaCode', dataKey: 'data.areaCode' },

@@ -52,7 +52,9 @@ export class DbListPaymentProfileUseCase implements ListPaymentProfileUseCase.Us
         ],
         orderBy: [
           this.validatorService.rules.string(),
-          this.validatorService.rules.in({ values: ['name', 'email', 'createdAt', 'updatedAt'] }),
+          this.validatorService.rules.in({
+            values: ['customerId', 'type', 'createdAt', 'updatedAt'],
+          }),
         ],
         order: [
           this.validatorService.rules.string(),

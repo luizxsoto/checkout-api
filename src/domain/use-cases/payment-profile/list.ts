@@ -3,7 +3,7 @@ import { PaymentProfileModel } from '@/domain/models';
 export type RequestModel = {
   page?: number;
   perPage?: number;
-  orderBy?: 'name' | 'email' | 'createdAt' | 'updatedAt';
+  orderBy?: 'customerId' | 'type' | 'createdAt' | 'updatedAt';
   order?: 'asc' | 'desc';
   filters?: string;
 };
