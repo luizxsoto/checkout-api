@@ -6,6 +6,7 @@ import request from 'supertest';
 import { knexConfig, setupApp } from '@/main/config';
 import { makeBearerTokenMock } from '@tests/domain/mocks/models';
 
+const validUuidV4 = '10000000-0000-4000-8000-000000000001';
 const userId = '00000000-0000-4000-8000-000000000001';
 let app: Express;
 
@@ -29,13 +30,12 @@ describe('User Routes', () => {
   describe('list()', () => {
     test('Should list user and return correct values', async () => {
       const requestModel = {
-        id: '10000000-0000-4000-8000-000000000001',
+        id: validUuidV4,
         name: 'Any Name',
         email: 'any@email.com',
         password: 'hashed_password',
         roles: [],
         createUserId: userId,
-        updateUserId: null,
         createdAt: new Date().toISOString(),
       };
 
@@ -52,7 +52,6 @@ describe('User Routes', () => {
       expect(result.body[0]?.name).toBe(requestModel.name);
       expect(result.body[0]?.email).toBe(requestModel.email);
       expect(result.body[0]?.createUserId).toBe(requestModel.createUserId);
-      expect(result.body[0]?.updateUserId).toBe(requestModel.updateUserId);
       expect(result.body[0]?.createdAt).toBe(requestModel.createdAt);
       expect(result.body[0]?.password).toBeUndefined();
     });
@@ -88,13 +87,12 @@ describe('User Routes', () => {
   describe('show()', () => {
     test('Should show user and return correct values', async () => {
       const requestModel = {
-        id: '10000000-0000-4000-8000-000000000001',
+        id: validUuidV4,
         name: 'Any Name',
         email: 'any@email.com',
         password: 'hashed_password',
         roles: [],
         createUserId: userId,
-        updateUserId: null,
         createdAt: new Date().toISOString(),
       };
 
@@ -110,9 +108,8 @@ describe('User Routes', () => {
       expect(result.body.name).toBe(requestModel.name);
       expect(result.body.email).toBe(requestModel.email);
       expect(result.body.createUserId).toBe(requestModel.createUserId);
-      expect(result.body.updateUserId).toBe(requestModel.updateUserId);
       expect(result.body.createdAt).toBe(requestModel.createdAt);
-      expect(result.body[0]?.password).toBeUndefined();
+      expect(result.body.password).toBeUndefined();
     });
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
@@ -198,7 +195,7 @@ describe('User Routes', () => {
   describe('update()', () => {
     test('Should update user and return correct values', async () => {
       const requestModel = {
-        id: '10000000-0000-4000-8000-000000000001',
+        id: validUuidV4,
         name: 'Any Name',
         email: 'any@email.com',
         password: 'Password@123',
@@ -260,13 +257,12 @@ describe('User Routes', () => {
   describe('remove()', () => {
     test('Should remove user and return correct values', async () => {
       const requestModel = {
-        id: '10000000-0000-4000-8000-000000000001',
+        id: validUuidV4,
         name: 'Any Name',
         email: 'any@email.com',
         password: 'Password@123',
         roles: [],
         createUserId: userId,
-        updateUserId: null,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
@@ -284,12 +280,11 @@ describe('User Routes', () => {
       expect(result.body.name).toBe(requestModel.name);
       expect(result.body.email).toBe(requestModel.email);
       expect(result.body.createUserId).toBe(requestModel.createUserId);
-      expect(result.body.updateUserId).toBe(requestModel.updateUserId);
       expect(result.body.deleteUserId).toBe(deleteUserId);
       expect(result.body.createdAt).toBe(requestModel.createdAt);
       expect(result.body.updatedAt).toBe(requestModel.updatedAt);
       expect(result.body.deletedAt).toBeDefined();
-      expect(result.body[0]?.password).toBeUndefined();
+      expect(result.body.password).toBeUndefined();
     });
 
     test('Should return a correct body validation error if some prop is invalid', async () => {

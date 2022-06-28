@@ -6,6 +6,7 @@ import request from 'supertest';
 import { knexConfig, setupApp } from '@/main/config';
 import { makeBearerTokenMock } from '@tests/domain/mocks/models';
 
+const validUuidV4 = '10000000-0000-4000-8000-000000000001';
 const userId = '00000000-0000-4000-8000-000000000001';
 let app: Express;
 
@@ -29,11 +30,10 @@ describe('Customer Routes', () => {
   describe('list()', () => {
     test('Should list customer and return correct values', async () => {
       const requestModel = {
-        id: '10000000-0000-4000-8000-000000000001',
+        id: validUuidV4,
         name: 'Any Name',
         email: 'any@email.com',
         createUserId: userId,
-        updateUserId: null,
         createdAt: new Date().toISOString(),
       };
 
@@ -50,7 +50,6 @@ describe('Customer Routes', () => {
       expect(result.body[0]?.name).toBe(requestModel.name);
       expect(result.body[0]?.email).toBe(requestModel.email);
       expect(result.body[0]?.createUserId).toBe(requestModel.createUserId);
-      expect(result.body[0]?.updateUserId).toBe(requestModel.updateUserId);
       expect(result.body[0]?.createdAt).toBe(requestModel.createdAt);
     });
 
@@ -85,11 +84,10 @@ describe('Customer Routes', () => {
   describe('show()', () => {
     test('Should show customer and return correct values', async () => {
       const requestModel = {
-        id: '10000000-0000-4000-8000-000000000001',
+        id: validUuidV4,
         name: 'Any Name',
         email: 'any@email.com',
         createUserId: userId,
-        updateUserId: null,
         createdAt: new Date().toISOString(),
       };
 
@@ -105,7 +103,6 @@ describe('Customer Routes', () => {
       expect(result.body.name).toBe(requestModel.name);
       expect(result.body.email).toBe(requestModel.email);
       expect(result.body.createUserId).toBe(requestModel.createUserId);
-      expect(result.body.updateUserId).toBe(requestModel.updateUserId);
       expect(result.body.createdAt).toBe(requestModel.createdAt);
     });
 
@@ -182,7 +179,7 @@ describe('Customer Routes', () => {
   describe('update()', () => {
     test('Should update customer and return correct values', async () => {
       const requestModel = {
-        id: '10000000-0000-4000-8000-000000000001',
+        id: validUuidV4,
         name: 'Any Name',
         email: 'any@email.com',
         createUserId: userId,
@@ -239,11 +236,10 @@ describe('Customer Routes', () => {
   describe('remove()', () => {
     test('Should remove customer and return correct values', async () => {
       const requestModel = {
-        id: '10000000-0000-4000-8000-000000000001',
+        id: validUuidV4,
         name: 'Any Name',
         email: 'any@email.com',
         createUserId: userId,
-        updateUserId: null,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
@@ -261,7 +257,6 @@ describe('Customer Routes', () => {
       expect(result.body.name).toBe(requestModel.name);
       expect(result.body.email).toBe(requestModel.email);
       expect(result.body.createUserId).toBe(requestModel.createUserId);
-      expect(result.body.updateUserId).toBe(requestModel.updateUserId);
       expect(result.body.deleteUserId).toBe(deleteUserId);
       expect(result.body.createdAt).toBe(requestModel.createdAt);
       expect(result.body.updatedAt).toBe(requestModel.updatedAt);

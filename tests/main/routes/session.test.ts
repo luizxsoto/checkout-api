@@ -6,6 +6,7 @@ import request from 'supertest';
 
 import { knexConfig, setupApp } from '@/main/config';
 
+const validUuidV4 = '10000000-0000-4000-8000-000000000001';
 const userId = '00000000-0000-4000-8000-000000000001';
 let app: Express;
 
@@ -31,7 +32,7 @@ describe('Session Routes', () => {
       const password = 'Password@123';
       const hashedPassword = await hash(password, 12);
       const requestModel = {
-        id: '10000000-0000-4000-8000-000000000001',
+        id: validUuidV4,
         name: 'Any Name',
         email: 'any@email.com',
         password,
