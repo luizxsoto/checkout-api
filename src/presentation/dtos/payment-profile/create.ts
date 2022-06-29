@@ -1,9 +1,9 @@
 import { PaymentProfileModel } from '@/domain/models';
 
-export class CreatePaymentProfileDto<Type = 'CARD_PAYMENT' | 'PHONE_PAYMENT'> {
+export class CreatePaymentProfileDto<PaymentMethod = 'CARD_PAYMENT' | 'PHONE_PAYMENT'> {
   public customerId!: string;
 
-  public type!: Type;
+  public paymentMethod!: PaymentMethod;
 
-  public data!: Omit<PaymentProfileModel<Type>['data'], 'firstSix' | 'lastFour'>;
+  public data!: Omit<PaymentProfileModel<PaymentMethod>['data'], 'firstSix' | 'lastFour'>;
 }

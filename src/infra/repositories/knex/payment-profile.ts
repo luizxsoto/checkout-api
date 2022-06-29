@@ -29,7 +29,7 @@ export class KnexPaymentProfileRepository extends KnexBaseRepository implements 
           ? JSON.parse(data)
           : (data as PaymentProfileModel<'CARD_PAYMENT'>['data']);
       const parsedData = restData as PaymentProfileModel<'CARD_PAYMENT'>['data'];
-      if (paymentProfile.type === 'PHONE_PAYMENT') parsedData.number = number;
+      if (paymentProfile.paymentMethod === 'PHONE_PAYMENT') parsedData.number = number;
       return { ...paymentProfile, data: parsedData };
     });
   }

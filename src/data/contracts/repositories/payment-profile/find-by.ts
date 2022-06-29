@@ -4,12 +4,12 @@ export type RequestModel = Parameters<
   (where: Partial<PaymentProfileModel>[], sanitizeResponse?: boolean) => void
 >;
 
-export type ResponseModel<Type = 'NORMAL' | 'SANITIZED'> = Type extends 'NORMAL'
+export type ResponseModel<PaymentMethod = 'NORMAL' | 'SANITIZED'> = PaymentMethod extends 'NORMAL'
   ? PaymentProfileModel[]
   : (Omit<PaymentProfileModel, 'data'> & {
       data: Omit<PaymentProfileModel['data'], 'number' | 'cvv'> & { number?: string };
     })[];
 
-export interface Repository<Type = 'NORMAL' | 'SANITIZED'> {
-  findBy: (...requestModel: RequestModel) => Promise<ResponseModel<Type>>;
+export interface Repository<PaymentMethod = 'NORMAL' | 'SANITIZED'> {
+  findBy: (...requestModel: RequestModel) => Promise<ResponseModel<PaymentMethod>>;
 }

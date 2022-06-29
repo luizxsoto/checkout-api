@@ -53,7 +53,7 @@ export class DbListPaymentProfileUseCase implements ListPaymentProfileUseCase.Us
         orderBy: [
           this.validatorService.rules.string(),
           this.validatorService.rules.in({
-            values: ['customerId', 'type', 'createdAt', 'updatedAt'],
+            values: ['customerId', 'paymentMethod', 'createdAt', 'updatedAt'],
           }),
         ],
         order: [
@@ -73,7 +73,7 @@ export class DbListPaymentProfileUseCase implements ListPaymentProfileUseCase.Us
                   ],
                 }),
               ],
-              type: [
+              paymentMethod: [
                 this.validatorService.rules.array({
                   rules: [
                     this.validatorService.rules.string(),

@@ -1,11 +1,13 @@
 import { BaseModel } from './base';
 
-export class PaymentProfileModel<Type = 'CARD_PAYMENT' | 'PHONE_PAYMENT'> extends BaseModel {
+export class PaymentProfileModel<
+  PaymentMethod = 'CARD_PAYMENT' | 'PHONE_PAYMENT',
+> extends BaseModel {
   public customerId!: string;
 
-  public type!: Type;
+  public paymentMethod!: PaymentMethod;
 
-  public data!: Type extends 'CARD_PAYMENT'
+  public data!: PaymentMethod extends 'CARD_PAYMENT'
     ? {
         type: 'CREDIT' | 'DEBIT';
         brand: string;

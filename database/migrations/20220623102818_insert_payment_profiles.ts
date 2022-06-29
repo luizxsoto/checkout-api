@@ -19,7 +19,7 @@ const customers: () => Promise<
     createUserId: '00000000-0000-4000-8000-000000000001',
     createdAt: new Date().toISOString(),
     customerId: '00000000-0000-4000-8000-000000000001',
-    type: 'CARD_PAYMENT',
+    paymentMethod: 'CARD_PAYMENT',
     data: {
       type: 'CREDIT',
       brand: 'brand',
@@ -41,7 +41,7 @@ const customers: () => Promise<
     createUserId: '00000000-0000-4000-8000-000000000001',
     createdAt: new Date().toISOString(),
     customerId: '00000000-0000-4000-8000-000000000001',
-    type: 'PHONE_PAYMENT',
+    paymentMethod: 'PHONE_PAYMENT',
     data: {
       countryCode: '1234',
       areaCode: '1234',

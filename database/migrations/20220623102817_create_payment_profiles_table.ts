@@ -9,7 +9,7 @@ export async function up(knex: Knex): Promise<void> {
     tableName,
     columns: (table) => {
       table.uuid('customerId').notNullable().references('id').inTable('customers');
-      table.string('type', 20).notNullable();
+      table.string('paymentMethod', 20).notNullable();
       table.jsonb('data').notNullable();
     },
   });

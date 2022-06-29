@@ -57,7 +57,7 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
       ...paymentProfileUpdated,
     };
     Reflect.deleteProperty(responseModel.data, 'cvv');
-    if (responseModel.type === 'CARD_PAYMENT') {
+    if (responseModel.paymentMethod === 'CARD_PAYMENT') {
       Reflect.deleteProperty(responseModel.data, 'number');
     }
 
@@ -70,7 +70,7 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
     const sanitizedRequestModel = {
       id: requestModel.id,
       customerId: requestModel.customerId,
-      type: requestModel.type,
+      paymentMethod: requestModel.paymentMethod,
       data: requestModel.data,
     };
 
@@ -80,7 +80,7 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
       !Array.isArray(requestModel.data)
     ) {
       sanitizedRequestModel.data = <PaymentProfileModel['data']>{};
-      if (requestModel.type === 'CARD_PAYMENT') {
+      if (requestModel.paymentMethod === 'CARD_PAYMENT') {
         const cardPaymentData = requestModel.data as PaymentProfileModel<'CARD_PAYMENT'>['data'];
         sanitizedRequestModel.data = <PaymentProfileModel<'CARD_PAYMENT'>['data']>{
           type: cardPaymentData.type,
@@ -92,7 +92,7 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
           expiryYear: cardPaymentData.expiryYear,
         };
       }
-      if (requestModel.type === 'PHONE_PAYMENT') {
+      if (requestModel.paymentMethod === 'PHONE_PAYMENT') {
         const phonePaymentData = requestModel.data as PaymentProfileModel<'PHONE_PAYMENT'>['data'];
         sanitizedRequestModel.data = <PaymentProfileModel<'PHONE_PAYMENT'>['data']>{
           countryCode: phonePaymentData.countryCode,
@@ -110,7 +110,7 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
   ): Promise<PaymentProfileModel['data']> {
     let sanitizedData = requestModel.data as PaymentProfileModel['data'];
 
-    if (requestModel.type === 'CARD_PAYMENT') {
+    if (requestModel.paymentMethod === 'CARD_PAYMENT') {
       const cardPaymentData = requestModel.data as PaymentProfileModel<'CARD_PAYMENT'>['data'];
       sanitizedData = <PaymentProfileModel<'CARD_PAYMENT'>['data']>{
         ...sanitizedData,
@@ -137,7 +137,7 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
     ) => Promise<void>
   > {
     const dataPayload: Rule[] = [this.validatorService.rules.required()];
-    if (requestModel.type === 'CARD_PAYMENT') {
+    if (requestModel.paymentMethod === 'CARD_PAYMENT') {
       dataPayload.push(
         this.validatorService.rules.object({
           schema: {
@@ -182,7 +182,7 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
         }),
       );
     }
-    if (requestModel.type === 'PHONE_PAYMENT') {
+    if (requestModel.paymentMethod === 'PHONE_PAYMENT') {
       dataPayload.push(
         this.validatorService.rules.object({
           schema: {
@@ -217,7 +217,7 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
           this.validatorService.rules.string(),
           this.validatorService.rules.regex({ pattern: 'uuidV4' }),
         ],
-        type: [
+        paymentMethod: [
           this.validatorService.rules.required(),
           this.validatorService.rules.string(),
           this.validatorService.rules.in({ values: ['CARD_PAYMENT', 'PHONE_PAYMENT'] }),
@@ -229,7 +229,7 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
     });
     return (sanitizedRequestModel, validationData) => {
       const dataUnique: Rule[] = [];
-      if (requestModel.type === 'CARD_PAYMENT') {
+      if (requestModel.paymentMethod === 'CARD_PAYMENT') {
         dataUnique.push(
           this.validatorService.rules.unique({
             dataEntity: 'paymentProfiles',
@@ -245,7 +245,7 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
           }),
         );
       }
-      if (requestModel.type === 'PHONE_PAYMENT') {
+      if (requestModel.paymentMethod === 'PHONE_PAYMENT') {
         dataUnique.push(
           this.validatorService.rules.unique({
             dataEntity: 'paymentProfiles',
@@ -278,7 +278,7 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
               ],
             }),
           ],
-          type: [],
+          paymentMethod: [],
           data: dataUnique,
         },
         model: sanitizedRequestModel,

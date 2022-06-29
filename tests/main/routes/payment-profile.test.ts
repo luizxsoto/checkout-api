@@ -33,7 +33,7 @@ describe('PaymentProfile Routes', () => {
       const requestModel = {
         id: validUuidV4,
         customerId: validUuidV4,
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: {
           type: 'CREDIT',
           brand: 'any_brand',
@@ -60,7 +60,7 @@ describe('PaymentProfile Routes', () => {
       expect(result.status).toBe(200);
       expect(result.body[0]?.id).toBe(requestModel.id);
       expect(result.body[0]?.customerId).toBe(requestModel.customerId);
-      expect(result.body[0]?.type).toBe(requestModel.type);
+      expect(result.body[0]?.paymentMethod).toBe(requestModel.paymentMethod);
       expect(result.body[0]?.data?.type).toBe(requestModel.data.type);
       expect(result.body[0]?.data?.brand).toBe(requestModel.data.brand);
       expect(result.body[0]?.data?.holderName).toBe(requestModel.data.holderName);
@@ -95,7 +95,7 @@ describe('PaymentProfile Routes', () => {
             field: 'filters',
             rule: 'listFilters',
             message:
-              'This value must be a valid list filters and with this posible fields: customerId, type, createUserId, updateUserId, createdAt, updatedAt',
+              'This value must be a valid list filters and with this posible fields: customerId, paymentMethod, createUserId, updateUserId, createdAt, updatedAt',
           },
         ],
       });
@@ -107,7 +107,7 @@ describe('PaymentProfile Routes', () => {
       const requestModel = {
         id: validUuidV4,
         customerId: existingCustomerId,
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: {
           type: 'CREDIT',
           brand: 'any_brand',
@@ -133,7 +133,7 @@ describe('PaymentProfile Routes', () => {
       expect(result.status).toBe(200);
       expect(result.body.id).toBe(requestModel.id);
       expect(result.body.customerId).toBe(requestModel.customerId);
-      expect(result.body.type).toBe(requestModel.type);
+      expect(result.body.paymentMethod).toBe(requestModel.paymentMethod);
       expect(result.body.data?.type).toBe(requestModel.data.type);
       expect(result.body.data?.brand).toBe(requestModel.data.brand);
       expect(result.body.data?.holderName).toBe(requestModel.data.holderName);
@@ -177,7 +177,7 @@ describe('PaymentProfile Routes', () => {
     test('Should create paymentProfile and return correct values', async () => {
       const requestModel = {
         customerId: existingCustomerId,
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: {
           type: 'CREDIT',
           brand: 'any_brand',
@@ -197,7 +197,7 @@ describe('PaymentProfile Routes', () => {
 
       expect(result.status).toBe(201);
       expect(result.body.customerId).toBe(requestModel.customerId);
-      expect(result.body.type).toBe(requestModel.type);
+      expect(result.body.paymentMethod).toBe(requestModel.paymentMethod);
       expect(result.body.data?.type).toBe(requestModel.data.type);
       expect(result.body.data?.brand).toBe(requestModel.data.brand);
       expect(result.body.data?.holderName).toBe(requestModel.data.holderName);
@@ -216,7 +216,7 @@ describe('PaymentProfile Routes', () => {
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
       const requestModel = {
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: {
           type: 'CREDIT',
           brand: 'any_brand',
@@ -256,7 +256,7 @@ describe('PaymentProfile Routes', () => {
       const requestModel = {
         id: validUuidV4,
         customerId: existingCustomerId,
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: {
           type: 'CREDIT',
           brand: 'any_brand',
@@ -283,7 +283,7 @@ describe('PaymentProfile Routes', () => {
       expect(result.status).toBe(200);
       expect(result.body.id).toBe(requestModel.id);
       expect(result.body.customerId).toBe(requestModel.customerId);
-      expect(result.body.type).toBe(requestModel.type);
+      expect(result.body.paymentMethod).toBe(requestModel.paymentMethod);
       expect(result.body.data?.type).toBe(requestModel.data.type);
       expect(result.body.data?.brand).toBe(requestModel.data.brand);
       expect(result.body.data?.holderName).toBe(requestModel.data.holderName);
@@ -303,7 +303,7 @@ describe('PaymentProfile Routes', () => {
       const requestModel = {
         id: 'invalid_id',
         customerId: existingCustomerId,
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: {
           type: 'CREDIT',
           brand: 'any_brand',
@@ -343,7 +343,7 @@ describe('PaymentProfile Routes', () => {
       const requestModel = {
         id: validUuidV4,
         customerId: existingCustomerId,
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: {
           type: 'CREDIT',
           brand: 'any_brand',
@@ -371,7 +371,7 @@ describe('PaymentProfile Routes', () => {
       expect(result.status).toBe(200);
       expect(result.body.id).toBe(requestModel.id);
       expect(result.body.customerId).toBe(requestModel.customerId);
-      expect(result.body.type).toBe(requestModel.type);
+      expect(result.body.paymentMethod).toBe(requestModel.paymentMethod);
       expect(result.body.data?.type).toBe(requestModel.data.type);
       expect(result.body.data?.brand).toBe(requestModel.data.brand);
       expect(result.body.data?.holderName).toBe(requestModel.data.holderName);

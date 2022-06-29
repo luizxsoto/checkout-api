@@ -12,7 +12,7 @@ const makePaymentProfiles: () => PaymentProfileModel[] = () => [
   makePaymentProfileModelMock(),
   {
     ...makePaymentProfileModelMock(),
-    type: 'PHONE_PAYMENT',
+    paymentMethod: 'PHONE_PAYMENT',
     data: { ...makePaymentProfileModelMock().data, number: '1234567890' },
   },
 ];

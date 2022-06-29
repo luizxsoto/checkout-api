@@ -53,7 +53,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
 
     const requestModel = {
       customerId: validUuidV4,
-      type: 'CARD_PAYMENT' as PaymentProfileModel['type'],
+      paymentMethod: 'CARD_PAYMENT' as PaymentProfileModel['paymentMethod'],
       anyWrongProp: 'anyValue',
       data: {
         type: 'CREDIT',
@@ -110,7 +110,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
           validatorService.rules.string(),
           validatorService.rules.regex({ pattern: 'uuidV4' }),
         ],
-        type: [
+        paymentMethod: [
           validatorService.rules.required(),
           validatorService.rules.string(),
           validatorService.rules.in({ values: ['CARD_PAYMENT', 'PHONE_PAYMENT'] }),
@@ -177,7 +177,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
             props: [{ modelKey: 'customerId', dataKey: 'id' }],
           }),
         ],
-        type: [],
+        paymentMethod: [],
         data: [
           validatorService.rules.unique({
             dataEntity: 'paymentProfiles',
@@ -209,7 +209,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
 
     const requestModel = {
       customerId: validUuidV4,
-      type: 'PHONE_PAYMENT' as PaymentProfileModel['type'],
+      paymentMethod: 'PHONE_PAYMENT' as PaymentProfileModel['paymentMethod'],
       anyWrongProp: 'anyValue',
       data: {
         countryCode: '1234',
@@ -256,7 +256,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
           validatorService.rules.string(),
           validatorService.rules.regex({ pattern: 'uuidV4' }),
         ],
-        type: [
+        paymentMethod: [
           validatorService.rules.required(),
           validatorService.rules.string(),
           validatorService.rules.in({ values: ['CARD_PAYMENT', 'PHONE_PAYMENT'] }),
@@ -300,7 +300,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
             props: [{ modelKey: 'customerId', dataKey: 'id' }],
           }),
         ],
-        type: [],
+        paymentMethod: [],
         data: [
           validatorService.rules.unique({
             dataEntity: 'paymentProfiles',
@@ -347,20 +347,24 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
       },
       validations: [{ field: 'customerId', rule: 'exists', message: 'This value was not found' }],
     },
-    // type
+    // paymentMethod
     {
-      properties: { type: undefined },
-      validations: [{ field: 'type', rule: 'required', message: 'This value is required' }],
+      properties: { paymentMethod: undefined },
+      validations: [
+        { field: 'paymentMethod', rule: 'required', message: 'This value is required' },
+      ],
     },
     {
-      properties: { type: 1 },
-      validations: [{ field: 'type', rule: 'string', message: 'This value must be a string' }],
+      properties: { paymentMethod: 1 },
+      validations: [
+        { field: 'paymentMethod', rule: 'string', message: 'This value must be a string' },
+      ],
     },
     {
-      properties: { type: 'invalid_type' },
+      properties: { paymentMethod: 'invalid_paymentMethod' },
       validations: [
         {
-          field: 'type',
+          field: 'paymentMethod',
           rule: 'in',
           message: 'This value must be in: CARD_PAYMENT, PHONE_PAYMENT',
         },
@@ -378,7 +382,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     // CARD_PAYMENT
     // data
     {
-      properties: { type: 'CARD_PAYMENT' },
+      properties: { paymentMethod: 'CARD_PAYMENT' },
       validations: [
         {
           field: 'data',
@@ -390,21 +394,21 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     // data.type
     {
       properties: {
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, type: undefined },
       },
       validations: [{ field: 'data.type', rule: 'required', message: 'This value is required' }],
     },
     {
       properties: {
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, type: 1 },
       },
       validations: [{ field: 'data.type', rule: 'string', message: 'This value must be a string' }],
     },
     {
       properties: {
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, type: 'invalid_type' },
       },
       validations: [
@@ -418,14 +422,14 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     // data.brand
     {
       properties: {
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, brand: undefined },
       },
       validations: [{ field: 'data.brand', rule: 'required', message: 'This value is required' }],
     },
     {
       properties: {
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, brand: 1 },
       },
       validations: [
@@ -434,7 +438,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     },
     {
       properties: {
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, brand: str1Length.slice(0, -1) },
       },
       validations: [
@@ -447,7 +451,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     },
     {
       properties: {
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, brand: `${str15Length}6` },
       },
       validations: [
@@ -461,7 +465,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     // data.holderName
     {
       properties: {
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, holderName: undefined },
       },
       validations: [
@@ -470,7 +474,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     },
     {
       properties: {
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, holderName: 1 },
       },
       validations: [
@@ -479,7 +483,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     },
     {
       properties: {
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, holderName: str1Length.slice(0, -1) },
       },
       validations: [
@@ -492,7 +496,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     },
     {
       properties: {
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, holderName: `${str15Length}6` },
       },
       validations: [
@@ -506,14 +510,14 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     // data.number
     {
       properties: {
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, number: undefined },
       },
       validations: [{ field: 'data.number', rule: 'required', message: 'This value is required' }],
     },
     {
       properties: {
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, number: 1 },
       },
       validations: [
@@ -526,7 +530,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     },
     {
       properties: {
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, number: str16Length.slice(0, -1) },
       },
       validations: [
@@ -539,7 +543,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     },
     {
       properties: {
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, number: `${str16Length}7` },
       },
       validations: [
@@ -553,14 +557,14 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     // data.cvv
     {
       properties: {
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, cvv: undefined },
       },
       validations: [{ field: 'data.cvv', rule: 'required', message: 'This value is required' }],
     },
     {
       properties: {
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, cvv: 1 },
       },
       validations: [
@@ -573,7 +577,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     },
     {
       properties: {
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, cvv: str3Length.slice(0, -1) },
       },
       validations: [
@@ -586,7 +590,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     },
     {
       properties: {
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, cvv: `${str3Length}4` },
       },
       validations: [
@@ -600,7 +604,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     // data.expiryMonth
     {
       properties: {
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, expiryMonth: undefined },
       },
       validations: [
@@ -609,7 +613,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     },
     {
       properties: {
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, expiryMonth: 1 },
       },
       validations: [
@@ -622,7 +626,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     },
     {
       properties: {
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, expiryMonth: '0' },
       },
       validations: [
@@ -631,7 +635,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     },
     {
       properties: {
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, expiryMonth: '13' },
       },
       validations: [
@@ -645,7 +649,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     // data.expiryYear
     {
       properties: {
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, expiryYear: undefined },
       },
       validations: [
@@ -654,7 +658,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     },
     {
       properties: {
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, expiryYear: 1 },
       },
       validations: [
@@ -667,7 +671,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     },
     {
       properties: {
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, expiryYear: '0' },
       },
       validations: [
@@ -676,7 +680,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     },
     {
       properties: {
-        type: 'CARD_PAYMENT',
+        paymentMethod: 'CARD_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, expiryYear: '10000' },
       },
       validations: [
@@ -691,7 +695,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     // data
     {
       properties: {
-        type: 'PHONE_PAYMENT',
+        paymentMethod: 'PHONE_PAYMENT',
         data: {
           ...makePaymentProfileModelMock().data,
           number: '1234567890',
@@ -708,7 +712,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     // data.countryCode
     {
       properties: {
-        type: 'PHONE_PAYMENT',
+        paymentMethod: 'PHONE_PAYMENT',
         data: {
           ...makePaymentProfileModelMock().data,
           number: '1234567890',
@@ -721,7 +725,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     },
     {
       properties: {
-        type: 'PHONE_PAYMENT',
+        paymentMethod: 'PHONE_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, number: '1234567890', countryCode: 1 },
       },
       validations: [
@@ -734,7 +738,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     },
     {
       properties: {
-        type: 'PHONE_PAYMENT',
+        paymentMethod: 'PHONE_PAYMENT',
         data: {
           ...makePaymentProfileModelMock().data,
           number: '1234567890',
@@ -751,7 +755,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     },
     {
       properties: {
-        type: 'PHONE_PAYMENT',
+        paymentMethod: 'PHONE_PAYMENT',
         data: {
           ...makePaymentProfileModelMock().data,
           number: '1234567890',
@@ -769,7 +773,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     // data.areaCode
     {
       properties: {
-        type: 'PHONE_PAYMENT',
+        paymentMethod: 'PHONE_PAYMENT',
         data: {
           ...makePaymentProfileModelMock().data,
           number: '1234567890',
@@ -782,7 +786,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     },
     {
       properties: {
-        type: 'PHONE_PAYMENT',
+        paymentMethod: 'PHONE_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, number: '1234567890', areaCode: 1 },
       },
       validations: [
@@ -795,7 +799,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     },
     {
       properties: {
-        type: 'PHONE_PAYMENT',
+        paymentMethod: 'PHONE_PAYMENT',
         data: {
           ...makePaymentProfileModelMock().data,
           number: '1234567890',
@@ -812,7 +816,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     },
     {
       properties: {
-        type: 'PHONE_PAYMENT',
+        paymentMethod: 'PHONE_PAYMENT',
         data: {
           ...makePaymentProfileModelMock().data,
           number: '1234567890',
@@ -830,7 +834,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     // data.number
     {
       properties: {
-        type: 'PHONE_PAYMENT',
+        paymentMethod: 'PHONE_PAYMENT',
         data: {
           ...makePaymentProfileModelMock().data,
           number: undefined,
@@ -840,7 +844,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     },
     {
       properties: {
-        type: 'PHONE_PAYMENT',
+        paymentMethod: 'PHONE_PAYMENT',
         data: { ...makePaymentProfileModelMock().data, number: 1 },
       },
       validations: [
@@ -853,7 +857,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     },
     {
       properties: {
-        type: 'PHONE_PAYMENT',
+        paymentMethod: 'PHONE_PAYMENT',
         data: {
           ...makePaymentProfileModelMock().data,
           number: str1Length.slice(0, -1),
@@ -869,7 +873,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     },
     {
       properties: {
-        type: 'PHONE_PAYMENT',
+        paymentMethod: 'PHONE_PAYMENT',
         data: {
           ...makePaymentProfileModelMock().data,
           number: `${str10Length}1`,
@@ -891,7 +895,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
 
         const requestModel = {
           customerId: validUuidV4,
-          type: 'CARD_PAYMENT',
+          paymentMethod: 'CARD_PAYMENT',
           data: {
             type: 'CREDIT',
             brand: 'any_brand',

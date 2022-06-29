@@ -6,7 +6,7 @@ export function makePaymentProfileModelMock(extraData?: Partial<PaymentProfileMo
   return new PaymentProfileModel({
     ...makeBaseModelMock(extraData),
     customerId: '00000000-0000-4000-8000-000000000001',
-    type: 'CARD_PAYMENT',
+    paymentMethod: 'CARD_PAYMENT',
     data: {
       type: 'CREDIT',
       brand: 'any_brand',

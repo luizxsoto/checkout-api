@@ -1,7 +1,7 @@
 import { CreatePaymentProfileDto } from './create';
 
 export class UpdatePaymentProfileDto<
-  Type = 'CARD_PAYMENT' | 'PHONE_PAYMENT',
-> extends CreatePaymentProfileDto<Type> {
+  PaymentMethod = 'CARD_PAYMENT' | 'PHONE_PAYMENT',
+> extends CreatePaymentProfileDto<PaymentMethod> {
   public id!: string;
 }

@@ -20,7 +20,7 @@ describe(DbListPaymentProfileUseCase.name, () => {
     const requestModel = {
       page: 1,
       perPage: 20,
-      orderBy: 'type' as const,
+      orderBy: 'paymentMethod' as const,
       order: 'asc' as const,
       filters: '[]',
       anyWrongProp: 'anyValue',
@@ -50,7 +50,9 @@ describe(DbListPaymentProfileUseCase.name, () => {
         ],
         orderBy: [
           validatorService.rules.string(),
-          validatorService.rules.in({ values: ['customerId', 'type', 'createdAt', 'updatedAt'] }),
+          validatorService.rules.in({
+            values: ['customerId', 'paymentMethod', 'createdAt', 'updatedAt'],
+          }),
         ],
         order: [
           validatorService.rules.string(),
@@ -69,7 +71,7 @@ describe(DbListPaymentProfileUseCase.name, () => {
                   ],
                 }),
               ],
-              type: [
+              paymentMethod: [
                 validatorService.rules.array({
                   rules: [
                     validatorService.rules.string(),
@@ -151,7 +153,7 @@ describe(DbListPaymentProfileUseCase.name, () => {
         {
           field: 'orderBy',
           rule: 'in',
-          message: 'This value must be in: customerId, type, createdAt, updatedAt',
+          message: 'This value must be in: customerId, paymentMethod, createdAt, updatedAt',
         },
       ],
     },
@@ -181,18 +183,22 @@ describe(DbListPaymentProfileUseCase.name, () => {
         },
       ],
     },
-    // type
+    // paymentMethod
     {
-      properties: { filters: '["=", "type", 1]' },
+      properties: { filters: '["=", "paymentMethod", 1]' },
       validations: [
-        { field: 'filters.type.0', rule: 'string', message: 'This value must be a string' },
+        {
+          field: 'filters.paymentMethod.0',
+          rule: 'string',
+          message: 'This value must be a string',
+        },
       ],
     },
     {
-      properties: { filters: '["=", "type", "invalid_type"]' },
+      properties: { filters: '["=", "paymentMethod", "invalid_paymentMethod"]' },
       validations: [
         {
-          field: 'filters.type.0',
+          field: 'filters.paymentMethod.0',
           rule: 'in',
           message: 'This value must be in: CARD_PAYMENT, PHONE_PAYMENT',
         },

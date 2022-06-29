@@ -34,7 +34,7 @@ describe(DbRemovePaymentProfileUseCase.name, () => {
     const responseModel = {
       ...sanitizedRequestModel,
       customerId: validUuidV4,
-      type: 'CARD_PAYMENT',
+      paymentMethod: 'CARD_PAYMENT',
       data: {
         type: 'CREDIT',
         brand: 'any_brand',
@@ -98,7 +98,7 @@ describe(DbRemovePaymentProfileUseCase.name, () => {
     const responseModel = {
       ...sanitizedRequestModel,
       customerId: validUuidV4,
-      type: 'PHONE_PAYMENT',
+      paymentMethod: 'PHONE_PAYMENT',
       data: {
         countryCode: 'any_countryCode',
         areaCode: 'any_areaCode',
