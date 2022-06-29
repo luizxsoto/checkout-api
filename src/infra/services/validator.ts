@@ -50,7 +50,7 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
     date: (options) => ({ name: 'date', options }),
     in: (options) => ({ name: 'in', options }),
     number: (options) => ({ name: 'number', options }),
-    numberString: (options) => ({ name: 'numberString', options }),
+    integerString: (options) => ({ name: 'integerString', options }),
     min: (options) => ({ name: 'min', options }),
     max: (options) => ({ name: 'max', options }),
     regex: (options) => ({ name: 'regex', options }),
@@ -139,15 +139,15 @@ export class VanillaValidatorService<Model, ValidatorData extends Record<string,
         message: 'This value must be a number',
       };
     },
-    numberString: (key, _options: Parameters<Rules['number']>[0], model) => {
+    integerString: (key, _options: Parameters<Rules['number']>[0], model) => {
       const value = lodashGet(model, key);
       const numberRgx = /^\d*$/;
       if (value === undefined || (typeof value === 'string' && numberRgx.test(value))) return null;
 
       return {
         field: key as string,
-        rule: 'numberString',
-        message: 'This value must be a number in a string',
+        rule: 'integerString',
+        message: 'This value must be a integer in a string',
       };
     },
     min: (key, options: Parameters<Rules['min']>[0], model) => {

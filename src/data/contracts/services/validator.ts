@@ -6,9 +6,9 @@ export interface Rules {
   date: (options?: null) => { name: 'date'; options: Parameters<Rules['date']>[0] };
   in: (options: { values: string[] }) => { name: 'in'; options: Parameters<Rules['in']>[0] };
   number: (options?: null) => { name: 'number'; options: Parameters<Rules['number']>[0] };
-  numberString: (options?: null) => {
-    name: 'numberString';
-    options: Parameters<Rules['numberString']>[0];
+  integerString: (options?: null) => {
+    name: 'integerString';
+    options: Parameters<Rules['integerString']>[0];
   };
   min: (options: { value: number }) => { name: 'min'; options: Parameters<Rules['min']>[0] };
   max: (options: { value: number }) => { name: 'max'; options: Parameters<Rules['max']>[0] };

@@ -256,13 +256,13 @@ describe(VanillaValidatorService.name, () => {
     });
   });
 
-  describe('Should throw if the value should be numberString, but is not', () => {
+  describe('Should throw if the value should be integerString, but is not', () => {
     test('Should throw', async () => {
       const { sut } = makeSut();
 
       const sutResult = await sut
         .validate({
-          schema: { anyProp: [sut.rules.numberString()] },
+          schema: { anyProp: [sut.rules.integerString()] },
           model: { anyProp: '1e2' },
           data: { anyData: [] },
         })
@@ -272,8 +272,8 @@ describe(VanillaValidatorService.name, () => {
         new ValidationException([
           {
             field: 'anyProp',
-            rule: 'numberString',
-            message: 'This value must be a number in a string',
+            rule: 'integerString',
+            message: 'This value must be a integer in a string',
           },
         ]),
       );
@@ -284,7 +284,7 @@ describe(VanillaValidatorService.name, () => {
 
       const sutResult = await sut
         .validate({
-          schema: { anyProp: [sut.rules.numberString()] },
+          schema: { anyProp: [sut.rules.integerString()] },
           model: { anyProp: '12' },
           data: { anyData: [] },
         })
@@ -298,7 +298,7 @@ describe(VanillaValidatorService.name, () => {
 
       const sutResult = await sut
         .validate({
-          schema: { anyProp: [sut.rules.numberString()] },
+          schema: { anyProp: [sut.rules.integerString()] },
           model: { anyProp: undefined },
           data: { anyData: [] },
         })

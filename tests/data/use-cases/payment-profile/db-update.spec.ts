@@ -128,23 +128,23 @@ describe(DbUpdatePaymentProfileUseCase.name, () => {
               ],
               number: [
                 validatorService.rules.required(),
-                validatorService.rules.numberString(),
+                validatorService.rules.integerString(),
                 validatorService.rules.length({ minLength: 16, maxLength: 16 }),
               ],
               cvv: [
                 validatorService.rules.required(),
-                validatorService.rules.numberString(),
+                validatorService.rules.integerString(),
                 validatorService.rules.length({ minLength: 3, maxLength: 3 }),
               ],
               expiryMonth: [
                 validatorService.rules.required(),
-                validatorService.rules.numberString(),
+                validatorService.rules.integerString(),
                 validatorService.rules.min({ value: 1 }),
                 validatorService.rules.max({ value: 12 }),
               ],
               expiryYear: [
                 validatorService.rules.required(),
-                validatorService.rules.numberString(),
+                validatorService.rules.integerString(),
                 validatorService.rules.min({ value: 1 }),
                 validatorService.rules.max({ value: 9999 }),
               ],
@@ -275,17 +275,17 @@ describe(DbUpdatePaymentProfileUseCase.name, () => {
             schema: {
               countryCode: [
                 validatorService.rules.required(),
-                validatorService.rules.numberString(),
+                validatorService.rules.integerString(),
                 validatorService.rules.length({ minLength: 1, maxLength: 4 }),
               ],
               areaCode: [
                 validatorService.rules.required(),
-                validatorService.rules.numberString(),
+                validatorService.rules.integerString(),
                 validatorService.rules.length({ minLength: 1, maxLength: 4 }),
               ],
               number: [
                 validatorService.rules.required(),
-                validatorService.rules.numberString(),
+                validatorService.rules.integerString(),
                 validatorService.rules.length({ minLength: 1, maxLength: 10 }),
               ],
             },
@@ -581,8 +581,8 @@ describe(DbUpdatePaymentProfileUseCase.name, () => {
       validations: [
         {
           field: 'data.number',
-          rule: 'numberString',
-          message: 'This value must be a number in a string',
+          rule: 'integerString',
+          message: 'This value must be a integer in a string',
         },
       ],
     },
@@ -628,8 +628,8 @@ describe(DbUpdatePaymentProfileUseCase.name, () => {
       validations: [
         {
           field: 'data.cvv',
-          rule: 'numberString',
-          message: 'This value must be a number in a string',
+          rule: 'integerString',
+          message: 'This value must be a integer in a string',
         },
       ],
     },
@@ -677,8 +677,8 @@ describe(DbUpdatePaymentProfileUseCase.name, () => {
       validations: [
         {
           field: 'data.expiryMonth',
-          rule: 'numberString',
-          message: 'This value must be a number in a string',
+          rule: 'integerString',
+          message: 'This value must be a integer in a string',
         },
       ],
     },
@@ -722,8 +722,8 @@ describe(DbUpdatePaymentProfileUseCase.name, () => {
       validations: [
         {
           field: 'data.expiryYear',
-          rule: 'numberString',
-          message: 'This value must be a number in a string',
+          rule: 'integerString',
+          message: 'This value must be a integer in a string',
         },
       ],
     },
@@ -792,8 +792,8 @@ describe(DbUpdatePaymentProfileUseCase.name, () => {
       validations: [
         {
           field: 'data.countryCode',
-          rule: 'numberString',
-          message: 'This value must be a number in a string',
+          rule: 'integerString',
+          message: 'This value must be a integer in a string',
         },
       ],
     },
@@ -853,8 +853,8 @@ describe(DbUpdatePaymentProfileUseCase.name, () => {
       validations: [
         {
           field: 'data.areaCode',
-          rule: 'numberString',
-          message: 'This value must be a number in a string',
+          rule: 'integerString',
+          message: 'This value must be a integer in a string',
         },
       ],
     },
@@ -911,8 +911,8 @@ describe(DbUpdatePaymentProfileUseCase.name, () => {
       validations: [
         {
           field: 'data.number',
-          rule: 'numberString',
-          message: 'This value must be a number in a string',
+          rule: 'integerString',
+          message: 'This value must be a integer in a string',
         },
       ],
     },

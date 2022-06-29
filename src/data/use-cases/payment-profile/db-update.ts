@@ -158,23 +158,23 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
             ],
             number: [
               this.validatorService.rules.required(),
-              this.validatorService.rules.numberString(),
+              this.validatorService.rules.integerString(),
               this.validatorService.rules.length({ minLength: 16, maxLength: 16 }),
             ],
             cvv: [
               this.validatorService.rules.required(),
-              this.validatorService.rules.numberString(),
+              this.validatorService.rules.integerString(),
               this.validatorService.rules.length({ minLength: 3, maxLength: 3 }),
             ],
             expiryMonth: [
               this.validatorService.rules.required(),
-              this.validatorService.rules.numberString(),
+              this.validatorService.rules.integerString(),
               this.validatorService.rules.min({ value: 1 }),
               this.validatorService.rules.max({ value: 12 }),
             ],
             expiryYear: [
               this.validatorService.rules.required(),
-              this.validatorService.rules.numberString(),
+              this.validatorService.rules.integerString(),
               this.validatorService.rules.min({ value: 1 }),
               this.validatorService.rules.max({ value: 9999 }),
             ],
@@ -188,17 +188,17 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
           schema: {
             countryCode: [
               this.validatorService.rules.required(),
-              this.validatorService.rules.numberString(),
+              this.validatorService.rules.integerString(),
               this.validatorService.rules.length({ minLength: 1, maxLength: 4 }),
             ],
             areaCode: [
               this.validatorService.rules.required(),
-              this.validatorService.rules.numberString(),
+              this.validatorService.rules.integerString(),
               this.validatorService.rules.length({ minLength: 1, maxLength: 4 }),
             ],
             number: [
               this.validatorService.rules.required(),
-              this.validatorService.rules.numberString(),
+              this.validatorService.rules.integerString(),
               this.validatorService.rules.length({ minLength: 1, maxLength: 10 }),
             ],
           },
