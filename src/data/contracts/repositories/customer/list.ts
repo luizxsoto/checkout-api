@@ -1,10 +1,10 @@
 import { CustomerModel } from '@/domain/models';
 
 export type RequestModel = {
-  pege?: number;
+  page?: number;
   perPage?: number;
-  orderBy?: string;
-  order?: string;
+  orderBy?: 'name' | 'email' | 'createdAt' | 'updatedAt';
+  order?: 'asc' | 'desc';
   filters?: string;
 };
 

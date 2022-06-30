@@ -1,10 +1,10 @@
 import { PaymentProfileModel } from '@/domain/models';
 
 export type RequestModel = {
-  pege?: number;
+  page?: number;
   perPage?: number;
-  orderBy?: string;
-  order?: string;
+  orderBy?: 'customerId' | 'paymentMethod' | 'createdAt' | 'updatedAt';
+  order?: 'asc' | 'desc';
   filters?: string;
 };
 

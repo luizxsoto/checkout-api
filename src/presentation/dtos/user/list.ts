@@ -3,5 +3,9 @@ export class ListUserDto {
 
   public perPage?: number;
 
+  public orderBy?: 'name' | 'email' | 'createdAt' | 'updatedAt';
+
+  public order?: 'asc' | 'desc';
+
   public filters?: string;
 }
