@@ -30,7 +30,7 @@ describe(DbShowCustomerUseCase.name, () => {
 
     customerRepository.findBy.mockReturnValueOnce([existsCustomer]);
 
-    const sutResult = await sut.execute(requestModel).catch();
+    const sutResult = await sut.execute(requestModel);
 
     expect(sutResult).toStrictEqual(responseModel);
     expect(validatorService.validate).toBeCalledWith({

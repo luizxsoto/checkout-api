@@ -37,7 +37,7 @@ describe(DbListPaymentProfileUseCase.name, () => {
 
     paymentProfileRepository.list.mockReturnValueOnce([existsPaymentProfile]);
 
-    const sutResult = await sut.execute(requestModel).catch();
+    const sutResult = await sut.execute(requestModel);
 
     expect(sutResult).toStrictEqual([responseModel]);
     expect(validatorService.validate).toBeCalledWith({

@@ -51,7 +51,7 @@ describe(DbUpdateUserUseCase.name, () => {
     hasherCryptography.hash.mockReturnValueOnce(Promise.resolve('hashed_password'));
     userRepository.update.mockReturnValueOnce([responseModel]);
 
-    const sutResult = await sut.execute(requestModel).catch();
+    const sutResult = await sut.execute(requestModel);
 
     expect(sutResult).toStrictEqual(responseModel);
     expect(validatorService.validate).toBeCalledWith({

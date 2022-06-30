@@ -51,7 +51,7 @@ describe(DbRemovePaymentProfileUseCase.name, () => {
     paymentProfileRepository.findBy.mockReturnValueOnce([existsPaymentProfile]);
     paymentProfileRepository.remove.mockReturnValueOnce([responseModel]);
 
-    const sutResult = await sut.execute(requestModel).catch();
+    const sutResult = await sut.execute(requestModel);
 
     expect(sutResult).toStrictEqual(responseModel);
     expect(validatorService.validate).toBeCalledWith({
@@ -111,7 +111,7 @@ describe(DbRemovePaymentProfileUseCase.name, () => {
     paymentProfileRepository.findBy.mockReturnValueOnce([existsPaymentProfile]);
     paymentProfileRepository.remove.mockReturnValueOnce([responseModel]);
 
-    const sutResult = await sut.execute(requestModel).catch();
+    const sutResult = await sut.execute(requestModel);
 
     expect(sutResult).toStrictEqual(responseModel);
     expect(validatorService.validate).toBeCalledWith({

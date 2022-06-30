@@ -43,7 +43,7 @@ describe(DbShowPaymentProfileUseCase.name, () => {
 
     paymentProfileRepository.findBy.mockReturnValueOnce([existsPaymentProfile]);
 
-    const sutResult = await sut.execute(requestModel).catch();
+    const sutResult = await sut.execute(requestModel);
 
     expect(sutResult).toStrictEqual(responseModel);
     expect(validatorService.validate).toBeCalledWith({
@@ -98,7 +98,7 @@ describe(DbShowPaymentProfileUseCase.name, () => {
 
     paymentProfileRepository.findBy.mockReturnValueOnce([existsPaymentProfile]);
 
-    const sutResult = await sut.execute(requestModel).catch();
+    const sutResult = await sut.execute(requestModel);
 
     expect(sutResult).toStrictEqual(responseModel);
     expect(validatorService.validate).toBeCalledWith({

@@ -33,7 +33,7 @@ describe(DbRemoveUserUseCase.name, () => {
     userRepository.findBy.mockReturnValueOnce([existsUser]);
     userRepository.remove.mockReturnValueOnce([responseModel]);
 
-    const sutResult = await sut.execute(requestModel).catch();
+    const sutResult = await sut.execute(requestModel);
 
     expect(sutResult).toStrictEqual(responseModel);
     expect(validatorService.validate).toBeCalledWith({
