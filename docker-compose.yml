@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   api:
-    container_name: checkout-api
+    container_name: ecommerce-api
     image: node:16.13.2-alpine3.15
     working_dir: /app
     command: npm run start:dev
@@ -16,11 +16,11 @@ services:
     env_file:
       - .env
     networks:
-      checkout:
+      ecommerce:
         aliases:
-          - checkout-api
+          - ecommerce-api
   pg:
-    container_name: checkout-pg
+    container_name: ecommerce-pg
     image: postgres
     environment:
       POSTGRES_USER: postgres
@@ -28,9 +28,9 @@ services:
     ports:
       - 5432:5432
     networks:
-      - checkout
+      - ecommerce
 
 networks:
-  checkout:
-    name: checkout
+  ecommerce:
+    name: ecommerce
     driver: bridge
