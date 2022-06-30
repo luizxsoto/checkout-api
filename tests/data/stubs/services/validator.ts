@@ -39,6 +39,7 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
     date: (options) => ({ name: 'date', options }),
     in: (options) => ({ name: 'in', options }),
     number: (options) => ({ name: 'number', options }),
+    integer: (options) => ({ name: 'integer', options }),
     integerString: (options) => ({ name: 'integerString', options }),
     min: (options) => ({ name: 'min', options }),
     max: (options) => ({ name: 'max', options }),
@@ -137,6 +138,18 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
           message: 'This value must be a number',
         };
       },
+      integer: (key, _options: Parameters<Rules['integer']>[0], model) => {
+        const value = lodashGet(model, key);
+        const integerRgx = /^\d*$/;
+        if (value === undefined || (typeof value === 'number' && integerRgx.test(String(value))))
+          return null;
+
+        return {
+          field: key as string,
+          rule: 'integer',
+          message: 'This value must be an integer',
+        };
+      },
       integerString: (key, _options: Parameters<Rules['number']>[0], model) => {
         const value = lodashGet(model, key);
         const numberRgx = /^\d*$/;
@@ -146,7 +159,7 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
         return {
           field: key as string,
           rule: 'integerString',
-          message: 'This value must be a integer in a string',
+          message: 'This value must be an integer in a string',
         };
       },
       min: (key, options: Parameters<Rules['min']>[0], model) => {

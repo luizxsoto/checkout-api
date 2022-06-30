@@ -256,6 +256,58 @@ describe(VanillaValidatorService.name, () => {
     });
   });
 
+  describe('Should throw if the value should be integer, but is not', () => {
+    test('Should throw', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: { anyProp: [sut.rules.integer()] },
+          model: { anyProp: 1.2 },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toStrictEqual(
+        new ValidationException([
+          {
+            field: 'anyProp',
+            rule: 'integer',
+            message: 'This value must be an integer',
+          },
+        ]),
+      );
+    });
+
+    test('Should not throw', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: { anyProp: [sut.rules.integer()] },
+          model: { anyProp: 12 },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
+
+    test('Should not throw if is not informed a value', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: { anyProp: [sut.rules.integer()] },
+          model: { anyProp: undefined },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
+  });
+
   describe('Should throw if the value should be integerString, but is not', () => {
     test('Should throw', async () => {
       const { sut } = makeSut();
@@ -273,7 +325,7 @@ describe(VanillaValidatorService.name, () => {
           {
             field: 'anyProp',
             rule: 'integerString',
-            message: 'This value must be a integer in a string',
+            message: 'This value must be an integer in a string',
           },
         ]),
       );

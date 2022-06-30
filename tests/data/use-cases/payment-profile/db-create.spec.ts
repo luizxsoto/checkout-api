@@ -524,7 +524,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
         {
           field: 'data.number',
           rule: 'integerString',
-          message: 'This value must be a integer in a string',
+          message: 'This value must be an integer in a string',
         },
       ],
     },
@@ -571,7 +571,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
         {
           field: 'data.cvv',
           rule: 'integerString',
-          message: 'This value must be a integer in a string',
+          message: 'This value must be an integer in a string',
         },
       ],
     },
@@ -620,7 +620,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
         {
           field: 'data.expiryMonth',
           rule: 'integerString',
-          message: 'This value must be a integer in a string',
+          message: 'This value must be an integer in a string',
         },
       ],
     },
@@ -665,7 +665,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
         {
           field: 'data.expiryYear',
           rule: 'integerString',
-          message: 'This value must be a integer in a string',
+          message: 'This value must be an integer in a string',
         },
       ],
     },
@@ -732,7 +732,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
         {
           field: 'data.countryCode',
           rule: 'integerString',
-          message: 'This value must be a integer in a string',
+          message: 'This value must be an integer in a string',
         },
       ],
     },
@@ -793,7 +793,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
         {
           field: 'data.areaCode',
           rule: 'integerString',
-          message: 'This value must be a integer in a string',
+          message: 'This value must be an integer in a string',
         },
       ],
     },
@@ -851,7 +851,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
         {
           field: 'data.number',
           rule: 'integerString',
-          message: 'This value must be a integer in a string',
+          message: 'This value must be an integer in a string',
         },
       ],
     },
