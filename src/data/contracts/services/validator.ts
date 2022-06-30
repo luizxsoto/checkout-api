@@ -6,6 +6,7 @@ export interface Rules {
   date: (options?: null) => { name: 'date'; options: Parameters<Rules['date']>[0] };
   in: (options: { values: string[] }) => { name: 'in'; options: Parameters<Rules['in']>[0] };
   number: (options?: null) => { name: 'number'; options: Parameters<Rules['number']>[0] };
+  integer: (options?: null) => { name: 'integer'; options: Parameters<Rules['integer']>[0] };
   integerString: (options?: null) => {
     name: 'integerString';
     options: Parameters<Rules['integerString']>[0];
