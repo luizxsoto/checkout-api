@@ -10,6 +10,12 @@ export * as RemovePaymentProfileUseCase from './payment-profile/remove';
 export * as ShowPaymentProfileUseCase from './payment-profile/show';
 export * as UpdatePaymentProfileUseCase from './payment-profile/update';
 
+export * as CreateProductUseCase from './product/create';
+export * as ListProductUseCase from './product/list';
+export * as RemoveProductUseCase from './product/remove';
+export * as ShowProductUseCase from './product/show';
+export * as UpdateProductUseCase from './product/update';
+
 export * as CreateSessionUseCase from './session/create';
 
 export * as CreateUserUseCase from './user/create';
