@@ -36,6 +36,10 @@ export interface Rules {
     name: 'exists';
     options: Parameters<Rules['exists']>[0];
   };
+  distinct: (options: { keys?: string[] }) => {
+    name: 'distinct';
+    options: Parameters<Rules['distinct']>[0];
+  };
   array: (options: { rules: Rule[] }) => {
     name: 'array';
     options: Parameters<Rules['array']>[0];
