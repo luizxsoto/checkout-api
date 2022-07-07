@@ -4,6 +4,12 @@ export * from './customer/remove';
 export * from './customer/show';
 export * from './customer/update';
 
+export * from './order/create';
+export * from './order/list';
+export * from './order/remove';
+export * from './order/show';
+export * from './order/update';
+
 export * from './payment-profile/create';
 export * from './payment-profile/list';
 export * from './payment-profile/remove';
