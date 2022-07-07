@@ -83,11 +83,13 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
       },
     };
     const responseModel = {
-      ...sanitizedRequestModel,
-      data: { ...sanitizedRequestModel.data },
+      ...requestModelWithSanitizedData,
+      data: { ...requestModelWithSanitizedData.data },
       id: 'any_id',
       createdAt: new Date(),
     };
+    Reflect.deleteProperty(responseModel.data, 'cvv');
+    Reflect.deleteProperty(responseModel.data, 'number');
     const customer = makeCustomerModelMock();
     const otherPaymentProfile = {
       ...responseModel,

@@ -72,11 +72,13 @@ describe(DbUpdatePaymentProfileUseCase.name, () => {
       },
     };
     const responseModel = {
-      ...sanitizedRequestModel,
-      data: { ...sanitizedRequestModel.data },
+      ...requestModelWithSanitizedData,
+      data: { ...requestModelWithSanitizedData.data },
       id: validUuidV4,
-      updatedAt: new Date(),
+      createdAt: new Date(),
     };
+    Reflect.deleteProperty(responseModel.data, 'cvv');
+    Reflect.deleteProperty(responseModel.data, 'number');
     const existsPaymentProfile = {
       ...responseModel,
       data: { ...responseModel.data },

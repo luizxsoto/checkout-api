@@ -10,8 +10,9 @@ import { knexConfig } from '@/main/config';
 export function makeDbCreatePaymentProfileUseCase(
   session: SessionModel,
 ): CreatePaymentProfileUseCase.UseCase {
-  const repository = new KnexPaymentProfileRepository(session, knexConfig, new UUIDService());
-  const customerRepository = new KnexCustomerRepository(session, knexConfig, new UUIDService());
+  const uuidService = new UUIDService();
+  const repository = new KnexPaymentProfileRepository(session, knexConfig, uuidService);
+  const customerRepository = new KnexCustomerRepository(session, knexConfig, uuidService);
   const validatorService = new VanillaValidatorService<
     CreatePaymentProfileUseCase.RequestModel,
     {

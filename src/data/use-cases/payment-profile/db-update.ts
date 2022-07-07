@@ -43,18 +43,23 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
     await restValidation(requestModelWithSanitizedData, { paymentProfiles });
 
     const [paymentProfileUpdated] = await this.updatePaymentProfileRepository.update(
-      { id: sanitizedRequestModel.id },
+      { id: requestModelWithSanitizedData.id },
       requestModelWithSanitizedData,
     );
 
     const findedPaymentProfileById = paymentProfiles.find(
-      (paymentProfile) => paymentProfile.id === sanitizedRequestModel.id,
-    );
+      (paymentProfile) => paymentProfile.id === requestModelWithSanitizedData.id,
+    ) as PaymentProfileModel;
 
     const responseModel = {
       ...findedPaymentProfileById,
-      ...sanitizedRequestModel,
+      ...requestModelWithSanitizedData,
       ...paymentProfileUpdated,
+      data: {
+        ...findedPaymentProfileById.data,
+        ...requestModelWithSanitizedData.data,
+        ...paymentProfileUpdated.data,
+      },
     };
     Reflect.deleteProperty(responseModel.data, 'cvv');
     if (responseModel.paymentMethod === 'CARD_PAYMENT') {

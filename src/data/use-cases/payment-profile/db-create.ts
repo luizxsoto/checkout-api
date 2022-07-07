@@ -52,7 +52,14 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
       requestModelWithSanitizedData,
     );
 
-    const responseModel = { ...sanitizedRequestModel, ...paymentProfileCreated };
+    const responseModel = {
+      ...requestModelWithSanitizedData,
+      ...paymentProfileCreated,
+      data: {
+        ...requestModelWithSanitizedData.data,
+        ...paymentProfileCreated.data,
+      },
+    };
     Reflect.deleteProperty(responseModel.data, 'cvv');
     if (responseModel.paymentMethod === 'CARD_PAYMENT') {
       Reflect.deleteProperty(responseModel.data, 'number');
