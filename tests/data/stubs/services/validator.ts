@@ -209,7 +209,7 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
         const value = lodashGet(model, key);
         if (value === undefined) return null;
 
-        const parsedValue = value as string | Array<any>;
+        const parsedValue = value as string | any[];
 
         if (parsedValue.length < options.minLength || parsedValue.length > options.maxLength) {
           return {
@@ -226,17 +226,20 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
         if (value === undefined) return null;
 
         const registerFinded = data[options.dataEntity].find((dataItem) =>
-          options.props.every(
-            (prop) => lodashGet(dataItem, prop.dataKey) === lodashGet(model, prop.modelKey),
-          ),
+          options.props.every((prop) => {
+            let modelKey = (key as string).split('.').slice(0, -1).join('.');
+            modelKey += modelKey ? `.${prop.modelKey}` : prop.modelKey;
+            return lodashGet(dataItem, prop.dataKey) === lodashGet(model, modelKey);
+          }),
         );
 
         const isSameIgnoreProps =
           registerFinded &&
-          options.ignoreProps?.every(
-            (ignoreProp) =>
-              registerFinded[ignoreProp.dataKey] === model[ignoreProp.modelKey as keyof Model],
-          );
+          options.ignoreProps?.every((ignoreProp) => {
+            let modelKey = (key as string).split('.').slice(0, -1).join('.');
+            modelKey += modelKey ? `.${ignoreProp.modelKey}` : ignoreProp.modelKey;
+            return lodashGet(registerFinded, ignoreProp.dataKey) === lodashGet(model, modelKey);
+          });
 
         if (!registerFinded || isSameIgnoreProps) return null;
 
@@ -251,9 +254,11 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
         if (value === undefined) return null;
 
         const registerFinded = data[options.dataEntity].find((dataItem) =>
-          options.props.every(
-            (prop) => lodashGet(dataItem, prop.dataKey) === lodashGet(model, prop.modelKey),
-          ),
+          options.props.every((prop) => {
+            let modelKey = (key as string).split('.').slice(0, -1).join('.');
+            modelKey += modelKey ? `.${prop.modelKey}` : prop.modelKey;
+            return lodashGet(dataItem, prop.dataKey) === lodashGet(model, modelKey);
+          }),
         );
 
         if (registerFinded) return null;

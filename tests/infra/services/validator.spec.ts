@@ -733,6 +733,34 @@ describe(VanillaValidatorService.name, () => {
       expect(sutResult).toBeUndefined();
     });
 
+    test('Should not throw if is nested key', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            nested: [
+              sut.rules.object({
+                schema: {
+                  anyProp: [
+                    sut.rules.unique({
+                      dataEntity: 'anyData',
+                      ignoreProps: [{ modelKey: 'otherProp', dataKey: 'otherProp' }],
+                      props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }],
+                    }),
+                  ],
+                },
+              }),
+            ],
+          },
+          model: { nested: { anyProp: 'anyProp', otherProp: 'otherProp' } },
+          data: { anyData: [{ anyProp: 'anyProp', otherProp: 'otherProp' }] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
+
     test('Should not throw if is not informed a value', async () => {
       const { sut } = makeSut();
 
@@ -796,6 +824,33 @@ describe(VanillaValidatorService.name, () => {
             ],
           },
           model: { anyProp: 'anyProp' },
+          data: { anyData: [{ anyProp: 'anyProp' }] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
+
+    test('Should not throw if is nested key', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            nested: [
+              sut.rules.object({
+                schema: {
+                  anyProp: [
+                    sut.rules.exists({
+                      dataEntity: 'anyData',
+                      props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }],
+                    }),
+                  ],
+                },
+              }),
+            ],
+          },
+          model: { nested: { anyProp: 'anyProp' } },
           data: { anyData: [{ anyProp: 'anyProp' }] },
         })
         .catch((e) => e);
