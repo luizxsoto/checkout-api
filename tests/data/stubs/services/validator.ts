@@ -47,6 +47,7 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
     length: (options) => ({ name: 'length', options }),
     unique: (options) => ({ name: 'unique', options }),
     exists: (options) => ({ name: 'exists', options }),
+    distinct: (options) => ({ name: 'distinct', options }),
     array: (options) => ({ name: 'array', options }),
     object: (options) => ({ name: 'object', options }),
     listFilters: (options) => ({ name: 'listFilters', options }),
@@ -267,6 +268,32 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
           field: key as string,
           rule: 'exists',
           message: 'This value was not found',
+        };
+      },
+      distinct: (key, options: Parameters<Rules['distinct']>[0], model) => {
+        const value = lodashGet(model, key);
+        if (value === undefined || !Array.isArray(value)) return null;
+
+        const hasDuplicatedValue = value.some(
+          (valueItem) =>
+            value.filter((otherValueItem) =>
+              !options.keys
+                ? valueItem === otherValueItem
+                : options.keys.every(
+                    (keyItem) =>
+                      lodashGet(otherValueItem, keyItem) === lodashGet(valueItem, keyItem),
+                  ),
+            ).length > 1,
+        );
+
+        if (!hasDuplicatedValue) return null;
+
+        return {
+          field: key as string,
+          rule: 'distinct',
+          message: `This value cannot have duplicate items${
+            !options.keys ? '' : ` by: ${options.keys.join(', ')}`
+          }`,
         };
       },
       array: async (key, options: Parameters<Rules['array']>[0], model, data) => {

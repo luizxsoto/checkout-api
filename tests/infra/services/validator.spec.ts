@@ -880,6 +880,120 @@ describe(VanillaValidatorService.name, () => {
     });
   });
 
+  describe('Should throw if the value has duplicated items', () => {
+    test('Should throw for primitive array', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [sut.rules.distinct({})],
+          },
+          model: { anyProp: ['duplicatedItem', 'duplicatedItem'] },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toStrictEqual(
+        new ValidationException([
+          {
+            field: 'anyProp',
+            rule: 'distinct',
+            message: 'This value cannot have duplicate items',
+          },
+        ]),
+      );
+    });
+
+    test('Should throw for object array', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [sut.rules.distinct({ keys: ['anyKey'] })],
+          },
+          model: { anyProp: [{ anyKey: 'duplicatedItem' }, { anyKey: 'duplicatedItem' }] },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toStrictEqual(
+        new ValidationException([
+          {
+            field: 'anyProp',
+            rule: 'distinct',
+            message: 'This value cannot have duplicate items by: anyKey',
+          },
+        ]),
+      );
+    });
+
+    test('Should not throw for primitive array', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [sut.rules.distinct({})],
+          },
+          model: { anyProp: ['someItem', 'otherItem'] },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
+
+    test('Should not throw for object array', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [sut.rules.distinct({ keys: ['anyKey'] })],
+          },
+          model: { anyProp: [{ anyKey: 'someItem' }, { anyKey: 'otherItem' }] },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
+
+    test('Should not throw if is not informed a value', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [sut.rules.distinct({})],
+          },
+          model: { anyProp: undefined },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
+
+    test('Should not throw if is not informed a array value', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: {
+            anyProp: [sut.rules.distinct({})],
+          },
+          model: { anyProp: 'invalid_array' },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toBeUndefined();
+    });
+  });
+
   describe('Should throw if the value is an invalid array', () => {
     test('Should throw', async () => {
       const { sut } = makeSut();
