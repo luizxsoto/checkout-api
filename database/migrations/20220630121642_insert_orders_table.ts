@@ -13,6 +13,7 @@ const orders: (Omit<OrderModel, 'createdAt'> & {
     createdAt: new Date().toISOString(),
     customerId: '00000000-0000-4000-8000-000000000001',
     paymentProfileId: '00000000-0000-4000-8000-000000000001',
+    status: 'PAID',
     totalValue: 1000,
   },
 ];
