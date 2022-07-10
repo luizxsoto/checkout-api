@@ -120,7 +120,7 @@ describe(DbListUserUseCase.name, () => {
     // page
     {
       properties: { page: 'page' },
-      validations: [{ field: 'page', rule: 'number', message: 'This value must be a number' }],
+      validations: [{ field: 'page', rule: 'integer', message: 'This value must be an integer' }],
     },
     {
       properties: { page: 0 },
@@ -131,7 +131,9 @@ describe(DbListUserUseCase.name, () => {
     // perPage
     {
       properties: { perPage: 'perPage' },
-      validations: [{ field: 'perPage', rule: 'number', message: 'This value must be a number' }],
+      validations: [
+        { field: 'perPage', rule: 'integer', message: 'This value must be an integer' },
+      ],
     },
     {
       properties: { perPage: MIN_PER_PAGE - 1 },
