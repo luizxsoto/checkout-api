@@ -690,7 +690,11 @@ describe(DbUpdatePaymentProfileUseCase.name, () => {
         data: { ...makePaymentProfileModelMock().data, expiryMonth: '0' },
       },
       validations: [
-        { field: 'data.expiryMonth', rule: 'min', message: 'This value must be bigger than: 1' },
+        {
+          field: 'data.expiryMonth',
+          rule: 'min',
+          message: 'This value must be bigger or equal to: 1',
+        },
       ],
     },
     {
@@ -702,7 +706,7 @@ describe(DbUpdatePaymentProfileUseCase.name, () => {
         {
           field: 'data.expiryMonth',
           rule: 'max',
-          message: 'This value must be smaller than: 12',
+          message: 'This value must be less or equal to: 12',
         },
       ],
     },
@@ -735,7 +739,11 @@ describe(DbUpdatePaymentProfileUseCase.name, () => {
         data: { ...makePaymentProfileModelMock().data, expiryYear: '0' },
       },
       validations: [
-        { field: 'data.expiryYear', rule: 'min', message: 'This value must be bigger than: 1' },
+        {
+          field: 'data.expiryYear',
+          rule: 'min',
+          message: 'This value must be bigger or equal to: 1',
+        },
       ],
     },
     {
@@ -747,7 +755,7 @@ describe(DbUpdatePaymentProfileUseCase.name, () => {
         {
           field: 'data.expiryYear',
           rule: 'max',
-          message: 'This value must be smaller than: 9999',
+          message: 'This value must be less or equal to: 9999',
         },
       ],
     },

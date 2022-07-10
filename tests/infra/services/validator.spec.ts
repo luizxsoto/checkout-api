@@ -360,7 +360,7 @@ describe(VanillaValidatorService.name, () => {
     });
   });
 
-  describe('Should throw if the value is smaller than min', () => {
+  describe('Should throw if the value is less or equal to min', () => {
     test('Should throw', async () => {
       const { sut } = makeSut();
 
@@ -374,7 +374,7 @@ describe(VanillaValidatorService.name, () => {
 
       expect(sutResult).toStrictEqual(
         new ValidationException([
-          { field: 'anyProp', rule: 'min', message: 'This value must be bigger than: 2' },
+          { field: 'anyProp', rule: 'min', message: 'This value must be bigger or equal to: 2' },
         ]),
       );
     });
@@ -408,7 +408,7 @@ describe(VanillaValidatorService.name, () => {
     });
   });
 
-  describe('Should throw if the value is bigger than max', () => {
+  describe('Should throw if the value is bigger or equal to max', () => {
     test('Should throw', async () => {
       const { sut } = makeSut();
 
@@ -422,7 +422,7 @@ describe(VanillaValidatorService.name, () => {
 
       expect(sutResult).toStrictEqual(
         new ValidationException([
-          { field: 'anyProp', rule: 'max', message: 'This value must be smaller than: 2' },
+          { field: 'anyProp', rule: 'max', message: 'This value must be less or equal to: 2' },
         ]),
       );
     });

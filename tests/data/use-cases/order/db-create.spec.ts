@@ -321,7 +321,7 @@ describe(DbCreateOrderUseCase.name, () => {
         {
           field: 'orderItems.0.quantity',
           rule: 'min',
-          message: 'This value must be bigger than: 1',
+          message: 'This value must be bigger or equal to: 1',
         },
       ],
     },
@@ -331,7 +331,7 @@ describe(DbCreateOrderUseCase.name, () => {
         {
           field: 'orderItems.0.quantity',
           rule: 'max',
-          message: `This value must be smaller than: ${MAX_INTEGER}`,
+          message: `This value must be less or equal to: ${MAX_INTEGER}`,
         },
       ],
     },

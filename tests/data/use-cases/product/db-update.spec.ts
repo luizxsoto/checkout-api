@@ -154,7 +154,7 @@ describe(DbUpdateProductUseCase.name, () => {
         {
           field: 'price',
           rule: 'max',
-          message: `This value must be smaller than: ${MAX_INTEGER}`,
+          message: `This value must be less or equal to: ${MAX_INTEGER}`,
         },
       ],
     },

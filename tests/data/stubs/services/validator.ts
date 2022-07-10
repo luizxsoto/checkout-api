@@ -170,7 +170,7 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
         return {
           field: key as string,
           rule: 'min',
-          message: `This value must be bigger than: ${options.value}`,
+          message: `This value must be bigger or equal to: ${options.value}`,
         };
       },
       max: (key, options: Parameters<Rules['max']>[0], model) => {
@@ -180,7 +180,7 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
         return {
           field: key as string,
           rule: 'max',
-          message: `This value must be smaller than: ${options.value}`,
+          message: `This value must be less or equal to: ${options.value}`,
         };
       },
       regex: (key, options: Parameters<Rules['regex']>[0], model) => {

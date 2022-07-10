@@ -124,7 +124,9 @@ describe(DbListPaymentProfileUseCase.name, () => {
     },
     {
       properties: { page: 0 },
-      validations: [{ field: 'page', rule: 'min', message: 'This value must be bigger than: 1' }],
+      validations: [
+        { field: 'page', rule: 'min', message: 'This value must be bigger or equal to: 1' },
+      ],
     },
     // perPage
     {
@@ -134,13 +136,13 @@ describe(DbListPaymentProfileUseCase.name, () => {
     {
       properties: { perPage: MIN_PER_PAGE - 1 },
       validations: [
-        { field: 'perPage', rule: 'min', message: 'This value must be bigger than: 20' },
+        { field: 'perPage', rule: 'min', message: 'This value must be bigger or equal to: 20' },
       ],
     },
     {
       properties: { perPage: MAX_PER_PAGE + 1 },
       validations: [
-        { field: 'perPage', rule: 'max', message: 'This value must be smaller than: 50' },
+        { field: 'perPage', rule: 'max', message: 'This value must be less or equal to: 50' },
       ],
     },
     // orderBy
