@@ -4,10 +4,6 @@ import { makeRemoveProductUseCaseStub } from '@tests/presentation/stubs/use-case
 
 const productMock = makeProductModelMock();
 
-jest.mock('@/presentation/helpers/http-helper', () => ({
-  ok: jest.fn(() => ({ statusCode: 200, body: productMock })),
-}));
-
 function makeSut() {
   const removeProductUseCase = makeRemoveProductUseCaseStub();
   const sut = new RemoveProductController(removeProductUseCase);

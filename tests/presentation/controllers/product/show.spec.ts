@@ -4,10 +4,6 @@ import { makeShowProductUseCaseStub } from '@tests/presentation/stubs/use-cases'
 
 const productMock = makeProductModelMock();
 
-jest.mock('@/presentation/helpers/http-helper', () => ({
-  ok: jest.fn(() => ({ statusCode: 200, body: productMock })),
-}));
-
 function makeSut() {
   const showProductUseCase = makeShowProductUseCaseStub();
   const sut = new ShowProductController(showProductUseCase);

@@ -5,10 +5,6 @@ import { makeRemoveOrderUseCaseStub } from '@tests/presentation/stubs/use-cases'
 const orderMock = makeOrderModelMock();
 const orderItemMock = makeOrderItemModelMock();
 
-jest.mock('@/presentation/helpers/http-helper', () => ({
-  ok: jest.fn(() => ({ statusCode: 200, body: { ...orderMock, orderItems: [orderItemMock] } })),
-}));
-
 function makeSut() {
   const removeOrderUseCase = makeRemoveOrderUseCaseStub();
   const sut = new RemoveOrderController(removeOrderUseCase);

@@ -3,12 +3,6 @@ import { Request, Response } from 'express';
 import { adaptRoute } from '@/main/adapters';
 import { makeSessionModelMock } from '@tests/domain/mocks/models';
 
-const mockErrorBody = { error: { message: 'error message' } };
-
-jest.mock('@/presentation/helpers/http-helper', () => ({
-  serverError: jest.fn(() => ({ statusCode: 500, body: mockErrorBody })),
-}));
-
 function makeSut() {
   const handle = jest.fn(() => Promise.resolve({ statusCode: 200, body: {} }));
   const makeController = jest.fn(() => ({ handle }));

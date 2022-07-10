@@ -4,10 +4,6 @@ import { makeCreateSessionUseCaseStub } from '@tests/presentation/stubs/use-case
 
 const sessionMock = { ...makeUserModelMock(), bearerToken: 'any_bearerToken' };
 
-jest.mock('@/presentation/helpers/http-helper', () => ({
-  created: jest.fn(() => ({ statusCode: 201, body: sessionMock })),
-}));
-
 function makeSut() {
   const createSessionUseCase = makeCreateSessionUseCaseStub();
   const sut = new CreateSessionController(createSessionUseCase);

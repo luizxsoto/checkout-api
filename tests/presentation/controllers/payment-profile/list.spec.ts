@@ -4,10 +4,6 @@ import { makeListPaymentProfileUseCaseStub } from '@tests/presentation/stubs/use
 
 const paymentProfileMock = makePaymentProfileModelMock();
 
-jest.mock('@/presentation/helpers/http-helper', () => ({
-  ok: jest.fn(() => ({ statusCode: 200, body: [paymentProfileMock] })),
-}));
-
 function makeSut() {
   const listPaymentProfileUseCase = makeListPaymentProfileUseCaseStub();
   const sut = new ListPaymentProfileController(listPaymentProfileUseCase);

@@ -2,12 +2,6 @@ import { Request, Response } from 'express';
 
 import { adaptMiddleware } from '@/main/adapters';
 
-const mockErrorBody = { error: { message: 'error message' } };
-
-jest.mock('@/presentation/helpers/http-helper', () => ({
-  serverError: jest.fn(() => ({ statusCode: 500, body: mockErrorBody })),
-}));
-
 function makeSut() {
   const handle = jest.fn(() => Promise.resolve({}));
   const sut = adaptMiddleware({ handle });

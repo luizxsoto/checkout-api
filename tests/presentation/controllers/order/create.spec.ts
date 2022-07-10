@@ -5,10 +5,6 @@ import { makeCreateOrderUseCaseStub } from '@tests/presentation/stubs/use-cases'
 const orderMock = makeOrderModelMock();
 const orderItemMock = makeOrderItemModelMock();
 
-jest.mock('@/presentation/helpers/http-helper', () => ({
-  created: jest.fn(() => ({ statusCode: 201, body: orderMock })),
-}));
-
 function makeSut() {
   const createOrderUseCase = makeCreateOrderUseCaseStub();
   const sut = new CreateOrderController(createOrderUseCase);
@@ -26,7 +22,10 @@ describe(CreateOrderController.name, () => {
 
     const sutResult = await sut.handle({ ...orderMock, orderItems: [orderItemMock] });
 
-    expect(sutResult).toStrictEqual({ statusCode: 201, body: orderMock });
+    expect(sutResult).toStrictEqual({
+      statusCode: 201,
+      body: { ...orderMock, orderItems: [orderItemMock] },
+    });
     expect(createOrderUseCase.execute).toBeCalledWith({
       ...orderMock,
       orderItems: [orderItemMock],

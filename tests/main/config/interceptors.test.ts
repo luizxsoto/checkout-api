@@ -3,8 +3,6 @@ import { Express } from 'express';
 import { setupInterceptors } from '@/main/config';
 import { exception } from '@/main/interceptors';
 
-jest.mock('@/main/interceptors/exception', () => ({ exception: jest.fn() }));
-
 function makeSut() {
   const express = { use: jest.fn() };
   const sut = setupInterceptors;

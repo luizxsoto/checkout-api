@@ -3,10 +3,6 @@ import { Express } from 'express';
 import { setupMiddlewares } from '@/main/config';
 import { bodyParser, contentType, cors } from '@/main/middlewares';
 
-jest.mock('@/main/middlewares/body-parser', () => ({ bodyParser: jest.fn() }));
-jest.mock('@/main/middlewares/content-type', () => ({ contentType: jest.fn() }));
-jest.mock('@/main/middlewares/cors', () => ({ cors: jest.fn() }));
-
 function makeSut() {
   const express = { use: jest.fn() };
   const sut = setupMiddlewares;

@@ -4,10 +4,6 @@ import { makeRemovePaymentProfileUseCaseStub } from '@tests/presentation/stubs/u
 
 const customerMock = makePaymentProfileModelMock();
 
-jest.mock('@/presentation/helpers/http-helper', () => ({
-  ok: jest.fn(() => ({ statusCode: 200, body: customerMock })),
-}));
-
 function makeSut() {
   const removePaymentProfileUseCase = makeRemovePaymentProfileUseCaseStub();
   const sut = new RemovePaymentProfileController(removePaymentProfileUseCase);

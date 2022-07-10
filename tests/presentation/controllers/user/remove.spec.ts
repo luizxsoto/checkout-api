@@ -4,10 +4,6 @@ import { makeRemoveUserUseCaseStub } from '@tests/presentation/stubs/use-cases';
 
 const userMock = makeUserModelMock();
 
-jest.mock('@/presentation/helpers/http-helper', () => ({
-  ok: jest.fn(() => ({ statusCode: 200, body: userMock })),
-}));
-
 function makeSut() {
   const removeUserUseCase = makeRemoveUserUseCaseStub();
   const sut = new RemoveUserController(removeUserUseCase);

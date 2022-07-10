@@ -4,10 +4,6 @@ import { makeCreateUserUseCaseStub } from '@tests/presentation/stubs/use-cases';
 
 const userMock = makeUserModelMock();
 
-jest.mock('@/presentation/helpers/http-helper', () => ({
-  created: jest.fn(() => ({ statusCode: 201, body: userMock })),
-}));
-
 function makeSut() {
   const createUserUseCase = makeCreateUserUseCaseStub();
   const sut = new CreateUserController(createUserUseCase);

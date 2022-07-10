@@ -4,10 +4,6 @@ import { makeListCustomerUseCaseStub } from '@tests/presentation/stubs/use-cases
 
 const customerMock = makeCustomerModelMock();
 
-jest.mock('@/presentation/helpers/http-helper', () => ({
-  ok: jest.fn(() => ({ statusCode: 200, body: [customerMock] })),
-}));
-
 function makeSut() {
   const listCustomerUseCase = makeListCustomerUseCaseStub();
   const sut = new ListCustomerController(listCustomerUseCase);

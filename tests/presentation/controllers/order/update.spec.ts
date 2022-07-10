@@ -4,10 +4,6 @@ import { makeUpdateOrderUseCaseStub } from '@tests/presentation/stubs/use-cases'
 
 const orderMock = makeOrderModelMock();
 
-jest.mock('@/presentation/helpers/http-helper', () => ({
-  ok: jest.fn(() => ({ statusCode: 200, body: orderMock })),
-}));
-
 function makeSut() {
   const updateOrderUseCase = makeUpdateOrderUseCaseStub();
   const sut = new UpdateOrderController(updateOrderUseCase);
