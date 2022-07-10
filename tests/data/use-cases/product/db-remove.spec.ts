@@ -47,7 +47,7 @@ describe(DbRemoveProductUseCase.name, () => {
       model: sanitizedRequestModel,
       data: { products: [] },
     });
-    expect(productRepository.findBy).toBeCalledWith([{ id: sanitizedRequestModel.id }]);
+    expect(productRepository.findBy).toBeCalledWith([sanitizedRequestModel]);
     expect(validatorService.validate).toBeCalledWith({
       schema: {
         id: [
@@ -60,7 +60,7 @@ describe(DbRemoveProductUseCase.name, () => {
       model: sanitizedRequestModel,
       data: { products: [existsProduct] },
     });
-    expect(productRepository.remove).toBeCalledWith({ id: sanitizedRequestModel.id });
+    expect(productRepository.remove).toBeCalledWith(sanitizedRequestModel);
   });
 
   describe.each([

@@ -20,7 +20,7 @@ export class DbRemoveProductUseCase implements RemoveProductUseCase.UseCase {
 
     const restValidation = await this.validateRequestModel(sanitizedRequestModel);
 
-    const products = await this.findByProductRepository.findBy([{ id: sanitizedRequestModel.id }]);
+    const products = await this.findByProductRepository.findBy([sanitizedRequestModel]);
 
     await restValidation({ products });
 

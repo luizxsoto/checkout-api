@@ -19,7 +19,7 @@ export class DbShowUserUseCase implements ShowUserUseCase.UseCase {
 
     const restValidation = await this.validateRequestModel(sanitizedRequestModel);
 
-    const users = await this.findByUserRepository.findBy([{ id: sanitizedRequestModel.id }], true);
+    const users = await this.findByUserRepository.findBy([sanitizedRequestModel], true);
 
     await restValidation({ users });
 

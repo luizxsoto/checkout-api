@@ -57,10 +57,7 @@ describe(DbShowPaymentProfileUseCase.name, () => {
       model: sanitizedRequestModel,
       data: { paymentProfiles: [] },
     });
-    expect(paymentProfileRepository.findBy).toBeCalledWith(
-      [{ id: sanitizedRequestModel.id }],
-      true,
-    );
+    expect(paymentProfileRepository.findBy).toBeCalledWith([sanitizedRequestModel], true);
     expect(validatorService.validate).toBeCalledWith({
       schema: {
         id: [
@@ -112,10 +109,7 @@ describe(DbShowPaymentProfileUseCase.name, () => {
       model: sanitizedRequestModel,
       data: { paymentProfiles: [] },
     });
-    expect(paymentProfileRepository.findBy).toBeCalledWith(
-      [{ id: sanitizedRequestModel.id }],
-      true,
-    );
+    expect(paymentProfileRepository.findBy).toBeCalledWith([sanitizedRequestModel], true);
     expect(validatorService.validate).toBeCalledWith({
       schema: {
         id: [

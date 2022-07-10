@@ -20,9 +20,7 @@ export class DbRemoveCustomerUseCase implements RemoveCustomerUseCase.UseCase {
 
     const restValidation = await this.validateRequestModel(sanitizedRequestModel);
 
-    const customers = await this.findByCustomerRepository.findBy([
-      { id: sanitizedRequestModel.id },
-    ]);
+    const customers = await this.findByCustomerRepository.findBy([sanitizedRequestModel]);
 
     await restValidation({ customers });
 

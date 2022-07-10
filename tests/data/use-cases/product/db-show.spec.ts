@@ -44,7 +44,7 @@ describe(DbShowProductUseCase.name, () => {
       model: sanitizedRequestModel,
       data: { products: [] },
     });
-    expect(productRepository.findBy).toBeCalledWith([{ id: sanitizedRequestModel.id }]);
+    expect(productRepository.findBy).toBeCalledWith([sanitizedRequestModel]);
     expect(validatorService.validate).toBeCalledWith({
       schema: {
         id: [

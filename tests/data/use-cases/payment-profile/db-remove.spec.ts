@@ -65,10 +65,7 @@ describe(DbRemovePaymentProfileUseCase.name, () => {
       model: sanitizedRequestModel,
       data: { paymentProfiles: [] },
     });
-    expect(paymentProfileRepository.findBy).toBeCalledWith(
-      [{ id: sanitizedRequestModel.id }],
-      true,
-    );
+    expect(paymentProfileRepository.findBy).toBeCalledWith([sanitizedRequestModel], true);
     expect(validatorService.validate).toBeCalledWith({
       schema: {
         id: [
@@ -81,7 +78,7 @@ describe(DbRemovePaymentProfileUseCase.name, () => {
       model: sanitizedRequestModel,
       data: { paymentProfiles: [existsPaymentProfile] },
     });
-    expect(paymentProfileRepository.remove).toBeCalledWith({ id: sanitizedRequestModel.id });
+    expect(paymentProfileRepository.remove).toBeCalledWith(sanitizedRequestModel);
   });
 
   test('Should remove paymentProfile and return correct values for PHONE_PAYMENT', async () => {
@@ -125,10 +122,7 @@ describe(DbRemovePaymentProfileUseCase.name, () => {
       model: sanitizedRequestModel,
       data: { paymentProfiles: [] },
     });
-    expect(paymentProfileRepository.findBy).toBeCalledWith(
-      [{ id: sanitizedRequestModel.id }],
-      true,
-    );
+    expect(paymentProfileRepository.findBy).toBeCalledWith([sanitizedRequestModel], true);
     expect(validatorService.validate).toBeCalledWith({
       schema: {
         id: [
@@ -141,7 +135,7 @@ describe(DbRemovePaymentProfileUseCase.name, () => {
       model: sanitizedRequestModel,
       data: { paymentProfiles: [existsPaymentProfile] },
     });
-    expect(paymentProfileRepository.remove).toBeCalledWith({ id: sanitizedRequestModel.id });
+    expect(paymentProfileRepository.remove).toBeCalledWith(sanitizedRequestModel);
   });
 
   describe.each([

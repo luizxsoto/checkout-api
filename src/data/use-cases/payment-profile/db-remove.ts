@@ -28,7 +28,7 @@ export class DbRemovePaymentProfileUseCase implements RemovePaymentProfileUseCas
     const restValidation = await this.validateRequestModel(sanitizedRequestModel);
 
     const paymentProfiles = await this.findByPaymentProfileRepository.findBy(
-      [{ id: sanitizedRequestModel.id }],
+      [sanitizedRequestModel],
       true,
     );
 
