@@ -1,4 +1,4 @@
-import { MIN_PER_PAGE } from '@/data/constants';
+import { MAX_PER_PAGE, MIN_PER_PAGE } from '@/data/constants';
 import { DbListProductUseCase } from '@/data/use-cases';
 import { ProductModel } from '@/domain/models';
 import { ListProductUseCase } from '@/domain/use-cases';
@@ -147,7 +147,7 @@ describe(DbListProductUseCase.name, () => {
       ],
     },
     {
-      properties: { perPage: 51 },
+      properties: { perPage: MAX_PER_PAGE + 1 },
       validations: [
         { field: 'perPage', rule: 'max', message: 'This value must be smaller than: 50' },
       ],
