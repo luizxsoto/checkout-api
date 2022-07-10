@@ -44,9 +44,12 @@ export class DbListPaymentProfileUseCase implements ListPaymentProfileUseCase.Us
   ): Promise<void> {
     await this.validatorService.validate({
       schema: {
-        page: [this.validatorService.rules.number(), this.validatorService.rules.min({ value: 1 })],
+        page: [
+          this.validatorService.rules.integer(),
+          this.validatorService.rules.min({ value: 1 }),
+        ],
         perPage: [
-          this.validatorService.rules.number(),
+          this.validatorService.rules.integer(),
           this.validatorService.rules.min({ value: minPerPage }),
           this.validatorService.rules.max({ value: maxPerPage }),
         ],

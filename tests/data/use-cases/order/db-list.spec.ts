@@ -43,9 +43,9 @@ describe(DbListOrderUseCase.name, () => {
     expect(sutResult).toStrictEqual([responseModel]);
     expect(validatorService.validate).toBeCalledWith({
       schema: {
-        page: [validatorService.rules.number(), validatorService.rules.min({ value: 1 })],
+        page: [validatorService.rules.integer(), validatorService.rules.min({ value: 1 })],
         perPage: [
-          validatorService.rules.number(),
+          validatorService.rules.integer(),
           validatorService.rules.min({ value: 20 }),
           validatorService.rules.max({ value: 50 }),
         ],
