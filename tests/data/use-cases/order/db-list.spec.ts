@@ -53,14 +53,7 @@ describe(DbListOrderUseCase.name, () => {
         orderBy: [
           validatorService.rules.string(),
           validatorService.rules.in({
-            values: [
-              'customerId',
-              'paymentProfileId',
-              'status',
-              'totalValue',
-              'createdAt',
-              'updatedAt',
-            ],
+            values: ['customerId', 'paymentProfileId', 'totalValue', 'createdAt', 'updatedAt'],
           }),
         ],
         order: [
@@ -84,16 +77,6 @@ describe(DbListOrderUseCase.name, () => {
                     rules: [
                       validatorService.rules.string(),
                       validatorService.rules.regex({ pattern: 'uuidV4' }),
-                    ],
-                  }),
-                ],
-                status: [
-                  validatorService.rules.array({
-                    rules: [
-                      validatorService.rules.string(),
-                      validatorService.rules.in({
-                        values: ['AWAITING_PAYMENT', 'PAID', 'NOT_PAID'],
-                      }),
                     ],
                   }),
                 ],
@@ -185,7 +168,7 @@ describe(DbListOrderUseCase.name, () => {
           field: 'orderBy',
           rule: 'in',
           message:
-            'This value must be in: customerId, paymentProfileId, status, totalValue, createdAt, updatedAt',
+            'This value must be in: customerId, paymentProfileId, totalValue, createdAt, updatedAt',
         },
       ],
     },
@@ -233,27 +216,6 @@ describe(DbListOrderUseCase.name, () => {
           field: 'filters.paymentProfileId.0',
           rule: 'regex',
           message: 'This value must be valid according to the pattern: uuidV4',
-        },
-      ],
-    },
-    // status
-    {
-      properties: { filters: '["=", "status", 1]' },
-      validations: [
-        {
-          field: 'filters.status.0',
-          rule: 'string',
-          message: 'This value must be a string',
-        },
-      ],
-    },
-    {
-      properties: { filters: '["=", "status", "invalid_status"]' },
-      validations: [
-        {
-          field: 'filters.status.0',
-          rule: 'in',
-          message: 'This value must be in: AWAITING_PAYMENT, PAID, NOT_PAID',
         },
       ],
     },

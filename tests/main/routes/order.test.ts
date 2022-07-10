@@ -37,7 +37,6 @@ describe('Order Routes', () => {
         id: validUuidV4,
         customerId: validUuidV4,
         paymentProfileId: validUuidV4,
-        status: 'PAID',
         totalValue: 1000,
         createUserId: userId,
         createdAt: new Date().toISOString(),
@@ -55,7 +54,6 @@ describe('Order Routes', () => {
       expect(result.body[0]?.id).toBe(requestModel.id);
       expect(result.body[0]?.customerId).toBe(requestModel.customerId);
       expect(result.body[0]?.paymentProfileId).toBe(requestModel.paymentProfileId);
-      expect(result.body[0]?.status).toBe(requestModel.status);
       expect(result.body[0]?.totalValue).toBe(requestModel.totalValue);
       expect(result.body[0]?.createUserId).toBe(requestModel.createUserId);
       expect(result.body[0]?.createdAt).toBe(requestModel.createdAt);
@@ -82,7 +80,7 @@ describe('Order Routes', () => {
             field: 'filters',
             rule: 'listFilters',
             message:
-              'This value must be a valid list filters and with this posible fields: customerId, paymentProfileId, status, totalValue, createUserId, updateUserId, createdAt, updatedAt',
+              'This value must be a valid list filters and with this posible fields: customerId, paymentProfileId, totalValue, createUserId, updateUserId, createdAt, updatedAt',
           },
         ],
       });
@@ -95,7 +93,6 @@ describe('Order Routes', () => {
         id: validUuidV4,
         customerId: validUuidV4,
         paymentProfileId: validUuidV4,
-        status: 'PAID',
         totalValue: 1000,
         createUserId: userId,
         createdAt: new Date().toISOString(),
@@ -123,7 +120,6 @@ describe('Order Routes', () => {
       expect(result.body.id).toBe(orderModel.id);
       expect(result.body.customerId).toBe(orderModel.customerId);
       expect(result.body.paymentProfileId).toBe(orderModel.paymentProfileId);
-      expect(result.body.status).toBe(orderModel.status);
       expect(result.body.totalValue).toBe(orderModel.totalValue);
       expect(result.body.createUserId).toBe(orderModel.createUserId);
       expect(result.body.createdAt).toBe(orderModel.createdAt);
@@ -183,7 +179,6 @@ describe('Order Routes', () => {
       expect(result.body.paymentProfileId).toBe(requestModel.paymentProfileId);
       expect(result.body.orderItems?.[0]?.productId).toBe(requestModel.orderItems[0].productId);
       expect(result.body.orderItems?.[0]?.quantity).toBe(requestModel.orderItems[0].quantity);
-      expect(result.body.status).toBe('AWAITING_PAYMENT');
       expect(result.body.totalValue).toBe(productPrice);
       expect(result.body.orderItems?.[0]?.unitValue).toBe(productPrice);
       expect(result.body.orderItems?.[0]?.totalValue).toBe(productPrice);
@@ -235,7 +230,6 @@ describe('Order Routes', () => {
         id: validUuidV4,
         customerId: existingCustomerId,
         paymentProfileId: existingPaymentProfileId,
-        status: 'NOT_PAID',
         totalValue: 1000,
         createUserId: userId,
         createdAt: new Date().toISOString(),
@@ -254,7 +248,6 @@ describe('Order Routes', () => {
       expect(result.body.id).toBe(requestModel.id);
       expect(result.body.customerId).toBe(requestModel.customerId);
       expect(result.body.paymentProfileId).toBe(requestModel.paymentProfileId);
-      expect(result.body.status).toBe(requestModel.status);
       expect(result.body.totalValue).toBe(requestModel.totalValue);
       expect(result.body.createUserId).toBe(requestModel.createUserId);
       expect(result.body.updateUserId).toBe(updateUserId);
@@ -296,7 +289,6 @@ describe('Order Routes', () => {
         id: validUuidV4,
         customerId: validUuidV4,
         paymentProfileId: validUuidV4,
-        status: 'PAID',
         totalValue: 1000,
         createUserId: userId,
         updateUserId: userId,
@@ -335,7 +327,6 @@ describe('Order Routes', () => {
       expect(result.body.id).toBe(orderModel.id);
       expect(result.body.customerId).toBe(orderModel.customerId);
       expect(result.body.paymentProfileId).toBe(orderModel.paymentProfileId);
-      expect(result.body.status).toBe(orderModel.status);
       expect(result.body.totalValue).toBe(orderModel.totalValue);
       expect(result.body.createUserId).toBe(orderModel.createUserId);
       expect(result.body.updateUserId).toBe(orderModel.updateUserId);

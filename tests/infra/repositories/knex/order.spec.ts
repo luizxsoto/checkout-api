@@ -1,6 +1,5 @@
 import { Knex } from 'knex';
 
-import { OrderStatus } from '@/domain/models';
 import { KnexOrderRepository } from '@/infra/repositories';
 import { makeUuidServiceStub } from '@tests/data/stubs/services';
 import { makeOrderModelMock, makeSessionModelMock } from '@tests/domain/mocks/models';
@@ -34,7 +33,6 @@ describe(KnexOrderRepository.name, () => {
       const requestModel = {
         customerId: validUuidV4,
         paymentProfileId: validUuidV4,
-        status: 'PAID' as OrderStatus,
         totalValue: 1000,
       };
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]));
@@ -53,7 +51,6 @@ describe(KnexOrderRepository.name, () => {
       const requestModel = {
         customerId: validUuidV4,
         paymentProfileId: validUuidV4,
-        status: 'PAID' as OrderStatus,
         totalValue: 1000,
       };
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]));
@@ -72,7 +69,6 @@ describe(KnexOrderRepository.name, () => {
       const requestModel = {
         customerId: validUuidV4,
         paymentProfileId: validUuidV4,
-        status: 'PAID' as OrderStatus,
         totalValue: 1000,
       };
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]));
@@ -97,7 +93,6 @@ describe(KnexOrderRepository.name, () => {
         id: 'any_id',
         customerId: validUuidV4,
         paymentProfileId: validUuidV4,
-        status: 'PAID' as OrderStatus,
         totalValue: 1000,
         createdAt: new Date(),
       };

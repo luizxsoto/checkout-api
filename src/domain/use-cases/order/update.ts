@@ -2,7 +2,6 @@ import { OrderModel } from '@/domain/models';
 
 export type RequestModel = Omit<
   OrderModel,
-  | 'status'
   | 'totalValue'
   | 'createUserId'
   | 'updateUserId'

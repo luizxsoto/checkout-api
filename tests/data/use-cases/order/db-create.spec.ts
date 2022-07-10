@@ -57,7 +57,6 @@ describe(DbCreateOrderUseCase.name, () => {
     };
     const sanitizedRequestModel = {
       ...requestModel,
-      status: 'AWAITING_PAYMENT',
       orderItems: [{ ...requestModel.orderItems[0] }],
     };
     Reflect.deleteProperty(sanitizedRequestModel, 'anyWrongProp');

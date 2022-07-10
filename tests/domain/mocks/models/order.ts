@@ -9,7 +9,6 @@ export function makeOrderModelMock(extraData?: Partial<OrderModel>) {
     ...makeBaseModelMock(extraData),
     customerId: validUuidV4,
     paymentProfileId: validUuidV4,
-    status: 'PAID',
     totalValue: 1000,
     ...extraData,
   });

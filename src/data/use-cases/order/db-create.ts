@@ -5,13 +5,7 @@ import {
   FindByProductRepository,
 } from '@/data/contracts/repositories';
 import { ValidatorService } from '@/data/contracts/services';
-import {
-  OrderItemModel,
-  OrderModel,
-  OrderStatus,
-  PaymentProfileModel,
-  ProductModel,
-} from '@/domain/models';
+import { OrderItemModel, OrderModel, PaymentProfileModel, ProductModel } from '@/domain/models';
 import { CreateOrderUseCase } from '@/domain/use-cases';
 import { MAX_INTEGER } from '@/main/constants';
 
@@ -91,12 +85,11 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
 
   private sanitizeRequestModel(
     requestModel: CreateOrderUseCase.RequestModel,
-  ): CreateOrderUseCase.RequestModel & { status: OrderStatus } {
+  ): CreateOrderUseCase.RequestModel {
     const sanitizedRequestModel = {
       customerId: requestModel.customerId,
       paymentProfileId: requestModel.paymentProfileId,
       orderItems: requestModel.orderItems,
-      status: 'AWAITING_PAYMENT' as OrderStatus,
     };
 
     if (
