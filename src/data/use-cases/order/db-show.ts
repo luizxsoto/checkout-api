@@ -20,7 +20,7 @@ export class DbShowOrderUseCase implements ShowOrderUseCase.UseCase {
 
     const restValidation = await this.validateRequestModel(sanitizedRequestModel);
 
-    const orders = await this.findByOrderRepository.findBy([{ id: sanitizedRequestModel.id }]);
+    const orders = await this.findByOrderRepository.findBy([sanitizedRequestModel]);
 
     await restValidation({ orders });
 

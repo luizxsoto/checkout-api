@@ -38,7 +38,9 @@ export class DbUpdateOrderUseCase implements UpdateOrderUseCase.UseCase {
       sanitizedRequestModel,
     );
 
-    return { ...sanitizedRequestModel, ...orderUpdated };
+    const findedOrderById = orders.find((order) => order.id === sanitizedRequestModel.id);
+
+    return { ...findedOrderById, ...sanitizedRequestModel, ...orderUpdated };
   }
 
   private sanitizeRequestModel(

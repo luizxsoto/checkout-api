@@ -25,12 +25,12 @@ export class DbRemoveOrderUseCase implements RemoveOrderUseCase.UseCase {
 
     const restValidation = await this.validateRequestModel(sanitizedRequestModel);
 
-    const orders = await this.findByOrderRepository.findBy([{ id: sanitizedRequestModel.id }]);
+    const orders = await this.findByOrderRepository.findBy([sanitizedRequestModel]);
 
     await restValidation({ orders });
 
     const [orderRemoved] = await this.removeOrderRepository.remove(sanitizedRequestModel);
-    const orderitemsRemoved = await this.removeOrderItemRepository.remove({
+    const orderItemsRemoved = await this.removeOrderItemRepository.remove({
       orderId: sanitizedRequestModel.id,
     });
 
@@ -38,7 +38,7 @@ export class DbRemoveOrderUseCase implements RemoveOrderUseCase.UseCase {
       ...orders[0],
       ...sanitizedRequestModel,
       ...orderRemoved,
-      orderItems: orderitemsRemoved,
+      orderItems: orderItemsRemoved,
     };
   }
 

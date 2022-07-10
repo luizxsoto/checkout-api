@@ -61,14 +61,14 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
 
     await restValidation({ paymentProfiles, products });
 
-    const { orderItems: orderItemsWithValue, ...orderWithValues } = this.sanitizeValues(
+    const { orderItems: orderItemsWithValues, ...orderWithValues } = this.sanitizeValues(
       sanitizedRequestModel,
       products,
     );
 
     const orderCreated = await this.createOrderRepository.create(orderWithValues);
 
-    const orderItemsWithOrderId = orderItemsWithValue.map((orderItem) => ({
+    const orderItemsWithOrderId = orderItemsWithValues.map((orderItem) => ({
       ...orderItem,
       orderId: orderCreated.id,
     }));
@@ -96,7 +96,7 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
       customerId: requestModel.customerId,
       paymentProfileId: requestModel.paymentProfileId,
       orderItems: requestModel.orderItems,
-      status: 'AWAITING_PAYMENT' as const,
+      status: 'AWAITING_PAYMENT' as OrderStatus,
     };
 
     if (
@@ -156,6 +156,7 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
           this.validatorService.rules.regex({ pattern: 'uuidV4' }),
         ],
         orderItems: [
+          this.validatorService.rules.required(),
           this.validatorService.rules.array({
             rules: [
               this.validatorService.rules.object({
