@@ -1,4 +1,4 @@
-import { maxPerPage, minPerPage } from '@/data/constants';
+import { MIN_PER_PAGE, maxPerPage } from '@/data/constants';
 import { ListPaymentProfileRepository } from '@/data/contracts/repositories';
 import { ValidatorService } from '@/data/contracts/services';
 import { PaymentProfileModel } from '@/domain/models';
@@ -50,7 +50,7 @@ export class DbListPaymentProfileUseCase implements ListPaymentProfileUseCase.Us
         ],
         perPage: [
           this.validatorService.rules.integer(),
-          this.validatorService.rules.min({ value: minPerPage }),
+          this.validatorService.rules.min({ value: MIN_PER_PAGE }),
           this.validatorService.rules.max({ value: maxPerPage }),
         ],
         orderBy: [

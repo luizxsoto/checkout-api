@@ -1,4 +1,4 @@
-import { maxPerPage, minPerPage } from '@/data/constants';
+import { MIN_PER_PAGE, maxPerPage } from '@/data/constants';
 import { ListOrderRepository } from '@/data/contracts/repositories';
 import { ValidatorService } from '@/data/contracts/services';
 import { OrderModel } from '@/domain/models';
@@ -49,7 +49,7 @@ export class DbListOrderUseCase implements ListOrderUseCase.UseCase {
         ],
         perPage: [
           this.validatorService.rules.integer(),
-          this.validatorService.rules.min({ value: minPerPage }),
+          this.validatorService.rules.min({ value: MIN_PER_PAGE }),
           this.validatorService.rules.max({ value: maxPerPage }),
         ],
         orderBy: [

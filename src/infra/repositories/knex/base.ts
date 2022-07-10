@@ -1,6 +1,6 @@
 import { Knex } from 'knex';
 
-import { minPerPage } from '@/data/constants';
+import { MIN_PER_PAGE } from '@/data/constants';
 import { GenerateUniqueIDService } from '@/data/contracts/services';
 import { BaseModel, SessionModel } from '@/domain/models';
 import { DatabaseException } from '@/main/exceptions';
@@ -60,7 +60,7 @@ export abstract class KnexBaseRepository {
   ): Promise<Model[]> {
     const {
       page = 1,
-      perPage = minPerPage,
+      perPage = MIN_PER_PAGE,
       orderBy = 'createdAt',
       order = 'desc',
       filters = '[]',
