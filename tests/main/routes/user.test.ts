@@ -230,7 +230,6 @@ describe('User Routes', () => {
         email: 'any@email.com',
         password: 'Password@123',
         roles: [],
-        createdAt: new Date(),
       };
 
       const result = await request(app)
@@ -263,6 +262,7 @@ describe('User Routes', () => {
         password: 'Password@123',
         roles: [],
         createUserId: userId,
+        updateUserId: userId,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
@@ -280,6 +280,7 @@ describe('User Routes', () => {
       expect(result.body.name).toBe(requestModel.name);
       expect(result.body.email).toBe(requestModel.email);
       expect(result.body.createUserId).toBe(requestModel.createUserId);
+      expect(result.body.updateUserId).toBe(requestModel.updateUserId);
       expect(result.body.deleteUserId).toBe(deleteUserId);
       expect(result.body.createdAt).toBe(requestModel.createdAt);
       expect(result.body.updatedAt).toBe(requestModel.updatedAt);

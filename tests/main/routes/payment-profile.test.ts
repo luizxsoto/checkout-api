@@ -356,6 +356,7 @@ describe('PaymentProfile Routes', () => {
           expiryYear: '0001',
         },
         createUserId: userId,
+        updateUserId: userId,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
@@ -382,6 +383,7 @@ describe('PaymentProfile Routes', () => {
       expect(result.body.data?.expiryMonth).toBe(requestModel.data.expiryMonth);
       expect(result.body.data?.expiryYear).toBe(requestModel.data.expiryYear);
       expect(result.body.createUserId).toBe(requestModel.createUserId);
+      expect(result.body.updateUserId).toBe(requestModel.updateUserId);
       expect(result.body.deleteUserId).toBe(deleteUserId);
       expect(result.body.createdAt).toBe(requestModel.createdAt);
       expect(result.body.updatedAt).toBe(requestModel.updatedAt);

@@ -2,10 +2,12 @@ import { makeBaseModelMock } from './base';
 
 import { PaymentProfileModel } from '@/domain/models';
 
+const validUuidV4 = '00000000-0000-4000-8000-000000000001';
+
 export function makePaymentProfileModelMock(extraData?: Partial<PaymentProfileModel>) {
   return new PaymentProfileModel({
     ...makeBaseModelMock(extraData),
-    customerId: '00000000-0000-4000-8000-000000000001',
+    customerId: validUuidV4,
     paymentMethod: 'CARD_PAYMENT',
     data: {
       type: 'CREDIT',

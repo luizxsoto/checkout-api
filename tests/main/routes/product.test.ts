@@ -217,7 +217,6 @@ describe('Product Routes', () => {
         name: 'Any Name',
         category: 'others',
         price: 1000,
-        createdAt: new Date(),
       };
 
       const result = await request(app)
@@ -249,6 +248,7 @@ describe('Product Routes', () => {
         category: 'others',
         price: 1000,
         createUserId: userId,
+        updateUserId: userId,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
@@ -267,6 +267,7 @@ describe('Product Routes', () => {
       expect(result.body.category).toBe(requestModel.category);
       expect(result.body.price).toBe(requestModel.price);
       expect(result.body.createUserId).toBe(requestModel.createUserId);
+      expect(result.body.updateUserId).toBe(requestModel.updateUserId);
       expect(result.body.deleteUserId).toBe(deleteUserId);
       expect(result.body.createdAt).toBe(requestModel.createdAt);
       expect(result.body.updatedAt).toBe(requestModel.updatedAt);
