@@ -5,6 +5,8 @@ export class ProductModel extends BaseModel {
 
   public category!: 'clothes' | 'shoes' | 'others';
 
+  public image!: string;
+
   public price!: number;
 
   constructor(partial: ProductModel) {

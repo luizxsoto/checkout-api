@@ -13,6 +13,7 @@ const products: (Omit<ProductModel, 'createdAt'> & {
     createdAt: new Date().toISOString(),
     name: 'Product 1',
     category: 'clothes',
+    image: 'https://boacausa.net/img/image-placeholder.png',
     price: 1000,
   },
   {
@@ -21,6 +22,7 @@ const products: (Omit<ProductModel, 'createdAt'> & {
     createdAt: new Date().toISOString(),
     name: 'Product 2',
     category: 'shoes',
+    image: 'https://boacausa.net/img/image-placeholder.png',
     price: 2000,
   },
   {
@@ -29,6 +31,7 @@ const products: (Omit<ProductModel, 'createdAt'> & {
     createdAt: new Date().toISOString(),
     name: 'Product 3',
     category: 'others',
+    image: 'https://boacausa.net/img/image-placeholder.png',
     price: 3000,
   },
 ];

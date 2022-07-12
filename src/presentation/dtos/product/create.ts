@@ -3,5 +3,7 @@ export class CreateProductDto {
 
   public category!: 'clothes' | 'shoes' | 'others';
 
+  public image!: string;
+
   public price!: number;
 }

@@ -10,6 +10,7 @@ export async function up(knex: Knex): Promise<void> {
     columns: (table) => {
       table.string('name', 255).notNullable();
       table.string('category', 100).notNullable();
+      table.text('image').notNullable();
       table.integer('price').notNullable();
     },
   });

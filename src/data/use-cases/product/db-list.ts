@@ -64,7 +64,7 @@ export class DbListProductUseCase implements ListProductUseCase.UseCase {
         ],
         filters: [
           this.validatorService.rules.listFilters<
-            Omit<ProductModel, 'id' | 'deleteUserId' | 'deletedAt'>
+            Omit<ProductModel, 'id' | 'image' | 'deleteUserId' | 'deletedAt'>
           >({
             schema: {
               name: [

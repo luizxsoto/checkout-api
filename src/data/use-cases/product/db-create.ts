@@ -31,6 +31,7 @@ export class DbCreateProductUseCase implements CreateProductUseCase.UseCase {
     return {
       name: requestModel.name,
       category: requestModel.category,
+      image: requestModel.image,
       price: requestModel.price,
     };
   }
@@ -49,6 +50,11 @@ export class DbCreateProductUseCase implements CreateProductUseCase.UseCase {
           this.validatorService.rules.required(),
           this.validatorService.rules.string(),
           this.validatorService.rules.in({ values: ['clothes', 'shoes', 'others'] }),
+        ],
+        image: [
+          this.validatorService.rules.required(),
+          this.validatorService.rules.string(),
+          this.validatorService.rules.regex({ pattern: 'url' }),
         ],
         price: [
           this.validatorService.rules.required(),
