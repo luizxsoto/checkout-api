@@ -569,6 +569,28 @@ describe(VanillaValidatorService.name, () => {
       );
     });
 
+    test('regex: url', async () => {
+      const { sut } = makeSut();
+
+      const sutResult = await sut
+        .validate({
+          schema: { anyProp: [sut.rules.regex({ pattern: 'url' })] },
+          model: { anyProp: 'invalid_url' },
+          data: { anyData: [] },
+        })
+        .catch((e) => e);
+
+      expect(sutResult).toStrictEqual(
+        new ValidationException([
+          {
+            field: 'anyProp',
+            rule: 'regex',
+            message: 'This value must be valid according to the pattern: url',
+          },
+        ]),
+      );
+    });
+
     test('Should not throw', async () => {
       const { sut } = makeSut();
 

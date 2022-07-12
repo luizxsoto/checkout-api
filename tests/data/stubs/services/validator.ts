@@ -193,6 +193,7 @@ export function makeValidatorServiceStub<Model, ValidatorData extends Record<str
           email: /^[\w+.]+@\w+\.\w{2,}(?:\.\w{2})?$/,
           password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
           uuidV4: /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i,
+          url: /[(http(s)?)://(www.)?a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/gi,
         };
 
         if (typeof value !== 'string' || !regexDict[options.pattern].test(value))
