@@ -33,6 +33,7 @@ describe('Product Routes', () => {
         id: validUuidV4,
         name: 'Any Name',
         category: 'others',
+        image: 'any-image.com',
         price: 1000,
         createUserId: userId,
         createdAt: new Date().toISOString(),
@@ -50,6 +51,7 @@ describe('Product Routes', () => {
       expect(result.body[0]?.id).toBe(requestModel.id);
       expect(result.body[0]?.name).toBe(requestModel.name);
       expect(result.body[0]?.category).toBe(requestModel.category);
+      expect(result.body[0]?.image).toBe(requestModel.image);
       expect(result.body[0]?.price).toBe(requestModel.price);
       expect(result.body[0]?.createUserId).toBe(requestModel.createUserId);
       expect(result.body[0]?.createdAt).toBe(requestModel.createdAt);
@@ -89,6 +91,7 @@ describe('Product Routes', () => {
         id: validUuidV4,
         name: 'Any Name',
         category: 'others',
+        image: 'any-image.com',
         price: 1000,
         createUserId: userId,
         createdAt: new Date().toISOString(),
@@ -105,6 +108,7 @@ describe('Product Routes', () => {
       expect(result.body.id).toBe(requestModel.id);
       expect(result.body.name).toBe(requestModel.name);
       expect(result.body.category).toBe(requestModel.category);
+      expect(result.body.image).toBe(requestModel.image);
       expect(result.body.price).toBe(requestModel.price);
       expect(result.body.createUserId).toBe(requestModel.createUserId);
       expect(result.body.createdAt).toBe(requestModel.createdAt);
@@ -138,7 +142,12 @@ describe('Product Routes', () => {
 
   describe('create()', () => {
     test('Should create product and return correct values', async () => {
-      const requestModel = { name: 'Any Name', category: 'others', price: 1000 };
+      const requestModel = {
+        name: 'Any Name',
+        category: 'others',
+        image: 'any-image.com',
+        price: 1000,
+      };
       const createUserId = userId;
 
       const result = await request(app)
@@ -149,6 +158,7 @@ describe('Product Routes', () => {
       expect(result.status).toBe(201);
       expect(result.body.name).toBe(requestModel.name);
       expect(result.body.category).toBe(requestModel.category);
+      expect(result.body.image).toBe(requestModel.image);
       expect(result.body.price).toBe(requestModel.price);
       expect(result.body.createUserId).toBe(createUserId);
       expect(result.body.id).toMatch(
@@ -158,7 +168,7 @@ describe('Product Routes', () => {
     });
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
-      const requestModel = { category: 'others', price: 1000 };
+      const requestModel = { category: 'others', image: 'any-image.com', price: 1000 };
 
       const result = await request(app)
         .post('/api/products')
@@ -187,6 +197,7 @@ describe('Product Routes', () => {
         id: validUuidV4,
         name: 'Any Name',
         category: 'others',
+        image: 'any-image.com',
         price: 1000,
         createUserId: userId,
         createdAt: new Date().toISOString(),
@@ -204,6 +215,7 @@ describe('Product Routes', () => {
       expect(result.body.id).toBe(requestModel.id);
       expect(result.body.name).toBe(requestModel.name);
       expect(result.body.category).toBe(requestModel.category);
+      expect(result.body.image).toBe(requestModel.image);
       expect(result.body.price).toBe(requestModel.price);
       expect(result.body.createUserId).toBe(requestModel.createUserId);
       expect(result.body.updateUserId).toBe(updateUserId);
@@ -216,6 +228,7 @@ describe('Product Routes', () => {
         id: 'invalid_id',
         name: 'Any Name',
         category: 'others',
+        image: 'any-image.com',
         price: 1000,
       };
 
@@ -246,6 +259,7 @@ describe('Product Routes', () => {
         id: validUuidV4,
         name: 'Any Name',
         category: 'others',
+        image: 'any-image.com',
         price: 1000,
         createUserId: userId,
         updateUserId: userId,
@@ -265,6 +279,7 @@ describe('Product Routes', () => {
       expect(result.body.id).toBe(requestModel.id);
       expect(result.body.name).toBe(requestModel.name);
       expect(result.body.category).toBe(requestModel.category);
+      expect(result.body.image).toBe(requestModel.image);
       expect(result.body.price).toBe(requestModel.price);
       expect(result.body.createUserId).toBe(requestModel.createUserId);
       expect(result.body.updateUserId).toBe(requestModel.updateUserId);

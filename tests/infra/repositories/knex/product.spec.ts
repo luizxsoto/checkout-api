@@ -29,7 +29,12 @@ describe(KnexProductRepository.name, () => {
     test('Should findBy product and return correct values', async () => {
       const { knex, sut } = makeSut();
 
-      const requestModel = { name: 'Any Name', category: 'others' as const, price: 1000 };
+      const requestModel = {
+        name: 'Any Name',
+        category: 'others' as const,
+        image: 'any-image.com',
+        price: 1000,
+      };
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]));
       const responseModel = { ...requestModel };
 
@@ -43,7 +48,12 @@ describe(KnexProductRepository.name, () => {
     test('Should list product and return correct values', async () => {
       const { knex, sut } = makeSut();
 
-      const requestModel = { name: 'Any Name', category: 'others' as const, price: 1000 };
+      const requestModel = {
+        name: 'Any Name',
+        category: 'others' as const,
+        image: 'any-image.com',
+        price: 1000,
+      };
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]));
       const responseModel = { ...requestModel };
 
@@ -57,7 +67,12 @@ describe(KnexProductRepository.name, () => {
     test('Should create product and return correct values', async () => {
       const { knex, sut } = makeSut();
 
-      const requestModel = { name: 'Any Name', category: 'others' as const, price: 1000 };
+      const requestModel = {
+        name: 'Any Name',
+        category: 'others' as const,
+        image: 'any-image.com',
+        price: 1000,
+      };
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]));
       const responseModel = {
         ...requestModel,
@@ -80,6 +95,7 @@ describe(KnexProductRepository.name, () => {
         id: 'any_id',
         name: 'Any Name',
         category: 'others' as const,
+        image: 'any-image.com',
         price: 1000,
         createdAt: new Date(),
       };

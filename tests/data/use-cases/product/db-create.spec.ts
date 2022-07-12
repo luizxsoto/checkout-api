@@ -20,6 +20,7 @@ describe(DbCreateProductUseCase.name, () => {
     const requestModel = {
       name: 'Any Name',
       category: 'others' as const,
+      image: 'any-image.com',
       price: 1000,
       anyWrongProp: 'anyValue',
     };
@@ -45,6 +46,11 @@ describe(DbCreateProductUseCase.name, () => {
           validatorService.rules.required(),
           validatorService.rules.string(),
           validatorService.rules.in({ values: ['clothes', 'shoes', 'others'] }),
+        ],
+        image: [
+          validatorService.rules.required(),
+          validatorService.rules.string(),
+          validatorService.rules.regex({ pattern: 'url' }),
         ],
         price: [
           validatorService.rules.required(),
@@ -101,6 +107,25 @@ describe(DbCreateProductUseCase.name, () => {
         },
       ],
     },
+    // image
+    {
+      properties: { image: undefined },
+      validations: [{ field: 'image', rule: 'required', message: 'This value is required' }],
+    },
+    {
+      properties: { image: 1 },
+      validations: [{ field: 'image', rule: 'string', message: 'This value must be a string' }],
+    },
+    {
+      properties: { image: 'invalid_url' },
+      validations: [
+        {
+          field: 'image',
+          rule: 'regex',
+          message: 'This value must be valid according to the pattern: url',
+        },
+      ],
+    },
     // price
     {
       properties: { price: undefined },
@@ -129,6 +154,7 @@ describe(DbCreateProductUseCase.name, () => {
         const requestModel = {
           name: 'Any Name',
           category: 'others',
+          image: 'any-image.com',
           price: 1000,
           ...properties,
         } as CreateProductUseCase.RequestModel;

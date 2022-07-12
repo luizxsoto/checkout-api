@@ -62,7 +62,7 @@ describe(DbListProductUseCase.name, () => {
         ],
         filters: [
           validatorService.rules.listFilters<
-            Omit<ProductModel, 'id' | 'deleteUserId' | 'deletedAt'>
+            Omit<ProductModel, 'id' | 'image' | 'deleteUserId' | 'deletedAt'>
           >({
             schema: {
               name: [

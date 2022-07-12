@@ -24,6 +24,7 @@ describe(DbUpdateProductUseCase.name, () => {
       id: validUuidV4,
       name: 'Any Name',
       category: 'others' as const,
+      image: 'any-image.com',
       price: 1000,
       anyWrongProp: 'anyValue',
     };
@@ -55,6 +56,7 @@ describe(DbUpdateProductUseCase.name, () => {
           validatorService.rules.string(),
           validatorService.rules.in({ values: ['clothes', 'shoes', 'others'] }),
         ],
+        image: [validatorService.rules.string(), validatorService.rules.regex({ pattern: 'url' })],
         price: [
           validatorService.rules.integer(),
           validatorService.rules.max({ value: MAX_INTEGER }),
@@ -74,6 +76,7 @@ describe(DbUpdateProductUseCase.name, () => {
         ],
         name: [],
         category: [],
+        image: [],
         price: [],
       },
       model: sanitizedRequestModel,
@@ -143,6 +146,21 @@ describe(DbUpdateProductUseCase.name, () => {
         },
       ],
     },
+    // image
+    {
+      properties: { image: 1 },
+      validations: [{ field: 'image', rule: 'string', message: 'This value must be a string' }],
+    },
+    {
+      properties: { image: 'invalid_url' },
+      validations: [
+        {
+          field: 'image',
+          rule: 'regex',
+          message: 'This value must be valid according to the pattern: url',
+        },
+      ],
+    },
     // price
     {
       properties: { price: 1.2 },
@@ -168,6 +186,7 @@ describe(DbUpdateProductUseCase.name, () => {
           id: validUuidV4,
           name: 'Any Name',
           category: 'others',
+          image: 'any-image.com',
           price: 1000,
           ...properties,
         } as UpdateProductUseCase.RequestModel;

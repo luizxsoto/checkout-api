@@ -7,6 +7,7 @@ export function makeProductModelMock(extraData?: Partial<ProductModel>) {
     ...makeBaseModelMock(extraData),
     name: 'Any Name',
     category: 'others',
+    image: 'any-image.com',
     price: 1000,
     ...extraData,
   });
