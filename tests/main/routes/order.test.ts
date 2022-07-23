@@ -242,7 +242,6 @@ describe('Order Routes', () => {
         .put(`/api/orders/${requestModel.id}`)
         .set('authorization', await makeBearerTokenMock({ userId: updateUserId }))
         .send(requestModel);
-      console.log(result.body);
 
       expect(result.status).toBe(200);
       expect(result.body.id).toBe(requestModel.id);
