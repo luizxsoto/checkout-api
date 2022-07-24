@@ -1,30 +1,43 @@
 import { DbUpdateUserUseCase } from '@/data/use-cases';
 import { UpdateUserUseCase } from '@/domain/use-cases';
 import { ValidationException } from '@/main/exceptions';
+import {
+  ArrayValidation,
+  DistinctValidation,
+  ExistsValidation,
+  InValidation,
+  LengthValidation,
+  RegexValidation,
+  RequiredValidation,
+  StringValidation,
+  UniqueValidation,
+} from '@/validation/validators';
 import { makeHasherCryptographyStub } from '@tests/data/stubs/cryptography';
 import { makeUserRepositoryStub } from '@tests/data/stubs/repositories';
-import { makeValidatorServiceStub } from '@tests/data/stubs/services';
+import { makeValidationServiceStub } from '@tests/data/stubs/services';
+import { makeUserModelMock } from '@tests/domain/mocks/models';
 
 const validUuidV4 = '00000000-0000-4000-8000-000000000001';
 const nonExistentId = '00000000-0000-4000-8000-000000000002';
+const existingUser = makeUserModelMock();
 
 function makeSut() {
   const userRepository = makeUserRepositoryStub();
-  const validatorService = makeValidatorServiceStub();
+  const validationService = makeValidationServiceStub();
   const hasherCryptography = makeHasherCryptographyStub();
   const sut = new DbUpdateUserUseCase(
     userRepository,
     userRepository,
-    validatorService,
+    validationService,
     hasherCryptography,
   );
 
-  return { userRepository, validatorService, hasherCryptography, sut };
+  return { userRepository, validationService, hasherCryptography, sut };
 }
 
 describe(DbUpdateUserUseCase.name, () => {
   test('Should update user and return correct values', async () => {
-    const { userRepository, validatorService, hasherCryptography, sut } = makeSut();
+    const { userRepository, validationService, hasherCryptography, sut } = makeSut();
 
     const requestModel = {
       id: validUuidV4,
@@ -45,7 +58,7 @@ describe(DbUpdateUserUseCase.name, () => {
     };
     Reflect.deleteProperty(responseModel, 'password');
     const existsUser = { ...responseModel };
-    const otherUser = { ...responseModel, email: 'valid@email.com' };
+    const otherUser = { ...existingUser, email: 'valid@email.com' };
 
     userRepository.findBy.mockReturnValueOnce([existsUser, otherUser]);
     hasherCryptography.hash.mockReturnValueOnce(Promise.resolve('hashed_password'));
@@ -54,62 +67,63 @@ describe(DbUpdateUserUseCase.name, () => {
     const sutResult = await sut.execute(requestModel);
 
     expect(sutResult).toStrictEqual(responseModel);
-    expect(validatorService.validate).toBeCalledWith({
+    expect(validationService.validate).toBeCalledWith({
       schema: {
         id: [
-          validatorService.rules.required(),
-          validatorService.rules.string(),
-          validatorService.rules.regex({ pattern: 'uuidV4' }),
+          new RequiredValidation.Validator(),
+          new StringValidation.Validator(),
+          new RegexValidation.Validator({ pattern: 'uuidV4' }),
         ],
         name: [
-          validatorService.rules.string(),
-          validatorService.rules.regex({ pattern: 'name' }),
-          validatorService.rules.length({ minLength: 6, maxLength: 100 }),
+          new StringValidation.Validator(),
+          new RegexValidation.Validator({ pattern: 'name' }),
+          new LengthValidation.Validator({ minLength: 6, maxLength: 100 }),
         ],
         email: [
-          validatorService.rules.string(),
-          validatorService.rules.regex({ pattern: 'email' }),
-          validatorService.rules.length({ minLength: 6, maxLength: 100 }),
+          new StringValidation.Validator(),
+          new RegexValidation.Validator({ pattern: 'email' }),
+          new LengthValidation.Validator({ minLength: 6, maxLength: 100 }),
         ],
         password: [
-          validatorService.rules.string(),
-          validatorService.rules.regex({ pattern: 'password' }),
-          validatorService.rules.length({ minLength: 6, maxLength: 20 }),
+          new StringValidation.Validator(),
+          new RegexValidation.Validator({ pattern: 'password' }),
+          new LengthValidation.Validator({ minLength: 6, maxLength: 20 }),
         ],
         roles: [
-          validatorService.rules.array({
-            rules: [
-              validatorService.rules.string(),
-              validatorService.rules.in({ values: ['admin', 'moderator'] }),
-            ],
-          }),
+          new ArrayValidation.Validator(
+            {
+              validations: [
+                new StringValidation.Validator(),
+                new InValidation.Validator({ values: ['admin', 'moderator'] }),
+              ],
+            },
+            validationService,
+          ),
+          new DistinctValidation.Validator(),
         ],
       },
       model: sanitizedRequestModel,
-      data: { users: [] },
+      data: {},
     });
     expect(userRepository.findBy).toBeCalledWith(
       [{ id: sanitizedRequestModel.id }, { email: sanitizedRequestModel.email }],
       true,
     );
-    expect(validatorService.validate).toBeCalledWith({
+    expect(validationService.validate).toBeCalledWith({
       schema: {
         id: [
-          validatorService.rules.exists({
+          new ExistsValidation.Validator({
             dataEntity: 'users',
             props: [{ modelKey: 'id', dataKey: 'id' }],
           }),
         ],
-        name: [],
         email: [
-          validatorService.rules.unique({
+          new UniqueValidation.Validator({
             dataEntity: 'users',
             ignoreProps: [{ modelKey: 'id', dataKey: 'id' }],
             props: [{ modelKey: 'email', dataKey: 'email' }],
           }),
         ],
-        password: [],
-        roles: [],
       },
       model: sanitizedRequestModel,
       data: { users: [existsUser, otherUser] },
@@ -138,6 +152,9 @@ describe(DbUpdateUserUseCase.name, () => {
           field: 'id',
           rule: 'regex',
           message: 'This value must be valid according to the pattern: uuidV4',
+          details: {
+            pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i',
+          },
         },
       ],
     },
@@ -157,6 +174,7 @@ describe(DbUpdateUserUseCase.name, () => {
           field: 'name',
           rule: 'regex',
           message: 'This value must be valid according to the pattern: name',
+          details: { pattern: '/^([a-zA-Z\\u00C0-\\u00FF]+\\s)*[a-zA-Z\\u00C0-\\u00FF]+$/' },
         },
       ],
     },
@@ -186,6 +204,7 @@ describe(DbUpdateUserUseCase.name, () => {
           field: 'email',
           rule: 'regex',
           message: 'This value must be valid according to the pattern: email',
+          details: { pattern: '/^[\\w+.]+@\\w+\\.\\w{2,}(?:\\.\\w{2})?$/' },
         },
       ],
     },
@@ -202,7 +221,12 @@ describe(DbUpdateUserUseCase.name, () => {
       properties: { email: 'valid@email.com', id: nonExistentId },
       validations: [
         { field: 'id', rule: 'exists', message: 'This value was not found' },
-        { field: 'email', rule: 'unique', message: 'This value has already been used' },
+        {
+          field: 'email',
+          rule: 'unique',
+          message: 'This value has already been used',
+          details: { findedRegister: existingUser },
+        },
       ],
     },
     // password
@@ -217,6 +241,9 @@ describe(DbUpdateUserUseCase.name, () => {
           field: 'password',
           rule: 'regex',
           message: 'This value must be valid according to the pattern: password',
+          details: {
+            pattern: '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]/',
+          },
         },
       ],
     },
@@ -248,24 +275,26 @@ describe(DbUpdateUserUseCase.name, () => {
       validations: [{ field: 'roles', rule: 'array', message: 'This value must be an array' }],
     },
     {
-      properties: { roles: [1, 2] },
+      properties: { roles: [1] },
+      validations: [{ field: 'roles.0', rule: 'string', message: 'This value must be a string' }],
+    },
+    {
+      properties: { roles: ['invalid_role'] },
       validations: [
-        { field: 'roles.0', rule: 'string', message: 'This value must be a string' },
-        { field: 'roles.1', rule: 'string', message: 'This value must be a string' },
+        { field: 'roles.0', rule: 'in', message: 'This value must be in: admin, moderator' },
       ],
     },
     {
-      properties: { roles: ['invalid_role', 'invalid_role'] },
+      properties: { roles: ['admin', 'admin'] },
       validations: [
-        { field: 'roles.0', rule: 'in', message: 'This value must be in: admin, moderator' },
-        { field: 'roles.1', rule: 'in', message: 'This value must be in: admin, moderator' },
+        { field: 'roles', rule: 'distinct', message: 'This value cannot have duplicate items' },
       ],
     },
   ])(
     'Should throw ValidationException for every user invalid prop',
     ({ properties, validations }) => {
       it(JSON.stringify(validations), async () => {
-        const { sut } = makeSut();
+        const { userRepository, sut } = makeSut();
 
         const requestModel = {
           id: validUuidV4,
@@ -276,6 +305,7 @@ describe(DbUpdateUserUseCase.name, () => {
           ...properties,
         } as UpdateUserUseCase.RequestModel;
 
+        userRepository.findBy.mockReturnValueOnce([existingUser]);
         const sutResult = await sut.execute(requestModel).catch((e) => e);
 
         expect(sutResult).toStrictEqual(new ValidationException(validations));
