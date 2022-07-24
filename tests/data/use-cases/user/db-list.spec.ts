@@ -1,22 +1,34 @@
 import { MAX_PER_PAGE, MIN_PER_PAGE } from '@/data/constants';
 import { DbListUserUseCase } from '@/data/use-cases';
-import { UserModel } from '@/domain/models';
 import { ListUserUseCase } from '@/domain/use-cases';
 import { ValidationException } from '@/main/exceptions';
+import {
+  ArrayValidation,
+  DateValidation,
+  InValidation,
+  IntegerValidation,
+  LengthValidation,
+  ListFiltersValidation,
+  MaxValidation,
+  MinValidation,
+  ObjectValidation,
+  RegexValidation,
+  StringValidation,
+} from '@/validation/validators';
 import { makeUserRepositoryStub } from '@tests/data/stubs/repositories';
-import { makeValidatorServiceStub } from '@tests/data/stubs/services';
+import { makeValidationServiceStub } from '@tests/data/stubs/services';
 
 function makeSut() {
   const userRepository = makeUserRepositoryStub();
-  const validatorService = makeValidatorServiceStub();
-  const sut = new DbListUserUseCase(userRepository, validatorService);
+  const validationService = makeValidationServiceStub();
+  const sut = new DbListUserUseCase(userRepository, validationService);
 
-  return { userRepository, validatorService, sut };
+  return { userRepository, validationService, sut };
 }
 
 describe(DbListUserUseCase.name, () => {
   test('Should list user and return correct values', async () => {
-    const { userRepository, validatorService, sut } = makeSut();
+    const { userRepository, validationService, sut } = makeSut();
 
     const requestModel = {
       page: 1,
@@ -40,74 +52,93 @@ describe(DbListUserUseCase.name, () => {
 
     const sutResult = await sut.execute(requestModel);
 
+    const filtersSchema: Record<string, [ArrayValidation.Validator]> = {
+      name: [
+        new ArrayValidation.Validator(
+          {
+            validations: [
+              new StringValidation.Validator(),
+              new RegexValidation.Validator({ pattern: 'name' }),
+              new LengthValidation.Validator({ minLength: 6, maxLength: 100 }),
+            ],
+          },
+          validationService,
+        ),
+      ],
+      email: [
+        new ArrayValidation.Validator(
+          {
+            validations: [
+              new StringValidation.Validator(),
+              new RegexValidation.Validator({ pattern: 'email' }),
+              new LengthValidation.Validator({ minLength: 6, maxLength: 100 }),
+            ],
+          },
+          validationService,
+        ),
+      ],
+      createUserId: [
+        new ArrayValidation.Validator(
+          {
+            validations: [
+              new StringValidation.Validator(),
+              new RegexValidation.Validator({ pattern: 'uuidV4' }),
+            ],
+          },
+          validationService,
+        ),
+      ],
+      updateUserId: [
+        new ArrayValidation.Validator(
+          {
+            validations: [
+              new StringValidation.Validator(),
+              new RegexValidation.Validator({ pattern: 'uuidV4' }),
+            ],
+          },
+          validationService,
+        ),
+      ],
+      createdAt: [
+        new ArrayValidation.Validator(
+          {
+            validations: [new StringValidation.Validator(), new DateValidation.Validator()],
+          },
+          validationService,
+        ),
+      ],
+      updatedAt: [
+        new ArrayValidation.Validator(
+          {
+            validations: [new StringValidation.Validator(), new DateValidation.Validator()],
+          },
+          validationService,
+        ),
+      ],
+    };
+
     expect(sutResult).toStrictEqual([responseModel]);
-    expect(validatorService.validate).toBeCalledWith({
+    expect(validationService.validate).toBeCalledWith({
       schema: {
-        page: [validatorService.rules.integer(), validatorService.rules.min({ value: 1 })],
+        page: [new IntegerValidation.Validator(), new MinValidation.Validator({ value: 1 })],
         perPage: [
-          validatorService.rules.integer(),
-          validatorService.rules.min({ value: 20 }),
-          validatorService.rules.max({ value: 50 }),
+          new IntegerValidation.Validator(),
+          new MinValidation.Validator({ value: MIN_PER_PAGE }),
+          new MaxValidation.Validator({ value: MAX_PER_PAGE }),
         ],
         orderBy: [
-          validatorService.rules.string(),
-          validatorService.rules.in({ values: ['name', 'email', 'createdAt', 'updatedAt'] }),
+          new StringValidation.Validator(),
+          new InValidation.Validator({ values: ['name', 'email', 'createdAt', 'updatedAt'] }),
         ],
         order: [
-          validatorService.rules.string(),
-          validatorService.rules.in({ values: ['asc', 'desc'] }),
+          new StringValidation.Validator(),
+          new InValidation.Validator({ values: ['asc', 'desc'] }),
         ],
         filters: [
-          validatorService.rules.listFilters<
-            Omit<UserModel, 'id' | 'password' | 'roles' | 'deleteUserId' | 'deletedAt'>
-          >({
-            schema: {
-              name: [
-                validatorService.rules.array({
-                  rules: [
-                    validatorService.rules.string(),
-                    validatorService.rules.regex({ pattern: 'name' }),
-                    validatorService.rules.length({ minLength: 6, maxLength: 100 }),
-                  ],
-                }),
-              ],
-              email: [
-                validatorService.rules.array({
-                  rules: [
-                    validatorService.rules.string(),
-                    validatorService.rules.regex({ pattern: 'email' }),
-                    validatorService.rules.length({ minLength: 6, maxLength: 100 }),
-                  ],
-                }),
-              ],
-              createUserId: [
-                validatorService.rules.array({
-                  rules: [
-                    validatorService.rules.string(),
-                    validatorService.rules.regex({ pattern: 'uuidV4' }),
-                  ],
-                }),
-              ],
-              updateUserId: [
-                validatorService.rules.array({
-                  rules: [
-                    validatorService.rules.string(),
-                    validatorService.rules.regex({ pattern: 'uuidV4' }),
-                  ],
-                }),
-              ],
-              createdAt: [
-                validatorService.rules.array({
-                  rules: [validatorService.rules.string(), validatorService.rules.date()],
-                }),
-              ],
-              updatedAt: [
-                validatorService.rules.array({
-                  rules: [validatorService.rules.string(), validatorService.rules.date()],
-                }),
-              ],
-            },
-          }),
+          new ListFiltersValidation.Validator(
+            { schema: filtersSchema },
+            new ObjectValidation.Validator({ schema: filtersSchema }, validationService),
+          ),
         ],
       },
       model: sanitizedRequestModel,
@@ -185,6 +216,9 @@ describe(DbListUserUseCase.name, () => {
           field: 'filters.name.0',
           rule: 'regex',
           message: 'This value must be valid according to the pattern: name',
+          details: {
+            pattern: '/^([a-zA-Z\\u00C0-\\u00FF]+\\s)*[a-zA-Z\\u00C0-\\u00FF]+$/',
+          },
         },
       ],
     },
@@ -225,6 +259,9 @@ describe(DbListUserUseCase.name, () => {
           field: 'filters.email.0',
           rule: 'regex',
           message: 'This value must be valid according to the pattern: email',
+          details: {
+            pattern: '/^[\\w+.]+@\\w+\\.\\w{2,}(?:\\.\\w{2})?$/',
+          },
         },
       ],
     },
@@ -255,6 +292,9 @@ describe(DbListUserUseCase.name, () => {
           field: 'filters.createUserId.0',
           rule: 'regex',
           message: 'This value must be valid according to the pattern: uuidV4',
+          details: {
+            pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i',
+          },
         },
       ],
     },
@@ -272,6 +312,9 @@ describe(DbListUserUseCase.name, () => {
           field: 'filters.updateUserId.0',
           rule: 'regex',
           message: 'This value must be valid according to the pattern: uuidV4',
+          details: {
+            pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i',
+          },
         },
       ],
     },
