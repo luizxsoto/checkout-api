@@ -3,6 +3,7 @@ import {
   ArrayValidation,
   DateValidation,
   DistinctValidation,
+  ExistsValidation,
   InValidation,
   IntegerValidation,
   LengthValidation,
@@ -32,6 +33,7 @@ describe(ValidationBuilder.name, () => {
       .array({ validations: [] }, validationService)
       .date()
       .distinct()
+      .exists({ dataEntity: 'anyData', props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }] })
       .in({ values: [] })
       .integer()
       .length({ minLength: 1, maxLength: 1 })
@@ -49,6 +51,10 @@ describe(ValidationBuilder.name, () => {
       new ArrayValidation.Validator({ validations: [] }, validationService),
       new DateValidation.Validator(),
       new DistinctValidation.Validator(),
+      new ExistsValidation.Validator({
+        dataEntity: 'anyData',
+        props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }],
+      }),
       new InValidation.Validator({ values: [] }),
       new IntegerValidation.Validator(),
       new LengthValidation.Validator({ minLength: 1, maxLength: 1 }),

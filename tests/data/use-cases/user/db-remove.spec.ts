@@ -1,23 +1,29 @@
 import { DbRemoveUserUseCase } from '@/data/use-cases';
 import { RemoveUserUseCase } from '@/domain/use-cases';
 import { ValidationException } from '@/main/exceptions';
+import {
+  ExistsValidation,
+  RegexValidation,
+  RequiredValidation,
+  StringValidation,
+} from '@/validation/validators';
 import { makeUserRepositoryStub } from '@tests/data/stubs/repositories';
-import { makeValidatorServiceStub } from '@tests/data/stubs/services';
+import { makeValidationServiceStub } from '@tests/data/stubs/services';
 
 const validUuidV4 = '00000000-0000-4000-8000-000000000001';
 const nonExistentId = '00000000-0000-4000-8000-000000000002';
 
 function makeSut() {
   const userRepository = makeUserRepositoryStub();
-  const validatorService = makeValidatorServiceStub();
-  const sut = new DbRemoveUserUseCase(userRepository, userRepository, validatorService);
+  const validationService = makeValidationServiceStub();
+  const sut = new DbRemoveUserUseCase(userRepository, userRepository, validationService);
 
-  return { userRepository, validatorService, sut };
+  return { userRepository, validationService, sut };
 }
 
 describe(DbRemoveUserUseCase.name, () => {
   test('Should remove user and return correct values', async () => {
-    const { userRepository, validatorService, sut } = makeSut();
+    const { userRepository, validationService, sut } = makeSut();
 
     const requestModel = {
       id: validUuidV4,
@@ -36,22 +42,22 @@ describe(DbRemoveUserUseCase.name, () => {
     const sutResult = await sut.execute(requestModel);
 
     expect(sutResult).toStrictEqual(responseModel);
-    expect(validatorService.validate).toBeCalledWith({
+    expect(validationService.validate).toBeCalledWith({
       schema: {
         id: [
-          validatorService.rules.required(),
-          validatorService.rules.string(),
-          validatorService.rules.regex({ pattern: 'uuidV4' }),
+          new RequiredValidation.Validator(),
+          new StringValidation.Validator(),
+          new RegexValidation.Validator({ pattern: 'uuidV4' }),
         ],
       },
       model: sanitizedRequestModel,
-      data: { users: [] },
+      data: {},
     });
     expect(userRepository.findBy).toBeCalledWith([sanitizedRequestModel], true);
-    expect(validatorService.validate).toBeCalledWith({
+    expect(validationService.validate).toBeCalledWith({
       schema: {
         id: [
-          validatorService.rules.exists({
+          new ExistsValidation.Validator({
             dataEntity: 'users',
             props: [{ modelKey: 'id', dataKey: 'id' }],
           }),
@@ -80,6 +86,9 @@ describe(DbRemoveUserUseCase.name, () => {
           field: 'id',
           rule: 'regex',
           message: 'This value must be valid according to the pattern: uuidV4',
+          details: {
+            pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i',
+          },
         },
       ],
     },

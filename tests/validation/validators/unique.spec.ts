@@ -83,7 +83,7 @@ describe('UniqueValidation', () => {
 
     const key = 'anyProp';
     const model = { anyProp: undefined };
-    const data = { anyData: [{ anyProp: 'other_value' }] };
+    const data = { anyData: [{ anyProp: 'any_value' }] };
     const sutResult = await sut.validate({ key, model, data });
 
     expect(sutResult).toBeNull();
