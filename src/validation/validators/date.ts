@@ -16,7 +16,7 @@ export class Validator implements FieldValidation.Validation<Options> {
       /^(\d{3}[1-9]|\d{2}[1-9]\d)-([0][1-9]|1[0-2])-(0[1-9]|[1-2]\d|3[0-1])T([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d\.\d{3}Z$/,
     ];
     const validationError = {
-      field: key as string,
+      field: key,
       rule: 'date',
       message: 'This value must be a valid date',
     };

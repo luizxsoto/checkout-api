@@ -25,7 +25,7 @@ export class Validator implements FieldValidation.Validation<Options> {
     if (!hasDuplicatedValue) return null;
 
     return {
-      field: key as string,
+      field: key,
       rule: 'distinct',
       message: `This value cannot have duplicate items${
         !this.options?.keys ? '' : ` by: ${this.options?.keys.join(', ')}`

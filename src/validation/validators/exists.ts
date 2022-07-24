@@ -2,11 +2,7 @@ import lodashGet from 'lodash.get';
 
 import { FieldValidation } from '@/validation/protocols';
 
-export type Options = {
-  props: { modelKey: string; dataKey: string }[];
-  ignoreProps?: { modelKey: string; dataKey: string }[];
-  dataEntity: string;
-};
+export type Options = { props: { modelKey: string; dataKey: string }[]; dataEntity: string };
 
 export class Validator implements FieldValidation.Validation<Options> {
   constructor(public readonly options: Options) {}
@@ -27,21 +23,12 @@ export class Validator implements FieldValidation.Validation<Options> {
       }),
     );
 
-    const isSameIgnoreProps =
-      findedRegister &&
-      this.options.ignoreProps?.every((ignoreProp) => {
-        let modelKey = key.split('.').slice(0, -1).join('.');
-        modelKey += modelKey ? `.${ignoreProp.modelKey}` : ignoreProp.modelKey;
-        return lodashGet(findedRegister, ignoreProp.dataKey) === lodashGet(model, modelKey);
-      });
-
-    if (!findedRegister || isSameIgnoreProps) return null;
+    if (findedRegister) return null;
 
     return {
       field: key,
-      rule: 'unique',
-      message: 'This value has already been used',
-      details: { findedRegister },
+      rule: 'exists',
+      message: 'This value was not found',
     };
   }
 }

@@ -22,11 +22,7 @@ export class Validator implements FieldValidation.Validation<Options> {
     if (value === undefined) return null;
 
     if (!Array.isArray(value))
-      return {
-        field: key as string,
-        rule: 'array',
-        message: 'This value must be an array',
-      };
+      return { field: key, rule: 'array', message: 'This value must be an array' };
 
     await Promise.all(
       value.map((_, index) =>

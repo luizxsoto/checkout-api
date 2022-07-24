@@ -12,7 +12,7 @@ export class Validator implements FieldValidation.Validation<Options> {
     if (Number.isNaN(Number(value)) || value <= this.options.value) return null;
 
     return {
-      field: key as string,
+      field: key,
       rule: 'max',
       message: `This value must be less or equal to: ${this.options.value}`,
     };

@@ -1,18 +1,15 @@
 import { DbRemoveUserUseCase } from '@/data/use-cases';
-import { SessionModel, UserModel } from '@/domain/models';
+import { SessionModel } from '@/domain/models';
 import { RemoveUserUseCase } from '@/domain/use-cases';
 import { KnexUserRepository } from '@/infra/repositories';
 import { UUIDService } from '@/infra/services';
-import { VanillaValidatorService } from '@/infra/services/validator';
+import { CompositeValidation } from '@/main/composites';
 import { knexConfig } from '@/main/config';
 
 export function makeDbRemoveUserUseCase(session: SessionModel): RemoveUserUseCase.UseCase {
   const repository = new KnexUserRepository(session, knexConfig, new UUIDService());
-  const validatorService = new VanillaValidatorService<
-    RemoveUserUseCase.RequestModel,
-    { users: Omit<UserModel, 'password'>[] }
-  >();
-  const useCase = new DbRemoveUserUseCase(repository, repository, validatorService);
+  const validationService = new CompositeValidation();
+  const useCase = new DbRemoveUserUseCase(repository, repository, validationService);
 
   return useCase;
 }

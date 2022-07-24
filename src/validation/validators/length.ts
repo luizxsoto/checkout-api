@@ -13,7 +13,7 @@ export class Validator implements FieldValidation.Validation<Options> {
 
     if (value.length < this.options.minLength || value.length > this.options.maxLength) {
       return {
-        field: key as string,
+        field: key,
         rule: 'length',
         message: `This value length must be beetween ${this.options.minLength} and ${this.options.maxLength}`,
       };

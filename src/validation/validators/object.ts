@@ -22,11 +22,7 @@ export class Validator implements FieldValidation.Validation<Options> {
     if (value === undefined) return null;
 
     if (typeof value !== 'object' || Array.isArray(value))
-      return {
-        field: key as string,
-        rule: 'object',
-        message: 'This value must be an object',
-      };
+      return { field: key, rule: 'object', message: 'This value must be an object' };
 
     const parsedSchema = {} as ValidationService.Schema;
     Object.keys(this.options.schema).forEach((nestedKey) => {

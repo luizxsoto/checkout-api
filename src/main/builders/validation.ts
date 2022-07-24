@@ -4,6 +4,7 @@ import {
   ArrayValidation,
   DateValidation,
   DistinctValidation,
+  ExistsValidation,
   InValidation,
   IntegerValidation,
   LengthValidation,
@@ -39,6 +40,11 @@ export class ValidationBuilder {
 
   public distinct(options?: DistinctValidation.Options): ValidationBuilder {
     this.validations.push(new DistinctValidation.Validator(options));
+    return this;
+  }
+
+  public exists(options: ExistsValidation.Options): ValidationBuilder {
+    this.validations.push(new ExistsValidation.Validator(options));
     return this;
   }
 

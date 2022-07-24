@@ -11,10 +11,6 @@ export class Validator implements FieldValidation.Validation<Options> {
     const value = lodashGet(model, key);
     if (value !== null && value !== undefined) return null;
 
-    return {
-      field: key as string,
-      rule: 'required',
-      message: 'This value is required',
-    };
+    return { field: key, rule: 'required', message: 'This value is required' };
   }
 }

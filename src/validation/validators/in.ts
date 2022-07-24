@@ -14,7 +14,7 @@ export class Validator implements FieldValidation.Validation<Options> {
     if (value === undefined || this.options.values.includes(value as string | number)) return null;
 
     return {
-      field: key as string,
+      field: key,
       rule: 'in',
       message: `This value must be in: ${this.options.values.join(', ')}`,
     };

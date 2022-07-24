@@ -25,7 +25,7 @@ export class Validator implements FieldValidation.Validation<Options> {
 
     if (typeof value !== 'string' || !regexDict[this.options.pattern].test(value))
       return {
-        field: key as string,
+        field: key,
         rule: 'regex',
         message: `This value must be valid according to the pattern: ${this.options.pattern}`,
         details: { pattern: String(regexDict[this.options.pattern]) },

@@ -13,10 +13,6 @@ export class Validator implements FieldValidation.Validation<Options> {
     if (value === undefined || (typeof value === 'number' && integerRgx.test(String(value))))
       return null;
 
-    return {
-      field: key as string,
-      rule: 'integer',
-      message: 'This value must be an integer',
-    };
+    return { field: key, rule: 'integer', message: 'This value must be an integer' };
   }
 }

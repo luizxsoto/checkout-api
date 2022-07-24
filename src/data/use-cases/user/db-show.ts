@@ -1,15 +1,13 @@
 import { FindByUserRepository } from '@/data/contracts/repositories';
-import { ValidatorService } from '@/data/contracts/services';
+import { ValidationService } from '@/data/contracts/services';
 import { UserModel } from '@/domain/models';
 import { ShowUserUseCase } from '@/domain/use-cases';
+import { ValidationBuilder } from '@/main/builders';
 
 export class DbShowUserUseCase implements ShowUserUseCase.UseCase {
   constructor(
     private readonly findByUserRepository: FindByUserRepository.Repository,
-    private readonly validatorService: ValidatorService.Validator<
-      ShowUserUseCase.RequestModel,
-      { users: Omit<UserModel, 'password'>[] }
-    >,
+    private readonly validationService: ValidationService.Validator,
   ) {}
 
   public async execute(
@@ -35,26 +33,19 @@ export class DbShowUserUseCase implements ShowUserUseCase.UseCase {
   private async validateRequestModel(
     requestModel: ShowUserUseCase.RequestModel,
   ): Promise<(validationData: { users: Omit<UserModel, 'password'>[] }) => Promise<void>> {
-    await this.validatorService.validate({
+    await this.validationService.validate({
       schema: {
-        id: [
-          this.validatorService.rules.required(),
-          this.validatorService.rules.string(),
-          this.validatorService.rules.regex({ pattern: 'uuidV4' }),
-        ],
+        id: new ValidationBuilder().required().string().regex({ pattern: 'uuidV4' }).build(),
       },
       model: requestModel,
-      data: { users: [] },
+      data: {},
     });
     return (validationData) =>
-      this.validatorService.validate({
+      this.validationService.validate({
         schema: {
-          id: [
-            this.validatorService.rules.exists({
-              dataEntity: 'users',
-              props: [{ modelKey: 'id', dataKey: 'id' }],
-            }),
-          ],
+          id: new ValidationBuilder()
+            .exists({ dataEntity: 'users', props: [{ modelKey: 'id', dataKey: 'id' }] })
+            .build(),
         },
         model: requestModel,
         data: validationData,

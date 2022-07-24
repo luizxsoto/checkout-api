@@ -29,7 +29,7 @@ export class Validator implements FieldValidation.Validation<Options> {
 
     const posibleFields = Object.keys(this.options.schema);
     const validationError = {
-      field: key as string,
+      field: key,
       rule: 'listFilters',
       message: `This value must be a valid list filters and with this posible fields: ${posibleFields.join(
         ', ',
@@ -57,7 +57,7 @@ export class Validator implements FieldValidation.Validation<Options> {
     ) {
       const filterOperators = ['&', '|'];
       const isFieldOperator =
-        typeof fieldOrFilter === 'string' && !filterOperators.includes(operator as string);
+        typeof fieldOrFilter === 'string' && !filterOperators.includes(operator);
 
       if (isFieldOperator) {
         const valuesToPush = (Array.isArray(values) ? values : [values]) as PrimitiveType[];
