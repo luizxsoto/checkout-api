@@ -3,16 +3,13 @@ import { SessionModel } from '@/domain/models';
 import { ListUserUseCase } from '@/domain/use-cases';
 import { KnexUserRepository } from '@/infra/repositories';
 import { UUIDService } from '@/infra/services';
-import { VanillaValidatorService } from '@/infra/services/validator';
+import { CompositeValidation } from '@/main/composites';
 import { knexConfig } from '@/main/config';
 
 export function makeDbListUserUseCase(session: SessionModel): ListUserUseCase.UseCase {
   const repository = new KnexUserRepository(session, knexConfig, new UUIDService());
-  const validatorService = new VanillaValidatorService<
-    ListUserUseCase.RequestModel,
-    Record<string, unknown[]>
-  >();
-  const useCase = new DbListUserUseCase(repository, validatorService);
+  const validationService = new CompositeValidation();
+  const useCase = new DbListUserUseCase(repository, validationService);
 
   return useCase;
 }

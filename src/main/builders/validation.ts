@@ -2,9 +2,14 @@ import { ValidationService } from '@/data/contracts/services';
 import { FieldValidation } from '@/validation/protocols';
 import {
   ArrayValidation,
+  DateValidation,
   DistinctValidation,
   InValidation,
+  IntegerValidation,
   LengthValidation,
+  ListFiltersValidation,
+  MaxValidation,
+  MinValidation,
   ObjectValidation,
   RegexValidation,
   RequiredValidation,
@@ -19,8 +24,54 @@ export class ValidationBuilder {
     return this.validations;
   }
 
-  public string(options?: StringValidation.Options): ValidationBuilder {
-    this.validations.push(new StringValidation.Validator(options));
+  public array(
+    options: ArrayValidation.Options,
+    validationService: ValidationService.Validator,
+  ): ValidationBuilder {
+    this.validations.push(new ArrayValidation.Validator(options, validationService));
+    return this;
+  }
+
+  public date(options?: DateValidation.Options): ValidationBuilder {
+    this.validations.push(new DateValidation.Validator(options));
+    return this;
+  }
+
+  public distinct(options?: DistinctValidation.Options): ValidationBuilder {
+    this.validations.push(new DistinctValidation.Validator(options));
+    return this;
+  }
+
+  public in(options: InValidation.Options): ValidationBuilder {
+    this.validations.push(new InValidation.Validator(options));
+    return this;
+  }
+
+  public integer(options?: IntegerValidation.Options): ValidationBuilder {
+    this.validations.push(new IntegerValidation.Validator(options));
+    return this;
+  }
+
+  public length(options: LengthValidation.Options): ValidationBuilder {
+    this.validations.push(new LengthValidation.Validator(options));
+    return this;
+  }
+
+  public listFilers(
+    options: ListFiltersValidation.Options,
+    objectValidation: ObjectValidation.Validator,
+  ): ValidationBuilder {
+    this.validations.push(new ListFiltersValidation.Validator(options, objectValidation));
+    return this;
+  }
+
+  public max(options: MaxValidation.Options): ValidationBuilder {
+    this.validations.push(new MaxValidation.Validator(options));
+    return this;
+  }
+
+  public min(options: MinValidation.Options): ValidationBuilder {
+    this.validations.push(new MinValidation.Validator(options));
     return this;
   }
 
@@ -32,11 +83,8 @@ export class ValidationBuilder {
     return this;
   }
 
-  public array(
-    options: ArrayValidation.Options,
-    validationService: ValidationService.Validator,
-  ): ValidationBuilder {
-    this.validations.push(new ArrayValidation.Validator(options, validationService));
+  public regex(options: RegexValidation.Options): ValidationBuilder {
+    this.validations.push(new RegexValidation.Validator(options));
     return this;
   }
 
@@ -45,23 +93,8 @@ export class ValidationBuilder {
     return this;
   }
 
-  public length(options: LengthValidation.Options): ValidationBuilder {
-    this.validations.push(new LengthValidation.Validator(options));
-    return this;
-  }
-
-  public regex(options: RegexValidation.Options): ValidationBuilder {
-    this.validations.push(new RegexValidation.Validator(options));
-    return this;
-  }
-
-  public in(options: InValidation.Options): ValidationBuilder {
-    this.validations.push(new InValidation.Validator(options));
-    return this;
-  }
-
-  public distinct(options?: DistinctValidation.Options): ValidationBuilder {
-    this.validations.push(new DistinctValidation.Validator(options));
+  public string(options?: StringValidation.Options): ValidationBuilder {
+    this.validations.push(new StringValidation.Validator(options));
     return this;
   }
 
