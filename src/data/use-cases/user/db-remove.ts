@@ -1,14 +1,12 @@
 import { FindByUserRepository, RemoveUserRepository } from '@/data/contracts/repositories';
-import { ValidationService } from '@/data/contracts/services';
-import { UserModel } from '@/domain/models';
+import { RemoveUserValidation } from '@/data/contracts/validations';
 import { RemoveUserUseCase } from '@/domain/use-cases';
-import { ValidationBuilder } from '@/main/builders';
 
 export class DbRemoveUserUseCase implements RemoveUserUseCase.UseCase {
   constructor(
     private readonly removeUserRepository: RemoveUserRepository.Repository,
     private readonly findByUserRepository: FindByUserRepository.Repository,
-    private readonly validationService: ValidationService.Validator,
+    private readonly removeUserValidation: RemoveUserValidation,
   ) {}
 
   public async execute(
@@ -16,7 +14,7 @@ export class DbRemoveUserUseCase implements RemoveUserUseCase.UseCase {
   ): Promise<RemoveUserUseCase.ResponseModel> {
     const sanitizedRequestModel = this.sanitizeRequestModel(requestModel);
 
-    const restValidation = await this.validateRequestModel(sanitizedRequestModel);
+    const restValidation = await this.removeUserValidation(sanitizedRequestModel);
 
     const users = await this.findByUserRepository.findBy([sanitizedRequestModel], true);
 
@@ -36,27 +34,5 @@ export class DbRemoveUserUseCase implements RemoveUserUseCase.UseCase {
     return {
       id: requestModel.id,
     };
-  }
-
-  private async validateRequestModel(
-    requestModel: RemoveUserUseCase.RequestModel,
-  ): Promise<(validationData: { users: Omit<UserModel, 'password'>[] }) => Promise<void>> {
-    await this.validationService.validate({
-      schema: {
-        id: new ValidationBuilder().required().string().regex({ pattern: 'uuidV4' }).build(),
-      },
-      model: requestModel,
-      data: {},
-    });
-    return (validationData) =>
-      this.validationService.validate({
-        schema: {
-          id: new ValidationBuilder()
-            .exists({ dataEntity: 'users', props: [{ modelKey: 'id', dataKey: 'id' }] })
-            .build(),
-        },
-        model: requestModel,
-        data: validationData,
-      });
   }
 }

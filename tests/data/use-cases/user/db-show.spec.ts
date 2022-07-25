@@ -1,29 +1,20 @@
 import { DbShowUserUseCase } from '@/data/use-cases';
-import { ShowUserUseCase } from '@/domain/use-cases';
-import { ValidationException } from '@/main/exceptions';
-import {
-  ExistsValidation,
-  RegexValidation,
-  RequiredValidation,
-  StringValidation,
-} from '@/validation/validators';
 import { makeUserRepositoryStub } from '@tests/data/stubs/repositories';
-import { makeValidationServiceStub } from '@tests/data/stubs/services';
+import { makeShowUserValidationStub } from '@tests/data/stubs/validations';
 
 const validUuidV4 = '00000000-0000-4000-8000-000000000001';
-const nonExistentId = '00000000-0000-4000-8000-000000000002';
 
 function makeSut() {
   const userRepository = makeUserRepositoryStub();
-  const validationService = makeValidationServiceStub();
-  const sut = new DbShowUserUseCase(userRepository, validationService);
+  const showUserValidation = makeShowUserValidationStub();
+  const sut = new DbShowUserUseCase(userRepository, showUserValidation.firstValidation);
 
-  return { userRepository, validationService, sut };
+  return { userRepository, showUserValidation, sut };
 }
 
 describe(DbShowUserUseCase.name, () => {
   test('Should show user and return correct values', async () => {
-    const { userRepository, validationService, sut } = makeSut();
+    const { userRepository, showUserValidation, sut } = makeSut();
 
     const requestModel = {
       id: validUuidV4,
@@ -39,71 +30,40 @@ describe(DbShowUserUseCase.name, () => {
     const sutResult = await sut.execute(requestModel);
 
     expect(sutResult).toStrictEqual(responseModel);
-    expect(validationService.validate).toBeCalledWith({
-      schema: {
-        id: [
-          new RequiredValidation.Validator(),
-          new StringValidation.Validator(),
-          new RegexValidation.Validator({ pattern: 'uuidV4' }),
-        ],
-      },
-      model: sanitizedRequestModel,
-      data: {},
-    });
+    expect(showUserValidation.firstValidation).toBeCalledWith(sanitizedRequestModel);
     expect(userRepository.findBy).toBeCalledWith([sanitizedRequestModel], true);
-    expect(validationService.validate).toBeCalledWith({
-      schema: {
-        id: [
-          new ExistsValidation.Validator({
-            dataEntity: 'users',
-            props: [{ modelKey: 'id', dataKey: 'id' }],
-          }),
-        ],
-      },
-      model: sanitizedRequestModel,
-      data: { users: [existsUser] },
-    });
+    expect(showUserValidation.secondValidation).toBeCalledWith({ users: [existsUser] });
   });
 
-  describe.each([
-    // id
-    {
-      properties: { id: undefined },
-      validations: [{ field: 'id', rule: 'required', message: 'This value is required' }],
-    },
-    {
-      properties: { id: 1 },
-      validations: [{ field: 'id', rule: 'string', message: 'This value must be a string' }],
-    },
-    {
-      properties: { id: 'invalid_uuid' },
-      validations: [
-        {
-          field: 'id',
-          rule: 'regex',
-          message: 'This value must be valid according to the pattern: uuidV4',
-          details: {
-            pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i',
-          },
-        },
-      ],
-    },
-    {
-      properties: { id: nonExistentId },
-      validations: [{ field: 'id', rule: 'exists', message: 'This value was not found' }],
-    },
-  ])(
-    'Should throw ValidationException for every user invalid prop',
-    ({ properties, validations }) => {
-      it(JSON.stringify(validations), async () => {
-        const { sut } = makeSut();
+  test('Should throws if firstValidation throws', async () => {
+    const { showUserValidation, sut } = makeSut();
 
-        const requestModel = { ...properties } as ShowUserUseCase.RequestModel;
+    const requestModel = {
+      id: validUuidV4,
+      anyWrongProp: 'anyValue',
+    };
+    const error = new Error('firstValidation Error');
 
-        const sutResult = await sut.execute(requestModel).catch((e) => e);
+    showUserValidation.firstValidation.mockReturnValueOnce(Promise.reject(error));
 
-        expect(sutResult).toStrictEqual(new ValidationException(validations));
-      });
-    },
-  );
+    const sutResult = sut.execute(requestModel);
+
+    await expect(sutResult).rejects.toStrictEqual(error);
+  });
+
+  test('Should throws if secondValidation throws', async () => {
+    const { showUserValidation, sut } = makeSut();
+
+    const requestModel = {
+      id: validUuidV4,
+      anyWrongProp: 'anyValue',
+    };
+    const error = new Error('secondValidation Error');
+
+    showUserValidation.secondValidation.mockReturnValueOnce(Promise.reject(error));
+
+    const sutResult = sut.execute(requestModel);
+
+    await expect(sutResult).rejects.toStrictEqual(error);
+  });
 });

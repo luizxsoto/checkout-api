@@ -5,11 +5,13 @@ import { KnexUserRepository } from '@/infra/repositories';
 import { UUIDService } from '@/infra/services';
 import { CompositeValidation } from '@/main/composites';
 import { knexConfig } from '@/main/config';
+import { makeShowUserValidation } from '@/main/factories/validations';
 
 export function makeDbShowUserUseCase(session: SessionModel): ShowUserUseCase.UseCase {
   const repository = new KnexUserRepository(session, knexConfig, new UUIDService());
   const validationService = new CompositeValidation();
-  const useCase = new DbShowUserUseCase(repository, validationService);
+  const showUserValidation = makeShowUserValidation(validationService);
+  const useCase = new DbShowUserUseCase(repository, showUserValidation);
 
   return useCase;
 }

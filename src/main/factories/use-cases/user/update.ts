@@ -6,16 +6,18 @@ import { KnexUserRepository } from '@/infra/repositories';
 import { UUIDService } from '@/infra/services';
 import { CompositeValidation } from '@/main/composites';
 import { knexConfig } from '@/main/config';
+import { makeUpdateUserValidation } from '@/main/factories/validations';
 
 export function makeDbUpdateUserUseCase(session: SessionModel): UpdateUserUseCase.UseCase {
   const repository = new KnexUserRepository(session, knexConfig, new UUIDService());
   const validationService = new CompositeValidation();
+  const updateUserValidation = makeUpdateUserValidation(validationService);
   const salt = 12;
   const bcryptCryptography = new BcryptCryptography(salt);
   const useCase = new DbUpdateUserUseCase(
     repository,
     repository,
-    validationService,
+    updateUserValidation,
     bcryptCryptography,
   );
 
