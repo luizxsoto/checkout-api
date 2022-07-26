@@ -1,5 +1,5 @@
 export class CreateOrderDto {
-  public customerId!: string;
+  public userId!: string;
 
   public paymentProfileId!: string;
 

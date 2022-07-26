@@ -3,7 +3,7 @@ import { BaseModel } from './base';
 export class PaymentProfileModel<
   PaymentMethod = 'CARD_PAYMENT' | 'PHONE_PAYMENT',
 > extends BaseModel {
-  public customerId!: string;
+  public userId!: string;
 
   public paymentMethod!: PaymentMethod;
 

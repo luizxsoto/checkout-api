@@ -56,7 +56,7 @@ export class DbListPaymentProfileUseCase implements ListPaymentProfileUseCase.Us
         orderBy: [
           this.validatorService.rules.string(),
           this.validatorService.rules.in({
-            values: ['customerId', 'paymentMethod', 'createdAt', 'updatedAt'],
+            values: ['userId', 'paymentMethod', 'createdAt', 'updatedAt'],
           }),
         ],
         order: [
@@ -68,7 +68,7 @@ export class DbListPaymentProfileUseCase implements ListPaymentProfileUseCase.Us
             Omit<PaymentProfileModel, 'id' | 'data' | 'deleteUserId' | 'deletedAt'>
           >({
             schema: {
-              customerId: [
+              userId: [
                 this.validatorService.rules.array({
                   rules: [
                     this.validatorService.rules.string(),

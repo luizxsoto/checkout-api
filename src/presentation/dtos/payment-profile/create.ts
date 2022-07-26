@@ -1,7 +1,7 @@
 import { PaymentProfileModel } from '@/domain/models';
 
 export class CreatePaymentProfileDto<PaymentMethod = 'CARD_PAYMENT' | 'PHONE_PAYMENT'> {
-  public customerId!: string;
+  public userId!: string;
 
   public paymentMethod!: PaymentMethod;
 

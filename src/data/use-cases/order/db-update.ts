@@ -28,7 +28,7 @@ export class DbUpdateOrderUseCase implements UpdateOrderUseCase.UseCase {
     const orders = await this.findByOrderRepository.findBy([{ id: sanitizedRequestModel.id }]);
 
     const paymentProfiles = await this.findByPaymentProfileRepository.findBy([
-      { id: sanitizedRequestModel.paymentProfileId, customerId: sanitizedRequestModel.customerId },
+      { id: sanitizedRequestModel.paymentProfileId, userId: sanitizedRequestModel.userId },
     ]);
 
     await restValidation({ orders, paymentProfiles });
@@ -48,7 +48,7 @@ export class DbUpdateOrderUseCase implements UpdateOrderUseCase.UseCase {
   ): UpdateOrderUseCase.RequestModel {
     return {
       id: requestModel.id,
-      customerId: requestModel.customerId,
+      userId: requestModel.userId,
       paymentProfileId: requestModel.paymentProfileId,
     };
   }
@@ -68,7 +68,7 @@ export class DbUpdateOrderUseCase implements UpdateOrderUseCase.UseCase {
           this.validatorService.rules.string(),
           this.validatorService.rules.regex({ pattern: 'uuidV4' }),
         ],
-        customerId: [
+        userId: [
           this.validatorService.rules.required(),
           this.validatorService.rules.string(),
           this.validatorService.rules.regex({ pattern: 'uuidV4' }),
@@ -91,11 +91,11 @@ export class DbUpdateOrderUseCase implements UpdateOrderUseCase.UseCase {
               props: [{ modelKey: 'id', dataKey: 'id' }],
             }),
           ],
-          customerId: [
+          userId: [
             this.validatorService.rules.exists({
               dataEntity: 'paymentProfiles',
               props: [
-                { modelKey: 'customerId', dataKey: 'customerId' },
+                { modelKey: 'userId', dataKey: 'userId' },
                 { modelKey: 'paymentProfileId', dataKey: 'id' },
               ],
             }),
@@ -104,7 +104,7 @@ export class DbUpdateOrderUseCase implements UpdateOrderUseCase.UseCase {
             this.validatorService.rules.exists({
               dataEntity: 'paymentProfiles',
               props: [
-                { modelKey: 'customerId', dataKey: 'customerId' },
+                { modelKey: 'userId', dataKey: 'userId' },
                 { modelKey: 'paymentProfileId', dataKey: 'id' },
               ],
             }),

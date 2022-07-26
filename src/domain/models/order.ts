@@ -1,7 +1,7 @@
 import { BaseModel } from './base';
 
 export class OrderModel extends BaseModel {
-  public customerId!: string;
+  public userId!: string;
 
   public paymentProfileId!: string;
 

@@ -1,23 +1,23 @@
 import { Hasher } from '@/data/contracts/cryptography';
 import {
   CreatePaymentProfileRepository,
-  FindByCustomerRepository,
   FindByPaymentProfileRepository,
+  FindByUserRepository,
 } from '@/data/contracts/repositories';
 import { ValidatorService } from '@/data/contracts/services';
 import { Rule } from '@/data/contracts/services/validator';
-import { CustomerModel, PaymentProfileModel } from '@/domain/models';
+import { PaymentProfileModel, UserModel } from '@/domain/models';
 import { CreatePaymentProfileUseCase } from '@/domain/use-cases';
 
 export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCase.UseCase {
   constructor(
     private readonly createPaymentProfileRepository: CreatePaymentProfileRepository.Repository,
     private readonly findByPaymentProfileRepository: FindByPaymentProfileRepository.Repository,
-    private readonly findByCustomerRepository: FindByCustomerRepository.Repository,
+    private readonly findByUserRepository: FindByUserRepository.Repository,
     private readonly validatorService: ValidatorService.Validator<
       CreatePaymentProfileUseCase.RequestModel,
       {
-        customers: CustomerModel[];
+        users: Omit<UserModel, 'password'>[];
         paymentProfiles: (Omit<PaymentProfileModel, 'data'> & {
           data: Omit<PaymentProfileModel['data'], 'number' | 'cvv'> & { number?: string };
         })[];
@@ -33,12 +33,10 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
 
     const restValidation = await this.validateRequestModel(sanitizedRequestModel);
 
-    const customers = await this.findByCustomerRepository.findBy([
-      { id: sanitizedRequestModel.customerId },
-    ]);
+    const users = await this.findByUserRepository.findBy([{ id: sanitizedRequestModel.userId }]);
 
     const paymentProfiles = await this.findByPaymentProfileRepository.findBy([
-      { customerId: sanitizedRequestModel.customerId },
+      { userId: sanitizedRequestModel.userId },
     ]);
 
     const requestModelWithSanitizedData = {
@@ -46,7 +44,7 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
       data: await this.sanitizeData(sanitizedRequestModel),
     };
 
-    await restValidation(requestModelWithSanitizedData, { customers, paymentProfiles });
+    await restValidation(requestModelWithSanitizedData, { users, paymentProfiles });
 
     const paymentProfileCreated = await this.createPaymentProfileRepository.create(
       requestModelWithSanitizedData,
@@ -72,7 +70,7 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
     requestModel: CreatePaymentProfileUseCase.RequestModel,
   ): CreatePaymentProfileUseCase.RequestModel {
     const sanitizedRequestModel = {
-      customerId: requestModel.customerId,
+      userId: requestModel.userId,
       paymentMethod: requestModel.paymentMethod,
       data: requestModel.data,
     };
@@ -133,7 +131,7 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
     (
       sanitizedRequestModel: Omit<PaymentProfileModel, 'id' | 'createUserId' | 'createdAt'>,
       validationData: {
-        customers: CustomerModel[];
+        users: Omit<UserModel, 'password'>[];
         paymentProfiles: (Omit<PaymentProfileModel, 'data'> & {
           data: Omit<PaymentProfileModel['data'], 'number' | 'cvv'> & { number?: string };
         })[];
@@ -211,7 +209,7 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
     }
     await this.validatorService.validate({
       schema: {
-        customerId: [
+        userId: [
           this.validatorService.rules.required(),
           this.validatorService.rules.string(),
           this.validatorService.rules.regex({ pattern: 'uuidV4' }),
@@ -224,7 +222,7 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
         data: dataPayload,
       },
       model: requestModel,
-      data: { customers: [], paymentProfiles: [] },
+      data: { users: [], paymentProfiles: [] },
     });
     return (sanitizedRequestModel, validationData) => {
       const dataUnique: Rule[] = [];
@@ -257,10 +255,10 @@ export class DbCreatePaymentProfileUseCase implements CreatePaymentProfileUseCas
       }
       return this.validatorService.validate({
         schema: {
-          customerId: [
+          userId: [
             this.validatorService.rules.exists({
-              dataEntity: 'customers',
-              props: [{ modelKey: 'customerId', dataKey: 'id' }],
+              dataEntity: 'users',
+              props: [{ modelKey: 'userId', dataKey: 'id' }],
             }),
           ],
           paymentMethod: [],

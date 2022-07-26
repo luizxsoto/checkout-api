@@ -5,7 +5,7 @@ import { PaymentProfileModel } from '@/domain/models';
 import { envConfig } from '@/main/config';
 
 const tableName = 'payment_profiles';
-const customers: () => Promise<
+const paymentProfiles: () => Promise<
   (Omit<PaymentProfileModel, 'createdAt'> & {
     createdAt: string;
   })[]
@@ -18,7 +18,7 @@ const customers: () => Promise<
     id: '00000000-0000-4000-8000-000000000001',
     createUserId: '00000000-0000-4000-8000-000000000001',
     createdAt: new Date().toISOString(),
-    customerId: '00000000-0000-4000-8000-000000000001',
+    userId: '00000000-0000-4000-8000-000000000001',
     paymentMethod: 'CARD_PAYMENT',
     data: {
       type: 'CREDIT',
@@ -40,7 +40,7 @@ const customers: () => Promise<
     id: '00000000-0000-4000-8000-000000000002',
     createUserId: '00000000-0000-4000-8000-000000000001',
     createdAt: new Date().toISOString(),
-    customerId: '00000000-0000-4000-8000-000000000001',
+    userId: '00000000-0000-4000-8000-000000000001',
     paymentMethod: 'PHONE_PAYMENT',
     data: {
       countryCode: '1234',
@@ -53,13 +53,13 @@ const customers: () => Promise<
 export async function up(knex: Knex): Promise<void> {
   if (envConfig.nodeEnv === 'production') return;
 
-  await knex.table(tableName).insert(await customers());
+  await knex.table(tableName).insert(await paymentProfiles());
 }
 
 export async function down(knex: Knex): Promise<void> {
   if (envConfig.nodeEnv === 'production') return;
 
-  const customerIds = (await customers()).map((customer) => customer.id);
+  const paymentProfileIds = (await paymentProfiles()).map((paymentProfile) => paymentProfile.id);
 
-  await knex.table(tableName).whereIn('id', customerIds).delete();
+  await knex.table(tableName).whereIn('id', paymentProfileIds).delete();
 }

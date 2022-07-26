@@ -46,7 +46,7 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
     const restValidation = await this.validateRequestModel(sanitizedRequestModel);
 
     const paymentProfiles = await this.findByPaymentProfileRepository.findBy([
-      { id: sanitizedRequestModel.paymentProfileId, customerId: sanitizedRequestModel.customerId },
+      { id: sanitizedRequestModel.paymentProfileId, userId: sanitizedRequestModel.userId },
     ]);
 
     const products = await this.findByProductRepository.findBy(
@@ -87,7 +87,7 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
     requestModel: CreateOrderUseCase.RequestModel,
   ): CreateOrderUseCase.RequestModel {
     const sanitizedRequestModel = {
-      customerId: requestModel.customerId,
+      userId: requestModel.userId,
       paymentProfileId: requestModel.paymentProfileId,
       orderItems: requestModel.orderItems,
     };
@@ -138,7 +138,7 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
   > {
     await this.validatorService.validate({
       schema: {
-        customerId: [
+        userId: [
           this.validatorService.rules.required(),
           this.validatorService.rules.string(),
           this.validatorService.rules.regex({ pattern: 'uuidV4' }),
@@ -180,11 +180,11 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
     return (validationData) =>
       this.validatorService.validate({
         schema: {
-          customerId: [
+          userId: [
             this.validatorService.rules.exists({
               dataEntity: 'paymentProfiles',
               props: [
-                { modelKey: 'customerId', dataKey: 'customerId' },
+                { modelKey: 'userId', dataKey: 'userId' },
                 { modelKey: 'paymentProfileId', dataKey: 'id' },
               ],
             }),
@@ -193,7 +193,7 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
             this.validatorService.rules.exists({
               dataEntity: 'paymentProfiles',
               props: [
-                { modelKey: 'customerId', dataKey: 'customerId' },
+                { modelKey: 'userId', dataKey: 'userId' },
                 { modelKey: 'paymentProfileId', dataKey: 'id' },
               ],
             }),

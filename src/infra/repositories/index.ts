@@ -1,5 +1,4 @@
 export * from './knex/base';
-export * from './knex/customer';
 export * from './knex/order-item';
 export * from './knex/order';
 export * from './knex/payment-profile';

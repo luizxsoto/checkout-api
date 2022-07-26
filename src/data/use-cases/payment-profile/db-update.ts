@@ -31,7 +31,7 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
     const restValidation = await this.validateRequestModel(sanitizedRequestModel);
 
     const paymentProfiles = await this.findByPaymentProfileRepository.findBy(
-      [{ customerId: sanitizedRequestModel.customerId }],
+      [{ userId: sanitizedRequestModel.userId }],
       true,
     );
 
@@ -74,7 +74,7 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
   ): UpdatePaymentProfileUseCase.RequestModel {
     const sanitizedRequestModel = {
       id: requestModel.id,
-      customerId: requestModel.customerId,
+      userId: requestModel.userId,
       paymentMethod: requestModel.paymentMethod,
       data: requestModel.data,
     };
@@ -217,7 +217,7 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
           this.validatorService.rules.string(),
           this.validatorService.rules.regex({ pattern: 'uuidV4' }),
         ],
-        customerId: [
+        userId: [
           this.validatorService.rules.required(),
           this.validatorService.rules.string(),
           this.validatorService.rules.regex({ pattern: 'uuidV4' }),
@@ -270,16 +270,16 @@ export class DbUpdatePaymentProfileUseCase implements UpdatePaymentProfileUseCas
               dataEntity: 'paymentProfiles',
               props: [
                 { modelKey: 'id', dataKey: 'id' },
-                { modelKey: 'customerId', dataKey: 'customerId' },
+                { modelKey: 'userId', dataKey: 'userId' },
               ],
             }),
           ],
-          customerId: [
+          userId: [
             this.validatorService.rules.exists({
               dataEntity: 'paymentProfiles',
               props: [
                 { modelKey: 'id', dataKey: 'id' },
-                { modelKey: 'customerId', dataKey: 'customerId' },
+                { modelKey: 'userId', dataKey: 'userId' },
               ],
             }),
           ],

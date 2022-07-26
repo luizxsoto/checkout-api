@@ -55,7 +55,7 @@ export class DbListOrderUseCase implements ListOrderUseCase.UseCase {
         orderBy: [
           this.validatorService.rules.string(),
           this.validatorService.rules.in({
-            values: ['customerId', 'paymentProfileId', 'totalValue', 'createdAt', 'updatedAt'],
+            values: ['userId', 'paymentProfileId', 'totalValue', 'createdAt', 'updatedAt'],
           }),
         ],
         order: [
@@ -67,7 +67,7 @@ export class DbListOrderUseCase implements ListOrderUseCase.UseCase {
             Omit<OrderModel, 'id' | 'deleteUserId' | 'deletedAt'>
           >({
             schema: {
-              customerId: [
+              userId: [
                 this.validatorService.rules.array({
                   rules: [
                     this.validatorService.rules.string(),

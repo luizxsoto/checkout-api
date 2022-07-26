@@ -1,9 +1,3 @@
-export * from './customer/create';
-export * from './customer/list';
-export * from './customer/remove';
-export * from './customer/show';
-export * from './customer/update';
-
 export * from './order/create';
 export * from './order/list';
 export * from './order/remove';

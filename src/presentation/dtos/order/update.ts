@@ -1,7 +1,7 @@
 export class UpdateOrderDto {
   public id!: string;
 
-  public customerId!: string;
+  public userId!: string;
 
   public paymentProfileId!: string;
 }

@@ -8,7 +8,7 @@ export async function up(knex: Knex): Promise<void> {
   await createDefaultTable(knex, {
     tableName,
     columns: (table) => {
-      table.uuid('customerId').notNullable().references('id').inTable('customers');
+      table.uuid('userId').notNullable().references('id').inTable('users');
       table.string('paymentMethod', 20).notNullable();
       table.jsonb('data').notNullable();
     },

@@ -1,9 +1,3 @@
-export * from './customer/db-create';
-export * from './customer/db-list';
-export * from './customer/db-remove';
-export * from './customer/db-show';
-export * from './customer/db-update';
-
 export * from './order/db-create';
 export * from './order/db-list';
 export * from './order/db-remove';

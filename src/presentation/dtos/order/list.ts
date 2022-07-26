@@ -3,7 +3,7 @@ export class ListOrderDto {
 
   public perPage?: number;
 
-  public orderBy?: 'customerId' | 'paymentProfileId' | 'totalValue' | 'createdAt' | 'updatedAt';
+  public orderBy?: 'userId' | 'paymentProfileId' | 'totalValue' | 'createdAt' | 'updatedAt';
 
   public order?: 'asc' | 'desc';
 

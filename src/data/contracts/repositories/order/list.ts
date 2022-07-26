@@ -3,7 +3,7 @@ import { OrderModel } from '@/domain/models';
 export type RequestModel = {
   page?: number;
   perPage?: number;
-  orderBy?: 'customerId' | 'paymentProfileId' | 'totalValue' | 'createdAt' | 'updatedAt';
+  orderBy?: 'userId' | 'paymentProfileId' | 'totalValue' | 'createdAt' | 'updatedAt';
   order?: 'asc' | 'desc';
   filters?: string;
 };
