@@ -52,7 +52,7 @@ describe(DbListPaymentProfileUseCase.name, () => {
         orderBy: [
           validatorService.rules.string(),
           validatorService.rules.in({
-            values: ['customerId', 'paymentMethod', 'createdAt', 'updatedAt'],
+            values: ['userId', 'paymentMethod', 'createdAt', 'updatedAt'],
           }),
         ],
         order: [
@@ -64,7 +64,7 @@ describe(DbListPaymentProfileUseCase.name, () => {
             Omit<PaymentProfileModel, 'id' | 'data' | 'deleteUserId' | 'deletedAt'>
           >({
             schema: {
-              customerId: [
+              userId: [
                 validatorService.rules.array({
                   rules: [
                     validatorService.rules.string(),
@@ -158,7 +158,7 @@ describe(DbListPaymentProfileUseCase.name, () => {
         {
           field: 'orderBy',
           rule: 'in',
-          message: 'This value must be in: customerId, paymentMethod, createdAt, updatedAt',
+          message: 'This value must be in: userId, paymentMethod, createdAt, updatedAt',
         },
       ],
     },
@@ -171,18 +171,18 @@ describe(DbListPaymentProfileUseCase.name, () => {
       properties: { order: 'order' },
       validations: [{ field: 'order', rule: 'in', message: 'This value must be in: asc, desc' }],
     },
-    // customerId
+    // userId
     {
-      properties: { filters: '["=", "customerId", 1]' },
+      properties: { filters: '["=", "userId", 1]' },
       validations: [
-        { field: 'filters.customerId.0', rule: 'string', message: 'This value must be a string' },
+        { field: 'filters.userId.0', rule: 'string', message: 'This value must be a string' },
       ],
     },
     {
-      properties: { filters: '["=", "customerId", "invalid_uuid"]' },
+      properties: { filters: '["=", "userId", "invalid_uuid"]' },
       validations: [
         {
-          field: 'filters.customerId.0',
+          field: 'filters.userId.0',
           rule: 'regex',
           message: 'This value must be valid according to the pattern: uuidV4',
         },

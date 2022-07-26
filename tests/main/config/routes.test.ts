@@ -4,7 +4,7 @@ import { setupRoutes } from '@/main/config/routes';
 import * as routes from '@/main/routes';
 
 jest.mock('express', () => ({ Express: {}, Router: jest.fn(() => jest.fn()), json: jest.fn() }));
-jest.mock('@/main/routes', () => ({ customerRoutes: jest.fn() }));
+jest.mock('@/main/routes', () => ({ userRoutes: jest.fn() }));
 
 function makeSut() {
   const express = { use: jest.fn() };
@@ -21,7 +21,7 @@ describe('Routes', () => {
   test('Should setup routes', async () => {
     const { express, sut } = makeSut();
 
-    const routeSpy = jest.spyOn(routes, 'customerRoutes');
+    const routeSpy = jest.spyOn(routes, 'userRoutes');
     sut(express as unknown as Express, true);
 
     expect(express.use).toBeCalledWith('/api', expect.any(Function));
@@ -32,7 +32,7 @@ describe('Routes', () => {
   test('Should not setup not found route', async () => {
     const { express, sut } = makeSut();
 
-    const routeSpy = jest.spyOn(routes, 'customerRoutes');
+    const routeSpy = jest.spyOn(routes, 'userRoutes');
     sut(express as unknown as Express);
 
     expect(express.use).toBeCalledWith('/api', expect.any(Function));

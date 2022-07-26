@@ -31,7 +31,7 @@ describe(DbUpdateOrderUseCase.name, () => {
 
     const requestModel = {
       id: validUuidV4,
-      customerId: validUuidV4,
+      userId: validUuidV4,
       paymentProfileId: validUuidV4,
       anyWrongProp: 'anyValue',
     };
@@ -57,7 +57,7 @@ describe(DbUpdateOrderUseCase.name, () => {
           validatorService.rules.string(),
           validatorService.rules.regex({ pattern: 'uuidV4' }),
         ],
-        customerId: [
+        userId: [
           validatorService.rules.required(),
           validatorService.rules.string(),
           validatorService.rules.regex({ pattern: 'uuidV4' }),
@@ -73,7 +73,7 @@ describe(DbUpdateOrderUseCase.name, () => {
     });
     expect(orderRepository.findBy).toBeCalledWith([{ id: sanitizedRequestModel.id }]);
     expect(paymentProfileRepository.findBy).toBeCalledWith([
-      { id: sanitizedRequestModel.paymentProfileId, customerId: sanitizedRequestModel.customerId },
+      { id: sanitizedRequestModel.paymentProfileId, userId: sanitizedRequestModel.userId },
     ]);
     expect(validatorService.validate).toBeCalledWith({
       schema: {
@@ -83,11 +83,11 @@ describe(DbUpdateOrderUseCase.name, () => {
             props: [{ modelKey: 'id', dataKey: 'id' }],
           }),
         ],
-        customerId: [
+        userId: [
           validatorService.rules.exists({
             dataEntity: 'paymentProfiles',
             props: [
-              { modelKey: 'customerId', dataKey: 'customerId' },
+              { modelKey: 'userId', dataKey: 'userId' },
               { modelKey: 'paymentProfileId', dataKey: 'id' },
             ],
           }),
@@ -96,7 +96,7 @@ describe(DbUpdateOrderUseCase.name, () => {
           validatorService.rules.exists({
             dataEntity: 'paymentProfiles',
             props: [
-              { modelKey: 'customerId', dataKey: 'customerId' },
+              { modelKey: 'userId', dataKey: 'userId' },
               { modelKey: 'paymentProfileId', dataKey: 'id' },
             ],
           }),
@@ -135,31 +135,29 @@ describe(DbUpdateOrderUseCase.name, () => {
       properties: { id: nonExistentId },
       validations: [{ field: 'id', rule: 'exists', message: 'This value was not found' }],
     },
-    // customerId
+    // userId
     {
-      properties: { customerId: undefined },
-      validations: [{ field: 'customerId', rule: 'required', message: 'This value is required' }],
+      properties: { userId: undefined },
+      validations: [{ field: 'userId', rule: 'required', message: 'This value is required' }],
     },
     {
-      properties: { customerId: 1 },
-      validations: [
-        { field: 'customerId', rule: 'string', message: 'This value must be a string' },
-      ],
+      properties: { userId: 1 },
+      validations: [{ field: 'userId', rule: 'string', message: 'This value must be a string' }],
     },
     {
-      properties: { customerId: 'invalid_uuid' },
+      properties: { userId: 'invalid_uuid' },
       validations: [
         {
-          field: 'customerId',
+          field: 'userId',
           rule: 'regex',
           message: 'This value must be valid according to the pattern: uuidV4',
         },
       ],
     },
     {
-      properties: { customerId: nonExistentId },
+      properties: { userId: nonExistentId },
       validations: [
-        { field: 'customerId', rule: 'exists', message: 'This value was not found' },
+        { field: 'userId', rule: 'exists', message: 'This value was not found' },
         { field: 'paymentProfileId', rule: 'exists', message: 'This value was not found' },
       ],
     },
@@ -189,7 +187,7 @@ describe(DbUpdateOrderUseCase.name, () => {
     {
       properties: { paymentProfileId: nonExistentId },
       validations: [
-        { field: 'customerId', rule: 'exists', message: 'This value was not found' },
+        { field: 'userId', rule: 'exists', message: 'This value was not found' },
         { field: 'paymentProfileId', rule: 'exists', message: 'This value was not found' },
       ],
     },
@@ -201,7 +199,7 @@ describe(DbUpdateOrderUseCase.name, () => {
 
         const requestModel = {
           id: validUuidV4,
-          customerId: validUuidV4,
+          userId: validUuidV4,
           paymentProfileId: validUuidV4,
           ...properties,
         } as UpdateOrderUseCase.RequestModel;

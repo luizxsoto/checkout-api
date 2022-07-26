@@ -2,7 +2,7 @@ import { RemovePaymentProfileController } from '@/presentation/controllers';
 import { makePaymentProfileModelMock } from '@tests/domain/mocks/models';
 import { makeRemovePaymentProfileUseCaseStub } from '@tests/presentation/stubs/use-cases';
 
-const customerMock = makePaymentProfileModelMock();
+const userMock = makePaymentProfileModelMock();
 
 function makeSut() {
   const removePaymentProfileUseCase = makeRemovePaymentProfileUseCaseStub();
@@ -12,14 +12,14 @@ function makeSut() {
 }
 
 describe(RemovePaymentProfileController.name, () => {
-  test('Should remove customer and return correct values', async () => {
+  test('Should remove user and return correct values', async () => {
     const { removePaymentProfileUseCase, sut } = makeSut();
 
-    removePaymentProfileUseCase.execute.mockReturnValueOnce(Promise.resolve(customerMock));
+    removePaymentProfileUseCase.execute.mockReturnValueOnce(Promise.resolve(userMock));
 
-    const sutResult = await sut.handle(customerMock);
+    const sutResult = await sut.handle(userMock);
 
-    expect(sutResult).toStrictEqual({ statusCode: 200, body: customerMock });
-    expect(removePaymentProfileUseCase.execute).toBeCalledWith(customerMock);
+    expect(sutResult).toStrictEqual({ statusCode: 200, body: userMock });
+    expect(removePaymentProfileUseCase.execute).toBeCalledWith(userMock);
   });
 });

@@ -7,7 +7,7 @@ import { knexConfig, setupApp } from '@/main/config';
 import { makeBearerTokenMock } from '@tests/domain/mocks/models';
 
 const validUuidV4 = '10000000-0000-4000-8000-000000000001';
-const existingCustomerId = '00000000-0000-4000-8000-000000000001';
+const existingUserId = '00000000-0000-4000-8000-000000000001';
 const userId = '00000000-0000-4000-8000-000000000001';
 let app: Express;
 
@@ -32,7 +32,7 @@ describe('PaymentProfile Routes', () => {
     test('Should list paymentProfile and return correct values', async () => {
       const requestModel = {
         id: validUuidV4,
-        customerId: validUuidV4,
+        userId: validUuidV4,
         paymentMethod: 'CARD_PAYMENT',
         data: {
           type: 'CREDIT',
@@ -53,13 +53,13 @@ describe('PaymentProfile Routes', () => {
 
       const result = await request(app)
         .get('/api/payment-profiles')
-        .query({ filters: `["=", "customerId", "${requestModel.customerId}"]` })
+        .query({ filters: `["=", "userId", "${requestModel.userId}"]` })
         .set('authorization', await makeBearerTokenMock())
         .send();
 
       expect(result.status).toBe(200);
       expect(result.body[0]?.id).toBe(requestModel.id);
-      expect(result.body[0]?.customerId).toBe(requestModel.customerId);
+      expect(result.body[0]?.userId).toBe(requestModel.userId);
       expect(result.body[0]?.paymentMethod).toBe(requestModel.paymentMethod);
       expect(result.body[0]?.data?.type).toBe(requestModel.data.type);
       expect(result.body[0]?.data?.brand).toBe(requestModel.data.brand);
@@ -95,7 +95,7 @@ describe('PaymentProfile Routes', () => {
             field: 'filters',
             rule: 'listFilters',
             message:
-              'This value must be a valid list filters and with this posible fields: customerId, paymentMethod, createUserId, updateUserId, createdAt, updatedAt',
+              'This value must be a valid list filters and with this posible fields: userId, paymentMethod, createUserId, updateUserId, createdAt, updatedAt',
           },
         ],
       });
@@ -106,7 +106,7 @@ describe('PaymentProfile Routes', () => {
     test('Should show paymentProfile and return correct values', async () => {
       const requestModel = {
         id: validUuidV4,
-        customerId: existingCustomerId,
+        userId: existingUserId,
         paymentMethod: 'CARD_PAYMENT',
         data: {
           type: 'CREDIT',
@@ -132,7 +132,7 @@ describe('PaymentProfile Routes', () => {
 
       expect(result.status).toBe(200);
       expect(result.body.id).toBe(requestModel.id);
-      expect(result.body.customerId).toBe(requestModel.customerId);
+      expect(result.body.userId).toBe(requestModel.userId);
       expect(result.body.paymentMethod).toBe(requestModel.paymentMethod);
       expect(result.body.data?.type).toBe(requestModel.data.type);
       expect(result.body.data?.brand).toBe(requestModel.data.brand);
@@ -176,7 +176,7 @@ describe('PaymentProfile Routes', () => {
   describe('create()', () => {
     test('Should create paymentProfile and return correct values', async () => {
       const requestModel = {
-        customerId: existingCustomerId,
+        userId: existingUserId,
         paymentMethod: 'CARD_PAYMENT',
         data: {
           type: 'CREDIT',
@@ -196,7 +196,7 @@ describe('PaymentProfile Routes', () => {
         .send(requestModel);
 
       expect(result.status).toBe(201);
-      expect(result.body.customerId).toBe(requestModel.customerId);
+      expect(result.body.userId).toBe(requestModel.userId);
       expect(result.body.paymentMethod).toBe(requestModel.paymentMethod);
       expect(result.body.data?.type).toBe(requestModel.data.type);
       expect(result.body.data?.brand).toBe(requestModel.data.brand);
@@ -242,7 +242,7 @@ describe('PaymentProfile Routes', () => {
         message: 'An error ocurred performing a validation',
         validations: [
           {
-            field: 'customerId',
+            field: 'userId',
             rule: 'required',
             message: 'This value is required',
           },
@@ -255,7 +255,7 @@ describe('PaymentProfile Routes', () => {
     test('Should update paymentProfile and return correct values', async () => {
       const requestModel = {
         id: validUuidV4,
-        customerId: existingCustomerId,
+        userId: existingUserId,
         paymentMethod: 'CARD_PAYMENT',
         data: {
           type: 'CREDIT',
@@ -282,7 +282,7 @@ describe('PaymentProfile Routes', () => {
 
       expect(result.status).toBe(200);
       expect(result.body.id).toBe(requestModel.id);
-      expect(result.body.customerId).toBe(requestModel.customerId);
+      expect(result.body.userId).toBe(requestModel.userId);
       expect(result.body.paymentMethod).toBe(requestModel.paymentMethod);
       expect(result.body.data?.type).toBe(requestModel.data.type);
       expect(result.body.data?.brand).toBe(requestModel.data.brand);
@@ -302,7 +302,7 @@ describe('PaymentProfile Routes', () => {
     test('Should return a correct body validation error if some prop is invalid', async () => {
       const requestModel = {
         id: 'invalid_id',
-        customerId: existingCustomerId,
+        userId: existingUserId,
         paymentMethod: 'CARD_PAYMENT',
         data: {
           type: 'CREDIT',
@@ -342,7 +342,7 @@ describe('PaymentProfile Routes', () => {
     test('Should remove paymentProfile and return correct values', async () => {
       const requestModel = {
         id: validUuidV4,
-        customerId: existingCustomerId,
+        userId: existingUserId,
         paymentMethod: 'CARD_PAYMENT',
         data: {
           type: 'CREDIT',
@@ -371,7 +371,7 @@ describe('PaymentProfile Routes', () => {
 
       expect(result.status).toBe(200);
       expect(result.body.id).toBe(requestModel.id);
-      expect(result.body.customerId).toBe(requestModel.customerId);
+      expect(result.body.userId).toBe(requestModel.userId);
       expect(result.body.paymentMethod).toBe(requestModel.paymentMethod);
       expect(result.body.data?.type).toBe(requestModel.data.type);
       expect(result.body.data?.brand).toBe(requestModel.data.brand);

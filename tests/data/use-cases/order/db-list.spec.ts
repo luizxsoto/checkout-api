@@ -22,7 +22,7 @@ describe(DbListOrderUseCase.name, () => {
     const requestModel = {
       page: 1,
       perPage: 20,
-      orderBy: 'customerId' as const,
+      orderBy: 'userId' as const,
       order: 'asc' as const,
       filters: '[]',
       anyWrongProp: 'anyValue',
@@ -53,7 +53,7 @@ describe(DbListOrderUseCase.name, () => {
         orderBy: [
           validatorService.rules.string(),
           validatorService.rules.in({
-            values: ['customerId', 'paymentProfileId', 'totalValue', 'createdAt', 'updatedAt'],
+            values: ['userId', 'paymentProfileId', 'totalValue', 'createdAt', 'updatedAt'],
           }),
         ],
         order: [
@@ -64,7 +64,7 @@ describe(DbListOrderUseCase.name, () => {
           validatorService.rules.listFilters<Omit<OrderModel, 'id' | 'deleteUserId' | 'deletedAt'>>(
             {
               schema: {
-                customerId: [
+                userId: [
                   validatorService.rules.array({
                     rules: [
                       validatorService.rules.string(),
@@ -168,7 +168,7 @@ describe(DbListOrderUseCase.name, () => {
           field: 'orderBy',
           rule: 'in',
           message:
-            'This value must be in: customerId, paymentProfileId, totalValue, createdAt, updatedAt',
+            'This value must be in: userId, paymentProfileId, totalValue, createdAt, updatedAt',
         },
       ],
     },
@@ -181,18 +181,18 @@ describe(DbListOrderUseCase.name, () => {
       properties: { order: 'order' },
       validations: [{ field: 'order', rule: 'in', message: 'This value must be in: asc, desc' }],
     },
-    // customerId
+    // userId
     {
-      properties: { filters: '["=", "customerId", 1]' },
+      properties: { filters: '["=", "userId", 1]' },
       validations: [
-        { field: 'filters.customerId.0', rule: 'string', message: 'This value must be a string' },
+        { field: 'filters.userId.0', rule: 'string', message: 'This value must be a string' },
       ],
     },
     {
-      properties: { filters: '["=", "customerId", "invalid_uuid"]' },
+      properties: { filters: '["=", "userId", "invalid_uuid"]' },
       validations: [
         {
-          field: 'filters.customerId.0',
+          field: 'filters.userId.0',
           rule: 'regex',
           message: 'This value must be valid according to the pattern: uuidV4',
         },

@@ -31,7 +31,7 @@ describe(KnexPaymentProfileRepository.name, () => {
       const { knex, sut } = makeSut();
 
       const requestModel: Partial<PaymentProfileModel> = {
-        customerId: 'any_customerId',
+        userId: 'any_userId',
         paymentMethod: 'CARD_PAYMENT',
         data: {
           type: 'CREDIT',
@@ -57,7 +57,7 @@ describe(KnexPaymentProfileRepository.name, () => {
       const { knex, sut } = makeSut();
 
       const requestModel: Partial<PaymentProfileModel> = {
-        customerId: 'any_customerId',
+        userId: 'any_userId',
         paymentMethod: 'CARD_PAYMENT',
         data: {
           type: 'CREDIT',
@@ -85,7 +85,7 @@ describe(KnexPaymentProfileRepository.name, () => {
       const { knex, sut } = makeSut();
 
       const requestModel: Partial<PaymentProfileModel> = {
-        customerId: 'any_customerId',
+        userId: 'any_userId',
         paymentMethod: 'PHONE_PAYMENT',
         data: {
           countryCode: 'any_countryCode',
@@ -107,7 +107,7 @@ describe(KnexPaymentProfileRepository.name, () => {
       const { knex, sut } = makeSut();
 
       const requestModel: Partial<PaymentProfileModel> = {
-        customerId: 'any_customerId',
+        userId: 'any_userId',
         paymentMethod: 'CARD_PAYMENT',
         data: {
           type: 'CREDIT',
@@ -135,7 +135,7 @@ describe(KnexPaymentProfileRepository.name, () => {
       const { knex, sut } = makeSut();
 
       const requestModel: Partial<PaymentProfileModel> = {
-        customerId: 'any_customerId',
+        userId: 'any_userId',
         paymentMethod: 'PHONE_PAYMENT',
         data: {
           countryCode: 'any_countryCode',
@@ -166,7 +166,7 @@ describe(KnexPaymentProfileRepository.name, () => {
         | 'updatedAt'
         | 'deletedAt'
       > = {
-        customerId: 'any_customerId',
+        userId: 'any_userId',
         paymentMethod: 'CARD_PAYMENT',
         data: {
           type: 'CREDIT',
@@ -205,7 +205,7 @@ describe(KnexPaymentProfileRepository.name, () => {
         >
       > = {
         id: 'any_id',
-        customerId: 'any_customerId',
+        userId: 'any_userId',
         paymentMethod: 'CARD_PAYMENT',
         data: {
           type: 'CREDIT',

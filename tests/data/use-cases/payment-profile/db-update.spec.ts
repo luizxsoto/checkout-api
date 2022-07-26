@@ -41,7 +41,7 @@ describe(DbUpdatePaymentProfileUseCase.name, () => {
 
     const requestModel = {
       id: validUuidV4,
-      customerId: validUuidV4,
+      userId: validUuidV4,
       paymentMethod: 'CARD_PAYMENT' as PaymentProfileModel['paymentMethod'],
       anyWrongProp: 'anyValue',
       data: {
@@ -99,7 +99,7 @@ describe(DbUpdatePaymentProfileUseCase.name, () => {
           validatorService.rules.string(),
           validatorService.rules.regex({ pattern: 'uuidV4' }),
         ],
-        customerId: [
+        userId: [
           validatorService.rules.required(),
           validatorService.rules.string(),
           validatorService.rules.regex({ pattern: 'uuidV4' }),
@@ -158,7 +158,7 @@ describe(DbUpdatePaymentProfileUseCase.name, () => {
       data: { paymentProfiles: [] },
     });
     expect(paymentProfileRepository.findBy).toBeCalledWith(
-      [{ customerId: sanitizedRequestModel.customerId }],
+      [{ userId: sanitizedRequestModel.userId }],
       true,
     );
     expect(hasherCryptography.hash).toBeCalledWith(sanitizedRequestModel.data.number);
@@ -170,16 +170,16 @@ describe(DbUpdatePaymentProfileUseCase.name, () => {
             dataEntity: 'paymentProfiles',
             props: [
               { modelKey: 'id', dataKey: 'id' },
-              { modelKey: 'customerId', dataKey: 'customerId' },
+              { modelKey: 'userId', dataKey: 'userId' },
             ],
           }),
         ],
-        customerId: [
+        userId: [
           validatorService.rules.exists({
             dataEntity: 'paymentProfiles',
             props: [
               { modelKey: 'id', dataKey: 'id' },
-              { modelKey: 'customerId', dataKey: 'customerId' },
+              { modelKey: 'userId', dataKey: 'userId' },
             ],
           }),
         ],
@@ -213,7 +213,7 @@ describe(DbUpdatePaymentProfileUseCase.name, () => {
 
     const requestModel = {
       id: validUuidV4,
-      customerId: validUuidV4,
+      userId: validUuidV4,
       paymentMethod: 'PHONE_PAYMENT' as PaymentProfileModel['paymentMethod'],
       anyWrongProp: 'anyValue',
       data: {
@@ -261,7 +261,7 @@ describe(DbUpdatePaymentProfileUseCase.name, () => {
           validatorService.rules.string(),
           validatorService.rules.regex({ pattern: 'uuidV4' }),
         ],
-        customerId: [
+        userId: [
           validatorService.rules.required(),
           validatorService.rules.string(),
           validatorService.rules.regex({ pattern: 'uuidV4' }),
@@ -298,7 +298,7 @@ describe(DbUpdatePaymentProfileUseCase.name, () => {
       data: { paymentProfiles: [] },
     });
     expect(paymentProfileRepository.findBy).toBeCalledWith(
-      [{ customerId: sanitizedRequestModel.customerId }],
+      [{ userId: sanitizedRequestModel.userId }],
       true,
     );
     expect(hasherCryptography.hash).not.toBeCalled();
@@ -309,16 +309,16 @@ describe(DbUpdatePaymentProfileUseCase.name, () => {
             dataEntity: 'paymentProfiles',
             props: [
               { modelKey: 'id', dataKey: 'id' },
-              { modelKey: 'customerId', dataKey: 'customerId' },
+              { modelKey: 'userId', dataKey: 'userId' },
             ],
           }),
         ],
-        customerId: [
+        userId: [
           validatorService.rules.exists({
             dataEntity: 'paymentProfiles',
             props: [
               { modelKey: 'id', dataKey: 'id' },
-              { modelKey: 'customerId', dataKey: 'customerId' },
+              { modelKey: 'userId', dataKey: 'userId' },
             ],
           }),
         ],
@@ -371,25 +371,23 @@ describe(DbUpdatePaymentProfileUseCase.name, () => {
       },
       validations: [
         { field: 'id', rule: 'exists', message: 'This value was not found' },
-        { field: 'customerId', rule: 'exists', message: 'This value was not found' },
+        { field: 'userId', rule: 'exists', message: 'This value was not found' },
       ],
     },
-    // customerId
+    // userId
     {
-      properties: { customerId: undefined },
-      validations: [{ field: 'customerId', rule: 'required', message: 'This value is required' }],
+      properties: { userId: undefined },
+      validations: [{ field: 'userId', rule: 'required', message: 'This value is required' }],
     },
     {
-      properties: { customerId: 1 },
-      validations: [
-        { field: 'customerId', rule: 'string', message: 'This value must be a string' },
-      ],
+      properties: { userId: 1 },
+      validations: [{ field: 'userId', rule: 'string', message: 'This value must be a string' }],
     },
     {
-      properties: { customerId: 'invalid_id' },
+      properties: { userId: 'invalid_id' },
       validations: [
         {
-          field: 'customerId',
+          field: 'userId',
           rule: 'regex',
           message: 'This value must be valid according to the pattern: uuidV4',
         },
@@ -397,12 +395,12 @@ describe(DbUpdatePaymentProfileUseCase.name, () => {
     },
     {
       properties: {
-        customerId: nonExistentId,
+        userId: nonExistentId,
         data: { ...makePaymentProfileModelMock().data, number: '1234567890123457' },
       },
       validations: [
         { field: 'id', rule: 'exists', message: 'This value was not found' },
-        { field: 'customerId', rule: 'exists', message: 'This value was not found' },
+        { field: 'userId', rule: 'exists', message: 'This value was not found' },
       ],
     },
     // paymentMethod
@@ -443,7 +441,7 @@ describe(DbUpdatePaymentProfileUseCase.name, () => {
       properties: { paymentMethod: 'CARD_PAYMENT', id: nonExistentId },
       validations: [
         { field: 'id', rule: 'exists', message: 'This value was not found' },
-        { field: 'customerId', rule: 'exists', message: 'This value was not found' },
+        { field: 'userId', rule: 'exists', message: 'This value was not found' },
         {
           field: 'data',
           rule: 'unique',
@@ -772,7 +770,7 @@ describe(DbUpdatePaymentProfileUseCase.name, () => {
       },
       validations: [
         { field: 'id', rule: 'exists', message: 'This value was not found' },
-        { field: 'customerId', rule: 'exists', message: 'This value was not found' },
+        { field: 'userId', rule: 'exists', message: 'This value was not found' },
         {
           field: 'data',
           rule: 'unique',
@@ -959,14 +957,14 @@ describe(DbUpdatePaymentProfileUseCase.name, () => {
       ],
     },
   ])(
-    'Should throw ValidationException for every customer invalid prop',
+    'Should throw ValidationException for every user invalid prop',
     ({ properties, validations }) => {
       it(JSON.stringify(validations), async () => {
         const { sut } = makeSut();
 
         const requestModel = {
           id: validUuidV4,
-          customerId: validUuidV4,
+          userId: validUuidV4,
           paymentMethod: 'CARD_PAYMENT',
           data: {
             type: 'CREDIT',

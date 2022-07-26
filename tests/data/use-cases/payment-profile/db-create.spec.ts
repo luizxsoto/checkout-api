@@ -4,11 +4,11 @@ import { CreatePaymentProfileUseCase } from '@/domain/use-cases';
 import { ValidationException } from '@/main/exceptions';
 import { makeHasherCryptographyStub } from '@tests/data/stubs/cryptography';
 import {
-  makeCustomerRepositoryStub,
   makePaymentProfileRepositoryStub,
+  makeUserRepositoryStub,
 } from '@tests/data/stubs/repositories';
 import { makeValidatorServiceStub } from '@tests/data/stubs/services';
-import { makeCustomerModelMock, makePaymentProfileModelMock } from '@tests/domain/mocks/models';
+import { makePaymentProfileModelMock, makeUserModelMock } from '@tests/domain/mocks/models';
 
 const validUuidV4 = '00000000-0000-4000-8000-000000000001';
 const nonExistentId = '00000000-0000-4000-8000-000000000002';
@@ -21,20 +21,20 @@ const str16Length = '1234567890123456';
 
 function makeSut() {
   const paymentProfileRepository = makePaymentProfileRepositoryStub();
-  const customerRepository = makeCustomerRepositoryStub();
+  const userRepository = makeUserRepositoryStub();
   const validatorService = makeValidatorServiceStub();
   const hasherCryptography = makeHasherCryptographyStub();
   const sut = new DbCreatePaymentProfileUseCase(
     paymentProfileRepository,
     paymentProfileRepository,
-    customerRepository,
+    userRepository,
     validatorService,
     hasherCryptography,
   );
 
   return {
     paymentProfileRepository,
-    customerRepository,
+    userRepository,
     validatorService,
     hasherCryptography,
     sut,
@@ -43,16 +43,11 @@ function makeSut() {
 
 describe(DbCreatePaymentProfileUseCase.name, () => {
   test('Should create paymentProfile and return correct values for CARD_PAYMENT', async () => {
-    const {
-      paymentProfileRepository,
-      customerRepository,
-      validatorService,
-      hasherCryptography,
-      sut,
-    } = makeSut();
+    const { paymentProfileRepository, userRepository, validatorService, hasherCryptography, sut } =
+      makeSut();
 
     const requestModel = {
-      customerId: validUuidV4,
+      userId: validUuidV4,
       paymentMethod: 'CARD_PAYMENT' as PaymentProfileModel['paymentMethod'],
       anyWrongProp: 'anyValue',
       data: {
@@ -90,13 +85,13 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     };
     Reflect.deleteProperty(responseModel.data, 'cvv');
     Reflect.deleteProperty(responseModel.data, 'number');
-    const customer = makeCustomerModelMock();
+    const user = makeUserModelMock();
     const otherPaymentProfile = {
       ...responseModel,
       data: { ...responseModel.data, type: 'DEBIT' },
     };
 
-    customerRepository.findBy.mockReturnValueOnce([customer]);
+    userRepository.findBy.mockReturnValueOnce([user]);
     paymentProfileRepository.findBy.mockReturnValueOnce([otherPaymentProfile]);
     hasherCryptography.hash.mockReturnValueOnce(Promise.resolve('hashed_number'));
     hasherCryptography.hash.mockReturnValueOnce(Promise.resolve('hashed_cvv'));
@@ -107,7 +102,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     expect(sutResult).toStrictEqual(responseModel);
     expect(validatorService.validate).toBeCalledWith({
       schema: {
-        customerId: [
+        userId: [
           validatorService.rules.required(),
           validatorService.rules.string(),
           validatorService.rules.regex({ pattern: 'uuidV4' }),
@@ -163,20 +158,20 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
         ],
       },
       model: sanitizedRequestModel,
-      data: { customers: [], paymentProfiles: [] },
+      data: { users: [], paymentProfiles: [] },
     });
-    expect(customerRepository.findBy).toBeCalledWith([{ id: sanitizedRequestModel.customerId }]);
+    expect(userRepository.findBy).toBeCalledWith([{ id: sanitizedRequestModel.userId }]);
     expect(paymentProfileRepository.findBy).toBeCalledWith([
-      { customerId: sanitizedRequestModel.customerId },
+      { userId: sanitizedRequestModel.userId },
     ]);
     expect(hasherCryptography.hash).toBeCalledWith(sanitizedRequestModel.data.number);
     expect(hasherCryptography.hash).toBeCalledWith(sanitizedRequestModel.data.cvv);
     expect(validatorService.validate).toBeCalledWith({
       schema: {
-        customerId: [
+        userId: [
           validatorService.rules.exists({
-            dataEntity: 'customers',
-            props: [{ modelKey: 'customerId', dataKey: 'id' }],
+            dataEntity: 'users',
+            props: [{ modelKey: 'userId', dataKey: 'id' }],
           }),
         ],
         paymentMethod: [],
@@ -195,22 +190,17 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
         ],
       },
       model: requestModelWithSanitizedData,
-      data: { customers: [customer], paymentProfiles: [otherPaymentProfile] },
+      data: { users: [user], paymentProfiles: [otherPaymentProfile] },
     });
     expect(paymentProfileRepository.create).toBeCalledWith(requestModelWithSanitizedData);
   });
 
   test('Should create paymentProfile and return correct values for PHONE_PAYMENT', async () => {
-    const {
-      paymentProfileRepository,
-      customerRepository,
-      validatorService,
-      hasherCryptography,
-      sut,
-    } = makeSut();
+    const { paymentProfileRepository, userRepository, validatorService, hasherCryptography, sut } =
+      makeSut();
 
     const requestModel = {
-      customerId: validUuidV4,
+      userId: validUuidV4,
       paymentMethod: 'PHONE_PAYMENT' as PaymentProfileModel['paymentMethod'],
       anyWrongProp: 'anyValue',
       data: {
@@ -238,13 +228,13 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
       id: 'any_id',
       createdAt: new Date(),
     };
-    const customer = makeCustomerModelMock();
+    const user = makeUserModelMock();
     const otherPaymentProfile = {
       ...responseModel,
       data: { ...responseModel.data, number: '1234567891' },
     };
 
-    customerRepository.findBy.mockReturnValueOnce([customer]);
+    userRepository.findBy.mockReturnValueOnce([user]);
     paymentProfileRepository.findBy.mockReturnValueOnce([otherPaymentProfile]);
     paymentProfileRepository.create.mockReturnValueOnce(responseModel);
 
@@ -253,7 +243,7 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     expect(sutResult).toStrictEqual(responseModel);
     expect(validatorService.validate).toBeCalledWith({
       schema: {
-        customerId: [
+        userId: [
           validatorService.rules.required(),
           validatorService.rules.string(),
           validatorService.rules.regex({ pattern: 'uuidV4' }),
@@ -287,19 +277,19 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
         ],
       },
       model: sanitizedRequestModel,
-      data: { customers: [], paymentProfiles: [] },
+      data: { users: [], paymentProfiles: [] },
     });
-    expect(customerRepository.findBy).toBeCalledWith([{ id: sanitizedRequestModel.customerId }]);
+    expect(userRepository.findBy).toBeCalledWith([{ id: sanitizedRequestModel.userId }]);
     expect(paymentProfileRepository.findBy).toBeCalledWith([
-      { customerId: sanitizedRequestModel.customerId },
+      { userId: sanitizedRequestModel.userId },
     ]);
     expect(hasherCryptography.hash).not.toBeCalled();
     expect(validatorService.validate).toBeCalledWith({
       schema: {
-        customerId: [
+        userId: [
           validatorService.rules.exists({
-            dataEntity: 'customers',
-            props: [{ modelKey: 'customerId', dataKey: 'id' }],
+            dataEntity: 'users',
+            props: [{ modelKey: 'userId', dataKey: 'id' }],
           }),
         ],
         paymentMethod: [],
@@ -315,28 +305,26 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
         ],
       },
       model: requestModelWithSanitizedData,
-      data: { customers: [customer], paymentProfiles: [otherPaymentProfile] },
+      data: { users: [user], paymentProfiles: [otherPaymentProfile] },
     });
     expect(paymentProfileRepository.create).toBeCalledWith(requestModelWithSanitizedData);
   });
 
   describe.each([
-    // customerId
+    // userId
     {
-      properties: { customerId: undefined },
-      validations: [{ field: 'customerId', rule: 'required', message: 'This value is required' }],
+      properties: { userId: undefined },
+      validations: [{ field: 'userId', rule: 'required', message: 'This value is required' }],
     },
     {
-      properties: { customerId: 1 },
-      validations: [
-        { field: 'customerId', rule: 'string', message: 'This value must be a string' },
-      ],
+      properties: { userId: 1 },
+      validations: [{ field: 'userId', rule: 'string', message: 'This value must be a string' }],
     },
     {
-      properties: { customerId: 'invalid_id' },
+      properties: { userId: 'invalid_id' },
       validations: [
         {
-          field: 'customerId',
+          field: 'userId',
           rule: 'regex',
           message: 'This value must be valid according to the pattern: uuidV4',
         },
@@ -344,10 +332,10 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
     },
     {
       properties: {
-        customerId: nonExistentId,
+        userId: nonExistentId,
         data: { ...makePaymentProfileModelMock().data, number: '1234567890123457' },
       },
-      validations: [{ field: 'customerId', rule: 'exists', message: 'This value was not found' }],
+      validations: [{ field: 'userId', rule: 'exists', message: 'This value was not found' }],
     },
     // paymentMethod
     {
@@ -898,13 +886,13 @@ describe(DbCreatePaymentProfileUseCase.name, () => {
       ],
     },
   ])(
-    'Should throw ValidationException for every customer invalid prop',
+    'Should throw ValidationException for every user invalid prop',
     ({ properties, validations }) => {
       it(JSON.stringify(validations), async () => {
         const { sut } = makeSut();
 
         const requestModel = {
-          customerId: validUuidV4,
+          userId: validUuidV4,
           paymentMethod: 'CARD_PAYMENT',
           data: {
             type: 'CREDIT',

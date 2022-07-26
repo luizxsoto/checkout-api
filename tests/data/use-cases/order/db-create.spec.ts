@@ -50,7 +50,7 @@ describe(DbCreateOrderUseCase.name, () => {
     } = makeSut();
 
     const requestModel = {
-      customerId: validUuidV4,
+      userId: validUuidV4,
       paymentProfileId: validUuidV4,
       anyWrongProp: 'anyValue',
       orderItems: [{ productId: validUuidV4, quantity: 1, anyWrongProp: 'anyValue' }],
@@ -96,7 +96,7 @@ describe(DbCreateOrderUseCase.name, () => {
     expect(sutResult).toStrictEqual(responseModel);
     expect(validatorService.validate).toBeCalledWith({
       schema: {
-        customerId: [
+        userId: [
           validatorService.rules.required(),
           validatorService.rules.string(),
           validatorService.rules.regex({ pattern: 'uuidV4' }),
@@ -136,18 +136,18 @@ describe(DbCreateOrderUseCase.name, () => {
       data: { paymentProfiles: [], products: [] },
     });
     expect(paymentProfileRepository.findBy).toBeCalledWith([
-      { id: sanitizedRequestModel.paymentProfileId, customerId: sanitizedRequestModel.customerId },
+      { id: sanitizedRequestModel.paymentProfileId, userId: sanitizedRequestModel.userId },
     ]);
     expect(productRepository.findBy).toBeCalledWith([
       { id: sanitizedRequestModel.orderItems[0].productId },
     ]);
     expect(validatorService.validate).toBeCalledWith({
       schema: {
-        customerId: [
+        userId: [
           validatorService.rules.exists({
             dataEntity: 'paymentProfiles',
             props: [
-              { modelKey: 'customerId', dataKey: 'customerId' },
+              { modelKey: 'userId', dataKey: 'userId' },
               { modelKey: 'paymentProfileId', dataKey: 'id' },
             ],
           }),
@@ -156,7 +156,7 @@ describe(DbCreateOrderUseCase.name, () => {
           validatorService.rules.exists({
             dataEntity: 'paymentProfiles',
             props: [
-              { modelKey: 'customerId', dataKey: 'customerId' },
+              { modelKey: 'userId', dataKey: 'userId' },
               { modelKey: 'paymentProfileId', dataKey: 'id' },
             ],
           }),
@@ -190,31 +190,29 @@ describe(DbCreateOrderUseCase.name, () => {
   });
 
   describe.each([
-    // customerId
+    // userId
     {
-      properties: { customerId: undefined },
-      validations: [{ field: 'customerId', rule: 'required', message: 'This value is required' }],
+      properties: { userId: undefined },
+      validations: [{ field: 'userId', rule: 'required', message: 'This value is required' }],
     },
     {
-      properties: { customerId: 1 },
-      validations: [
-        { field: 'customerId', rule: 'string', message: 'This value must be a string' },
-      ],
+      properties: { userId: 1 },
+      validations: [{ field: 'userId', rule: 'string', message: 'This value must be a string' }],
     },
     {
-      properties: { customerId: 'invalid_id' },
+      properties: { userId: 'invalid_id' },
       validations: [
         {
-          field: 'customerId',
+          field: 'userId',
           rule: 'regex',
           message: 'This value must be valid according to the pattern: uuidV4',
         },
       ],
     },
     {
-      properties: { customerId: nonExistentId },
+      properties: { userId: nonExistentId },
       validations: [
-        { field: 'customerId', rule: 'exists', message: 'This value was not found' },
+        { field: 'userId', rule: 'exists', message: 'This value was not found' },
         { field: 'paymentProfileId', rule: 'exists', message: 'This value was not found' },
       ],
     },
@@ -244,7 +242,7 @@ describe(DbCreateOrderUseCase.name, () => {
     {
       properties: { paymentProfileId: nonExistentId },
       validations: [
-        { field: 'customerId', rule: 'exists', message: 'This value was not found' },
+        { field: 'userId', rule: 'exists', message: 'This value was not found' },
         { field: 'paymentProfileId', rule: 'exists', message: 'This value was not found' },
       ],
     },
@@ -341,7 +339,7 @@ describe(DbCreateOrderUseCase.name, () => {
         const { sut } = makeSut();
 
         const requestModel = {
-          customerId: validUuidV4,
+          userId: validUuidV4,
           paymentProfileId: validUuidV4,
           orderItems: [{ productId: validUuidV4, quantity: 1 }],
           ...properties,

@@ -7,7 +7,7 @@ const validUuidV4 = '00000000-0000-4000-8000-000000000001';
 export function makeOrderModelMock(extraData?: Partial<OrderModel>) {
   return new OrderModel({
     ...makeBaseModelMock(extraData),
-    customerId: validUuidV4,
+    userId: validUuidV4,
     paymentProfileId: validUuidV4,
     totalValue: 1000,
     ...extraData,

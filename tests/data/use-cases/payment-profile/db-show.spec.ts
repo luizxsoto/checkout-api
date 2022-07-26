@@ -27,7 +27,7 @@ describe(DbShowPaymentProfileUseCase.name, () => {
     Reflect.deleteProperty(sanitizedRequestModel, 'anyWrongProp');
     const responseModel = {
       ...sanitizedRequestModel,
-      customerId: validUuidV4,
+      userId: validUuidV4,
       paymentMethod: 'CARD_PAYMENT',
       data: {
         type: 'CREDIT',
@@ -83,7 +83,7 @@ describe(DbShowPaymentProfileUseCase.name, () => {
     Reflect.deleteProperty(sanitizedRequestModel, 'anyWrongProp');
     const responseModel = {
       ...sanitizedRequestModel,
-      customerId: validUuidV4,
+      userId: validUuidV4,
       paymentMethod: 'PHONE_PAYMENT',
       data: {
         countryCode: 'any_countryCode',
