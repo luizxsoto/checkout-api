@@ -1,29 +1,25 @@
 import { BaseModel } from './base';
 
-export class PaymentProfileModel<
-  PaymentMethod = 'CARD_PAYMENT' | 'PHONE_PAYMENT',
-> extends BaseModel {
+export class PaymentProfileModel extends BaseModel {
   public userId!: string;
 
-  public paymentMethod!: PaymentMethod;
+  public type!: 'CREDIT' | 'DEBIT';
 
-  public data!: PaymentMethod extends 'CARD_PAYMENT'
-    ? {
-        type: 'CREDIT' | 'DEBIT';
-        brand: string;
-        holderName: string;
-        number: string;
-        firstSix: string;
-        lastFour: string;
-        cvv: string;
-        expiryMonth: string;
-        expiryYear: string;
-      }
-    : {
-        countryCode: string;
-        areaCode: string;
-        number: string;
-      };
+  public brand!: string;
+
+  public holderName!: string;
+
+  public number!: string;
+
+  public firstSix!: string;
+
+  public lastFour!: string;
+
+  public cvv!: string;
+
+  public expiryMonth!: number;
+
+  public expiryYear!: number;
 
   constructor(partial: PaymentProfileModel) {
     super();

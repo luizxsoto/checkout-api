@@ -56,7 +56,7 @@ export class DbListPaymentProfileUseCase implements ListPaymentProfileUseCase.Us
         orderBy: [
           this.validatorService.rules.string(),
           this.validatorService.rules.in({
-            values: ['userId', 'paymentMethod', 'createdAt', 'updatedAt'],
+            values: ['userId', 'type', 'createdAt', 'updatedAt'],
           }),
         ],
         order: [
@@ -65,7 +65,20 @@ export class DbListPaymentProfileUseCase implements ListPaymentProfileUseCase.Us
         ],
         filters: [
           this.validatorService.rules.listFilters<
-            Omit<PaymentProfileModel, 'id' | 'data' | 'deleteUserId' | 'deletedAt'>
+            Omit<
+              PaymentProfileModel,
+              | 'id'
+              | 'brand'
+              | 'holderName'
+              | 'number'
+              | 'firstSix'
+              | 'lastFour'
+              | 'cvv'
+              | 'expiryMonth'
+              | 'expiryYear'
+              | 'deleteUserId'
+              | 'deletedAt'
+            >
           >({
             schema: {
               userId: [
@@ -76,11 +89,11 @@ export class DbListPaymentProfileUseCase implements ListPaymentProfileUseCase.Us
                   ],
                 }),
               ],
-              paymentMethod: [
+              type: [
                 this.validatorService.rules.array({
                   rules: [
                     this.validatorService.rules.string(),
-                    this.validatorService.rules.in({ values: ['CARD_PAYMENT', 'PHONE_PAYMENT'] }),
+                    this.validatorService.rules.in({ values: ['CREDIT', 'DEBIT'] }),
                   ],
                 }),
               ],

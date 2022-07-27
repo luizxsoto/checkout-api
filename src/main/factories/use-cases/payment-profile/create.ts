@@ -17,9 +17,7 @@ export function makeDbCreatePaymentProfileUseCase(
     CreatePaymentProfileUseCase.RequestModel,
     {
       users: Omit<UserModel, 'password'>[];
-      paymentProfiles: (Omit<PaymentProfileModel, 'data'> & {
-        data: Omit<PaymentProfileModel['data'], 'number' | 'cvv'> & { number?: string };
-      })[];
+      paymentProfiles: Omit<PaymentProfileModel, 'number' | 'cvv'>[];
     }
   >();
   const salt = 12;

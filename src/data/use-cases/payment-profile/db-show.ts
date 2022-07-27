@@ -8,11 +8,7 @@ export class DbShowPaymentProfileUseCase implements ShowPaymentProfileUseCase.Us
     private readonly findByPaymentProfileRepository: FindByPaymentProfileRepository.Repository,
     private readonly validatorService: ValidatorService.Validator<
       ShowPaymentProfileUseCase.RequestModel,
-      {
-        paymentProfiles: (Omit<PaymentProfileModel, 'data'> & {
-          data: Omit<PaymentProfileModel['data'], 'number' | 'cvv'> & { number?: string };
-        })[];
-      }
+      { paymentProfiles: Omit<PaymentProfileModel, 'number' | 'cvv'>[] }
     >,
   ) {}
 
@@ -39,11 +35,11 @@ export class DbShowPaymentProfileUseCase implements ShowPaymentProfileUseCase.Us
     return { id: requestModel.id };
   }
 
-  private async validateRequestModel(requestModel: ShowPaymentProfileUseCase.RequestModel): Promise<
+  private async validateRequestModel(
+    requestModel: ShowPaymentProfileUseCase.RequestModel,
+  ): Promise<
     (validationData: {
-      paymentProfiles: (Omit<PaymentProfileModel, 'data'> & {
-        data: Omit<PaymentProfileModel['data'], 'number' | 'cvv'> & { number?: string };
-      })[];
+      paymentProfiles: Omit<PaymentProfileModel, 'number' | 'cvv'>[];
     }) => Promise<void>
   > {
     await this.validatorService.validate({

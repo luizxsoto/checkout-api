@@ -3,14 +3,12 @@ import { PaymentProfileModel } from '@/domain/models';
 export type RequestModel = {
   page?: number;
   perPage?: number;
-  orderBy?: 'userId' | 'paymentMethod' | 'createdAt' | 'updatedAt';
+  orderBy?: 'userId' | 'type' | 'createdAt' | 'updatedAt';
   order?: 'asc' | 'desc';
   filters?: string;
 };
 
-export type ResponseModel = (Omit<PaymentProfileModel, 'data'> & {
-  data: Omit<PaymentProfileModel['data'], 'number' | 'cvv'> & { number?: string };
-})[];
+export type ResponseModel = Omit<PaymentProfileModel, 'number' | 'cvv'>[];
 
 export interface UseCase {
   execute: (requestModel: RequestModel) => Promise<ResponseModel>;

@@ -14,7 +14,7 @@ export class DbUpdateOrderUseCase implements UpdateOrderUseCase.UseCase {
     private readonly findByPaymentProfileRepository: FindByPaymentProfileRepository.Repository,
     private readonly validatorService: ValidatorService.Validator<
       UpdateOrderUseCase.RequestModel,
-      { orders: OrderModel[]; paymentProfiles: Omit<PaymentProfileModel, 'data'>[] }
+      { orders: OrderModel[]; paymentProfiles: Omit<PaymentProfileModel, 'number' | 'cvv'>[] }
     >,
   ) {}
 
@@ -27,9 +27,10 @@ export class DbUpdateOrderUseCase implements UpdateOrderUseCase.UseCase {
 
     const orders = await this.findByOrderRepository.findBy([{ id: sanitizedRequestModel.id }]);
 
-    const paymentProfiles = await this.findByPaymentProfileRepository.findBy([
-      { id: sanitizedRequestModel.paymentProfileId, userId: sanitizedRequestModel.userId },
-    ]);
+    const paymentProfiles = await this.findByPaymentProfileRepository.findBy(
+      [{ id: sanitizedRequestModel.paymentProfileId, userId: sanitizedRequestModel.userId }],
+      true,
+    );
 
     await restValidation({ orders, paymentProfiles });
 
@@ -58,7 +59,7 @@ export class DbUpdateOrderUseCase implements UpdateOrderUseCase.UseCase {
   ): Promise<
     (validationData: {
       orders: OrderModel[];
-      paymentProfiles: Omit<PaymentProfileModel, 'data'>[];
+      paymentProfiles: Omit<PaymentProfileModel, 'number' | 'cvv'>[];
     }) => Promise<void>
   > {
     await this.validatorService.validate({

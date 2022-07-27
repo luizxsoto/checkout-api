@@ -15,7 +15,7 @@ export function makeDbUpdateOrderUseCase(session: SessionModel): UpdateOrderUseC
   );
   const validatorService = new VanillaValidatorService<
     UpdateOrderUseCase.RequestModel,
-    { orders: OrderModel[]; paymentProfiles: Omit<PaymentProfileModel, 'data'>[] }
+    { orders: OrderModel[]; paymentProfiles: Omit<PaymentProfileModel, 'number' | 'cvv'>[] }
   >();
   const useCase = new DbUpdateOrderUseCase(
     repository,

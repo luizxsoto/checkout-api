@@ -12,11 +12,7 @@ export class DbRemovePaymentProfileUseCase implements RemovePaymentProfileUseCas
     private readonly findByPaymentProfileRepository: FindByPaymentProfileRepository.Repository,
     private readonly validatorService: ValidatorService.Validator<
       RemovePaymentProfileUseCase.RequestModel,
-      {
-        paymentProfiles: (Omit<PaymentProfileModel, 'data'> & {
-          data: Omit<PaymentProfileModel['data'], 'number' | 'cvv'> & { number?: string };
-        })[];
-      }
+      { paymentProfiles: Omit<PaymentProfileModel, 'number' | 'cvv'>[] }
     >,
   ) {}
 
@@ -43,10 +39,8 @@ export class DbRemovePaymentProfileUseCase implements RemovePaymentProfileUseCas
       ...sanitizedRequestModel,
       ...paymentProfileRemoved,
     };
-    Reflect.deleteProperty(responseModel.data, 'cvv');
-    if (responseModel.paymentMethod === 'CARD_PAYMENT') {
-      Reflect.deleteProperty(responseModel.data, 'number');
-    }
+    Reflect.deleteProperty(responseModel, 'cvv');
+    Reflect.deleteProperty(responseModel, 'number');
 
     return responseModel;
   }
@@ -63,9 +57,7 @@ export class DbRemovePaymentProfileUseCase implements RemovePaymentProfileUseCas
     requestModel: RemovePaymentProfileUseCase.RequestModel,
   ): Promise<
     (validationData: {
-      paymentProfiles: (Omit<PaymentProfileModel, 'data'> & {
-        data: Omit<PaymentProfileModel['data'], 'number' | 'cvv'> & { number?: string };
-      })[];
+      paymentProfiles: Omit<PaymentProfileModel, 'number' | 'cvv'>[];
     }) => Promise<void>
   > {
     await this.validatorService.validate({

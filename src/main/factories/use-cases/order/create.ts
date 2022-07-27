@@ -23,7 +23,7 @@ export function makeDbCreateOrderUseCase(session: SessionModel): CreateOrderUseC
   const productRepository = new KnexProductRepository(session, knexConfig, uuidService);
   const validatorService = new VanillaValidatorService<
     CreateOrderUseCase.RequestModel,
-    { paymentProfiles: Omit<PaymentProfileModel, 'data'>[]; products: ProductModel[] }
+    { paymentProfiles: Omit<PaymentProfileModel, 'number' | 'cvv'>[]; products: ProductModel[] }
   >();
   const useCase = new DbCreateOrderUseCase(
     repository,

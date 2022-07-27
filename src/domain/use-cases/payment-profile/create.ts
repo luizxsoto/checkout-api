@@ -1,11 +1,10 @@
 import { PaymentProfileModel } from '@/domain/models';
 
-export type RequestModel<PaymentMethod = 'CARD_PAYMENT' | 'PHONE_PAYMENT'> = {
-  data: Omit<PaymentProfileModel<PaymentMethod>['data'], 'firstSix' | 'lastFour'>;
-} & Omit<
+export type RequestModel = Omit<
   PaymentProfileModel,
   | 'id'
-  | 'data'
+  | 'firstSix'
+  | 'lastFour'
   | 'createUserId'
   | 'updateUserId'
   | 'deleteUserId'
@@ -14,9 +13,7 @@ export type RequestModel<PaymentMethod = 'CARD_PAYMENT' | 'PHONE_PAYMENT'> = {
   | 'deletedAt'
 >;
 
-export type ResponseModel = {
-  data: Omit<PaymentProfileModel['data'], 'cvv' | 'number'> & { number?: string };
-} & Omit<PaymentProfileModel, 'data'>;
+export type ResponseModel = Omit<PaymentProfileModel, 'cvv' | 'number'>;
 
 export interface UseCase {
   execute: (requestModel: RequestModel) => Promise<ResponseModel>;

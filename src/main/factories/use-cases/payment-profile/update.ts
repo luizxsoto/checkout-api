@@ -13,11 +13,7 @@ export function makeDbUpdatePaymentProfileUseCase(
   const repository = new KnexPaymentProfileRepository(session, knexConfig, new UUIDService());
   const validatorService = new VanillaValidatorService<
     UpdatePaymentProfileUseCase.RequestModel,
-    {
-      paymentProfiles: (Omit<PaymentProfileModel, 'data'> & {
-        data: Omit<PaymentProfileModel['data'], 'number' | 'cvv'> & { number?: string };
-      })[];
-    }
+    { paymentProfiles: Omit<PaymentProfileModel, 'number' | 'cvv'>[] }
   >();
   const salt = 12;
   const bcryptCryptography = new BcryptCryptography(salt);

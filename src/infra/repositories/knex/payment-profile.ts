@@ -23,15 +23,7 @@ export class KnexPaymentProfileRepository extends KnexBaseRepository implements 
   }
 
   private sanitizeResponse(paymentProfiles: PaymentProfileModel[]) {
-    return paymentProfiles.map(({ data, ...paymentProfile }) => {
-      const { number, cvv, ...restData } =
-        typeof data === 'string'
-          ? JSON.parse(data)
-          : (data as PaymentProfileModel<'CARD_PAYMENT'>['data']);
-      const parsedData = restData as PaymentProfileModel<'CARD_PAYMENT'>['data'];
-      if (paymentProfile.paymentMethod === 'PHONE_PAYMENT') parsedData.number = number;
-      return { ...paymentProfile, data: parsedData };
-    });
+    return paymentProfiles.map(({ number, cvv, ...paymentProfile }) => paymentProfile);
   }
 
   public async findBy(

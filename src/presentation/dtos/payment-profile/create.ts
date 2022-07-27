@@ -1,9 +1,17 @@
-import { PaymentProfileModel } from '@/domain/models';
-
-export class CreatePaymentProfileDto<PaymentMethod = 'CARD_PAYMENT' | 'PHONE_PAYMENT'> {
+export class CreatePaymentProfileDto {
   public userId!: string;
 
-  public paymentMethod!: PaymentMethod;
+  public type!: 'CREDIT' | 'DEBIT';
 
-  public data!: Omit<PaymentProfileModel<PaymentMethod>['data'], 'firstSix' | 'lastFour'>;
+  public brand!: string;
+
+  public holderName!: string;
+
+  public number!: string;
+
+  public cvv!: string;
+
+  public expiryMonth!: number;
+
+  public expiryYear!: number;
 }

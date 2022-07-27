@@ -34,7 +34,7 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
     private readonly findByProductRepository: FindByProductRepository.Repository,
     private readonly validatorService: ValidatorService.Validator<
       CreateOrderUseCase.RequestModel,
-      { paymentProfiles: Omit<PaymentProfileModel, 'data'>[]; products: ProductModel[] }
+      { paymentProfiles: Omit<PaymentProfileModel, 'number' | 'cvv'>[]; products: ProductModel[] }
     >,
   ) {}
 
@@ -45,9 +45,10 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
 
     const restValidation = await this.validateRequestModel(sanitizedRequestModel);
 
-    const paymentProfiles = await this.findByPaymentProfileRepository.findBy([
-      { id: sanitizedRequestModel.paymentProfileId, userId: sanitizedRequestModel.userId },
-    ]);
+    const paymentProfiles = await this.findByPaymentProfileRepository.findBy(
+      [{ id: sanitizedRequestModel.paymentProfileId, userId: sanitizedRequestModel.userId }],
+      true,
+    );
 
     const products = await this.findByProductRepository.findBy(
       sanitizedRequestModel.orderItems.map((orderItem) => ({ id: orderItem.productId })),
@@ -132,7 +133,7 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
     requestModel: CreateOrderUseCase.RequestModel,
   ): Promise<
     (validationData: {
-      paymentProfiles: Omit<PaymentProfileModel, 'data'>[];
+      paymentProfiles: Omit<PaymentProfileModel, 'number' | 'cvv'>[];
       products: ProductModel[];
     }) => Promise<void>
   > {

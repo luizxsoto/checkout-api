@@ -6,9 +6,7 @@ export type RequestModel = Parameters<
 
 export type ResponseModel<Type = 'NORMAL' | 'SANITIZED'> = Type extends 'NORMAL'
   ? PaymentProfileModel[]
-  : (Omit<PaymentProfileModel, 'data'> & {
-      data: Omit<PaymentProfileModel['data'], 'number' | 'cvv'> & { number?: string };
-    })[];
+  : Omit<PaymentProfileModel, 'number' | 'cvv'>[];
 
 export interface Repository<Type = 'NORMAL' | 'SANITIZED'> {
   findBy: (...requestModel: RequestModel) => Promise<ResponseModel<Type>>;

@@ -3,7 +3,7 @@ export class ListPaymentProfileDto {
 
   public perPage?: number;
 
-  public orderBy?: 'userId' | 'paymentMethod' | 'createdAt' | 'updatedAt';
+  public orderBy?: 'userId' | 'type' | 'createdAt' | 'updatedAt';
 
   public order?: 'asc' | 'desc';
 
