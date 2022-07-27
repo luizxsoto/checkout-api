@@ -1,6 +1,7 @@
 import { ValidationBuilder } from '@/main/builders';
 import {
   ArrayValidation,
+  CustomValidation,
   DateValidation,
   DistinctValidation,
   ExistsValidation,
@@ -31,6 +32,7 @@ describe(ValidationBuilder.name, () => {
 
     const sutResult = sut
       .array({ validations: [] }, validationService)
+      .custom({ validation: () => Promise.resolve(true), rule: 'any_rule', message: 'any_message' })
       .date()
       .distinct()
       .exists({ dataEntity: 'anyData', props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }] })
@@ -49,6 +51,11 @@ describe(ValidationBuilder.name, () => {
 
     expect(sutResult).toStrictEqual([
       new ArrayValidation.Validator({ validations: [] }, validationService),
+      new CustomValidation.Validator({
+        validation: expect.any(Function),
+        rule: 'any_rule',
+        message: 'any_message',
+      }),
       new DateValidation.Validator(),
       new DistinctValidation.Validator(),
       new ExistsValidation.Validator({
