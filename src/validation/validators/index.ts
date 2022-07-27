@@ -1,4 +1,5 @@
 export * as ArrayValidation from './array';
+export * as CustomValidation from './custom';
 export * as DateValidation from './date';
 export * as DistinctValidation from './distinct';
 export * as ExistsValidation from './exists';

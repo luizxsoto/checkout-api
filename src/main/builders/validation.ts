@@ -2,6 +2,7 @@ import { ValidationService } from '@/data/contracts/services';
 import { FieldValidation } from '@/validation/protocols';
 import {
   ArrayValidation,
+  CustomValidation,
   DateValidation,
   DistinctValidation,
   ExistsValidation,
@@ -30,6 +31,11 @@ export class ValidationBuilder {
     validationService: ValidationService.Validator,
   ): ValidationBuilder {
     this.validations.push(new ArrayValidation.Validator(options, validationService));
+    return this;
+  }
+
+  public custom(options: CustomValidation.Options): ValidationBuilder {
+    this.validations.push(new CustomValidation.Validator(options));
     return this;
   }
 
