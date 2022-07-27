@@ -9,6 +9,9 @@ import { makeBearerTokenMock } from '@tests/domain/mocks/models';
 const validUuidV4 = '10000000-0000-4000-8000-000000000001';
 const existingUserId = '00000000-0000-4000-8000-000000000001';
 const userId = '00000000-0000-4000-8000-000000000001';
+const currentDate = new Date();
+const currentYear = currentDate.getFullYear();
+const currentMonth = currentDate.getMonth() + 1;
 let app: Express;
 
 describe('PaymentProfile Routes', () => {
@@ -33,18 +36,15 @@ describe('PaymentProfile Routes', () => {
       const requestModel = {
         id: validUuidV4,
         userId: validUuidV4,
-        paymentMethod: 'CARD_PAYMENT',
-        data: {
-          type: 'CREDIT',
-          brand: 'any_brand',
-          holderName: 'any_holderName',
-          firstSix: '123456',
-          lastFour: '3456',
-          number: '1234567890123456',
-          cvv: '123',
-          expiryMonth: '01',
-          expiryYear: '0001',
-        },
+        type: 'CREDIT',
+        brand: 'any_brand',
+        holderName: 'any_holderName',
+        firstSix: '123456',
+        lastFour: '3456',
+        number: '1234567890123456',
+        cvv: '123',
+        expiryMonth: currentMonth,
+        expiryYear: currentYear,
         createUserId: userId,
         createdAt: new Date().toISOString(),
       };
@@ -60,16 +60,15 @@ describe('PaymentProfile Routes', () => {
       expect(result.status).toBe(200);
       expect(result.body[0]?.id).toBe(requestModel.id);
       expect(result.body[0]?.userId).toBe(requestModel.userId);
-      expect(result.body[0]?.paymentMethod).toBe(requestModel.paymentMethod);
-      expect(result.body[0]?.data?.type).toBe(requestModel.data.type);
-      expect(result.body[0]?.data?.brand).toBe(requestModel.data.brand);
-      expect(result.body[0]?.data?.holderName).toBe(requestModel.data.holderName);
-      expect(result.body[0]?.data?.firstSix).toBe(requestModel.data.firstSix);
-      expect(result.body[0]?.data?.lastFour).toBe(requestModel.data.lastFour);
-      expect(result.body[0]?.data?.number).toBeUndefined();
-      expect(result.body[0]?.data?.cvv).toBeUndefined();
-      expect(result.body[0]?.data?.expiryMonth).toBe(requestModel.data.expiryMonth);
-      expect(result.body[0]?.data?.expiryYear).toBe(requestModel.data.expiryYear);
+      expect(result.body[0]?.type).toBe(requestModel.type);
+      expect(result.body[0]?.brand).toBe(requestModel.brand);
+      expect(result.body[0]?.holderName).toBe(requestModel.holderName);
+      expect(result.body[0]?.firstSix).toBe(requestModel.firstSix);
+      expect(result.body[0]?.lastFour).toBe(requestModel.lastFour);
+      expect(result.body[0]?.number).toBeUndefined();
+      expect(result.body[0]?.cvv).toBeUndefined();
+      expect(result.body[0]?.expiryMonth).toBe(requestModel.expiryMonth);
+      expect(result.body[0]?.expiryYear).toBe(requestModel.expiryYear);
       expect(result.body[0]?.createUserId).toBe(requestModel.createUserId);
       expect(result.body[0]?.createdAt).toBe(requestModel.createdAt);
     });
@@ -95,7 +94,7 @@ describe('PaymentProfile Routes', () => {
             field: 'filters',
             rule: 'listFilters',
             message:
-              'This value must be a valid list filters and with this posible fields: userId, paymentMethod, createUserId, updateUserId, createdAt, updatedAt',
+              'This value must be a valid list filters and with this posible fields: userId, type, createUserId, updateUserId, createdAt, updatedAt',
           },
         ],
       });
@@ -107,18 +106,15 @@ describe('PaymentProfile Routes', () => {
       const requestModel = {
         id: validUuidV4,
         userId: existingUserId,
-        paymentMethod: 'CARD_PAYMENT',
-        data: {
-          type: 'CREDIT',
-          brand: 'any_brand',
-          holderName: 'any_holderName',
-          firstSix: '123456',
-          lastFour: '3456',
-          number: '1234567890123456',
-          cvv: '123',
-          expiryMonth: '01',
-          expiryYear: '0001',
-        },
+        type: 'CREDIT',
+        brand: 'any_brand',
+        holderName: 'any_holderName',
+        firstSix: '123456',
+        lastFour: '3456',
+        number: '1234567890123456',
+        cvv: '123',
+        expiryMonth: currentMonth,
+        expiryYear: currentYear,
         createUserId: userId,
         createdAt: new Date().toISOString(),
       };
@@ -133,16 +129,15 @@ describe('PaymentProfile Routes', () => {
       expect(result.status).toBe(200);
       expect(result.body.id).toBe(requestModel.id);
       expect(result.body.userId).toBe(requestModel.userId);
-      expect(result.body.paymentMethod).toBe(requestModel.paymentMethod);
-      expect(result.body.data?.type).toBe(requestModel.data.type);
-      expect(result.body.data?.brand).toBe(requestModel.data.brand);
-      expect(result.body.data?.holderName).toBe(requestModel.data.holderName);
-      expect(result.body.data?.firstSix).toBe(requestModel.data.firstSix);
-      expect(result.body.data?.lastFour).toBe(requestModel.data.lastFour);
-      expect(result.body.data?.number).toBeUndefined();
-      expect(result.body.data?.cvv).toBeUndefined();
-      expect(result.body.data?.expiryMonth).toBe(requestModel.data.expiryMonth);
-      expect(result.body.data?.expiryYear).toBe(requestModel.data.expiryYear);
+      expect(result.body.type).toBe(requestModel.type);
+      expect(result.body.brand).toBe(requestModel.brand);
+      expect(result.body.holderName).toBe(requestModel.holderName);
+      expect(result.body.firstSix).toBe(requestModel.firstSix);
+      expect(result.body.lastFour).toBe(requestModel.lastFour);
+      expect(result.body.number).toBeUndefined();
+      expect(result.body.cvv).toBeUndefined();
+      expect(result.body.expiryMonth).toBe(requestModel.expiryMonth);
+      expect(result.body.expiryYear).toBe(requestModel.expiryYear);
       expect(result.body.createUserId).toBe(requestModel.createUserId);
       expect(result.body.createdAt).toBe(requestModel.createdAt);
     });
@@ -177,16 +172,13 @@ describe('PaymentProfile Routes', () => {
     test('Should create paymentProfile and return correct values', async () => {
       const requestModel = {
         userId: existingUserId,
-        paymentMethod: 'CARD_PAYMENT',
-        data: {
-          type: 'CREDIT',
-          brand: 'any_brand',
-          holderName: 'any_holderName',
-          number: '1234567890123456',
-          cvv: '123',
-          expiryMonth: '01',
-          expiryYear: '0001',
-        },
+        type: 'CREDIT',
+        brand: 'any_brand',
+        holderName: 'any_holderName',
+        number: '1234567890123456',
+        cvv: '123',
+        expiryMonth: currentMonth,
+        expiryYear: currentYear,
       };
       const createUserId = userId;
 
@@ -197,16 +189,15 @@ describe('PaymentProfile Routes', () => {
 
       expect(result.status).toBe(201);
       expect(result.body.userId).toBe(requestModel.userId);
-      expect(result.body.paymentMethod).toBe(requestModel.paymentMethod);
-      expect(result.body.data?.type).toBe(requestModel.data.type);
-      expect(result.body.data?.brand).toBe(requestModel.data.brand);
-      expect(result.body.data?.holderName).toBe(requestModel.data.holderName);
-      expect(result.body.data?.firstSix).toBe(requestModel.data.number.slice(0, 6));
-      expect(result.body.data?.lastFour).toBe(requestModel.data.number.slice(-4));
-      expect(result.body.data?.number).toBeUndefined();
-      expect(result.body.data?.cvv).toBeUndefined();
-      expect(result.body.data?.expiryMonth).toBe(requestModel.data.expiryMonth);
-      expect(result.body.data?.expiryYear).toBe(requestModel.data.expiryYear);
+      expect(result.body.type).toBe(requestModel.type);
+      expect(result.body.brand).toBe(requestModel.brand);
+      expect(result.body.holderName).toBe(requestModel.holderName);
+      expect(result.body.firstSix).toBe(requestModel.number.slice(0, 6));
+      expect(result.body.lastFour).toBe(requestModel.number.slice(-4));
+      expect(result.body.number).toBeUndefined();
+      expect(result.body.cvv).toBeUndefined();
+      expect(result.body.expiryMonth).toBe(requestModel.expiryMonth);
+      expect(result.body.expiryYear).toBe(requestModel.expiryYear);
       expect(result.body.id).toMatch(
         /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i,
       );
@@ -216,18 +207,15 @@ describe('PaymentProfile Routes', () => {
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
       const requestModel = {
-        paymentMethod: 'CARD_PAYMENT',
-        data: {
-          type: 'CREDIT',
-          brand: 'any_brand',
-          holderName: 'any_holderName',
-          firstSix: '123456',
-          lastFour: '3456',
-          number: '1234567890123456',
-          cvv: '123',
-          expiryMonth: '01',
-          expiryYear: '0001',
-        },
+        type: 'CREDIT',
+        brand: 'any_brand',
+        holderName: 'any_holderName',
+        firstSix: '123456',
+        lastFour: '3456',
+        number: '1234567890123456',
+        cvv: '123',
+        expiryMonth: currentMonth,
+        expiryYear: currentYear,
       };
 
       const result = await request(app)
@@ -256,18 +244,15 @@ describe('PaymentProfile Routes', () => {
       const requestModel = {
         id: validUuidV4,
         userId: existingUserId,
-        paymentMethod: 'CARD_PAYMENT',
-        data: {
-          type: 'CREDIT',
-          brand: 'any_brand',
-          holderName: 'any_holderName',
-          number: '1234567890123456',
-          firstSix: '123456',
-          lastFour: '3456',
-          cvv: '123',
-          expiryMonth: '01',
-          expiryYear: '0001',
-        },
+        type: 'CREDIT',
+        brand: 'any_brand',
+        holderName: 'any_holderName',
+        number: '1234567890123456',
+        firstSix: '123456',
+        lastFour: '3456',
+        cvv: '123',
+        expiryMonth: currentMonth,
+        expiryYear: currentYear,
         createUserId: userId,
         createdAt: new Date().toISOString(),
       };
@@ -283,16 +268,15 @@ describe('PaymentProfile Routes', () => {
       expect(result.status).toBe(200);
       expect(result.body.id).toBe(requestModel.id);
       expect(result.body.userId).toBe(requestModel.userId);
-      expect(result.body.paymentMethod).toBe(requestModel.paymentMethod);
-      expect(result.body.data?.type).toBe(requestModel.data.type);
-      expect(result.body.data?.brand).toBe(requestModel.data.brand);
-      expect(result.body.data?.holderName).toBe(requestModel.data.holderName);
-      expect(result.body.data?.firstSix).toBe(requestModel.data.number.slice(0, 6));
-      expect(result.body.data?.lastFour).toBe(requestModel.data.number.slice(-4));
-      expect(result.body.data?.number).toBeUndefined();
-      expect(result.body.data?.cvv).toBeUndefined();
-      expect(result.body.data?.expiryMonth).toBe(requestModel.data.expiryMonth);
-      expect(result.body.data?.expiryYear).toBe(requestModel.data.expiryYear);
+      expect(result.body.type).toBe(requestModel.type);
+      expect(result.body.brand).toBe(requestModel.brand);
+      expect(result.body.holderName).toBe(requestModel.holderName);
+      expect(result.body.firstSix).toBe(requestModel.number.slice(0, 6));
+      expect(result.body.lastFour).toBe(requestModel.number.slice(-4));
+      expect(result.body.number).toBeUndefined();
+      expect(result.body.cvv).toBeUndefined();
+      expect(result.body.expiryMonth).toBe(requestModel.expiryMonth);
+      expect(result.body.expiryYear).toBe(requestModel.expiryYear);
       expect(result.body.createUserId).toBe(requestModel.createUserId);
       expect(result.body.updateUserId).toBe(updateUserId);
       expect(result.body.createdAt).toBe(requestModel.createdAt);
@@ -303,18 +287,15 @@ describe('PaymentProfile Routes', () => {
       const requestModel = {
         id: 'invalid_id',
         userId: existingUserId,
-        paymentMethod: 'CARD_PAYMENT',
-        data: {
-          type: 'CREDIT',
-          brand: 'any_brand',
-          holderName: 'any_holderName',
-          firstSix: '123456',
-          lastFour: '3456',
-          number: '1234567890123456',
-          cvv: '123',
-          expiryMonth: '01',
-          expiryYear: '0001',
-        },
+        type: 'CREDIT',
+        brand: 'any_brand',
+        holderName: 'any_holderName',
+        firstSix: '123456',
+        lastFour: '3456',
+        number: '1234567890123456',
+        cvv: '123',
+        expiryMonth: currentMonth,
+        expiryYear: currentYear,
       };
 
       const result = await request(app)
@@ -343,18 +324,15 @@ describe('PaymentProfile Routes', () => {
       const requestModel = {
         id: validUuidV4,
         userId: existingUserId,
-        paymentMethod: 'CARD_PAYMENT',
-        data: {
-          type: 'CREDIT',
-          brand: 'any_brand',
-          holderName: 'any_holderName',
-          firstSix: '123456',
-          lastFour: '3456',
-          number: '1234567890123456',
-          cvv: '123',
-          expiryMonth: '01',
-          expiryYear: '0001',
-        },
+        type: 'CREDIT',
+        brand: 'any_brand',
+        holderName: 'any_holderName',
+        firstSix: '123456',
+        lastFour: '3456',
+        number: '1234567890123456',
+        cvv: '123',
+        expiryMonth: currentMonth,
+        expiryYear: currentYear,
         createUserId: userId,
         updateUserId: userId,
         createdAt: new Date().toISOString(),
@@ -372,16 +350,15 @@ describe('PaymentProfile Routes', () => {
       expect(result.status).toBe(200);
       expect(result.body.id).toBe(requestModel.id);
       expect(result.body.userId).toBe(requestModel.userId);
-      expect(result.body.paymentMethod).toBe(requestModel.paymentMethod);
-      expect(result.body.data?.type).toBe(requestModel.data.type);
-      expect(result.body.data?.brand).toBe(requestModel.data.brand);
-      expect(result.body.data?.holderName).toBe(requestModel.data.holderName);
-      expect(result.body.data?.firstSix).toBe(requestModel.data.number.slice(0, 6));
-      expect(result.body.data?.lastFour).toBe(requestModel.data.number.slice(-4));
-      expect(result.body.data?.number).toBeUndefined();
-      expect(result.body.data?.cvv).toBeUndefined();
-      expect(result.body.data?.expiryMonth).toBe(requestModel.data.expiryMonth);
-      expect(result.body.data?.expiryYear).toBe(requestModel.data.expiryYear);
+      expect(result.body.type).toBe(requestModel.type);
+      expect(result.body.brand).toBe(requestModel.brand);
+      expect(result.body.holderName).toBe(requestModel.holderName);
+      expect(result.body.firstSix).toBe(requestModel.number.slice(0, 6));
+      expect(result.body.lastFour).toBe(requestModel.number.slice(-4));
+      expect(result.body.number).toBeUndefined();
+      expect(result.body.cvv).toBeUndefined();
+      expect(result.body.expiryMonth).toBe(requestModel.expiryMonth);
+      expect(result.body.expiryYear).toBe(requestModel.expiryYear);
       expect(result.body.createUserId).toBe(requestModel.createUserId);
       expect(result.body.updateUserId).toBe(requestModel.updateUserId);
       expect(result.body.deleteUserId).toBe(deleteUserId);

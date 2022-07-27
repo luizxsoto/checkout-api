@@ -72,9 +72,10 @@ describe(DbUpdateOrderUseCase.name, () => {
       data: { orders: [], paymentProfiles: [] },
     });
     expect(orderRepository.findBy).toBeCalledWith([{ id: sanitizedRequestModel.id }]);
-    expect(paymentProfileRepository.findBy).toBeCalledWith([
-      { id: sanitizedRequestModel.paymentProfileId, userId: sanitizedRequestModel.userId },
-    ]);
+    expect(paymentProfileRepository.findBy).toBeCalledWith(
+      [{ id: sanitizedRequestModel.paymentProfileId, userId: sanitizedRequestModel.userId }],
+      true,
+    );
     expect(validatorService.validate).toBeCalledWith({
       schema: {
         id: [

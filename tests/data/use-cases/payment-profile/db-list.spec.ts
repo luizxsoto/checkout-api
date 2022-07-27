@@ -21,7 +21,7 @@ describe(DbListPaymentProfileUseCase.name, () => {
     const requestModel = {
       page: 1,
       perPage: 20,
-      orderBy: 'paymentMethod' as const,
+      orderBy: 'type' as const,
       order: 'asc' as const,
       filters: '[]',
       anyWrongProp: 'anyValue',
@@ -52,7 +52,7 @@ describe(DbListPaymentProfileUseCase.name, () => {
         orderBy: [
           validatorService.rules.string(),
           validatorService.rules.in({
-            values: ['userId', 'paymentMethod', 'createdAt', 'updatedAt'],
+            values: ['userId', 'type', 'createdAt', 'updatedAt'],
           }),
         ],
         order: [
@@ -61,7 +61,20 @@ describe(DbListPaymentProfileUseCase.name, () => {
         ],
         filters: [
           validatorService.rules.listFilters<
-            Omit<PaymentProfileModel, 'id' | 'data' | 'deleteUserId' | 'deletedAt'>
+            Omit<
+              PaymentProfileModel,
+              | 'id'
+              | 'brand'
+              | 'holderName'
+              | 'number'
+              | 'firstSix'
+              | 'lastFour'
+              | 'cvv'
+              | 'expiryMonth'
+              | 'expiryYear'
+              | 'deleteUserId'
+              | 'deletedAt'
+            >
           >({
             schema: {
               userId: [
@@ -72,11 +85,11 @@ describe(DbListPaymentProfileUseCase.name, () => {
                   ],
                 }),
               ],
-              paymentMethod: [
+              type: [
                 validatorService.rules.array({
                   rules: [
                     validatorService.rules.string(),
-                    validatorService.rules.in({ values: ['CARD_PAYMENT', 'PHONE_PAYMENT'] }),
+                    validatorService.rules.in({ values: ['CREDIT', 'DEBIT'] }),
                   ],
                 }),
               ],
@@ -158,7 +171,7 @@ describe(DbListPaymentProfileUseCase.name, () => {
         {
           field: 'orderBy',
           rule: 'in',
-          message: 'This value must be in: userId, paymentMethod, createdAt, updatedAt',
+          message: 'This value must be in: userId, type, createdAt, updatedAt',
         },
       ],
     },
@@ -188,24 +201,20 @@ describe(DbListPaymentProfileUseCase.name, () => {
         },
       ],
     },
-    // paymentMethod
+    // type
     {
-      properties: { filters: '["=", "paymentMethod", 1]' },
+      properties: { filters: '["=", "type", 1]' },
       validations: [
-        {
-          field: 'filters.paymentMethod.0',
-          rule: 'string',
-          message: 'This value must be a string',
-        },
+        { field: 'filters.type.0', rule: 'string', message: 'This value must be a string' },
       ],
     },
     {
-      properties: { filters: '["=", "paymentMethod", "invalid_paymentMethod"]' },
+      properties: { filters: '["=", "type", "invalid_type"]' },
       validations: [
         {
-          field: 'filters.paymentMethod.0',
+          field: 'filters.type.0',
           rule: 'in',
-          message: 'This value must be in: CARD_PAYMENT, PHONE_PAYMENT',
+          message: 'This value must be in: CREDIT, DEBIT',
         },
       ],
     },

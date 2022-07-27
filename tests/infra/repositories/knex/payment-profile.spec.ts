@@ -32,69 +32,43 @@ describe(KnexPaymentProfileRepository.name, () => {
 
       const requestModel: Partial<PaymentProfileModel> = {
         userId: 'any_userId',
-        paymentMethod: 'CARD_PAYMENT',
-        data: {
-          type: 'CREDIT',
-          brand: 'any_brand',
-          holderName: 'any_holderName',
-          number: 'any_number',
-          firstSix: 'any_firstSix',
-          lastFour: 'any_lastFour',
-          cvv: 'any_cvv',
-          expiryMonth: 'any_expiryMonth',
-          expiryYear: 'any_expiryYear',
-        },
+        type: 'CREDIT',
+        brand: 'any_brand',
+        holderName: 'any_holderName',
+        number: 'any_number',
+        firstSix: 'any_firstSix',
+        lastFour: 'any_lastFour',
+        cvv: 'any_cvv',
+        expiryMonth: 1,
+        expiryYear: 1,
       };
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]));
-      const responseModel = { ...requestModel, data: { ...requestModel.data } };
+      const responseModel = { ...requestModel };
 
       const sutResult = await sut.findBy([requestModel]);
 
       expect(sutResult).toStrictEqual([responseModel]);
     });
 
-    test('Should findBy paymentProfile and return correct sanitized values for CARD_PAYMENT', async () => {
+    test('Should findBy paymentProfile and return correct sanitized values', async () => {
       const { knex, sut } = makeSut();
 
       const requestModel: Partial<PaymentProfileModel> = {
         userId: 'any_userId',
-        paymentMethod: 'CARD_PAYMENT',
-        data: {
-          type: 'CREDIT',
-          brand: 'any_brand',
-          holderName: 'any_holderName',
-          number: 'any_number',
-          firstSix: 'any_firstSix',
-          lastFour: 'any_lastFour',
-          cvv: 'any_cvv',
-          expiryMonth: 'any_expiryMonth',
-          expiryYear: 'any_expiryYear',
-        },
+        type: 'CREDIT',
+        brand: 'any_brand',
+        holderName: 'any_holderName',
+        number: 'any_number',
+        firstSix: 'any_firstSix',
+        lastFour: 'any_lastFour',
+        cvv: 'any_cvv',
+        expiryMonth: 1,
+        expiryYear: 1,
       };
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]));
-      const responseModel = { ...requestModel, data: { ...requestModel.data } };
-      Reflect.deleteProperty(responseModel.data, 'number');
-      Reflect.deleteProperty(responseModel.data, 'cvv');
-
-      const sutResult = await sut.findBy([requestModel], true);
-
-      expect(sutResult).toStrictEqual([responseModel]);
-    });
-
-    test('Should findBy paymentProfile and return correct sanitized values for PHONE_PAYMENT', async () => {
-      const { knex, sut } = makeSut();
-
-      const requestModel: Partial<PaymentProfileModel> = {
-        userId: 'any_userId',
-        paymentMethod: 'PHONE_PAYMENT',
-        data: {
-          countryCode: 'any_countryCode',
-          areaCode: 'any_areaCode',
-          number: 'any_number',
-        },
-      };
-      knex.then.mockImplementationOnce((resolve) => resolve([requestModel]));
-      const responseModel = { ...requestModel, data: { ...requestModel.data } };
+      const responseModel = { ...requestModel };
+      Reflect.deleteProperty(responseModel, 'number');
+      Reflect.deleteProperty(responseModel, 'cvv');
 
       const sutResult = await sut.findBy([requestModel], true);
 
@@ -103,48 +77,25 @@ describe(KnexPaymentProfileRepository.name, () => {
   });
 
   describe('list()', () => {
-    test('Should list paymentProfile and return correct values for CARD_PAYMENT', async () => {
+    test('Should list paymentProfile and return correct values', async () => {
       const { knex, sut } = makeSut();
 
       const requestModel: Partial<PaymentProfileModel> = {
         userId: 'any_userId',
-        paymentMethod: 'CARD_PAYMENT',
-        data: {
-          type: 'CREDIT',
-          brand: 'any_brand',
-          holderName: 'any_holderName',
-          number: 'any_number',
-          firstSix: 'any_firstSix',
-          lastFour: 'any_lastFour',
-          cvv: 'any_cvv',
-          expiryMonth: 'any_expiryMonth',
-          expiryYear: 'any_expiryYear',
-        },
+        type: 'CREDIT',
+        brand: 'any_brand',
+        holderName: 'any_holderName',
+        number: 'any_number',
+        firstSix: 'any_firstSix',
+        lastFour: 'any_lastFour',
+        cvv: 'any_cvv',
+        expiryMonth: 1,
+        expiryYear: 1,
       };
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]));
-      const responseModel = { ...requestModel, data: { ...requestModel.data } };
-      Reflect.deleteProperty(responseModel.data, 'number');
-      Reflect.deleteProperty(responseModel.data, 'cvv');
-
-      const sutResult = await sut.list({});
-
-      expect(sutResult).toStrictEqual([responseModel]);
-    });
-
-    test('Should list paymentProfile and return correct values for PHONE_PAYMENT', async () => {
-      const { knex, sut } = makeSut();
-
-      const requestModel: Partial<PaymentProfileModel> = {
-        userId: 'any_userId',
-        paymentMethod: 'PHONE_PAYMENT',
-        data: {
-          countryCode: 'any_countryCode',
-          areaCode: 'any_areaCode',
-          number: 'any_number',
-        },
-      };
-      knex.then.mockImplementationOnce((resolve) => resolve([requestModel]));
-      const responseModel = { ...requestModel, data: { ...requestModel.data } };
+      const responseModel = { ...requestModel };
+      Reflect.deleteProperty(responseModel, 'number');
+      Reflect.deleteProperty(responseModel, 'cvv');
 
       const sutResult = await sut.list({});
 
@@ -167,18 +118,15 @@ describe(KnexPaymentProfileRepository.name, () => {
         | 'deletedAt'
       > = {
         userId: 'any_userId',
-        paymentMethod: 'CARD_PAYMENT',
-        data: {
-          type: 'CREDIT',
-          brand: 'any_brand',
-          holderName: 'any_holderName',
-          number: 'any_number',
-          firstSix: 'any_firstSix',
-          lastFour: 'any_lastFour',
-          cvv: 'any_cvv',
-          expiryMonth: 'any_expiryMonth',
-          expiryYear: 'any_expiryYear',
-        },
+        type: 'CREDIT',
+        brand: 'any_brand',
+        holderName: 'any_holderName',
+        number: 'any_number',
+        firstSix: 'any_firstSix',
+        lastFour: 'any_lastFour',
+        cvv: 'any_cvv',
+        expiryMonth: 1,
+        expiryYear: 1,
       };
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]));
       const responseModel = {
@@ -206,18 +154,15 @@ describe(KnexPaymentProfileRepository.name, () => {
       > = {
         id: 'any_id',
         userId: 'any_userId',
-        paymentMethod: 'CARD_PAYMENT',
-        data: {
-          type: 'CREDIT',
-          brand: 'any_brand',
-          holderName: 'any_holderName',
-          number: 'any_number',
-          firstSix: 'any_firstSix',
-          lastFour: 'any_lastFour',
-          cvv: 'any_cvv',
-          expiryMonth: 'any_expiryMonth',
-          expiryYear: 'any_expiryYear',
-        },
+        type: 'CREDIT',
+        brand: 'any_brand',
+        holderName: 'any_holderName',
+        number: 'any_number',
+        firstSix: 'any_firstSix',
+        lastFour: 'any_lastFour',
+        cvv: 'any_cvv',
+        expiryMonth: 1,
+        expiryYear: 1,
       };
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]));
       const responseModel = {

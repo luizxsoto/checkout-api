@@ -16,7 +16,7 @@ function makeSut() {
 }
 
 describe(DbShowPaymentProfileUseCase.name, () => {
-  test('Should show paymentProfile and return correct values for CARD_PAYMENT', async () => {
+  test('Should show paymentProfile and return correct values', async () => {
     const { paymentProfileRepository, validatorService, sut } = makeSut();
 
     const requestModel = {
@@ -28,68 +28,11 @@ describe(DbShowPaymentProfileUseCase.name, () => {
     const responseModel = {
       ...sanitizedRequestModel,
       userId: validUuidV4,
-      paymentMethod: 'CARD_PAYMENT',
-      data: {
-        type: 'CREDIT',
-        brand: 'any_brand',
-        holderName: 'any_holderName',
-        number: 'hashed_number',
-        cvv: 'hashed_cvv',
-        expiryMonth: '01',
-        expiryYear: '0001',
-      },
-    };
-    const existsPaymentProfile = { ...responseModel };
-
-    paymentProfileRepository.findBy.mockReturnValueOnce([existsPaymentProfile]);
-
-    const sutResult = await sut.execute(requestModel);
-
-    expect(sutResult).toStrictEqual(responseModel);
-    expect(validatorService.validate).toBeCalledWith({
-      schema: {
-        id: [
-          validatorService.rules.required(),
-          validatorService.rules.string(),
-          validatorService.rules.regex({ pattern: 'uuidV4' }),
-        ],
-      },
-      model: sanitizedRequestModel,
-      data: { paymentProfiles: [] },
-    });
-    expect(paymentProfileRepository.findBy).toBeCalledWith([sanitizedRequestModel], true);
-    expect(validatorService.validate).toBeCalledWith({
-      schema: {
-        id: [
-          validatorService.rules.exists({
-            dataEntity: 'paymentProfiles',
-            props: [{ modelKey: 'id', dataKey: 'id' }],
-          }),
-        ],
-      },
-      model: sanitizedRequestModel,
-      data: { paymentProfiles: [existsPaymentProfile] },
-    });
-  });
-
-  test('Should show paymentProfile and return correct values for PHONE_PAYMENT', async () => {
-    const { paymentProfileRepository, validatorService, sut } = makeSut();
-
-    const requestModel = {
-      id: validUuidV4,
-      anyWrongProp: 'anyValue',
-    };
-    const sanitizedRequestModel = { ...requestModel };
-    Reflect.deleteProperty(sanitizedRequestModel, 'anyWrongProp');
-    const responseModel = {
-      ...sanitizedRequestModel,
-      userId: validUuidV4,
-      paymentMethod: 'PHONE_PAYMENT',
-      data: {
-        countryCode: 'any_countryCode',
-        areaCode: 'any_areaCode',
-        number: 'any_number',
-      },
+      type: 'CREDIT',
+      brand: 'any_brand',
+      holderName: 'any_holderName',
+      expiryMonth: 1,
+      expiryYear: 1,
     };
     const existsPaymentProfile = { ...responseModel };
 

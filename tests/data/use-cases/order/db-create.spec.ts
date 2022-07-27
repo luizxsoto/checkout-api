@@ -135,9 +135,10 @@ describe(DbCreateOrderUseCase.name, () => {
       model: sanitizedRequestModel,
       data: { paymentProfiles: [], products: [] },
     });
-    expect(paymentProfileRepository.findBy).toBeCalledWith([
-      { id: sanitizedRequestModel.paymentProfileId, userId: sanitizedRequestModel.userId },
-    ]);
+    expect(paymentProfileRepository.findBy).toBeCalledWith(
+      [{ id: sanitizedRequestModel.paymentProfileId, userId: sanitizedRequestModel.userId }],
+      true,
+    );
     expect(productRepository.findBy).toBeCalledWith([
       { id: sanitizedRequestModel.orderItems[0].productId },
     ]);
