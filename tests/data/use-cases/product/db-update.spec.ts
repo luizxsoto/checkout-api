@@ -1,24 +1,24 @@
 import { DbUpdateProductUseCase } from '@/data/use-cases';
-import { UpdateProductUseCase } from '@/domain/use-cases';
-import { MAX_INTEGER } from '@/main/constants';
-import { ValidationException } from '@/main/exceptions';
 import { makeProductRepositoryStub } from '@tests/data/stubs/repositories';
-import { makeValidatorServiceStub } from '@tests/data/stubs/services';
+import { makeUpdateProductValidationStub } from '@tests/data/stubs/validations';
 
 const validUuidV4 = '00000000-0000-4000-8000-000000000001';
-const nonExistentId = '00000000-0000-4000-8000-000000000002';
 
 function makeSut() {
   const productRepository = makeProductRepositoryStub();
-  const validatorService = makeValidatorServiceStub();
-  const sut = new DbUpdateProductUseCase(productRepository, productRepository, validatorService);
+  const updateProductValidation = makeUpdateProductValidationStub();
+  const sut = new DbUpdateProductUseCase(
+    productRepository,
+    productRepository,
+    updateProductValidation.firstValidation,
+  );
 
-  return { productRepository, validatorService, sut };
+  return { productRepository, updateProductValidation, sut };
 }
 
 describe(DbUpdateProductUseCase.name, () => {
   test('Should update product and return correct values', async () => {
-    const { productRepository, validatorService, sut } = makeSut();
+    const { productRepository, updateProductValidation, sut } = makeSut();
 
     const requestModel = {
       id: validUuidV4,
@@ -41,160 +41,52 @@ describe(DbUpdateProductUseCase.name, () => {
     const sutResult = await sut.execute(requestModel);
 
     expect(sutResult).toStrictEqual(responseModel);
-    expect(validatorService.validate).toBeCalledWith({
-      schema: {
-        id: [
-          validatorService.rules.required(),
-          validatorService.rules.string(),
-          validatorService.rules.regex({ pattern: 'uuidV4' }),
-        ],
-        name: [
-          validatorService.rules.string(),
-          validatorService.rules.length({ minLength: 6, maxLength: 255 }),
-        ],
-        category: [
-          validatorService.rules.string(),
-          validatorService.rules.in({ values: ['clothes', 'shoes', 'others'] }),
-        ],
-        image: [validatorService.rules.string(), validatorService.rules.regex({ pattern: 'url' })],
-        price: [
-          validatorService.rules.integer(),
-          validatorService.rules.max({ value: MAX_INTEGER }),
-        ],
-      },
-      model: sanitizedRequestModel,
-      data: { products: [] },
-    });
+    expect(updateProductValidation.firstValidation).toBeCalledWith(sanitizedRequestModel);
     expect(productRepository.findBy).toBeCalledWith([{ id: sanitizedRequestModel.id }]);
-    expect(validatorService.validate).toBeCalledWith({
-      schema: {
-        id: [
-          validatorService.rules.exists({
-            dataEntity: 'products',
-            props: [{ modelKey: 'id', dataKey: 'id' }],
-          }),
-        ],
-        name: [],
-        category: [],
-        image: [],
-        price: [],
-      },
-      model: sanitizedRequestModel,
-      data: { products: [existsProduct] },
-    });
+    expect(updateProductValidation.secondValidation).toBeCalledWith({ products: [existsProduct] });
     expect(productRepository.update).toBeCalledWith(
       { id: sanitizedRequestModel.id },
       sanitizedRequestModel,
     );
   });
 
-  describe.each([
-    // id
-    {
-      properties: { id: undefined },
-      validations: [{ field: 'id', rule: 'required', message: 'This value is required' }],
-    },
-    {
-      properties: { id: 1 },
-      validations: [{ field: 'id', rule: 'string', message: 'This value must be a string' }],
-    },
-    {
-      properties: { id: 'invalid_uuid' },
-      validations: [
-        {
-          field: 'id',
-          rule: 'regex',
-          message: 'This value must be valid according to the pattern: uuidV4',
-        },
-      ],
-    },
-    {
-      properties: { id: nonExistentId },
-      validations: [{ field: 'id', rule: 'exists', message: 'This value was not found' }],
-    },
-    // name
-    {
-      properties: { name: 1 },
-      validations: [{ field: 'name', rule: 'string', message: 'This value must be a string' }],
-    },
-    {
-      properties: { name: 'lower' },
-      validations: [
-        { field: 'name', rule: 'length', message: 'This value length must be beetween 6 and 255' },
-      ],
-    },
-    {
-      properties: {
-        name: 'BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName Bigg',
-      },
-      validations: [
-        { field: 'name', rule: 'length', message: 'This value length must be beetween 6 and 255' },
-      ],
-    },
-    // category
-    {
-      properties: { category: 1 },
-      validations: [{ field: 'category', rule: 'string', message: 'This value must be a string' }],
-    },
-    {
-      properties: { category: 'invalid_category' },
-      validations: [
-        {
-          field: 'category',
-          rule: 'in',
-          message: 'This value must be in: clothes, shoes, others',
-        },
-      ],
-    },
-    // image
-    {
-      properties: { image: 1 },
-      validations: [{ field: 'image', rule: 'string', message: 'This value must be a string' }],
-    },
-    {
-      properties: { image: 'invalid_url' },
-      validations: [
-        {
-          field: 'image',
-          rule: 'regex',
-          message: 'This value must be valid according to the pattern: url',
-        },
-      ],
-    },
-    // price
-    {
-      properties: { price: 1.2 },
-      validations: [{ field: 'price', rule: 'integer', message: 'This value must be an integer' }],
-    },
-    {
-      properties: { price: MAX_INTEGER + 1 },
-      validations: [
-        {
-          field: 'price',
-          rule: 'max',
-          message: `This value must be less or equal to: ${MAX_INTEGER}`,
-        },
-      ],
-    },
-  ])(
-    'Should throw ValidationException for every product invalid prop',
-    ({ properties, validations }) => {
-      it(JSON.stringify(validations), async () => {
-        const { sut } = makeSut();
+  test('Should throws if firstValidation throws', async () => {
+    const { updateProductValidation, sut } = makeSut();
 
-        const requestModel = {
-          id: validUuidV4,
-          name: 'Any Name',
-          category: 'others',
-          image: 'any-image.com',
-          price: 1000,
-          ...properties,
-        } as UpdateProductUseCase.RequestModel;
+    const requestModel = {
+      id: validUuidV4,
+      name: 'Any Name',
+      email: 'any@email.com',
+      password: 'Password@123',
+      roles: [],
+      anyWrongProp: 'anyValue',
+    };
+    const error = new Error('firstValidation Error');
 
-        const sutResult = await sut.execute(requestModel).catch((e) => e);
+    updateProductValidation.firstValidation.mockReturnValueOnce(Promise.reject(error));
 
-        expect(sutResult).toStrictEqual(new ValidationException(validations));
-      });
-    },
-  );
+    const sutResult = sut.execute(requestModel);
+
+    await expect(sutResult).rejects.toStrictEqual(error);
+  });
+
+  test('Should throws if secondValidation throws', async () => {
+    const { updateProductValidation, sut } = makeSut();
+
+    const requestModel = {
+      id: validUuidV4,
+      name: 'Any Name',
+      email: 'any@email.com',
+      password: 'Password@123',
+      roles: [],
+      anyWrongProp: 'anyValue',
+    };
+    const error = new Error('secondValidation Error');
+
+    updateProductValidation.secondValidation.mockReturnValueOnce(Promise.reject(error));
+
+    const sutResult = sut.execute(requestModel);
+
+    await expect(sutResult).rejects.toStrictEqual(error);
+  });
 });

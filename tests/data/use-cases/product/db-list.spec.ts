@@ -1,23 +1,18 @@
-import { MAX_PER_PAGE, MIN_PER_PAGE } from '@/data/constants';
 import { DbListProductUseCase } from '@/data/use-cases';
-import { ProductModel } from '@/domain/models';
-import { ListProductUseCase } from '@/domain/use-cases';
-import { MAX_INTEGER } from '@/main/constants';
-import { ValidationException } from '@/main/exceptions';
 import { makeProductRepositoryStub } from '@tests/data/stubs/repositories';
-import { makeValidatorServiceStub } from '@tests/data/stubs/services';
+import { makeListProductValidationStub } from '@tests/data/stubs/validations';
 
 function makeSut() {
   const productRepository = makeProductRepositoryStub();
-  const validatorService = makeValidatorServiceStub();
-  const sut = new DbListProductUseCase(productRepository, validatorService);
+  const listProductValidation = makeListProductValidationStub();
+  const sut = new DbListProductUseCase(productRepository, listProductValidation.firstValidation);
 
-  return { productRepository, validatorService, sut };
+  return { productRepository, listProductValidation, sut };
 }
 
 describe(DbListProductUseCase.name, () => {
   test('Should list product and return correct values', async () => {
-    const { productRepository, validatorService, sut } = makeSut();
+    const { productRepository, listProductValidation, sut } = makeSut();
 
     const requestModel = {
       page: 1,
@@ -42,291 +37,27 @@ describe(DbListProductUseCase.name, () => {
     const sutResult = await sut.execute(requestModel);
 
     expect(sutResult).toStrictEqual([responseModel]);
-    expect(validatorService.validate).toBeCalledWith({
-      schema: {
-        page: [validatorService.rules.integer(), validatorService.rules.min({ value: 1 })],
-        perPage: [
-          validatorService.rules.integer(),
-          validatorService.rules.min({ value: 20 }),
-          validatorService.rules.max({ value: 50 }),
-        ],
-        orderBy: [
-          validatorService.rules.string(),
-          validatorService.rules.in({
-            values: ['name', 'category', 'price', 'createdAt', 'updatedAt'],
-          }),
-        ],
-        order: [
-          validatorService.rules.string(),
-          validatorService.rules.in({ values: ['asc', 'desc'] }),
-        ],
-        filters: [
-          validatorService.rules.listFilters<
-            Omit<ProductModel, 'id' | 'image' | 'deleteUserId' | 'deletedAt'>
-          >({
-            schema: {
-              name: [
-                validatorService.rules.array({
-                  rules: [
-                    validatorService.rules.string(),
-                    validatorService.rules.length({ minLength: 6, maxLength: 255 }),
-                  ],
-                }),
-              ],
-              category: [
-                validatorService.rules.array({
-                  rules: [
-                    validatorService.rules.string(),
-                    validatorService.rules.in({ values: ['clothes', 'shoes', 'others'] }),
-                  ],
-                }),
-              ],
-              price: [
-                validatorService.rules.array({
-                  rules: [
-                    validatorService.rules.integer(),
-                    validatorService.rules.max({ value: MAX_INTEGER }),
-                  ],
-                }),
-              ],
-              createUserId: [
-                validatorService.rules.array({
-                  rules: [
-                    validatorService.rules.string(),
-                    validatorService.rules.regex({ pattern: 'uuidV4' }),
-                  ],
-                }),
-              ],
-              updateUserId: [
-                validatorService.rules.array({
-                  rules: [
-                    validatorService.rules.string(),
-                    validatorService.rules.regex({ pattern: 'uuidV4' }),
-                  ],
-                }),
-              ],
-              createdAt: [
-                validatorService.rules.array({
-                  rules: [validatorService.rules.string(), validatorService.rules.date()],
-                }),
-              ],
-              updatedAt: [
-                validatorService.rules.array({
-                  rules: [validatorService.rules.string(), validatorService.rules.date()],
-                }),
-              ],
-            },
-          }),
-        ],
-      },
-      model: sanitizedRequestModel,
-      data: {},
-    });
+    expect(listProductValidation.firstValidation).toBeCalledWith(sanitizedRequestModel);
     expect(productRepository.list).toBeCalledWith(sanitizedRequestModel);
   });
 
-  describe.each([
-    // page
-    {
-      properties: { page: 'page' },
-      validations: [{ field: 'page', rule: 'integer', message: 'This value must be an integer' }],
-    },
-    {
-      properties: { page: 0 },
-      validations: [
-        { field: 'page', rule: 'min', message: 'This value must be bigger or equal to: 1' },
-      ],
-    },
-    // perPage
-    {
-      properties: { perPage: 'perPage' },
-      validations: [
-        { field: 'perPage', rule: 'integer', message: 'This value must be an integer' },
-      ],
-    },
-    {
-      properties: { perPage: MIN_PER_PAGE - 1 },
-      validations: [
-        { field: 'perPage', rule: 'min', message: 'This value must be bigger or equal to: 20' },
-      ],
-    },
-    {
-      properties: { perPage: MAX_PER_PAGE + 1 },
-      validations: [
-        { field: 'perPage', rule: 'max', message: 'This value must be less or equal to: 50' },
-      ],
-    },
-    // orderBy
-    {
-      properties: { orderBy: 1 },
-      validations: [{ field: 'orderBy', rule: 'string', message: 'This value must be a string' }],
-    },
-    {
-      properties: { orderBy: 'orderBy' },
-      validations: [
-        {
-          field: 'orderBy',
-          rule: 'in',
-          message: 'This value must be in: name, category, price, createdAt, updatedAt',
-        },
-      ],
-    },
-    // order
-    {
-      properties: { order: 1 },
-      validations: [{ field: 'order', rule: 'string', message: 'This value must be a string' }],
-    },
-    {
-      properties: { order: 'order' },
-      validations: [{ field: 'order', rule: 'in', message: 'This value must be in: asc, desc' }],
-    },
-    // name
-    {
-      properties: { filters: '["=", "name", 1]' },
-      validations: [
-        { field: 'filters.name.0', rule: 'string', message: 'This value must be a string' },
-      ],
-    },
-    {
-      properties: { filters: '["=", "name", "lower"]' },
-      validations: [
-        {
-          field: 'filters.name.0',
-          rule: 'length',
-          message: 'This value length must be beetween 6 and 255',
-        },
-      ],
-    },
-    {
-      properties: {
-        filters:
-          '["=", "name", "BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName Bigg"]',
-      },
-      validations: [
-        {
-          field: 'filters.name.0',
-          rule: 'length',
-          message: 'This value length must be beetween 6 and 255',
-        },
-      ],
-    },
-    // category
-    {
-      properties: { filters: '["=", "category", 1]' },
-      validations: [
-        { field: 'filters.category.0', rule: 'string', message: 'This value must be a string' },
-      ],
-    },
-    {
-      properties: { filters: '["=", "category", "invalid_category"]' },
-      validations: [
-        {
-          field: 'filters.category.0',
-          rule: 'in',
-          message: 'This value must be in: clothes, shoes, others',
-        },
-      ],
-    },
-    // price
-    {
-      properties: { filters: '["=", "price", 1.2]' },
-      validations: [
-        { field: 'filters.price.0', rule: 'integer', message: 'This value must be an integer' },
-      ],
-    },
-    {
-      properties: { filters: `["=", "price", ${MAX_INTEGER + 1}]` },
-      validations: [
-        {
-          field: 'filters.price.0',
-          rule: 'max',
-          message: `This value must be less or equal to: ${MAX_INTEGER}`,
-        },
-      ],
-    },
-    // createUserId
-    {
-      properties: { filters: '["=", "createUserId", 1]' },
-      validations: [
-        { field: 'filters.createUserId.0', rule: 'string', message: 'This value must be a string' },
-      ],
-    },
-    {
-      properties: { filters: '["=", "createUserId", "invalid_uuid"]' },
-      validations: [
-        {
-          field: 'filters.createUserId.0',
-          rule: 'regex',
-          message: 'This value must be valid according to the pattern: uuidV4',
-        },
-      ],
-    },
-    // updateUserId
-    {
-      properties: { filters: '["=", "updateUserId", 1]' },
-      validations: [
-        { field: 'filters.updateUserId.0', rule: 'string', message: 'This value must be a string' },
-      ],
-    },
-    {
-      properties: { filters: '["=", "updateUserId", "invalid_uuid"]' },
-      validations: [
-        {
-          field: 'filters.updateUserId.0',
-          rule: 'regex',
-          message: 'This value must be valid according to the pattern: uuidV4',
-        },
-      ],
-    },
-    // createdAt
-    {
-      properties: { filters: '["=", "createdAt", 1]' },
-      validations: [
-        { field: 'filters.createdAt.0', rule: 'string', message: 'This value must be a string' },
-      ],
-    },
-    {
-      properties: { filters: '["=", "createdAt", "invalid_date"]' },
-      validations: [
-        {
-          field: 'filters.createdAt.0',
-          rule: 'date',
-          message: 'This value must be a valid date',
-        },
-      ],
-    },
-    // updatedAt
-    {
-      properties: { filters: '["=", "updatedAt", 1]' },
-      validations: [
-        { field: 'filters.updatedAt.0', rule: 'string', message: 'This value must be a string' },
-      ],
-    },
-    {
-      properties: { filters: '["=", "updatedAt", "invalid_date"]' },
-      validations: [
-        {
-          field: 'filters.updatedAt.0',
-          rule: 'date',
-          message: 'This value must be a valid date',
-        },
-      ],
-    },
-  ])(
-    'Should throw ValidationException for every product invalid prop',
-    ({ properties, validations }) => {
-      it(JSON.stringify(validations), async () => {
-        const { sut } = makeSut();
+  test('Should throws if firstValidation throws', async () => {
+    const { listProductValidation, sut } = makeSut();
 
-        const requestModel = {
-          filters: '[]',
-          ...properties,
-        } as ListProductUseCase.RequestModel;
+    const requestModel = {
+      page: 1,
+      perPage: 20,
+      orderBy: 'name' as const,
+      order: 'asc' as const,
+      filters: '[]',
+      anyWrongProp: 'anyValue',
+    };
+    const error = new Error('firstValidation Error');
 
-        const sutResult = await sut.execute(requestModel).catch((e) => e);
+    listProductValidation.firstValidation.mockReturnValueOnce(Promise.reject(error));
 
-        expect(sutResult).toStrictEqual(new ValidationException(validations));
-      });
-    },
-  );
+    const sutResult = sut.execute(requestModel);
+
+    await expect(sutResult).rejects.toStrictEqual(error);
+  });
 });

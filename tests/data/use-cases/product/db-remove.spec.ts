@@ -1,23 +1,24 @@
 import { DbRemoveProductUseCase } from '@/data/use-cases';
-import { RemoveProductUseCase } from '@/domain/use-cases';
-import { ValidationException } from '@/main/exceptions';
 import { makeProductRepositoryStub } from '@tests/data/stubs/repositories';
-import { makeValidatorServiceStub } from '@tests/data/stubs/services';
+import { makeRemoveProductValidationStub } from '@tests/data/stubs/validations';
 
 const validUuidV4 = '00000000-0000-4000-8000-000000000001';
-const nonExistentId = '00000000-0000-4000-8000-000000000002';
 
 function makeSut() {
   const productRepository = makeProductRepositoryStub();
-  const validatorService = makeValidatorServiceStub();
-  const sut = new DbRemoveProductUseCase(productRepository, productRepository, validatorService);
+  const removeProductValidation = makeRemoveProductValidationStub();
+  const sut = new DbRemoveProductUseCase(
+    productRepository,
+    productRepository,
+    removeProductValidation.firstValidation,
+  );
 
-  return { productRepository, validatorService, sut };
+  return { productRepository, removeProductValidation, sut };
 }
 
 describe(DbRemoveProductUseCase.name, () => {
   test('Should remove product and return correct values', async () => {
-    const { productRepository, validatorService, sut } = makeSut();
+    const { productRepository, removeProductValidation, sut } = makeSut();
 
     const requestModel = {
       id: validUuidV4,
@@ -36,69 +37,41 @@ describe(DbRemoveProductUseCase.name, () => {
     const sutResult = await sut.execute(requestModel);
 
     expect(sutResult).toStrictEqual(responseModel);
-    expect(validatorService.validate).toBeCalledWith({
-      schema: {
-        id: [
-          validatorService.rules.required(),
-          validatorService.rules.string(),
-          validatorService.rules.regex({ pattern: 'uuidV4' }),
-        ],
-      },
-      model: sanitizedRequestModel,
-      data: { products: [] },
-    });
+    expect(removeProductValidation.firstValidation).toBeCalledWith(sanitizedRequestModel);
     expect(productRepository.findBy).toBeCalledWith([sanitizedRequestModel]);
-    expect(validatorService.validate).toBeCalledWith({
-      schema: {
-        id: [
-          validatorService.rules.exists({
-            dataEntity: 'products',
-            props: [{ modelKey: 'id', dataKey: 'id' }],
-          }),
-        ],
-      },
-      model: sanitizedRequestModel,
-      data: { products: [existsProduct] },
-    });
+    expect(removeProductValidation.secondValidation).toBeCalledWith({ products: [existsProduct] });
     expect(productRepository.remove).toBeCalledWith(sanitizedRequestModel);
   });
 
-  describe.each([
-    // id
-    {
-      properties: { id: undefined },
-      validations: [{ field: 'id', rule: 'required', message: 'This value is required' }],
-    },
-    {
-      properties: { id: 1 },
-      validations: [{ field: 'id', rule: 'string', message: 'This value must be a string' }],
-    },
-    {
-      properties: { id: 'invalid_uuid' },
-      validations: [
-        {
-          field: 'id',
-          rule: 'regex',
-          message: 'This value must be valid according to the pattern: uuidV4',
-        },
-      ],
-    },
-    {
-      properties: { id: nonExistentId },
-      validations: [{ field: 'id', rule: 'exists', message: 'This value was not found' }],
-    },
-  ])(
-    'Should throw ValidationException for every product invalid prop',
-    ({ properties, validations }) => {
-      it(JSON.stringify(validations), async () => {
-        const { sut } = makeSut();
+  test('Should throws if firstValidation throws', async () => {
+    const { removeProductValidation, sut } = makeSut();
 
-        const requestModel = { ...properties } as RemoveProductUseCase.RequestModel;
+    const requestModel = {
+      id: validUuidV4,
+      anyWrongProp: 'anyValue',
+    };
+    const error = new Error('firstValidation Error');
 
-        const sutResult = await sut.execute(requestModel).catch((e) => e);
+    removeProductValidation.firstValidation.mockReturnValueOnce(Promise.reject(error));
 
-        expect(sutResult).toStrictEqual(new ValidationException(validations));
-      });
-    },
-  );
+    const sutResult = sut.execute(requestModel);
+
+    await expect(sutResult).rejects.toStrictEqual(error);
+  });
+
+  test('Should throws if secondValidation throws', async () => {
+    const { removeProductValidation, sut } = makeSut();
+
+    const requestModel = {
+      id: validUuidV4,
+      anyWrongProp: 'anyValue',
+    };
+    const error = new Error('secondValidation Error');
+
+    removeProductValidation.secondValidation.mockReturnValueOnce(Promise.reject(error));
+
+    const sutResult = sut.execute(requestModel);
+
+    await expect(sutResult).rejects.toStrictEqual(error);
+  });
 });
