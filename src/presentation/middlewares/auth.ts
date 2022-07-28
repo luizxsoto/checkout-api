@@ -16,7 +16,7 @@ export class AuthMiddleware implements Middleware {
     const session = {} as SessionModel;
     try {
       const decryptResult = await this.decrypter.decrypt<{ userId: string; roles: Roles[] }>(
-        request.bearerToken.replace('Bearer ', ''),
+        request.bearerToken.replace(/^bearer\s?/i, ''),
       );
       session.userId = decryptResult.userId;
       session.roles = decryptResult.roles;
