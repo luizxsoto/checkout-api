@@ -1,19 +1,18 @@
 import { DbShowOrderUseCase } from '@/data/use-cases';
-import { OrderModel, SessionModel } from '@/domain/models';
+import { SessionModel } from '@/domain/models';
 import { ShowOrderUseCase } from '@/domain/use-cases';
 import { KnexOrderItemRepository, KnexOrderRepository } from '@/infra/repositories';
 import { UUIDService } from '@/infra/services';
-import { VanillaValidatorService } from '@/infra/services/validator';
+import { CompositeValidation } from '@/main/composites';
 import { knexConfig } from '@/main/config';
+import { makeShowOrderValidation } from '@/main/factories/validations';
 
 export function makeDbShowOrderUseCase(session: SessionModel): ShowOrderUseCase.UseCase {
   const repository = new KnexOrderRepository(session, knexConfig, new UUIDService());
   const orderItemRepository = new KnexOrderItemRepository(session, knexConfig, new UUIDService());
-  const validatorService = new VanillaValidatorService<
-    ShowOrderUseCase.RequestModel,
-    { orders: OrderModel[] }
-  >();
-  const useCase = new DbShowOrderUseCase(repository, orderItemRepository, validatorService);
+  const validationService = new CompositeValidation();
+  const showOrderValidation = makeShowOrderValidation(validationService);
+  const useCase = new DbShowOrderUseCase(repository, orderItemRepository, showOrderValidation);
 
   return useCase;
 }

@@ -4,10 +4,9 @@ import {
   FindByProductRepository,
   FindByUserRepository,
 } from '@/data/contracts/repositories';
-import { ValidatorService } from '@/data/contracts/services';
-import { OrderItemModel, OrderModel, ProductModel, UserModel } from '@/domain/models';
+import { CreateOrderValidation } from '@/data/contracts/validations';
+import { OrderItemModel, OrderModel, ProductModel } from '@/domain/models';
 import { CreateOrderUseCase } from '@/domain/use-cases';
-import { MAX_INTEGER } from '@/main/constants';
 
 type OrderWithValues = Omit<
   OrderModel,
@@ -32,10 +31,7 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
     private readonly createOrderItemRepository: CreateOrderItemRepository.Repository,
     private readonly findByUserRepository: FindByUserRepository.Repository,
     private readonly findByProductRepository: FindByProductRepository.Repository,
-    private readonly validatorService: ValidatorService.Validator<
-      CreateOrderUseCase.RequestModel,
-      { users: Omit<UserModel, 'password'>[]; products: ProductModel[] }
-    >,
+    private readonly createOrderValidation: CreateOrderValidation,
   ) {}
 
   public async execute(
@@ -43,7 +39,7 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
   ): Promise<CreateOrderUseCase.ResponseModel> {
     const sanitizedRequestModel = this.sanitizeRequestModel(requestModel);
 
-    const restValidation = await this.validateRequestModel(sanitizedRequestModel);
+    const restValidation = await this.createOrderValidation(sanitizedRequestModel);
 
     const users = await this.findByUserRepository.findBy(
       [{ id: sanitizedRequestModel.userId }],
@@ -126,81 +122,5 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
     });
 
     return sanitizedOrder;
-  }
-
-  private async validateRequestModel(
-    requestModel: CreateOrderUseCase.RequestModel,
-  ): Promise<
-    (validationData: {
-      users: Omit<UserModel, 'password'>[];
-      products: ProductModel[];
-    }) => Promise<void>
-  > {
-    await this.validatorService.validate({
-      schema: {
-        userId: [
-          this.validatorService.rules.required(),
-          this.validatorService.rules.string(),
-          this.validatorService.rules.regex({ pattern: 'uuidV4' }),
-        ],
-        orderItems: [
-          this.validatorService.rules.required(),
-          this.validatorService.rules.array({
-            rules: [
-              this.validatorService.rules.object({
-                schema: {
-                  productId: [
-                    this.validatorService.rules.required(),
-                    this.validatorService.rules.string(),
-                    this.validatorService.rules.regex({ pattern: 'uuidV4' }),
-                  ],
-                  quantity: [
-                    this.validatorService.rules.required(),
-                    this.validatorService.rules.integer(),
-                    this.validatorService.rules.min({ value: 1 }),
-                    this.validatorService.rules.max({ value: MAX_INTEGER }),
-                  ],
-                },
-              }),
-            ],
-          }),
-          this.validatorService.rules.distinct({
-            keys: ['productId'],
-          }),
-        ],
-      },
-      model: requestModel,
-      data: { users: [], products: [] },
-    });
-    return (validationData) =>
-      this.validatorService.validate({
-        schema: {
-          userId: [
-            this.validatorService.rules.exists({
-              dataEntity: 'users',
-              props: [{ modelKey: 'userId', dataKey: 'id' }],
-            }),
-          ],
-          orderItems: [
-            this.validatorService.rules.array({
-              rules: [
-                this.validatorService.rules.object({
-                  schema: {
-                    productId: [
-                      this.validatorService.rules.exists({
-                        dataEntity: 'products',
-                        props: [{ modelKey: 'productId', dataKey: 'id' }],
-                      }),
-                    ],
-                    quantity: [],
-                  },
-                }),
-              ],
-            }),
-          ],
-        },
-        model: requestModel,
-        data: validationData,
-      });
   }
 }

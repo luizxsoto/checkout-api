@@ -1,23 +1,22 @@
 import { DbUpdateOrderUseCase } from '@/data/use-cases';
-import { OrderModel, SessionModel, UserModel } from '@/domain/models';
+import { SessionModel } from '@/domain/models';
 import { UpdateOrderUseCase } from '@/domain/use-cases';
 import { KnexOrderRepository, KnexUserRepository } from '@/infra/repositories';
 import { UUIDService } from '@/infra/services';
-import { VanillaValidatorService } from '@/infra/services/validator';
+import { CompositeValidation } from '@/main/composites';
 import { knexConfig } from '@/main/config';
+import { makeUpdateOrderValidation } from '@/main/factories/validations';
 
 export function makeDbUpdateOrderUseCase(session: SessionModel): UpdateOrderUseCase.UseCase {
   const repository = new KnexOrderRepository(session, knexConfig, new UUIDService());
   const userRepository = new KnexUserRepository(session, knexConfig, new UUIDService());
-  const validatorService = new VanillaValidatorService<
-    UpdateOrderUseCase.RequestModel,
-    { orders: OrderModel[]; users: Omit<UserModel, 'password'>[] }
-  >();
+  const validationService = new CompositeValidation();
+  const updateOrderValidation = makeUpdateOrderValidation(validationService);
   const useCase = new DbUpdateOrderUseCase(
     repository,
     repository,
     userRepository,
-    validatorService,
+    updateOrderValidation,
   );
 
   return useCase;
