@@ -1,8 +1,8 @@
-import { MAX_PER_PAGE, MIN_PER_PAGE } from '@/data/constants';
 import { ValidationService } from '@/data/contracts/services';
 import { ListUserValidation } from '@/data/contracts/validations';
 import { ListUserUseCase } from '@/domain/use-cases';
 import { ValidationBuilder } from '@/main/builders';
+import { MAX_PER_PAGE, MIN_PER_PAGE } from '@/main/constants';
 import { ArrayValidation, ObjectValidation } from '@/validation/validators';
 
 export function makeListUserValidation(

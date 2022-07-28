@@ -1,5 +1,5 @@
-import { MAX_PER_PAGE, MIN_PER_PAGE } from '@/data/constants';
 import { ListUserUseCase } from '@/domain/use-cases';
+import { MAX_PER_PAGE, MIN_PER_PAGE } from '@/main/constants';
 import { ValidationException } from '@/main/exceptions';
 import { makeListUserValidation } from '@/main/factories/validations';
 import { makeValidationServiceStub } from '@tests/data/stubs/services';

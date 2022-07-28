@@ -1,8 +1,8 @@
 import { Knex } from 'knex';
 
-import { MIN_PER_PAGE } from '@/data/constants';
 import { GenerateUniqueIDService } from '@/data/contracts/services';
 import { BaseModel, SessionModel } from '@/domain/models';
+import { MIN_PER_PAGE } from '@/main/constants';
 import { DatabaseException } from '@/main/exceptions';
 
 export abstract class KnexBaseRepository {

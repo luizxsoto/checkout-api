@@ -1,9 +1,8 @@
-import { MAX_PER_PAGE, MIN_PER_PAGE } from '@/data/constants';
 import { ValidationService } from '@/data/contracts/services';
 import { ListOrderValidation } from '@/data/contracts/validations';
 import { ListOrderUseCase } from '@/domain/use-cases';
 import { ValidationBuilder } from '@/main/builders';
-import { MAX_INTEGER } from '@/main/constants';
+import { MAX_INTEGER, MAX_PER_PAGE, MIN_PER_PAGE } from '@/main/constants';
 import { ArrayValidation, ObjectValidation } from '@/validation/validators';
 
 export function makeListOrderValidation(
