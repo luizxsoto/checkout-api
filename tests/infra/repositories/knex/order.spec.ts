@@ -32,7 +32,6 @@ describe(KnexOrderRepository.name, () => {
 
       const requestModel = {
         userId: validUuidV4,
-        paymentProfileId: validUuidV4,
         totalValue: 1000,
       };
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]));
@@ -50,7 +49,6 @@ describe(KnexOrderRepository.name, () => {
 
       const requestModel = {
         userId: validUuidV4,
-        paymentProfileId: validUuidV4,
         totalValue: 1000,
       };
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]));
@@ -68,7 +66,6 @@ describe(KnexOrderRepository.name, () => {
 
       const requestModel = {
         userId: validUuidV4,
-        paymentProfileId: validUuidV4,
         totalValue: 1000,
       };
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]));
@@ -92,7 +89,6 @@ describe(KnexOrderRepository.name, () => {
       const requestModel = {
         id: 'any_id',
         userId: validUuidV4,
-        paymentProfileId: validUuidV4,
         totalValue: 1000,
         createdAt: new Date(),
       };

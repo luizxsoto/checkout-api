@@ -53,7 +53,7 @@ describe(DbListOrderUseCase.name, () => {
         orderBy: [
           validatorService.rules.string(),
           validatorService.rules.in({
-            values: ['userId', 'paymentProfileId', 'totalValue', 'createdAt', 'updatedAt'],
+            values: ['userId', 'totalValue', 'createdAt', 'updatedAt'],
           }),
         ],
         order: [
@@ -65,14 +65,6 @@ describe(DbListOrderUseCase.name, () => {
             {
               schema: {
                 userId: [
-                  validatorService.rules.array({
-                    rules: [
-                      validatorService.rules.string(),
-                      validatorService.rules.regex({ pattern: 'uuidV4' }),
-                    ],
-                  }),
-                ],
-                paymentProfileId: [
                   validatorService.rules.array({
                     rules: [
                       validatorService.rules.string(),
@@ -167,8 +159,7 @@ describe(DbListOrderUseCase.name, () => {
         {
           field: 'orderBy',
           rule: 'in',
-          message:
-            'This value must be in: userId, paymentProfileId, totalValue, createdAt, updatedAt',
+          message: 'This value must be in: userId, totalValue, createdAt, updatedAt',
         },
       ],
     },
@@ -193,27 +184,6 @@ describe(DbListOrderUseCase.name, () => {
       validations: [
         {
           field: 'filters.userId.0',
-          rule: 'regex',
-          message: 'This value must be valid according to the pattern: uuidV4',
-        },
-      ],
-    },
-    // paymentProfileId
-    {
-      properties: { filters: '["=", "paymentProfileId", 1]' },
-      validations: [
-        {
-          field: 'filters.paymentProfileId.0',
-          rule: 'string',
-          message: 'This value must be a string',
-        },
-      ],
-    },
-    {
-      properties: { filters: '["=", "paymentProfileId", "invalid_uuid"]' },
-      validations: [
-        {
-          field: 'filters.paymentProfileId.0',
           rule: 'regex',
           message: 'This value must be valid according to the pattern: uuidV4',
         },

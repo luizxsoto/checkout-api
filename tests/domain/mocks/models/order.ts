@@ -8,7 +8,6 @@ export function makeOrderModelMock(extraData?: Partial<OrderModel>) {
   return new OrderModel({
     ...makeBaseModelMock(extraData),
     userId: validUuidV4,
-    paymentProfileId: validUuidV4,
     totalValue: 1000,
     ...extraData,
   });

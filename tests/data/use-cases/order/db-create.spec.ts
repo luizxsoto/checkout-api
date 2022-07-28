@@ -5,11 +5,11 @@ import { ValidationException } from '@/main/exceptions';
 import {
   makeOrderItemRepositoryStub,
   makeOrderRepositoryStub,
-  makePaymentProfileRepositoryStub,
   makeProductRepositoryStub,
+  makeUserRepositoryStub,
 } from '@tests/data/stubs/repositories';
 import { makeValidatorServiceStub } from '@tests/data/stubs/services';
-import { makePaymentProfileModelMock, makeProductModelMock } from '@tests/domain/mocks/models';
+import { makeProductModelMock, makeUserModelMock } from '@tests/domain/mocks/models';
 
 const validUuidV4 = '00000000-0000-4000-8000-000000000001';
 const nonExistentId = '00000000-0000-4000-8000-000000000002';
@@ -17,13 +17,13 @@ const nonExistentId = '00000000-0000-4000-8000-000000000002';
 function makeSut() {
   const orderRepository = makeOrderRepositoryStub();
   const orderItemRepository = makeOrderItemRepositoryStub();
-  const paymentProfileRepository = makePaymentProfileRepositoryStub();
+  const userRepository = makeUserRepositoryStub();
   const productRepository = makeProductRepositoryStub();
   const validatorService = makeValidatorServiceStub();
   const sut = new DbCreateOrderUseCase(
     orderRepository,
     orderItemRepository,
-    paymentProfileRepository,
+    userRepository,
     productRepository,
     validatorService,
   );
@@ -31,7 +31,7 @@ function makeSut() {
   return {
     orderRepository,
     orderItemRepository,
-    paymentProfileRepository,
+    userRepository,
     productRepository,
     validatorService,
     sut,
@@ -43,7 +43,7 @@ describe(DbCreateOrderUseCase.name, () => {
     const {
       orderRepository,
       orderItemRepository,
-      paymentProfileRepository,
+      userRepository,
       productRepository,
       validatorService,
       sut,
@@ -51,7 +51,6 @@ describe(DbCreateOrderUseCase.name, () => {
 
     const requestModel = {
       userId: validUuidV4,
-      paymentProfileId: validUuidV4,
       anyWrongProp: 'anyValue',
       orderItems: [{ productId: validUuidV4, quantity: 1, anyWrongProp: 'anyValue' }],
     };
@@ -83,10 +82,10 @@ describe(DbCreateOrderUseCase.name, () => {
       createdAt: new Date(),
     };
     const responseModel = { ...orderCreated, orderItems: [orderItemCreated] };
-    const paymentProfile = makePaymentProfileModelMock();
+    const user = makeUserModelMock();
     const product = makeProductModelMock();
 
-    paymentProfileRepository.findBy.mockReturnValueOnce([paymentProfile]);
+    userRepository.findBy.mockReturnValueOnce([user]);
     productRepository.findBy.mockReturnValueOnce([product]);
     orderRepository.create.mockReturnValueOnce(orderCreated);
     orderItemRepository.create.mockReturnValueOnce(orderItemCreated);
@@ -97,11 +96,6 @@ describe(DbCreateOrderUseCase.name, () => {
     expect(validatorService.validate).toBeCalledWith({
       schema: {
         userId: [
-          validatorService.rules.required(),
-          validatorService.rules.string(),
-          validatorService.rules.regex({ pattern: 'uuidV4' }),
-        ],
-        paymentProfileId: [
           validatorService.rules.required(),
           validatorService.rules.string(),
           validatorService.rules.regex({ pattern: 'uuidV4' }),
@@ -133,12 +127,9 @@ describe(DbCreateOrderUseCase.name, () => {
         ],
       },
       model: sanitizedRequestModel,
-      data: { paymentProfiles: [], products: [] },
+      data: { users: [], products: [] },
     });
-    expect(paymentProfileRepository.findBy).toBeCalledWith(
-      [{ id: sanitizedRequestModel.paymentProfileId, userId: sanitizedRequestModel.userId }],
-      true,
-    );
+    expect(userRepository.findBy).toBeCalledWith([{ id: sanitizedRequestModel.userId }], true);
     expect(productRepository.findBy).toBeCalledWith([
       { id: sanitizedRequestModel.orderItems[0].productId },
     ]);
@@ -146,20 +137,8 @@ describe(DbCreateOrderUseCase.name, () => {
       schema: {
         userId: [
           validatorService.rules.exists({
-            dataEntity: 'paymentProfiles',
-            props: [
-              { modelKey: 'userId', dataKey: 'userId' },
-              { modelKey: 'paymentProfileId', dataKey: 'id' },
-            ],
-          }),
-        ],
-        paymentProfileId: [
-          validatorService.rules.exists({
-            dataEntity: 'paymentProfiles',
-            props: [
-              { modelKey: 'userId', dataKey: 'userId' },
-              { modelKey: 'paymentProfileId', dataKey: 'id' },
-            ],
+            dataEntity: 'users',
+            props: [{ modelKey: 'userId', dataKey: 'id' }],
           }),
         ],
         orderItems: [
@@ -181,7 +160,7 @@ describe(DbCreateOrderUseCase.name, () => {
         ],
       },
       model: sanitizedRequestModel,
-      data: { paymentProfiles: [paymentProfile], products: [product] },
+      data: { users: [user], products: [product] },
     });
     expect(orderRepository.create).toBeCalledWith(orderWithValues);
     expect(orderItemRepository.create).toBeCalledWith({
@@ -212,40 +191,7 @@ describe(DbCreateOrderUseCase.name, () => {
     },
     {
       properties: { userId: nonExistentId },
-      validations: [
-        { field: 'userId', rule: 'exists', message: 'This value was not found' },
-        { field: 'paymentProfileId', rule: 'exists', message: 'This value was not found' },
-      ],
-    },
-    // paymentProfileId
-    {
-      properties: { paymentProfileId: undefined },
-      validations: [
-        { field: 'paymentProfileId', rule: 'required', message: 'This value is required' },
-      ],
-    },
-    {
-      properties: { paymentProfileId: 1 },
-      validations: [
-        { field: 'paymentProfileId', rule: 'string', message: 'This value must be a string' },
-      ],
-    },
-    {
-      properties: { paymentProfileId: 'invalid_id' },
-      validations: [
-        {
-          field: 'paymentProfileId',
-          rule: 'regex',
-          message: 'This value must be valid according to the pattern: uuidV4',
-        },
-      ],
-    },
-    {
-      properties: { paymentProfileId: nonExistentId },
-      validations: [
-        { field: 'userId', rule: 'exists', message: 'This value was not found' },
-        { field: 'paymentProfileId', rule: 'exists', message: 'This value was not found' },
-      ],
+      validations: [{ field: 'userId', rule: 'exists', message: 'This value was not found' }],
     },
     // orderItems
     {
@@ -341,7 +287,6 @@ describe(DbCreateOrderUseCase.name, () => {
 
         const requestModel = {
           userId: validUuidV4,
-          paymentProfileId: validUuidV4,
           orderItems: [{ productId: validUuidV4, quantity: 1 }],
           ...properties,
         } as CreateOrderUseCase.RequestModel;

@@ -1,38 +1,34 @@
 import { DbUpdateOrderUseCase } from '@/data/use-cases';
 import { UpdateOrderUseCase } from '@/domain/use-cases';
 import { ValidationException } from '@/main/exceptions';
-import {
-  makeOrderRepositoryStub,
-  makePaymentProfileRepositoryStub,
-} from '@tests/data/stubs/repositories';
+import { makeOrderRepositoryStub, makeUserRepositoryStub } from '@tests/data/stubs/repositories';
 import { makeValidatorServiceStub } from '@tests/data/stubs/services';
-import { makePaymentProfileModelMock } from '@tests/domain/mocks/models';
+import { makeUserModelMock } from '@tests/domain/mocks/models';
 
 const validUuidV4 = '00000000-0000-4000-8000-000000000001';
 const nonExistentId = '00000000-0000-4000-8000-000000000002';
 
 function makeSut() {
   const orderRepository = makeOrderRepositoryStub();
-  const paymentProfileRepository = makePaymentProfileRepositoryStub();
+  const userRepository = makeUserRepositoryStub();
   const validatorService = makeValidatorServiceStub();
   const sut = new DbUpdateOrderUseCase(
     orderRepository,
     orderRepository,
-    paymentProfileRepository,
+    userRepository,
     validatorService,
   );
 
-  return { orderRepository, paymentProfileRepository, validatorService, sut };
+  return { orderRepository, userRepository, validatorService, sut };
 }
 
 describe(DbUpdateOrderUseCase.name, () => {
   test('Should update order and return correct values', async () => {
-    const { orderRepository, paymentProfileRepository, validatorService, sut } = makeSut();
+    const { orderRepository, userRepository, validatorService, sut } = makeSut();
 
     const requestModel = {
       id: validUuidV4,
       userId: validUuidV4,
-      paymentProfileId: validUuidV4,
       anyWrongProp: 'anyValue',
     };
     const sanitizedRequestModel = {
@@ -41,10 +37,10 @@ describe(DbUpdateOrderUseCase.name, () => {
     Reflect.deleteProperty(sanitizedRequestModel, 'anyWrongProp');
     const responseModel = { ...sanitizedRequestModel, updatedAt: new Date() };
     const existsOrder = { ...responseModel };
-    const existsPaymentProfile = makePaymentProfileModelMock();
+    const existsUser = makeUserModelMock();
 
     orderRepository.findBy.mockReturnValueOnce([existsOrder]);
-    paymentProfileRepository.findBy.mockReturnValueOnce([existsPaymentProfile]);
+    userRepository.findBy.mockReturnValueOnce([existsUser]);
     orderRepository.update.mockReturnValueOnce([responseModel]);
 
     const sutResult = await sut.execute(requestModel);
@@ -62,20 +58,12 @@ describe(DbUpdateOrderUseCase.name, () => {
           validatorService.rules.string(),
           validatorService.rules.regex({ pattern: 'uuidV4' }),
         ],
-        paymentProfileId: [
-          validatorService.rules.required(),
-          validatorService.rules.string(),
-          validatorService.rules.regex({ pattern: 'uuidV4' }),
-        ],
       },
       model: sanitizedRequestModel,
-      data: { orders: [], paymentProfiles: [] },
+      data: { orders: [], users: [] },
     });
     expect(orderRepository.findBy).toBeCalledWith([{ id: sanitizedRequestModel.id }]);
-    expect(paymentProfileRepository.findBy).toBeCalledWith(
-      [{ id: sanitizedRequestModel.paymentProfileId, userId: sanitizedRequestModel.userId }],
-      true,
-    );
+    expect(userRepository.findBy).toBeCalledWith([{ id: sanitizedRequestModel.userId }], true);
     expect(validatorService.validate).toBeCalledWith({
       schema: {
         id: [
@@ -86,25 +74,13 @@ describe(DbUpdateOrderUseCase.name, () => {
         ],
         userId: [
           validatorService.rules.exists({
-            dataEntity: 'paymentProfiles',
-            props: [
-              { modelKey: 'userId', dataKey: 'userId' },
-              { modelKey: 'paymentProfileId', dataKey: 'id' },
-            ],
-          }),
-        ],
-        paymentProfileId: [
-          validatorService.rules.exists({
-            dataEntity: 'paymentProfiles',
-            props: [
-              { modelKey: 'userId', dataKey: 'userId' },
-              { modelKey: 'paymentProfileId', dataKey: 'id' },
-            ],
+            dataEntity: 'users',
+            props: [{ modelKey: 'userId', dataKey: 'id' }],
           }),
         ],
       },
       model: sanitizedRequestModel,
-      data: { orders: [existsOrder], paymentProfiles: [existsPaymentProfile] },
+      data: { orders: [existsOrder], users: [existsUser] },
     });
     expect(orderRepository.update).toBeCalledWith(
       { id: sanitizedRequestModel.id },
@@ -157,40 +133,7 @@ describe(DbUpdateOrderUseCase.name, () => {
     },
     {
       properties: { userId: nonExistentId },
-      validations: [
-        { field: 'userId', rule: 'exists', message: 'This value was not found' },
-        { field: 'paymentProfileId', rule: 'exists', message: 'This value was not found' },
-      ],
-    },
-    // paymentProfileId
-    {
-      properties: { paymentProfileId: undefined },
-      validations: [
-        { field: 'paymentProfileId', rule: 'required', message: 'This value is required' },
-      ],
-    },
-    {
-      properties: { paymentProfileId: 1 },
-      validations: [
-        { field: 'paymentProfileId', rule: 'string', message: 'This value must be a string' },
-      ],
-    },
-    {
-      properties: { paymentProfileId: 'invalid_uuid' },
-      validations: [
-        {
-          field: 'paymentProfileId',
-          rule: 'regex',
-          message: 'This value must be valid according to the pattern: uuidV4',
-        },
-      ],
-    },
-    {
-      properties: { paymentProfileId: nonExistentId },
-      validations: [
-        { field: 'userId', rule: 'exists', message: 'This value was not found' },
-        { field: 'paymentProfileId', rule: 'exists', message: 'This value was not found' },
-      ],
+      validations: [{ field: 'userId', rule: 'exists', message: 'This value was not found' }],
     },
   ])(
     'Should throw ValidationException for every order invalid prop',
@@ -201,7 +144,6 @@ describe(DbUpdateOrderUseCase.name, () => {
         const requestModel = {
           id: validUuidV4,
           userId: validUuidV4,
-          paymentProfileId: validUuidV4,
           ...properties,
         } as UpdateOrderUseCase.RequestModel;
 

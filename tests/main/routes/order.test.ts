@@ -8,7 +8,6 @@ import { makeBearerTokenMock } from '@tests/domain/mocks/models';
 
 const validUuidV4 = '10000000-0000-4000-8000-000000000001';
 const existingUserId = '00000000-0000-4000-8000-000000000001';
-const existingPaymentProfileId = '00000000-0000-4000-8000-000000000001';
 const existingProductId = '00000000-0000-4000-8000-000000000001';
 const userId = '00000000-0000-4000-8000-000000000001';
 let app: Express;
@@ -36,7 +35,6 @@ describe('Order Routes', () => {
       const requestModel = {
         id: validUuidV4,
         userId: validUuidV4,
-        paymentProfileId: validUuidV4,
         totalValue: 1000,
         createUserId: userId,
         createdAt: new Date().toISOString(),
@@ -53,7 +51,6 @@ describe('Order Routes', () => {
       expect(result.status).toBe(200);
       expect(result.body[0]?.id).toBe(requestModel.id);
       expect(result.body[0]?.userId).toBe(requestModel.userId);
-      expect(result.body[0]?.paymentProfileId).toBe(requestModel.paymentProfileId);
       expect(result.body[0]?.totalValue).toBe(requestModel.totalValue);
       expect(result.body[0]?.createUserId).toBe(requestModel.createUserId);
       expect(result.body[0]?.createdAt).toBe(requestModel.createdAt);
@@ -80,7 +77,7 @@ describe('Order Routes', () => {
             field: 'filters',
             rule: 'listFilters',
             message:
-              'This value must be a valid list filters and with this posible fields: userId, paymentProfileId, totalValue, createUserId, updateUserId, createdAt, updatedAt',
+              'This value must be a valid list filters and with this posible fields: userId, totalValue, createUserId, updateUserId, createdAt, updatedAt',
           },
         ],
       });
@@ -92,7 +89,6 @@ describe('Order Routes', () => {
       const orderModel = {
         id: validUuidV4,
         userId: validUuidV4,
-        paymentProfileId: validUuidV4,
         totalValue: 1000,
         createUserId: userId,
         createdAt: new Date().toISOString(),
@@ -119,7 +115,6 @@ describe('Order Routes', () => {
       expect(result.status).toBe(200);
       expect(result.body.id).toBe(orderModel.id);
       expect(result.body.userId).toBe(orderModel.userId);
-      expect(result.body.paymentProfileId).toBe(orderModel.paymentProfileId);
       expect(result.body.totalValue).toBe(orderModel.totalValue);
       expect(result.body.createUserId).toBe(orderModel.createUserId);
       expect(result.body.createdAt).toBe(orderModel.createdAt);
@@ -163,7 +158,6 @@ describe('Order Routes', () => {
     test('Should create order and return correct values', async () => {
       const requestModel = {
         userId: existingUserId,
-        paymentProfileId: existingPaymentProfileId,
         orderItems: [{ productId: existingProductId, quantity: 1 }],
       };
       const createUserId = userId;
@@ -176,7 +170,6 @@ describe('Order Routes', () => {
 
       expect(result.status).toBe(201);
       expect(result.body.userId).toBe(requestModel.userId);
-      expect(result.body.paymentProfileId).toBe(requestModel.paymentProfileId);
       expect(result.body.orderItems?.[0]?.productId).toBe(requestModel.orderItems[0].productId);
       expect(result.body.orderItems?.[0]?.quantity).toBe(requestModel.orderItems[0].quantity);
       expect(result.body.totalValue).toBe(productPrice);
@@ -199,7 +192,6 @@ describe('Order Routes', () => {
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
       const requestModel = {
-        paymentProfileId: validUuidV4,
         orderItems: [{ productId: validUuidV4, quantity: 1 }],
       };
 
@@ -229,7 +221,6 @@ describe('Order Routes', () => {
       const requestModel = {
         id: validUuidV4,
         userId: existingUserId,
-        paymentProfileId: existingPaymentProfileId,
         totalValue: 1000,
         createUserId: userId,
         createdAt: new Date().toISOString(),
@@ -246,7 +237,6 @@ describe('Order Routes', () => {
       expect(result.status).toBe(200);
       expect(result.body.id).toBe(requestModel.id);
       expect(result.body.userId).toBe(requestModel.userId);
-      expect(result.body.paymentProfileId).toBe(requestModel.paymentProfileId);
       expect(result.body.totalValue).toBe(requestModel.totalValue);
       expect(result.body.createUserId).toBe(requestModel.createUserId);
       expect(result.body.updateUserId).toBe(updateUserId);
@@ -258,7 +248,6 @@ describe('Order Routes', () => {
       const requestModel = {
         id: 'invalid_id',
         userId: validUuidV4,
-        paymentProfileId: validUuidV4,
       };
 
       const result = await request(app)
@@ -287,7 +276,6 @@ describe('Order Routes', () => {
       const orderModel = {
         id: validUuidV4,
         userId: validUuidV4,
-        paymentProfileId: validUuidV4,
         totalValue: 1000,
         createUserId: userId,
         updateUserId: userId,
@@ -325,7 +313,6 @@ describe('Order Routes', () => {
       expect(result.status).toBe(200);
       expect(result.body.id).toBe(orderModel.id);
       expect(result.body.userId).toBe(orderModel.userId);
-      expect(result.body.paymentProfileId).toBe(orderModel.paymentProfileId);
       expect(result.body.totalValue).toBe(orderModel.totalValue);
       expect(result.body.createUserId).toBe(orderModel.createUserId);
       expect(result.body.updateUserId).toBe(orderModel.updateUserId);
