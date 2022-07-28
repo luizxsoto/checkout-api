@@ -1,16 +1,11 @@
 import { CreateProductRepository } from '@/data/contracts/repositories';
-import { ValidatorService } from '@/data/contracts/services';
-import { ProductModel } from '@/domain/models';
+import { CreateProductValidation } from '@/data/contracts/validations';
 import { CreateProductUseCase } from '@/domain/use-cases';
-import { MAX_INTEGER } from '@/main/constants';
 
 export class DbCreateProductUseCase implements CreateProductUseCase.UseCase {
   constructor(
     private readonly createProductRepository: CreateProductRepository.Repository,
-    private readonly validatorService: ValidatorService.Validator<
-      CreateProductUseCase.RequestModel,
-      { products: ProductModel[] }
-    >,
+    private readonly createProductValidation: CreateProductValidation,
   ) {}
 
   public async execute(
@@ -18,7 +13,7 @@ export class DbCreateProductUseCase implements CreateProductUseCase.UseCase {
   ): Promise<CreateProductUseCase.ResponseModel> {
     const sanitizedRequestModel = this.sanitizeRequestModel(requestModel);
 
-    await this.validateRequestModel(sanitizedRequestModel);
+    await this.createProductValidation(sanitizedRequestModel);
 
     const productCreated = await this.createProductRepository.create(sanitizedRequestModel);
 
@@ -34,36 +29,5 @@ export class DbCreateProductUseCase implements CreateProductUseCase.UseCase {
       image: requestModel.image,
       price: requestModel.price,
     };
-  }
-
-  private async validateRequestModel(
-    requestModel: CreateProductUseCase.RequestModel,
-  ): Promise<void> {
-    await this.validatorService.validate({
-      schema: {
-        name: [
-          this.validatorService.rules.required(),
-          this.validatorService.rules.string(),
-          this.validatorService.rules.length({ minLength: 6, maxLength: 255 }),
-        ],
-        category: [
-          this.validatorService.rules.required(),
-          this.validatorService.rules.string(),
-          this.validatorService.rules.in({ values: ['clothes', 'shoes', 'others'] }),
-        ],
-        image: [
-          this.validatorService.rules.required(),
-          this.validatorService.rules.string(),
-          this.validatorService.rules.regex({ pattern: 'url' }),
-        ],
-        price: [
-          this.validatorService.rules.required(),
-          this.validatorService.rules.integer(),
-          this.validatorService.rules.max({ value: MAX_INTEGER }),
-        ],
-      },
-      model: requestModel,
-      data: { products: [] },
-    });
   }
 }
