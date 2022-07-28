@@ -1,15 +1,9 @@
-export abstract class BaseModel {
-  public id!: string;
-
-  public createUserId!: string;
-
-  public updateUserId?: string;
-
-  public deleteUserId?: string;
-
-  public createdAt!: Date;
-
-  public updatedAt?: Date;
-
-  public deletedAt?: Date;
-}
+export type BaseModel = {
+  id: string;
+  createUserId: string;
+  updateUserId?: string;
+  deleteUserId?: string;
+  createdAt: Date;
+  updatedAt?: Date;
+  deletedAt?: Date;
+};

@@ -6,11 +6,11 @@ import { envConfig } from '@/main/config';
 const validUuidV4 = '00000000-0000-4000-8000-000000000001';
 
 export function makeSessionModelMock(extraData?: Partial<SessionModel>) {
-  return new SessionModel({
+  return {
     userId: validUuidV4,
     roles: ['admin'],
     ...extraData,
-  });
+  };
 }
 
 export async function makeBearerTokenMock(extraData?: Partial<SessionModel>) {
