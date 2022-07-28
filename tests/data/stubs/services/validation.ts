@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-syntax */
-import { ValidationService, ValidatorService } from '@/data/contracts/services';
+import { ValidationService } from '@/data/contracts/services';
 import { ValidationException } from '@/main/exceptions';
 import { FieldValidation, ValidationError } from '@/validation/protocols';
 
@@ -26,7 +26,7 @@ export function makeValidationServiceStub() {
     schema,
     model,
     data,
-  }: ValidationService.Params): Promise<ValidatorService.Result> {
+  }: ValidationService.Params): Promise<ValidationService.Result> {
     await Promise.all(
       Object.keys(schema).map(async (key) => performValidation(schema[key], key, model, data)),
     );
