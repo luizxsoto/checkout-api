@@ -130,20 +130,26 @@ export abstract class KnexBaseRepository {
       | 'createdAt'
       | 'updatedAt'
       | 'deletedAt'
-    >,
-  ): Promise<Model> {
-    const createModel = {
-      ...requestModel,
+    >[],
+  ): Promise<Model[]> {
+    const createModel = requestModel.map((itemModel) => ({
+      ...itemModel,
       id: this.uuidService.generateUniqueID(),
       createUserId: this.session.userId,
       createdAt: new Date(),
-    } as Model;
+    })) as Model[];
 
     const query = this.knex.table(this.tableName).insert(createModel);
 
     const result = await this.baseRun<Model[]>(query.returning('*'));
 
-    return { ...createModel, ...(typeof result === 'number' ? {} : result[0]) };
+    // Type check for sqlite
+    return typeof result[0] === 'number'
+      ? createModel
+      : result.map((item) => ({
+          ...createModel.find((itemModel) => itemModel.id === item.id),
+          ...item,
+        }));
   }
 
   protected async baseUpdate<Model extends BaseModel>(
@@ -171,6 +177,7 @@ export abstract class KnexBaseRepository {
 
     const result = await this.baseRun<Model[]>(query.returning('*'));
 
+    // Type check for sqlite
     return typeof result === 'number'
       ? [updateModel]
       : result.map((item) => ({ ...updateModel, ...item }));
@@ -187,6 +194,7 @@ export abstract class KnexBaseRepository {
 
     const result = await this.baseRun<Model[]>(query.returning('*'));
 
+    // Type check for sqlite
     return typeof result === 'number'
       ? [removeModel]
       : result.map((item) => ({ ...removeModel, ...item }));

@@ -57,16 +57,14 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
       products,
     );
 
-    const orderCreated = await this.createOrderRepository.create(orderWithValues);
+    const [orderCreated] = await this.createOrderRepository.create([orderWithValues]);
 
     const orderItemsWithOrderId = orderItemsWithValues.map((orderItem) => ({
       ...orderItem,
       orderId: orderCreated.id,
     }));
 
-    const orderItemsCreated = await Promise.all(
-      orderItemsWithOrderId.map((orderItem) => this.createOrderItemRepository.create(orderItem)),
-    );
+    const orderItemsCreated = await this.createOrderItemRepository.create(orderItemsWithOrderId);
 
     return {
       ...orderWithValues,

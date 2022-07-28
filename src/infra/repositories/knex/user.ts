@@ -49,12 +49,18 @@ export class KnexUserRepository<FindByType = 'NORMAL' | 'SANITIZED'>
   public async create(
     requestModel: CreateUserRepository.RequestModel,
   ): Promise<CreateUserRepository.ResponseModel> {
-    const result = await this.baseCreate<Omit<UserModel, 'roles'> & { roles: string }>({
-      ...requestModel,
-      roles: JSON.stringify(requestModel.roles),
-    });
+    const result = await this.baseCreate<Omit<UserModel, 'roles'> & { roles: string }>(
+      requestModel.map((itemModel) => ({
+        ...itemModel,
+        roles: JSON.stringify(itemModel.roles),
+      })),
+    );
 
-    return { ...result, roles: requestModel.roles };
+    return result.map((item) => ({
+      ...item,
+      roles: requestModel.find((itemModel) => itemModel.email === item.email)
+        ?.roles as UserModel['roles'],
+    }));
   }
 
   public async update(

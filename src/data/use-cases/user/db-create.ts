@@ -25,10 +25,12 @@ export class DbCreateUserUseCase implements CreateUserUseCase.UseCase {
 
     await restValidation({ users });
 
-    const userCreated = await this.createUserRepository.create({
-      ...sanitizedRequestModel,
-      password: await this.hasher.hash(sanitizedRequestModel.password),
-    });
+    const [userCreated] = await this.createUserRepository.create([
+      {
+        ...sanitizedRequestModel,
+        password: await this.hasher.hash(sanitizedRequestModel.password),
+      },
+    ]);
 
     const responseModel = { ...sanitizedRequestModel, ...userCreated };
     Reflect.deleteProperty(responseModel, 'password');

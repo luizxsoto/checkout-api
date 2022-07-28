@@ -15,7 +15,7 @@ export class DbCreateProductUseCase implements CreateProductUseCase.UseCase {
 
     await this.createProductValidation(sanitizedRequestModel);
 
-    const productCreated = await this.createProductRepository.create(sanitizedRequestModel);
+    const [productCreated] = await this.createProductRepository.create([sanitizedRequestModel]);
 
     return { ...sanitizedRequestModel, ...productCreated };
   }
