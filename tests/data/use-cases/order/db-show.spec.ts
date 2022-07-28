@@ -1,27 +1,28 @@
 import { DbShowOrderUseCase } from '@/data/use-cases';
-import { ShowOrderUseCase } from '@/domain/use-cases';
-import { ValidationException } from '@/main/exceptions';
 import {
   makeOrderItemRepositoryStub,
   makeOrderRepositoryStub,
 } from '@tests/data/stubs/repositories';
-import { makeValidatorServiceStub } from '@tests/data/stubs/services';
+import { makeShowOrderValidationStub } from '@tests/data/stubs/validations';
 
 const validUuidV4 = '00000000-0000-4000-8000-000000000001';
-const nonExistentId = '00000000-0000-4000-8000-000000000002';
 
 function makeSut() {
   const orderRepository = makeOrderRepositoryStub();
   const orderItemRepository = makeOrderItemRepositoryStub();
-  const validatorService = makeValidatorServiceStub();
-  const sut = new DbShowOrderUseCase(orderRepository, orderItemRepository, validatorService);
+  const showOrderValidation = makeShowOrderValidationStub();
+  const sut = new DbShowOrderUseCase(
+    orderRepository,
+    orderItemRepository,
+    showOrderValidation.firstValidation,
+  );
 
-  return { orderRepository, orderItemRepository, validatorService, sut };
+  return { orderRepository, orderItemRepository, showOrderValidation, sut };
 }
 
 describe(DbShowOrderUseCase.name, () => {
   test('Should show order and return correct values', async () => {
-    const { orderRepository, orderItemRepository, validatorService, sut } = makeSut();
+    const { orderRepository, orderItemRepository, showOrderValidation, sut } = makeSut();
 
     const requestModel = {
       id: validUuidV4,
@@ -39,69 +40,41 @@ describe(DbShowOrderUseCase.name, () => {
     const sutResult = await sut.execute(requestModel);
 
     expect(sutResult).toStrictEqual(responseModel);
-    expect(validatorService.validate).toBeCalledWith({
-      schema: {
-        id: [
-          validatorService.rules.required(),
-          validatorService.rules.string(),
-          validatorService.rules.regex({ pattern: 'uuidV4' }),
-        ],
-      },
-      model: sanitizedRequestModel,
-      data: { orders: [] },
-    });
+    expect(showOrderValidation.firstValidation).toBeCalledWith(sanitizedRequestModel);
     expect(orderRepository.findBy).toBeCalledWith([sanitizedRequestModel]);
-    expect(validatorService.validate).toBeCalledWith({
-      schema: {
-        id: [
-          validatorService.rules.exists({
-            dataEntity: 'orders',
-            props: [{ modelKey: 'id', dataKey: 'id' }],
-          }),
-        ],
-      },
-      model: sanitizedRequestModel,
-      data: { orders: [existsOrder] },
-    });
+    expect(showOrderValidation.secondValidation).toBeCalledWith({ orders: [existsOrder] });
     expect(orderItemRepository.findBy).toBeCalledWith([{ orderId: sanitizedRequestModel.id }]);
   });
 
-  describe.each([
-    // id
-    {
-      properties: { id: undefined },
-      validations: [{ field: 'id', rule: 'required', message: 'This value is required' }],
-    },
-    {
-      properties: { id: 1 },
-      validations: [{ field: 'id', rule: 'string', message: 'This value must be a string' }],
-    },
-    {
-      properties: { id: 'invalid_uuid' },
-      validations: [
-        {
-          field: 'id',
-          rule: 'regex',
-          message: 'This value must be valid according to the pattern: uuidV4',
-        },
-      ],
-    },
-    {
-      properties: { id: nonExistentId },
-      validations: [{ field: 'id', rule: 'exists', message: 'This value was not found' }],
-    },
-  ])(
-    'Should throw ValidationException for every order invalid prop',
-    ({ properties, validations }) => {
-      it(JSON.stringify(validations), async () => {
-        const { sut } = makeSut();
+  test('Should throws if firstValidation throws', async () => {
+    const { showOrderValidation, sut } = makeSut();
 
-        const requestModel = { ...properties } as ShowOrderUseCase.RequestModel;
+    const requestModel = {
+      id: validUuidV4,
+      anyWrongProp: 'anyValue',
+    };
+    const error = new Error('firstValidation Error');
 
-        const sutResult = await sut.execute(requestModel).catch((e) => e);
+    showOrderValidation.firstValidation.mockReturnValueOnce(Promise.reject(error));
 
-        expect(sutResult).toStrictEqual(new ValidationException(validations));
-      });
-    },
-  );
+    const sutResult = sut.execute(requestModel);
+
+    await expect(sutResult).rejects.toStrictEqual(error);
+  });
+
+  test('Should throws if secondValidation throws', async () => {
+    const { showOrderValidation, sut } = makeSut();
+
+    const requestModel = {
+      id: validUuidV4,
+      anyWrongProp: 'anyValue',
+    };
+    const error = new Error('secondValidation Error');
+
+    showOrderValidation.secondValidation.mockReturnValueOnce(Promise.reject(error));
+
+    const sutResult = sut.execute(requestModel);
+
+    await expect(sutResult).rejects.toStrictEqual(error);
+  });
 });

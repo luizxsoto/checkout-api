@@ -1,30 +1,27 @@
 import { DbUpdateOrderUseCase } from '@/data/use-cases';
-import { UpdateOrderUseCase } from '@/domain/use-cases';
-import { ValidationException } from '@/main/exceptions';
 import { makeOrderRepositoryStub, makeUserRepositoryStub } from '@tests/data/stubs/repositories';
-import { makeValidatorServiceStub } from '@tests/data/stubs/services';
+import { makeUpdateOrderValidationStub } from '@tests/data/stubs/validations';
 import { makeUserModelMock } from '@tests/domain/mocks/models';
 
 const validUuidV4 = '00000000-0000-4000-8000-000000000001';
-const nonExistentId = '00000000-0000-4000-8000-000000000002';
 
 function makeSut() {
   const orderRepository = makeOrderRepositoryStub();
   const userRepository = makeUserRepositoryStub();
-  const validatorService = makeValidatorServiceStub();
+  const updateOrderValidation = makeUpdateOrderValidationStub();
   const sut = new DbUpdateOrderUseCase(
     orderRepository,
     orderRepository,
     userRepository,
-    validatorService,
+    updateOrderValidation.firstValidation,
   );
 
-  return { orderRepository, userRepository, validatorService, sut };
+  return { orderRepository, userRepository, updateOrderValidation, sut };
 }
 
 describe(DbUpdateOrderUseCase.name, () => {
   test('Should update order and return correct values', async () => {
-    const { orderRepository, userRepository, validatorService, sut } = makeSut();
+    const { orderRepository, userRepository, updateOrderValidation, sut } = makeSut();
 
     const requestModel = {
       id: validUuidV4,
@@ -46,41 +43,12 @@ describe(DbUpdateOrderUseCase.name, () => {
     const sutResult = await sut.execute(requestModel);
 
     expect(sutResult).toStrictEqual(responseModel);
-    expect(validatorService.validate).toBeCalledWith({
-      schema: {
-        id: [
-          validatorService.rules.required(),
-          validatorService.rules.string(),
-          validatorService.rules.regex({ pattern: 'uuidV4' }),
-        ],
-        userId: [
-          validatorService.rules.required(),
-          validatorService.rules.string(),
-          validatorService.rules.regex({ pattern: 'uuidV4' }),
-        ],
-      },
-      model: sanitizedRequestModel,
-      data: { orders: [], users: [] },
-    });
+    expect(updateOrderValidation.firstValidation).toBeCalledWith(sanitizedRequestModel);
     expect(orderRepository.findBy).toBeCalledWith([{ id: sanitizedRequestModel.id }]);
     expect(userRepository.findBy).toBeCalledWith([{ id: sanitizedRequestModel.userId }], true);
-    expect(validatorService.validate).toBeCalledWith({
-      schema: {
-        id: [
-          validatorService.rules.exists({
-            dataEntity: 'orders',
-            props: [{ modelKey: 'id', dataKey: 'id' }],
-          }),
-        ],
-        userId: [
-          validatorService.rules.exists({
-            dataEntity: 'users',
-            props: [{ modelKey: 'userId', dataKey: 'id' }],
-          }),
-        ],
-      },
-      model: sanitizedRequestModel,
-      data: { orders: [existsOrder], users: [existsUser] },
+    expect(updateOrderValidation.secondValidation).toBeCalledWith({
+      orders: [existsOrder],
+      users: [existsUser],
     });
     expect(orderRepository.update).toBeCalledWith(
       { id: sanitizedRequestModel.id },
@@ -88,69 +56,39 @@ describe(DbUpdateOrderUseCase.name, () => {
     );
   });
 
-  describe.each([
-    // id
-    {
-      properties: { id: undefined },
-      validations: [{ field: 'id', rule: 'required', message: 'This value is required' }],
-    },
-    {
-      properties: { id: 1 },
-      validations: [{ field: 'id', rule: 'string', message: 'This value must be a string' }],
-    },
-    {
-      properties: { id: 'invalid_uuid' },
-      validations: [
-        {
-          field: 'id',
-          rule: 'regex',
-          message: 'This value must be valid according to the pattern: uuidV4',
-        },
-      ],
-    },
-    {
-      properties: { id: nonExistentId },
-      validations: [{ field: 'id', rule: 'exists', message: 'This value was not found' }],
-    },
-    // userId
-    {
-      properties: { userId: undefined },
-      validations: [{ field: 'userId', rule: 'required', message: 'This value is required' }],
-    },
-    {
-      properties: { userId: 1 },
-      validations: [{ field: 'userId', rule: 'string', message: 'This value must be a string' }],
-    },
-    {
-      properties: { userId: 'invalid_uuid' },
-      validations: [
-        {
-          field: 'userId',
-          rule: 'regex',
-          message: 'This value must be valid according to the pattern: uuidV4',
-        },
-      ],
-    },
-    {
-      properties: { userId: nonExistentId },
-      validations: [{ field: 'userId', rule: 'exists', message: 'This value was not found' }],
-    },
-  ])(
-    'Should throw ValidationException for every order invalid prop',
-    ({ properties, validations }) => {
-      it(JSON.stringify(validations), async () => {
-        const { sut } = makeSut();
+  test('Should throws if firstValidation throws', async () => {
+    const { updateOrderValidation, sut } = makeSut();
 
-        const requestModel = {
-          id: validUuidV4,
-          userId: validUuidV4,
-          ...properties,
-        } as UpdateOrderUseCase.RequestModel;
+    const requestModel = {
+      id: validUuidV4,
+      userId: validUuidV4,
+      orderItems: [{ productId: validUuidV4, quantity: 1 }],
+      anyWrongProp: 'anyValue',
+    };
+    const error = new Error('firstValidation Error');
 
-        const sutResult = await sut.execute(requestModel).catch((e) => e);
+    updateOrderValidation.firstValidation.mockReturnValueOnce(Promise.reject(error));
 
-        expect(sutResult).toStrictEqual(new ValidationException(validations));
-      });
-    },
-  );
+    const sutResult = sut.execute(requestModel);
+
+    await expect(sutResult).rejects.toStrictEqual(error);
+  });
+
+  test('Should throws if secondValidation throws', async () => {
+    const { updateOrderValidation, sut } = makeSut();
+
+    const requestModel = {
+      id: validUuidV4,
+      userId: validUuidV4,
+      orderItems: [{ productId: validUuidV4, quantity: 1 }],
+      anyWrongProp: 'anyValue',
+    };
+    const error = new Error('secondValidation Error');
+
+    updateOrderValidation.secondValidation.mockReturnValueOnce(Promise.reject(error));
+
+    const sutResult = sut.execute(requestModel);
+
+    await expect(sutResult).rejects.toStrictEqual(error);
+  });
 });
