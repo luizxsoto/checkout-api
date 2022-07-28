@@ -1,4 +1,5 @@
 import { DbCreateProductUseCase } from '@/data/use-cases';
+import { ProductModel } from '@/domain/models';
 import { makeProductRepositoryStub } from '@tests/data/stubs/repositories';
 import { makeCreateProductValidationStub } from '@tests/data/stubs/validations';
 
@@ -19,7 +20,7 @@ describe(DbCreateProductUseCase.name, () => {
 
     const requestModel = {
       name: 'Any Name',
-      category: 'others' as const,
+      category: 'others' as ProductModel['category'],
       image: 'any-image.com',
       price: 1000,
       anyWrongProp: 'anyValue',
@@ -30,13 +31,13 @@ describe(DbCreateProductUseCase.name, () => {
     Reflect.deleteProperty(sanitizedRequestModel, 'anyWrongProp');
     const responseModel = { ...sanitizedRequestModel, id: 'any_id', createdAt: new Date() };
 
-    productRepository.create.mockReturnValueOnce(responseModel);
+    productRepository.create.mockReturnValueOnce([responseModel]);
 
     const sutResult = await sut.execute(requestModel);
 
     expect(sutResult).toStrictEqual(responseModel);
     expect(createProductValidation.firstValidation).toBeCalledWith(sanitizedRequestModel);
-    expect(productRepository.create).toBeCalledWith(sanitizedRequestModel);
+    expect(productRepository.create).toBeCalledWith([sanitizedRequestModel]);
   });
 
   test('Should throws if firstValidation throws', async () => {
@@ -44,7 +45,7 @@ describe(DbCreateProductUseCase.name, () => {
 
     const requestModel = {
       name: 'Any Name',
-      category: 'others' as const,
+      category: 'others' as ProductModel['category'],
       image: 'any-image.com',
       price: 1000,
       anyWrongProp: 'anyValue',

@@ -1,4 +1,5 @@
 import { DbUpdateProductUseCase } from '@/data/use-cases';
+import { ProductModel } from '@/domain/models';
 import { makeProductRepositoryStub } from '@tests/data/stubs/repositories';
 import { makeUpdateProductValidationStub } from '@tests/data/stubs/validations';
 
@@ -23,7 +24,7 @@ describe(DbUpdateProductUseCase.name, () => {
     const requestModel = {
       id: validUuidV4,
       name: 'Any Name',
-      category: 'others' as const,
+      category: 'others' as ProductModel['category'],
       image: 'any-image.com',
       price: 1000,
       anyWrongProp: 'anyValue',

@@ -1,3 +1,4 @@
+import { ProductModel } from '@/domain/models';
 import { CreateProductUseCase } from '@/domain/use-cases';
 import { MAX_INTEGER } from '@/main/constants';
 import { ValidationException } from '@/main/exceptions';
@@ -105,7 +106,7 @@ describe(makeCreateProductValidation.name, () => {
 
         const requestModel = {
           name: 'Any Name',
-          category: 'others' as const,
+          category: 'others' as ProductModel['category'],
           image: 'any-image.com',
           price: 1000,
           ...properties,

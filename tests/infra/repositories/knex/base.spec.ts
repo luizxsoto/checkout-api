@@ -129,7 +129,7 @@ describe(KnexBaseRepository.name, () => {
         return knex;
       });
 
-      const sutResult = await sut.list(requestModel as any);
+      const sutResult = await sut.list(requestModel);
 
       expect(sutResult).toStrictEqual([responseModel]);
       expect(knex.whereNull).toBeCalledWith('deletedAt');
@@ -175,15 +175,15 @@ describe(KnexBaseRepository.name, () => {
       };
       uuidService.generateUniqueID.mockReturnValueOnce(validUuidV4);
 
-      const sutResult = await sut.create(requestModel);
+      const [sutResult] = await sut.create([requestModel]);
 
       expect(sutResult).toStrictEqual(responseModel);
       expect(uuidService.generateUniqueID).toBeCalledWith();
       expect(knex.table).toBeCalledWith(tableName);
-      expect(knex.insert).toBeCalledWith(responseModel);
+      expect(knex.insert).toBeCalledWith([responseModel]);
     });
 
-    test('Should validate if repository result is a number', async () => {
+    test('Should validate if repository result is a number for sqlite', async () => {
       const { knex, uuidService, tableName, sut } = makeSut();
 
       const requestModel = {
@@ -196,14 +196,14 @@ describe(KnexBaseRepository.name, () => {
         createdAt: new Date(),
       };
       uuidService.generateUniqueID.mockReturnValueOnce(validUuidV4);
-      knex.then.mockImplementationOnce((resolve) => resolve(1));
+      knex.then.mockImplementationOnce((resolve) => resolve([1]));
 
-      const sutResult = await sut.create(requestModel);
+      const [sutResult] = await sut.create([requestModel]);
 
       expect(sutResult).toStrictEqual(responseModel);
       expect(uuidService.generateUniqueID).toBeCalledWith();
       expect(knex.table).toBeCalledWith(tableName);
-      expect(knex.insert).toBeCalledWith(responseModel);
+      expect(knex.insert).toBeCalledWith([responseModel]);
     });
   });
 
@@ -230,7 +230,7 @@ describe(KnexBaseRepository.name, () => {
       expect(knex.where).toBeCalledWith(where);
     });
 
-    test('Should validate if repository result is a number', async () => {
+    test('Should validate if repository result is a number for sqlite', async () => {
       const { knex, tableName, sut } = makeSut();
 
       const where = { anyProp: 'anyValue' };
@@ -273,7 +273,7 @@ describe(KnexBaseRepository.name, () => {
       expect(knex.where).toBeCalledWith(where);
     });
 
-    test('Should validate if repository result is a number', async () => {
+    test('Should validate if repository result is a number for sqlite', async () => {
       const { knex, tableName, sut } = makeSut();
 
       const where = { anyProp: 'anyValue' };

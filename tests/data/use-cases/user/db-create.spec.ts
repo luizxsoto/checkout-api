@@ -46,7 +46,7 @@ describe(DbCreateUserUseCase.name, () => {
 
     userRepository.findBy.mockReturnValueOnce([otherUser]);
     hasherCryptography.hash.mockReturnValueOnce(Promise.resolve('hashed_password'));
-    userRepository.create.mockReturnValueOnce(responseModel);
+    userRepository.create.mockReturnValueOnce([responseModel]);
 
     const sutResult = await sut.execute(requestModel);
 
@@ -55,10 +55,9 @@ describe(DbCreateUserUseCase.name, () => {
     expect(userRepository.findBy).toBeCalledWith([{ email: sanitizedRequestModel.email }], true);
     expect(createUserValidation.secondValidation).toBeCalledWith({ users: [otherUser] });
     expect(hasherCryptography.hash).toBeCalledWith(sanitizedRequestModel.password);
-    expect(userRepository.create).toBeCalledWith({
-      ...sanitizedRequestModel,
-      password: 'hashed_password',
-    });
+    expect(userRepository.create).toBeCalledWith([
+      { ...sanitizedRequestModel, password: 'hashed_password' },
+    ]);
   });
 
   test('Should throws if firstValidation throws', async () => {

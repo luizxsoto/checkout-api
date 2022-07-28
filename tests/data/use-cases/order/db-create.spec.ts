@@ -83,8 +83,8 @@ describe(DbCreateOrderUseCase.name, () => {
 
     userRepository.findBy.mockReturnValueOnce([user]);
     productRepository.findBy.mockReturnValueOnce([product]);
-    orderRepository.create.mockReturnValueOnce(orderCreated);
-    orderItemRepository.create.mockReturnValueOnce(orderItemCreated);
+    orderRepository.create.mockReturnValueOnce([orderCreated]);
+    orderItemRepository.create.mockReturnValueOnce([orderItemCreated]);
 
     const sutResult = await sut.execute(requestModel);
 
@@ -98,11 +98,10 @@ describe(DbCreateOrderUseCase.name, () => {
       users: [user],
       products: [product],
     });
-    expect(orderRepository.create).toBeCalledWith(orderWithValues);
-    expect(orderItemRepository.create).toBeCalledWith({
-      ...orderItemWithValues,
-      orderId: 'any_id',
-    });
+    expect(orderRepository.create).toBeCalledWith([orderWithValues]);
+    expect(orderItemRepository.create).toBeCalledWith([
+      { ...orderItemWithValues, orderId: 'any_id' },
+    ]);
   });
 
   test('Should throws if firstValidation throws', async () => {

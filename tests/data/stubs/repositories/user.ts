@@ -19,7 +19,7 @@ export function makeUserRepositoryStub() {
       .fn()
       .mockImplementation(
         (requestModel: CreateUserRepository.RequestModel): CreateUserRepository.ResponseModel =>
-          makeUserModelMock(requestModel),
+          requestModel.map((itemModel) => makeUserModelMock(itemModel)),
       ),
     update: jest
       .fn()

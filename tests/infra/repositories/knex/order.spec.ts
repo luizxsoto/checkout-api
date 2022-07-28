@@ -64,19 +64,20 @@ describe(KnexOrderRepository.name, () => {
     test('Should create order and return correct values', async () => {
       const { knex, sut } = makeSut();
 
+      const id = 'any_id';
       const requestModel = {
         userId: validUuidV4,
         totalValue: 1000,
       };
-      knex.then.mockImplementationOnce((resolve) => resolve([requestModel]));
+      knex.then.mockImplementationOnce((resolve) => resolve([{ ...requestModel, id }]));
       const responseModel = {
         ...requestModel,
-        id: 'any_id',
+        id,
         createUserId: userId,
         createdAt: new Date(),
       };
 
-      const sutResult = await sut.create(requestModel);
+      const [sutResult] = await sut.create([requestModel]);
 
       expect(sutResult).toStrictEqual(responseModel);
     });

@@ -82,21 +82,22 @@ describe(KnexUserRepository.name, () => {
     test('Should create user and return correct values', async () => {
       const { knex, sut } = makeSut();
 
+      const id = 'any_id';
       const requestModel = {
         name: 'Any Name',
         email: 'any@email.com',
         password: 'Password@123',
         roles: ['admin'] as Roles[],
       };
-      knex.then.mockImplementationOnce((resolve) => resolve([requestModel]));
+      knex.then.mockImplementationOnce((resolve) => resolve([{ ...requestModel, id }]));
       const responseModel = {
         ...requestModel,
-        id: 'any_id',
+        id,
         createUserId: userId,
         createdAt: new Date(),
       };
 
-      const sutResult = await sut.create(requestModel);
+      const [sutResult] = await sut.create([requestModel]);
 
       expect(sutResult).toStrictEqual(responseModel);
     });

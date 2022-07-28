@@ -22,7 +22,8 @@ export function makeOrderItemRepositoryStub() {
       .mockImplementation(
         (
           requestModel: CreateOrderItemRepository.RequestModel,
-        ): CreateOrderItemRepository.ResponseModel => makeOrderItemModelMock(requestModel),
+        ): CreateOrderItemRepository.ResponseModel =>
+          requestModel.map((itemModel) => makeOrderItemModelMock(itemModel)),
       ),
     update: jest
       .fn()

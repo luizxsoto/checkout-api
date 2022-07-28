@@ -20,7 +20,8 @@ export function makeProductRepositoryStub() {
       .mockImplementation(
         (
           requestModel: CreateProductRepository.RequestModel,
-        ): CreateProductRepository.ResponseModel => makeProductModelMock(requestModel),
+        ): CreateProductRepository.ResponseModel =>
+          requestModel.map((itemModel) => makeProductModelMock(itemModel)),
       ),
     update: jest
       .fn()
