@@ -10,12 +10,6 @@ export * as ListOrderItemRepository from './order-item/list';
 export * as RemoveOrderItemRepository from './order-item/remove';
 export * as UpdateOrderItemRepository from './order-item/update';
 
-export * as CreatePaymentProfileRepository from './payment-profile/create';
-export * as FindByPaymentProfileRepository from './payment-profile/find-by';
-export * as ListPaymentProfileRepository from './payment-profile/list';
-export * as RemovePaymentProfileRepository from './payment-profile/remove';
-export * as UpdatePaymentProfileRepository from './payment-profile/update';
-
 export * as CreateProductRepository from './product/create';
 export * as FindByProductRepository from './product/find-by';
 export * as ListProductRepository from './product/list';

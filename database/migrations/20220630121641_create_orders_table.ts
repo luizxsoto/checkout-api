@@ -9,7 +9,6 @@ export async function up(knex: Knex): Promise<void> {
     tableName,
     columns: (table) => {
       table.uuid('userId').notNullable().references('id').inTable('users');
-      table.uuid('paymentProfileId').notNullable().references('id').inTable('payment_profiles');
       table.integer('totalValue').notNullable();
     },
   });

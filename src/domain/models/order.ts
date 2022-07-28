@@ -3,8 +3,6 @@ import { BaseModel } from './base';
 export class OrderModel extends BaseModel {
   public userId!: string;
 
-  public paymentProfileId!: string;
-
   public totalValue!: number;
 
   constructor(partial: OrderModel) {

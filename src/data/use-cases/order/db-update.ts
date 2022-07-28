@@ -1,20 +1,20 @@
 import {
   FindByOrderRepository,
-  FindByPaymentProfileRepository,
+  FindByUserRepository,
   UpdateOrderRepository,
 } from '@/data/contracts/repositories';
 import { ValidatorService } from '@/data/contracts/services';
-import { OrderModel, PaymentProfileModel } from '@/domain/models';
+import { OrderModel, UserModel } from '@/domain/models';
 import { UpdateOrderUseCase } from '@/domain/use-cases';
 
 export class DbUpdateOrderUseCase implements UpdateOrderUseCase.UseCase {
   constructor(
     private readonly updateOrderRepository: UpdateOrderRepository.Repository,
     private readonly findByOrderRepository: FindByOrderRepository.Repository,
-    private readonly findByPaymentProfileRepository: FindByPaymentProfileRepository.Repository,
+    private readonly findByUserRepository: FindByUserRepository.Repository,
     private readonly validatorService: ValidatorService.Validator<
       UpdateOrderUseCase.RequestModel,
-      { orders: OrderModel[]; paymentProfiles: Omit<PaymentProfileModel, 'number' | 'cvv'>[] }
+      { orders: OrderModel[]; users: Omit<UserModel, 'password'>[] }
     >,
   ) {}
 
@@ -27,12 +27,12 @@ export class DbUpdateOrderUseCase implements UpdateOrderUseCase.UseCase {
 
     const orders = await this.findByOrderRepository.findBy([{ id: sanitizedRequestModel.id }]);
 
-    const paymentProfiles = await this.findByPaymentProfileRepository.findBy(
-      [{ id: sanitizedRequestModel.paymentProfileId, userId: sanitizedRequestModel.userId }],
+    const users = await this.findByUserRepository.findBy(
+      [{ id: sanitizedRequestModel.userId }],
       true,
     );
 
-    await restValidation({ orders, paymentProfiles });
+    await restValidation({ orders, users });
 
     const [orderUpdated] = await this.updateOrderRepository.update(
       { id: sanitizedRequestModel.id },
@@ -50,7 +50,6 @@ export class DbUpdateOrderUseCase implements UpdateOrderUseCase.UseCase {
     return {
       id: requestModel.id,
       userId: requestModel.userId,
-      paymentProfileId: requestModel.paymentProfileId,
     };
   }
 
@@ -59,7 +58,7 @@ export class DbUpdateOrderUseCase implements UpdateOrderUseCase.UseCase {
   ): Promise<
     (validationData: {
       orders: OrderModel[];
-      paymentProfiles: Omit<PaymentProfileModel, 'number' | 'cvv'>[];
+      users: Omit<UserModel, 'password'>[];
     }) => Promise<void>
   > {
     await this.validatorService.validate({
@@ -74,14 +73,9 @@ export class DbUpdateOrderUseCase implements UpdateOrderUseCase.UseCase {
           this.validatorService.rules.string(),
           this.validatorService.rules.regex({ pattern: 'uuidV4' }),
         ],
-        paymentProfileId: [
-          this.validatorService.rules.required(),
-          this.validatorService.rules.string(),
-          this.validatorService.rules.regex({ pattern: 'uuidV4' }),
-        ],
       },
       model: requestModel,
-      data: { orders: [], paymentProfiles: [] },
+      data: { orders: [], users: [] },
     });
     return (validationData) =>
       this.validatorService.validate({
@@ -94,20 +88,8 @@ export class DbUpdateOrderUseCase implements UpdateOrderUseCase.UseCase {
           ],
           userId: [
             this.validatorService.rules.exists({
-              dataEntity: 'paymentProfiles',
-              props: [
-                { modelKey: 'userId', dataKey: 'userId' },
-                { modelKey: 'paymentProfileId', dataKey: 'id' },
-              ],
-            }),
-          ],
-          paymentProfileId: [
-            this.validatorService.rules.exists({
-              dataEntity: 'paymentProfiles',
-              props: [
-                { modelKey: 'userId', dataKey: 'userId' },
-                { modelKey: 'paymentProfileId', dataKey: 'id' },
-              ],
+              dataEntity: 'users',
+              props: [{ modelKey: 'userId', dataKey: 'id' }],
             }),
           ],
         },

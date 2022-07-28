@@ -12,7 +12,6 @@ const orders: (Omit<OrderModel, 'createdAt'> & {
     createUserId: '00000000-0000-4000-8000-000000000001',
     createdAt: new Date().toISOString(),
     userId: '00000000-0000-4000-8000-000000000001',
-    paymentProfileId: '00000000-0000-4000-8000-000000000001',
     totalValue: 1000,
   },
 ];

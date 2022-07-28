@@ -4,12 +4,6 @@ export * from './order/db-remove';
 export * from './order/db-show';
 export * from './order/db-update';
 
-export * from './payment-profile/db-create';
-export * from './payment-profile/db-list';
-export * from './payment-profile/db-remove';
-export * from './payment-profile/db-show';
-export * from './payment-profile/db-update';
-
 export * from './product/db-create';
 export * from './product/db-list';
 export * from './product/db-remove';

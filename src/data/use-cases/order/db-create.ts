@@ -1,11 +1,11 @@
 import {
   CreateOrderItemRepository,
   CreateOrderRepository,
-  FindByPaymentProfileRepository,
   FindByProductRepository,
+  FindByUserRepository,
 } from '@/data/contracts/repositories';
 import { ValidatorService } from '@/data/contracts/services';
-import { OrderItemModel, OrderModel, PaymentProfileModel, ProductModel } from '@/domain/models';
+import { OrderItemModel, OrderModel, ProductModel, UserModel } from '@/domain/models';
 import { CreateOrderUseCase } from '@/domain/use-cases';
 import { MAX_INTEGER } from '@/main/constants';
 
@@ -30,11 +30,11 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
   constructor(
     private readonly createOrderRepository: CreateOrderRepository.Repository,
     private readonly createOrderItemRepository: CreateOrderItemRepository.Repository,
-    private readonly findByPaymentProfileRepository: FindByPaymentProfileRepository.Repository,
+    private readonly findByUserRepository: FindByUserRepository.Repository,
     private readonly findByProductRepository: FindByProductRepository.Repository,
     private readonly validatorService: ValidatorService.Validator<
       CreateOrderUseCase.RequestModel,
-      { paymentProfiles: Omit<PaymentProfileModel, 'number' | 'cvv'>[]; products: ProductModel[] }
+      { users: Omit<UserModel, 'password'>[]; products: ProductModel[] }
     >,
   ) {}
 
@@ -45,8 +45,8 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
 
     const restValidation = await this.validateRequestModel(sanitizedRequestModel);
 
-    const paymentProfiles = await this.findByPaymentProfileRepository.findBy(
-      [{ id: sanitizedRequestModel.paymentProfileId, userId: sanitizedRequestModel.userId }],
+    const users = await this.findByUserRepository.findBy(
+      [{ id: sanitizedRequestModel.userId }],
       true,
     );
 
@@ -54,7 +54,7 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
       sanitizedRequestModel.orderItems.map((orderItem) => ({ id: orderItem.productId })),
     );
 
-    await restValidation({ paymentProfiles, products });
+    await restValidation({ users, products });
 
     const { orderItems: orderItemsWithValues, ...orderWithValues } = this.sanitizeValues(
       sanitizedRequestModel,
@@ -89,7 +89,6 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
   ): CreateOrderUseCase.RequestModel {
     const sanitizedRequestModel = {
       userId: requestModel.userId,
-      paymentProfileId: requestModel.paymentProfileId,
       orderItems: requestModel.orderItems,
     };
 
@@ -133,18 +132,13 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
     requestModel: CreateOrderUseCase.RequestModel,
   ): Promise<
     (validationData: {
-      paymentProfiles: Omit<PaymentProfileModel, 'number' | 'cvv'>[];
+      users: Omit<UserModel, 'password'>[];
       products: ProductModel[];
     }) => Promise<void>
   > {
     await this.validatorService.validate({
       schema: {
         userId: [
-          this.validatorService.rules.required(),
-          this.validatorService.rules.string(),
-          this.validatorService.rules.regex({ pattern: 'uuidV4' }),
-        ],
-        paymentProfileId: [
           this.validatorService.rules.required(),
           this.validatorService.rules.string(),
           this.validatorService.rules.regex({ pattern: 'uuidV4' }),
@@ -176,27 +170,15 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
         ],
       },
       model: requestModel,
-      data: { paymentProfiles: [], products: [] },
+      data: { users: [], products: [] },
     });
     return (validationData) =>
       this.validatorService.validate({
         schema: {
           userId: [
             this.validatorService.rules.exists({
-              dataEntity: 'paymentProfiles',
-              props: [
-                { modelKey: 'userId', dataKey: 'userId' },
-                { modelKey: 'paymentProfileId', dataKey: 'id' },
-              ],
-            }),
-          ],
-          paymentProfileId: [
-            this.validatorService.rules.exists({
-              dataEntity: 'paymentProfiles',
-              props: [
-                { modelKey: 'userId', dataKey: 'userId' },
-                { modelKey: 'paymentProfileId', dataKey: 'id' },
-              ],
+              dataEntity: 'users',
+              props: [{ modelKey: 'userId', dataKey: 'id' }],
             }),
           ],
           orderItems: [

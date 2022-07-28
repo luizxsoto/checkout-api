@@ -55,7 +55,7 @@ export class DbListOrderUseCase implements ListOrderUseCase.UseCase {
         orderBy: [
           this.validatorService.rules.string(),
           this.validatorService.rules.in({
-            values: ['userId', 'paymentProfileId', 'totalValue', 'createdAt', 'updatedAt'],
+            values: ['userId', 'totalValue', 'createdAt', 'updatedAt'],
           }),
         ],
         order: [
@@ -68,14 +68,6 @@ export class DbListOrderUseCase implements ListOrderUseCase.UseCase {
           >({
             schema: {
               userId: [
-                this.validatorService.rules.array({
-                  rules: [
-                    this.validatorService.rules.string(),
-                    this.validatorService.rules.regex({ pattern: 'uuidV4' }),
-                  ],
-                }),
-              ],
-              paymentProfileId: [
                 this.validatorService.rules.array({
                   rules: [
                     this.validatorService.rules.string(),

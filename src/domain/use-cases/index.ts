@@ -4,12 +4,6 @@ export * as RemoveOrderUseCase from './order/remove';
 export * as ShowOrderUseCase from './order/show';
 export * as UpdateOrderUseCase from './order/update';
 
-export * as CreatePaymentProfileUseCase from './payment-profile/create';
-export * as ListPaymentProfileUseCase from './payment-profile/list';
-export * as RemovePaymentProfileUseCase from './payment-profile/remove';
-export * as ShowPaymentProfileUseCase from './payment-profile/show';
-export * as UpdatePaymentProfileUseCase from './payment-profile/update';
-
 export * as CreateProductUseCase from './product/create';
 export * as ListProductUseCase from './product/list';
 export * as RemoveProductUseCase from './product/remove';
