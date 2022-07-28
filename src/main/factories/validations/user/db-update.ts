@@ -2,6 +2,14 @@ import { ValidationService } from '@/data/contracts/services';
 import { UpdateUserValidation } from '@/data/contracts/validations';
 import { UpdateUserUseCase } from '@/domain/use-cases';
 import { ValidationBuilder } from '@/main/builders';
+import {
+  MAX_USER_EMAIL_LENGTH,
+  MAX_USER_NAME_LENGTH,
+  MAX_USER_PASSWORD_LENGTH,
+  MIN_USER_EMAIL_LENGTH,
+  MIN_USER_NAME_LENGTH,
+  MIN_USER_PASSWORD_LENGTH,
+} from '@/main/constants';
 
 export function makeUpdateUserValidation(
   validationService: ValidationService.Validator,
@@ -13,17 +21,17 @@ export function makeUpdateUserValidation(
         name: new ValidationBuilder()
           .string()
           .regex({ pattern: 'name' })
-          .length({ minLength: 6, maxLength: 100 })
+          .length({ minLength: MIN_USER_NAME_LENGTH, maxLength: MAX_USER_NAME_LENGTH })
           .build(),
         email: new ValidationBuilder()
           .string()
           .regex({ pattern: 'email' })
-          .length({ minLength: 6, maxLength: 100 })
+          .length({ minLength: MIN_USER_EMAIL_LENGTH, maxLength: MAX_USER_EMAIL_LENGTH })
           .build(),
         password: new ValidationBuilder()
           .string()
           .regex({ pattern: 'password' })
-          .length({ minLength: 6, maxLength: 20 })
+          .length({ minLength: MIN_USER_PASSWORD_LENGTH, maxLength: MAX_USER_PASSWORD_LENGTH })
           .build(),
         roles: new ValidationBuilder()
           .array(

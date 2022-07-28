@@ -2,7 +2,13 @@ import { ValidationService } from '@/data/contracts/services';
 import { ListProductValidation } from '@/data/contracts/validations';
 import { ListProductUseCase } from '@/domain/use-cases';
 import { ValidationBuilder } from '@/main/builders';
-import { MAX_INTEGER, MAX_PER_PAGE, MIN_PER_PAGE } from '@/main/constants';
+import {
+  MAX_INTEGER,
+  MAX_PER_PAGE,
+  MAX_PRODUCT_NAME_LENGTH,
+  MIN_PER_PAGE,
+  MIN_PRODUCT_NAME_LENGTH,
+} from '@/main/constants';
 import { ArrayValidation, ObjectValidation } from '@/validation/validators';
 
 export function makeListProductValidation(
@@ -15,7 +21,7 @@ export function makeListProductValidation(
           {
             validations: new ValidationBuilder()
               .string()
-              .length({ minLength: 6, maxLength: 255 })
+              .length({ minLength: MIN_PRODUCT_NAME_LENGTH, maxLength: MAX_PRODUCT_NAME_LENGTH })
               .build(),
           },
           validationService,

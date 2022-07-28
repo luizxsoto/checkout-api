@@ -2,7 +2,7 @@ import { ValidationService } from '@/data/contracts/services';
 import { CreateProductValidation } from '@/data/contracts/validations';
 import { CreateProductUseCase } from '@/domain/use-cases';
 import { ValidationBuilder } from '@/main/builders';
-import { MAX_INTEGER } from '@/main/constants';
+import { MAX_INTEGER, MAX_PRODUCT_NAME_LENGTH, MIN_PRODUCT_NAME_LENGTH } from '@/main/constants';
 
 export function makeCreateProductValidation(
   validationService: ValidationService.Validator,
@@ -13,7 +13,7 @@ export function makeCreateProductValidation(
         name: new ValidationBuilder()
           .required()
           .string()
-          .length({ minLength: 6, maxLength: 255 })
+          .length({ minLength: MIN_PRODUCT_NAME_LENGTH, maxLength: MAX_PRODUCT_NAME_LENGTH })
           .build(),
         category: new ValidationBuilder()
           .required()

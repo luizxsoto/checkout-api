@@ -2,7 +2,7 @@ import { ValidationService } from '@/data/contracts/services';
 import { UpdateProductValidation } from '@/data/contracts/validations';
 import { UpdateProductUseCase } from '@/domain/use-cases';
 import { ValidationBuilder } from '@/main/builders';
-import { MAX_INTEGER } from '@/main/constants';
+import { MAX_INTEGER, MAX_PRODUCT_NAME_LENGTH, MIN_PRODUCT_NAME_LENGTH } from '@/main/constants';
 
 export function makeUpdateProductValidation(
   validationService: ValidationService.Validator,
@@ -11,7 +11,10 @@ export function makeUpdateProductValidation(
     await validationService.validate({
       schema: {
         id: new ValidationBuilder().required().string().regex({ pattern: 'uuidV4' }).build(),
-        name: new ValidationBuilder().string().length({ minLength: 6, maxLength: 255 }).build(),
+        name: new ValidationBuilder()
+          .string()
+          .length({ minLength: MIN_PRODUCT_NAME_LENGTH, maxLength: MAX_PRODUCT_NAME_LENGTH })
+          .build(),
         category: new ValidationBuilder()
           .string()
           .in({ values: ['clothes', 'shoes', 'others'] })

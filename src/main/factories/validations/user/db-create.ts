@@ -2,6 +2,14 @@ import { ValidationService } from '@/data/contracts/services';
 import { CreateUserValidation } from '@/data/contracts/validations';
 import { CreateUserUseCase } from '@/domain/use-cases';
 import { ValidationBuilder } from '@/main/builders';
+import {
+  MAX_USER_EMAIL_LENGTH,
+  MAX_USER_NAME_LENGTH,
+  MAX_USER_PASSWORD_LENGTH,
+  MIN_USER_EMAIL_LENGTH,
+  MIN_USER_NAME_LENGTH,
+  MIN_USER_PASSWORD_LENGTH,
+} from '@/main/constants';
 
 export function makeCreateUserValidation(
   validationService: ValidationService.Validator,
@@ -13,19 +21,19 @@ export function makeCreateUserValidation(
           .required()
           .string()
           .regex({ pattern: 'name' })
-          .length({ minLength: 6, maxLength: 100 })
+          .length({ minLength: MIN_USER_NAME_LENGTH, maxLength: MAX_USER_NAME_LENGTH })
           .build(),
         email: new ValidationBuilder()
           .required()
           .string()
           .regex({ pattern: 'email' })
-          .length({ minLength: 6, maxLength: 100 })
+          .length({ minLength: MIN_USER_EMAIL_LENGTH, maxLength: MAX_USER_EMAIL_LENGTH })
           .build(),
         password: new ValidationBuilder()
           .required()
           .string()
           .regex({ pattern: 'password' })
-          .length({ minLength: 6, maxLength: 20 })
+          .length({ minLength: MIN_USER_PASSWORD_LENGTH, maxLength: MAX_USER_PASSWORD_LENGTH })
           .build(),
         roles: new ValidationBuilder()
           .required()

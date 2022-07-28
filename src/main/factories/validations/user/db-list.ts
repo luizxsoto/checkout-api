@@ -2,7 +2,14 @@ import { ValidationService } from '@/data/contracts/services';
 import { ListUserValidation } from '@/data/contracts/validations';
 import { ListUserUseCase } from '@/domain/use-cases';
 import { ValidationBuilder } from '@/main/builders';
-import { MAX_PER_PAGE, MIN_PER_PAGE } from '@/main/constants';
+import {
+  MAX_PER_PAGE,
+  MAX_USER_EMAIL_LENGTH,
+  MAX_USER_NAME_LENGTH,
+  MIN_PER_PAGE,
+  MIN_USER_EMAIL_LENGTH,
+  MIN_USER_NAME_LENGTH,
+} from '@/main/constants';
 import { ArrayValidation, ObjectValidation } from '@/validation/validators';
 
 export function makeListUserValidation(
@@ -16,7 +23,7 @@ export function makeListUserValidation(
             validations: new ValidationBuilder()
               .string()
               .regex({ pattern: 'name' })
-              .length({ minLength: 6, maxLength: 100 })
+              .length({ minLength: MIN_USER_NAME_LENGTH, maxLength: MAX_USER_NAME_LENGTH })
               .build(),
           },
           validationService,
@@ -28,7 +35,7 @@ export function makeListUserValidation(
             validations: new ValidationBuilder()
               .string()
               .regex({ pattern: 'email' })
-              .length({ minLength: 6, maxLength: 100 })
+              .length({ minLength: MIN_USER_EMAIL_LENGTH, maxLength: MAX_USER_EMAIL_LENGTH })
               .build(),
           },
           validationService,
