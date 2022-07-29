@@ -1,19 +1,20 @@
-import { UpdateOrderUseCase } from '@/domain/use-cases';
-import { ValidationException } from '@/main/exceptions';
-import { makeUpdateOrderValidation } from '@/main/factories/validations';
-import { makeValidationServiceStub } from '@tests/data/stubs/services';
-import { makeOrderModelMock, makeUserModelMock } from '@tests/domain/mocks/models';
+import { makeValidationServiceStub } from '@tests/data/stubs/services'
+import { makeOrderModelMock, makeUserModelMock } from '@tests/domain/mocks/models'
 
-const validUuidV4 = '00000000-0000-4000-8000-000000000001';
-const nonExistentId = '00000000-0000-4000-8000-000000000002';
-const existingOrder = makeOrderModelMock();
-const existingUser = makeUserModelMock();
+import { UpdateOrderUseCase } from '@/domain/use-cases'
+import { ValidationException } from '@/main/exceptions'
+import { makeUpdateOrderValidation } from '@/main/factories/validations'
+
+const validUuidV4 = '00000000-0000-4000-8000-000000000001'
+const nonExistentId = '00000000-0000-4000-8000-000000000002'
+const existingOrder = makeOrderModelMock()
+const existingUser = makeUserModelMock()
 
 function makeSut() {
-  const validationService = makeValidationServiceStub();
-  const sut = makeUpdateOrderValidation(validationService);
+  const validationService = makeValidationServiceStub()
+  const sut = makeUpdateOrderValidation(validationService)
 
-  return { validationService, sut };
+  return { validationService, sut }
 }
 
 describe(makeUpdateOrderValidation.name, () => {
@@ -74,24 +75,24 @@ describe(makeUpdateOrderValidation.name, () => {
     'Should throw ValidationException for every order invalid prop',
     ({ properties, validations }) => {
       it(JSON.stringify(validations), async () => {
-        const { sut } = makeSut();
+        const { sut } = makeSut()
 
         const requestModel = {
           id: validUuidV4,
           userId: validUuidV4,
           ...properties,
-        } as UpdateOrderUseCase.RequestModel;
+        } as UpdateOrderUseCase.RequestModel
 
-        let sutResult = await sut(requestModel).catch((e) => e);
+        let sutResult = await sut(requestModel).catch((e) => e)
 
         if (typeof sutResult === 'function') {
           sutResult = await sutResult({ orders: [existingOrder], users: [existingUser] }).catch(
-            (e: unknown) => e,
-          );
+            (e: unknown) => e
+          )
         }
 
-        expect(sutResult).toStrictEqual(new ValidationException(validations));
-      });
-    },
-  );
-});
+        expect(sutResult).toStrictEqual(new ValidationException(validations))
+      })
+    }
+  )
+})

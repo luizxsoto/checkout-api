@@ -1,20 +1,21 @@
-import { ProductModel } from '@/domain/models';
-import { UpdateProductUseCase } from '@/domain/use-cases';
-import { MAX_INTEGER } from '@/main/constants';
-import { ValidationException } from '@/main/exceptions';
-import { makeUpdateProductValidation } from '@/main/factories/validations';
-import { makeValidationServiceStub } from '@tests/data/stubs/services';
-import { makeProductModelMock } from '@tests/domain/mocks/models';
+import { makeValidationServiceStub } from '@tests/data/stubs/services'
+import { makeProductModelMock } from '@tests/domain/mocks/models'
 
-const validUuidV4 = '00000000-0000-4000-8000-000000000001';
-const nonExistentId = '00000000-0000-4000-8000-000000000002';
-const existingProduct = makeProductModelMock();
+import { ProductModel } from '@/domain/models'
+import { UpdateProductUseCase } from '@/domain/use-cases'
+import { MAX_INTEGER } from '@/main/constants'
+import { ValidationException } from '@/main/exceptions'
+import { makeUpdateProductValidation } from '@/main/factories/validations'
+
+const validUuidV4 = '00000000-0000-4000-8000-000000000001'
+const nonExistentId = '00000000-0000-4000-8000-000000000002'
+const existingProduct = makeProductModelMock()
 
 function makeSut() {
-  const validationService = makeValidationServiceStub();
-  const sut = makeUpdateProductValidation(validationService);
+  const validationService = makeValidationServiceStub()
+  const sut = makeUpdateProductValidation(validationService)
 
-  return { validationService, sut };
+  return { validationService, sut }
 }
 
 describe(makeUpdateProductValidation.name, () => {
@@ -117,7 +118,7 @@ describe(makeUpdateProductValidation.name, () => {
     'Should throw ValidationException for every product invalid prop',
     ({ properties, validations }) => {
       it(JSON.stringify(validations), async () => {
-        const { sut } = makeSut();
+        const { sut } = makeSut()
 
         const requestModel = {
           id: validUuidV4,
@@ -126,16 +127,16 @@ describe(makeUpdateProductValidation.name, () => {
           image: 'any-image.com',
           price: 1000,
           ...properties,
-        } as UpdateProductUseCase.RequestModel;
+        } as UpdateProductUseCase.RequestModel
 
-        let sutResult = await sut(requestModel).catch((e) => e);
+        let sutResult = await sut(requestModel).catch((e) => e)
 
         if (typeof sutResult === 'function') {
-          sutResult = await sutResult({ products: [existingProduct] }).catch((e: unknown) => e);
+          sutResult = await sutResult({ products: [existingProduct] }).catch((e: unknown) => e)
         }
 
-        expect(sutResult).toStrictEqual(new ValidationException(validations));
-      });
-    },
-  );
-});
+        expect(sutResult).toStrictEqual(new ValidationException(validations))
+      })
+    }
+  )
+})

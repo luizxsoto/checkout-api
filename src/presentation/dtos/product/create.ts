@@ -1,9 +1,9 @@
 export class CreateProductDto {
-  public name!: string;
+  public name!: string
 
-  public category!: 'clothes' | 'shoes' | 'others';
+  public category!: 'clothes' | 'shoes' | 'others'
 
-  public image!: string;
+  public image!: string
 
-  public price!: number;
+  public price!: number
 }

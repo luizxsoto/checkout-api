@@ -1,16 +1,17 @@
-import { CreateUserUseCase } from '@/domain/use-cases';
-import { ValidationException } from '@/main/exceptions';
-import { makeCreateUserValidation } from '@/main/factories/validations';
-import { makeValidationServiceStub } from '@tests/data/stubs/services';
-import { makeUserModelMock } from '@tests/domain/mocks/models';
+import { makeValidationServiceStub } from '@tests/data/stubs/services'
+import { makeUserModelMock } from '@tests/domain/mocks/models'
 
-const existingUser = makeUserModelMock();
+import { CreateUserUseCase } from '@/domain/use-cases'
+import { ValidationException } from '@/main/exceptions'
+import { makeCreateUserValidation } from '@/main/factories/validations'
+
+const existingUser = makeUserModelMock()
 
 function makeSut() {
-  const validationService = makeValidationServiceStub();
-  const sut = makeCreateUserValidation(validationService);
+  const validationService = makeValidationServiceStub()
+  const sut = makeCreateUserValidation(validationService)
 
-  return { validationService, sut };
+  return { validationService, sut }
 }
 
 describe(makeCreateUserValidation.name, () => {
@@ -162,7 +163,7 @@ describe(makeCreateUserValidation.name, () => {
     'Should throw ValidationException for every user invalid prop',
     ({ properties, validations }) => {
       it(JSON.stringify(validations), async () => {
-        const { sut } = makeSut();
+        const { sut } = makeSut()
 
         const requestModel = {
           name: 'Any Name',
@@ -170,16 +171,16 @@ describe(makeCreateUserValidation.name, () => {
           password: 'Password@123',
           roles: [],
           ...properties,
-        } as CreateUserUseCase.RequestModel;
+        } as CreateUserUseCase.RequestModel
 
-        let sutResult = await sut(requestModel).catch((e) => e);
+        let sutResult = await sut(requestModel).catch((e) => e)
 
         if (typeof sutResult === 'function') {
-          sutResult = await sutResult({ users: [existingUser] }).catch((e: unknown) => e);
+          sutResult = await sutResult({ users: [existingUser] }).catch((e: unknown) => e)
         }
 
-        expect(sutResult).toStrictEqual(new ValidationException(validations));
-      });
-    },
-  );
-});
+        expect(sutResult).toStrictEqual(new ValidationException(validations))
+      })
+    }
+  )
+})

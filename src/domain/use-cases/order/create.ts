@@ -1,4 +1,4 @@
-import { OrderItemModel, OrderModel } from '@/domain/models';
+import { OrderItemModel, OrderModel } from '@/domain/models'
 
 export type RequestModel = Omit<
   OrderModel,
@@ -23,11 +23,11 @@ export type RequestModel = Omit<
     | 'createdAt'
     | 'updatedAt'
     | 'deletedAt'
-  >[];
-};
+  >[]
+}
 
-export type ResponseModel = OrderModel & { orderItems: OrderItemModel[] };
+export type ResponseModel = OrderModel & { orderItems: OrderItemModel[] }
 
 export interface UseCase {
-  execute: (requestModel: RequestModel) => Promise<ResponseModel>;
+  execute: (requestModel: RequestModel) => Promise<ResponseModel>
 }

@@ -1,4 +1,4 @@
-import { ProductModel } from '@/domain/models';
+import { ProductModel } from '@/domain/models'
 
 export type RequestModel = Parameters<
   (
@@ -14,12 +14,12 @@ export type RequestModel = Parameters<
         | 'updatedAt'
         | 'deletedAt'
       >
-    >,
+    >
   ) => void
->;
+>
 
-export type ResponseModel = ProductModel[];
+export type ResponseModel = ProductModel[]
 
 export interface Repository {
-  update: (...requestModel: RequestModel) => Promise<ResponseModel>;
+  update: (...requestModel: RequestModel) => Promise<ResponseModel>
 }

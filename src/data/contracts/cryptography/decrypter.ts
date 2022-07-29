@@ -1,3 +1,3 @@
 export interface Decrypter {
-  decrypt: <ResponseT>(ciphertext: string) => Promise<ResponseT>;
+  decrypt: <ResponseT>(ciphertext: string) => Promise<ResponseT>
 }

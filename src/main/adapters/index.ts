@@ -1,2 +1,2 @@
-export * from './express-middleware';
-export * from './express-route';
+export * from './express-middleware'
+export * from './express-route'

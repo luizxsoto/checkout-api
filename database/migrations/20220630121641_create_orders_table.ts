@@ -1,19 +1,19 @@
-import { Knex } from 'knex';
+import { Knex } from 'knex'
 
-import { createDefaultTable, dropTable } from '../helpers';
+import { createDefaultTable, dropTable } from '../helpers'
 
-const tableName = 'orders';
+const tableName = 'orders'
 
 export async function up(knex: Knex): Promise<void> {
   await createDefaultTable(knex, {
     tableName,
     columns: (table) => {
-      table.uuid('userId').notNullable().references('id').inTable('users');
-      table.integer('totalValue').notNullable();
+      table.uuid('userId').notNullable().references('id').inTable('users')
+      table.integer('totalValue').notNullable()
     },
-  });
+  })
 }
 
 export async function down(knex: Knex): Promise<void> {
-  await dropTable(knex, { tableName });
+  await dropTable(knex, { tableName })
 }

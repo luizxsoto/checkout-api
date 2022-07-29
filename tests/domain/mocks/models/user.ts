@@ -1,6 +1,6 @@
-import { makeBaseModelMock } from './base';
+import { makeBaseModelMock } from './base'
 
-import { UserModel } from '@/domain/models';
+import { UserModel } from '@/domain/models'
 
 export function makeUserModelMock(extraData?: Partial<UserModel>) {
   return {
@@ -10,5 +10,5 @@ export function makeUserModelMock(extraData?: Partial<UserModel>) {
     password: 'Password@123',
     roles: [],
     ...extraData,
-  };
+  }
 }

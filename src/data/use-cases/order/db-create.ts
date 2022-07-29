@@ -3,10 +3,10 @@ import {
   CreateOrderRepository,
   FindByProductRepository,
   FindByUserRepository,
-} from '@/data/contracts/repositories';
-import { CreateOrderValidation } from '@/data/contracts/validations';
-import { OrderItemModel, OrderModel, ProductModel } from '@/domain/models';
-import { CreateOrderUseCase } from '@/domain/use-cases';
+} from '@/data/contracts/repositories'
+import { CreateOrderValidation } from '@/data/contracts/validations'
+import { OrderItemModel, OrderModel, ProductModel } from '@/domain/models'
+import { CreateOrderUseCase } from '@/domain/use-cases'
 
 type OrderWithValues = Omit<
   OrderModel,
@@ -22,8 +22,8 @@ type OrderWithValues = Omit<
     | 'createdAt'
     | 'updatedAt'
     | 'deletedAt'
-  >[];
-};
+  >[]
+}
 
 export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
   constructor(
@@ -31,40 +31,40 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
     private readonly createOrderItemRepository: CreateOrderItemRepository.Repository,
     private readonly findByUserRepository: FindByUserRepository.Repository,
     private readonly findByProductRepository: FindByProductRepository.Repository,
-    private readonly createOrderValidation: CreateOrderValidation,
+    private readonly createOrderValidation: CreateOrderValidation
   ) {}
 
   public async execute(
-    requestModel: CreateOrderUseCase.RequestModel,
+    requestModel: CreateOrderUseCase.RequestModel
   ): Promise<CreateOrderUseCase.ResponseModel> {
-    const sanitizedRequestModel = this.sanitizeRequestModel(requestModel);
+    const sanitizedRequestModel = this.sanitizeRequestModel(requestModel)
 
-    const restValidation = await this.createOrderValidation(sanitizedRequestModel);
+    const restValidation = await this.createOrderValidation(sanitizedRequestModel)
 
     const users = await this.findByUserRepository.findBy(
       [{ id: sanitizedRequestModel.userId }],
-      true,
-    );
+      true
+    )
 
     const products = await this.findByProductRepository.findBy(
-      sanitizedRequestModel.orderItems.map((orderItem) => ({ id: orderItem.productId })),
-    );
+      sanitizedRequestModel.orderItems.map((orderItem) => ({ id: orderItem.productId }))
+    )
 
-    await restValidation({ users, products });
+    await restValidation({ users, products })
 
     const { orderItems: orderItemsWithValues, ...orderWithValues } = this.sanitizeValues(
       sanitizedRequestModel,
-      products,
-    );
+      products
+    )
 
-    const [orderCreated] = await this.createOrderRepository.create([orderWithValues]);
+    const [orderCreated] = await this.createOrderRepository.create([orderWithValues])
 
     const orderItemsWithOrderId = orderItemsWithValues.map((orderItem) => ({
       ...orderItem,
       orderId: orderCreated.id,
-    }));
+    }))
 
-    const orderItemsCreated = await this.createOrderItemRepository.create(orderItemsWithOrderId);
+    const orderItemsCreated = await this.createOrderItemRepository.create(orderItemsWithOrderId)
 
     return {
       ...orderWithValues,
@@ -72,53 +72,53 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
       orderItems: orderItemsWithOrderId.map((orderItem) => ({
         ...orderItem,
         ...(orderItemsCreated.find(
-          (orderItemCreated) => orderItemCreated.productId === orderItem.productId,
+          (orderItemCreated) => orderItemCreated.productId === orderItem.productId
         ) as OrderItemModel),
       })),
-    };
+    }
   }
 
   private sanitizeRequestModel(
-    requestModel: CreateOrderUseCase.RequestModel,
+    requestModel: CreateOrderUseCase.RequestModel
   ): CreateOrderUseCase.RequestModel {
     const sanitizedRequestModel = {
       userId: requestModel.userId,
       orderItems: requestModel.orderItems,
-    };
+    }
 
     if (
       Array.isArray(requestModel.orderItems) &&
       requestModel.orderItems.every(
-        (orderItem) => orderItem && typeof orderItem === 'object' && !Array.isArray(orderItem),
+        (orderItem) => orderItem && typeof orderItem === 'object' && !Array.isArray(orderItem)
       )
     ) {
       sanitizedRequestModel.orderItems = requestModel.orderItems.map((orderItem) => ({
         productId: orderItem.productId,
         quantity: orderItem.quantity,
-      }));
+      }))
     }
 
-    return sanitizedRequestModel;
+    return sanitizedRequestModel
   }
 
   private sanitizeValues(
     requestModel: CreateOrderUseCase.RequestModel,
-    products: ProductModel[],
+    products: ProductModel[]
   ): OrderWithValues {
-    const sanitizedOrder = { ...requestModel, totalValue: 0 } as OrderWithValues;
+    const sanitizedOrder = { ...requestModel, totalValue: 0 } as OrderWithValues
 
     sanitizedOrder.orderItems = sanitizedOrder.orderItems.map((orderItem) => {
-      const sanitizedOrderItem = { ...orderItem };
+      const sanitizedOrderItem = { ...orderItem }
       const findedProduct = products.find(
-        (product) => product.id === sanitizedOrderItem.productId,
-      ) as ProductModel;
-      sanitizedOrderItem.unitValue = findedProduct.price;
-      sanitizedOrderItem.totalValue = sanitizedOrderItem.unitValue * sanitizedOrderItem.quantity;
-      sanitizedOrder.totalValue += sanitizedOrderItem.totalValue;
+        (product) => product.id === sanitizedOrderItem.productId
+      ) as ProductModel
+      sanitizedOrderItem.unitValue = findedProduct.price
+      sanitizedOrderItem.totalValue = sanitizedOrderItem.unitValue * sanitizedOrderItem.quantity
+      sanitizedOrder.totalValue += sanitizedOrderItem.totalValue
 
-      return sanitizedOrderItem;
-    });
+      return sanitizedOrderItem
+    })
 
-    return sanitizedOrder;
+    return sanitizedOrder
   }
 }

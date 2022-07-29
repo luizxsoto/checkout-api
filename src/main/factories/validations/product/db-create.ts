@@ -1,11 +1,11 @@
-import { ValidationService } from '@/data/contracts/services';
-import { CreateProductValidation } from '@/data/contracts/validations';
-import { CreateProductUseCase } from '@/domain/use-cases';
-import { ValidationBuilder } from '@/main/builders';
-import { MAX_INTEGER, MAX_PRODUCT_NAME_LENGTH, MIN_PRODUCT_NAME_LENGTH } from '@/main/constants';
+import { ValidationService } from '@/data/contracts/services'
+import { CreateProductValidation } from '@/data/contracts/validations'
+import { CreateProductUseCase } from '@/domain/use-cases'
+import { ValidationBuilder } from '@/main/builders'
+import { MAX_INTEGER, MAX_PRODUCT_NAME_LENGTH, MIN_PRODUCT_NAME_LENGTH } from '@/main/constants'
 
 export function makeCreateProductValidation(
-  validationService: ValidationService.Validator,
+  validationService: ValidationService.Validator
 ): CreateProductValidation {
   return async (requestModel: CreateProductUseCase.RequestModel) => {
     await validationService.validate({
@@ -25,6 +25,6 @@ export function makeCreateProductValidation(
       },
       model: requestModel,
       data: {},
-    });
-  };
+    })
+  }
 }

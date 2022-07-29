@@ -1,25 +1,26 @@
-import { ListOrderController } from '@/presentation/controllers';
-import { makeOrderModelMock } from '@tests/domain/mocks/models';
-import { makeListOrderUseCaseStub } from '@tests/presentation/stubs/use-cases';
+import { makeOrderModelMock } from '@tests/domain/mocks/models'
+import { makeListOrderUseCaseStub } from '@tests/presentation/stubs/use-cases'
 
-const orderMock = makeOrderModelMock();
+import { ListOrderController } from '@/presentation/controllers'
+
+const orderMock = makeOrderModelMock()
 
 function makeSut() {
-  const listOrderUseCase = makeListOrderUseCaseStub();
-  const sut = new ListOrderController(listOrderUseCase);
+  const listOrderUseCase = makeListOrderUseCaseStub()
+  const sut = new ListOrderController(listOrderUseCase)
 
-  return { listOrderUseCase, sut };
+  return { listOrderUseCase, sut }
 }
 
 describe(ListOrderController.name, () => {
   test('Should list order and return correct values', async () => {
-    const { listOrderUseCase, sut } = makeSut();
+    const { listOrderUseCase, sut } = makeSut()
 
-    listOrderUseCase.execute.mockReturnValueOnce(Promise.resolve([orderMock]));
+    listOrderUseCase.execute.mockReturnValueOnce(Promise.resolve([orderMock]))
 
-    const sutResult = await sut.handle({});
+    const sutResult = await sut.handle({})
 
-    expect(sutResult).toStrictEqual({ statusCode: 200, body: [orderMock] });
-    expect(listOrderUseCase.execute).toBeCalledWith({});
-  });
-});
+    expect(sutResult).toStrictEqual({ statusCode: 200, body: [orderMock] })
+    expect(listOrderUseCase.execute).toBeCalledWith({})
+  })
+})

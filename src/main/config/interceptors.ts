@@ -1,7 +1,7 @@
-import { Express } from 'express';
+import { Express } from 'express'
 
-import { exception } from '@/main/interceptors';
+import { exception } from '@/main/interceptors'
 
 export function setupInterceptors(app: Express): void {
-  app.use(exception);
+  app.use(exception)
 }

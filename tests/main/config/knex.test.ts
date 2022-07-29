@@ -1,22 +1,22 @@
-import * as knex from 'knex';
+import * as knex from 'knex'
 
-jest.mock('knex', () => ({ knex: jest.fn() }));
-jest.mock('@/main/config/env', () => ({ envConfig: { dbClient: 'dbClient', dbURL: 'dbURL' } }));
+jest.mock('knex', () => ({ knex: jest.fn() }))
+jest.mock('@/main/config/env', () => ({ envConfig: { dbClient: 'dbClient', dbURL: 'dbURL' } }))
 
 describe('Knex', () => {
   afterEach(() => {
-    jest.clearAllMocks();
-  });
+    jest.clearAllMocks()
+  })
 
   test('Should setup knex', async () => {
-    const knexSpy = jest.spyOn(knex, 'knex');
+    const knexSpy = jest.spyOn(knex, 'knex')
 
-    await import('@/main/config');
+    await import('@/main/config')
 
     expect(knexSpy).toBeCalledWith({
       client: 'dbClient',
       connection: 'dbURL',
       useNullAsDefault: true,
-    });
-  });
-});
+    })
+  })
+})

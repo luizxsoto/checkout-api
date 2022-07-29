@@ -1,7 +1,7 @@
-import { ValidationService } from '@/data/contracts/services';
-import { ListUserValidation } from '@/data/contracts/validations';
-import { ListUserUseCase } from '@/domain/use-cases';
-import { ValidationBuilder } from '@/main/builders';
+import { ValidationService } from '@/data/contracts/services'
+import { ListUserValidation } from '@/data/contracts/validations'
+import { ListUserUseCase } from '@/domain/use-cases'
+import { ValidationBuilder } from '@/main/builders'
 import {
   MAX_PER_PAGE,
   MAX_USER_EMAIL_LENGTH,
@@ -9,11 +9,11 @@ import {
   MIN_PER_PAGE,
   MIN_USER_EMAIL_LENGTH,
   MIN_USER_NAME_LENGTH,
-} from '@/main/constants';
-import { ArrayValidation, ObjectValidation } from '@/validation/validators';
+} from '@/main/constants'
+import { ArrayValidation, ObjectValidation } from '@/validation/validators'
 
 export function makeListUserValidation(
-  validationService: ValidationService.Validator,
+  validationService: ValidationService.Validator
 ): ListUserValidation {
   return async (requestModel: ListUserUseCase.RequestModel) => {
     const filtersSchema: Record<string, [ArrayValidation.Validator]> = {
@@ -26,7 +26,7 @@ export function makeListUserValidation(
               .length({ minLength: MIN_USER_NAME_LENGTH, maxLength: MAX_USER_NAME_LENGTH })
               .build(),
           },
-          validationService,
+          validationService
         ),
       ],
       email: [
@@ -38,34 +38,34 @@ export function makeListUserValidation(
               .length({ minLength: MIN_USER_EMAIL_LENGTH, maxLength: MAX_USER_EMAIL_LENGTH })
               .build(),
           },
-          validationService,
+          validationService
         ),
       ],
       createUserId: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().string().regex({ pattern: 'uuidV4' }).build() },
-          validationService,
+          validationService
         ),
       ],
       updateUserId: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().string().regex({ pattern: 'uuidV4' }).build() },
-          validationService,
+          validationService
         ),
       ],
       createdAt: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().string().date().build() },
-          validationService,
+          validationService
         ),
       ],
       updatedAt: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().string().date().build() },
-          validationService,
+          validationService
         ),
       ],
-    };
+    }
 
     await validationService.validate({
       schema: {
@@ -86,12 +86,12 @@ export function makeListUserValidation(
         filters: new ValidationBuilder()
           .listFilers(
             { schema: filtersSchema },
-            new ObjectValidation.Validator({ schema: filtersSchema }, validationService),
+            new ObjectValidation.Validator({ schema: filtersSchema }, validationService)
           )
           .build(),
       },
       model: requestModel,
       data: {},
-    });
-  };
+    })
+  }
 }

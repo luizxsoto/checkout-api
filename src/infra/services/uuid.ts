@@ -1,9 +1,9 @@
-import crypto from 'crypto';
+import crypto from 'crypto'
 
-import { GenerateUniqueIDService } from '@/data/contracts/services';
+import { GenerateUniqueIDService } from '@/data/contracts/services'
 
 export class UUIDService implements GenerateUniqueIDService.Service {
   public generateUniqueID(): string {
-    return crypto.randomUUID();
+    return crypto.randomUUID()
   }
 }

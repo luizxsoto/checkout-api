@@ -1,10 +1,10 @@
-import { StatusCodes } from '@/main/constants';
-import { ApplicationException } from '@/main/exceptions';
+import { StatusCodes } from '@/main/constants'
+import { ApplicationException } from '@/main/exceptions'
 
 export interface ValidationItem {
-  field: string;
-  rule: string;
-  message: string;
+  field: string
+  rule: string
+  message: string
 }
 
 export class ValidationException extends ApplicationException {
@@ -13,6 +13,6 @@ export class ValidationException extends ApplicationException {
       name: 'ValidationException',
       code: StatusCodes.BAD_REQUEST,
       message: 'An error ocurred performing a validation',
-    });
+    })
   }
 }

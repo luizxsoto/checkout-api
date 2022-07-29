@@ -1,27 +1,27 @@
-import { ListProductRepository } from '@/data/contracts/repositories';
-import { ListProductValidation } from '@/data/contracts/validations';
-import { ListProductUseCase } from '@/domain/use-cases';
+import { ListProductRepository } from '@/data/contracts/repositories'
+import { ListProductValidation } from '@/data/contracts/validations'
+import { ListProductUseCase } from '@/domain/use-cases'
 
 export class DbListProductUseCase implements ListProductUseCase.UseCase {
   constructor(
     private readonly listProductRepository: ListProductRepository.Repository,
-    private readonly listProductValidation: ListProductValidation,
+    private readonly listProductValidation: ListProductValidation
   ) {}
 
   public async execute(
-    requestModel: ListProductUseCase.RequestModel,
+    requestModel: ListProductUseCase.RequestModel
   ): Promise<ListProductUseCase.ResponseModel> {
-    const sanitizedRequestModel = this.sanitizeRequestModel(requestModel);
+    const sanitizedRequestModel = this.sanitizeRequestModel(requestModel)
 
-    await this.listProductValidation(sanitizedRequestModel);
+    await this.listProductValidation(sanitizedRequestModel)
 
-    const products = await this.listProductRepository.list(sanitizedRequestModel);
+    const products = await this.listProductRepository.list(sanitizedRequestModel)
 
-    return products;
+    return products
   }
 
   private sanitizeRequestModel(
-    requestModel: ListProductUseCase.RequestModel,
+    requestModel: ListProductUseCase.RequestModel
   ): ListProductUseCase.RequestModel {
     const sanitizedRequestModel: ListProductUseCase.RequestModel = {
       page: Number(requestModel.page) || requestModel.page,
@@ -29,8 +29,8 @@ export class DbListProductUseCase implements ListProductUseCase.UseCase {
       orderBy: requestModel.orderBy,
       order: requestModel.order,
       filters: requestModel.filters,
-    };
+    }
 
-    return sanitizedRequestModel;
+    return sanitizedRequestModel
   }
 }

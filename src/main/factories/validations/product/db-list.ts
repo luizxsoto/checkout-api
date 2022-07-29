@@ -1,18 +1,18 @@
-import { ValidationService } from '@/data/contracts/services';
-import { ListProductValidation } from '@/data/contracts/validations';
-import { ListProductUseCase } from '@/domain/use-cases';
-import { ValidationBuilder } from '@/main/builders';
+import { ValidationService } from '@/data/contracts/services'
+import { ListProductValidation } from '@/data/contracts/validations'
+import { ListProductUseCase } from '@/domain/use-cases'
+import { ValidationBuilder } from '@/main/builders'
 import {
   MAX_INTEGER,
   MAX_PER_PAGE,
   MAX_PRODUCT_NAME_LENGTH,
   MIN_PER_PAGE,
   MIN_PRODUCT_NAME_LENGTH,
-} from '@/main/constants';
-import { ArrayValidation, ObjectValidation } from '@/validation/validators';
+} from '@/main/constants'
+import { ArrayValidation, ObjectValidation } from '@/validation/validators'
 
 export function makeListProductValidation(
-  validationService: ValidationService.Validator,
+  validationService: ValidationService.Validator
 ): ListProductValidation {
   return async (requestModel: ListProductUseCase.RequestModel) => {
     const filtersSchema: Record<string, [ArrayValidation.Validator]> = {
@@ -24,7 +24,7 @@ export function makeListProductValidation(
               .length({ minLength: MIN_PRODUCT_NAME_LENGTH, maxLength: MAX_PRODUCT_NAME_LENGTH })
               .build(),
           },
-          validationService,
+          validationService
         ),
       ],
       category: [
@@ -35,40 +35,40 @@ export function makeListProductValidation(
               .in({ values: ['clothes', 'shoes', 'others'] })
               .build(),
           },
-          validationService,
+          validationService
         ),
       ],
       price: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().integer().max({ value: MAX_INTEGER }).build() },
-          validationService,
+          validationService
         ),
       ],
       createUserId: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().string().regex({ pattern: 'uuidV4' }).build() },
-          validationService,
+          validationService
         ),
       ],
       updateUserId: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().string().regex({ pattern: 'uuidV4' }).build() },
-          validationService,
+          validationService
         ),
       ],
       createdAt: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().string().date().build() },
-          validationService,
+          validationService
         ),
       ],
       updatedAt: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().string().date().build() },
-          validationService,
+          validationService
         ),
       ],
-    };
+    }
 
     await validationService.validate({
       schema: {
@@ -89,12 +89,12 @@ export function makeListProductValidation(
         filters: new ValidationBuilder()
           .listFilers(
             { schema: filtersSchema },
-            new ObjectValidation.Validator({ schema: filtersSchema }, validationService),
+            new ObjectValidation.Validator({ schema: filtersSchema }, validationService)
           )
           .build(),
       },
       model: requestModel,
       data: {},
-    });
-  };
+    })
+  }
 }

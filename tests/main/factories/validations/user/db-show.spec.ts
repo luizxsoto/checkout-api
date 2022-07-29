@@ -1,17 +1,18 @@
-import { ShowUserUseCase } from '@/domain/use-cases';
-import { ValidationException } from '@/main/exceptions';
-import { makeShowUserValidation } from '@/main/factories/validations';
-import { makeValidationServiceStub } from '@tests/data/stubs/services';
-import { makeUserModelMock } from '@tests/domain/mocks/models';
+import { makeValidationServiceStub } from '@tests/data/stubs/services'
+import { makeUserModelMock } from '@tests/domain/mocks/models'
 
-const existingUser = makeUserModelMock();
-const nonExistentId = '00000000-0000-4000-8000-000000000002';
+import { ShowUserUseCase } from '@/domain/use-cases'
+import { ValidationException } from '@/main/exceptions'
+import { makeShowUserValidation } from '@/main/factories/validations'
+
+const existingUser = makeUserModelMock()
+const nonExistentId = '00000000-0000-4000-8000-000000000002'
 
 function makeSut() {
-  const validationService = makeValidationServiceStub();
-  const sut = makeShowUserValidation(validationService);
+  const validationService = makeValidationServiceStub()
+  const sut = makeShowUserValidation(validationService)
 
-  return { validationService, sut };
+  return { validationService, sut }
 }
 
 describe(makeShowUserValidation.name, () => {
@@ -46,18 +47,18 @@ describe(makeShowUserValidation.name, () => {
     'Should throw ValidationException for every user invalid prop',
     ({ properties, validations }) => {
       it(JSON.stringify(validations), async () => {
-        const { sut } = makeSut();
+        const { sut } = makeSut()
 
-        const requestModel = { ...properties } as ShowUserUseCase.RequestModel;
+        const requestModel = { ...properties } as ShowUserUseCase.RequestModel
 
-        let sutResult = await sut(requestModel).catch((e) => e);
+        let sutResult = await sut(requestModel).catch((e) => e)
 
         if (typeof sutResult === 'function') {
-          sutResult = await sutResult({ users: [existingUser] }).catch((e: unknown) => e);
+          sutResult = await sutResult({ users: [existingUser] }).catch((e: unknown) => e)
         }
 
-        expect(sutResult).toStrictEqual(new ValidationException(validations));
-      });
-    },
-  );
-});
+        expect(sutResult).toStrictEqual(new ValidationException(validations))
+      })
+    }
+  )
+})

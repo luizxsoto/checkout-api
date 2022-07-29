@@ -1,4 +1,4 @@
-import { UserModel } from '@/domain/models';
+import { UserModel } from '@/domain/models'
 
 export type RequestModel = { id: string } & Partial<
   Omit<
@@ -11,10 +11,10 @@ export type RequestModel = { id: string } & Partial<
     | 'updatedAt'
     | 'deletedAt'
   >
->;
+>
 
-export type ResponseModel = Omit<UserModel, 'password'>;
+export type ResponseModel = Omit<UserModel, 'password'>
 
 export interface UseCase {
-  execute: (requestModel: RequestModel) => Promise<ResponseModel>;
+  execute: (requestModel: RequestModel) => Promise<ResponseModel>
 }

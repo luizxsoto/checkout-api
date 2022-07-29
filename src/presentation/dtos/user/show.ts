@@ -1,3 +1,3 @@
 export class ShowUserDto {
-  public id!: string;
+  public id!: string
 }

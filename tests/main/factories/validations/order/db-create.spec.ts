@@ -1,20 +1,21 @@
-import { CreateOrderUseCase } from '@/domain/use-cases';
-import { MAX_INTEGER } from '@/main/constants';
-import { ValidationException } from '@/main/exceptions';
-import { makeCreateOrderValidation } from '@/main/factories/validations';
-import { makeValidationServiceStub } from '@tests/data/stubs/services';
-import { makeProductModelMock, makeUserModelMock } from '@tests/domain/mocks/models';
+import { makeValidationServiceStub } from '@tests/data/stubs/services'
+import { makeProductModelMock, makeUserModelMock } from '@tests/domain/mocks/models'
 
-const existingUser = makeUserModelMock();
-const existingProduct = makeProductModelMock();
-const validUuidV4 = '00000000-0000-4000-8000-000000000001';
-const nonExistentId = '00000000-0000-4000-8000-000000000002';
+import { CreateOrderUseCase } from '@/domain/use-cases'
+import { MAX_INTEGER } from '@/main/constants'
+import { ValidationException } from '@/main/exceptions'
+import { makeCreateOrderValidation } from '@/main/factories/validations'
+
+const existingUser = makeUserModelMock()
+const existingProduct = makeProductModelMock()
+const validUuidV4 = '00000000-0000-4000-8000-000000000001'
+const nonExistentId = '00000000-0000-4000-8000-000000000002'
 
 function makeSut() {
-  const validationService = makeValidationServiceStub();
-  const sut = makeCreateOrderValidation(validationService);
+  const validationService = makeValidationServiceStub()
+  const sut = makeCreateOrderValidation(validationService)
 
-  return { validationService, sut };
+  return { validationService, sut }
 }
 
 describe(makeCreateOrderValidation.name, () => {
@@ -138,24 +139,24 @@ describe(makeCreateOrderValidation.name, () => {
     'Should throw ValidationException for every order invalid prop',
     ({ properties, validations }) => {
       it(JSON.stringify(validations), async () => {
-        const { sut } = makeSut();
+        const { sut } = makeSut()
 
         const requestModel = {
           userId: validUuidV4,
           orderItems: [{ productId: validUuidV4, quantity: 1 }],
           ...properties,
-        } as CreateOrderUseCase.RequestModel;
+        } as CreateOrderUseCase.RequestModel
 
-        let sutResult = await sut(requestModel).catch((e) => e);
+        let sutResult = await sut(requestModel).catch((e) => e)
 
         if (typeof sutResult === 'function') {
           sutResult = await sutResult({ users: [existingUser], products: [existingProduct] }).catch(
-            (e: unknown) => e,
-          );
+            (e: unknown) => e
+          )
         }
 
-        expect(sutResult).toStrictEqual(new ValidationException(validations));
-      });
-    },
-  );
-});
+        expect(sutResult).toStrictEqual(new ValidationException(validations))
+      })
+    }
+  )
+})

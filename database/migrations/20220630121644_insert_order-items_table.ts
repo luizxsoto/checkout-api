@@ -1,11 +1,11 @@
-import { Knex } from 'knex';
+import { Knex } from 'knex'
 
-import { OrderItemModel } from '@/domain/models';
-import { envConfig } from '@/main/config';
+import { OrderItemModel } from '@/domain/models'
+import { envConfig } from '@/main/config'
 
-const tableName = 'order_items';
+const tableName = 'order_items'
 const orderItems: (Omit<OrderItemModel, 'createdAt'> & {
-  createdAt: string;
+  createdAt: string
 })[] = [
   {
     id: '00000000-0000-4000-8000-000000000001',
@@ -17,18 +17,18 @@ const orderItems: (Omit<OrderItemModel, 'createdAt'> & {
     unitValue: 1000,
     totalValue: 1000,
   },
-];
+]
 
 export async function up(knex: Knex): Promise<void> {
-  if (envConfig.nodeEnv === 'production') return;
+  if (envConfig.nodeEnv === 'production') return
 
-  await knex.table(tableName).insert(orderItems);
+  await knex.table(tableName).insert(orderItems)
 }
 
 export async function down(knex: Knex): Promise<void> {
-  if (envConfig.nodeEnv === 'production') return;
+  if (envConfig.nodeEnv === 'production') return
 
-  const orderItemIds = orderItems.map((orderItem) => orderItem.id);
+  const orderItemIds = orderItems.map((orderItem) => orderItem.id)
 
-  await knex.table(tableName).whereIn('id', orderItemIds).delete();
+  await knex.table(tableName).whereIn('id', orderItemIds).delete()
 }

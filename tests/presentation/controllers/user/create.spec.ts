@@ -1,25 +1,26 @@
-import { CreateUserController } from '@/presentation/controllers';
-import { makeUserModelMock } from '@tests/domain/mocks/models';
-import { makeCreateUserUseCaseStub } from '@tests/presentation/stubs/use-cases';
+import { makeUserModelMock } from '@tests/domain/mocks/models'
+import { makeCreateUserUseCaseStub } from '@tests/presentation/stubs/use-cases'
 
-const userMock = makeUserModelMock();
+import { CreateUserController } from '@/presentation/controllers'
+
+const userMock = makeUserModelMock()
 
 function makeSut() {
-  const createUserUseCase = makeCreateUserUseCaseStub();
-  const sut = new CreateUserController(createUserUseCase);
+  const createUserUseCase = makeCreateUserUseCaseStub()
+  const sut = new CreateUserController(createUserUseCase)
 
-  return { createUserUseCase, sut };
+  return { createUserUseCase, sut }
 }
 
 describe(CreateUserController.name, () => {
   test('Should create user and return correct values', async () => {
-    const { createUserUseCase, sut } = makeSut();
+    const { createUserUseCase, sut } = makeSut()
 
-    createUserUseCase.execute.mockReturnValueOnce(Promise.resolve(userMock));
+    createUserUseCase.execute.mockReturnValueOnce(Promise.resolve(userMock))
 
-    const sutResult = await sut.handle(userMock);
+    const sutResult = await sut.handle(userMock)
 
-    expect(sutResult).toStrictEqual({ statusCode: 201, body: userMock });
-    expect(createUserUseCase.execute).toBeCalledWith(userMock);
-  });
-});
+    expect(sutResult).toStrictEqual({ statusCode: 201, body: userMock })
+    expect(createUserUseCase.execute).toBeCalledWith(userMock)
+  })
+})

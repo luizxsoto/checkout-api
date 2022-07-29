@@ -1,29 +1,29 @@
-import { Knex } from 'knex';
+import { Knex } from 'knex'
 
 export interface CreateTableOptions {
-  tableName: string;
-  columns: (table: Knex.CreateTableBuilder) => void;
+  tableName: string
+  columns: (table: Knex.CreateTableBuilder) => void
 }
 
 export async function createDefaultTable(knex: Knex, options: CreateTableOptions): Promise<void> {
   await knex.schema.createTable(options.tableName, (table) => {
-    table.uuid('id').primary().notNullable();
+    table.uuid('id').primary().notNullable()
 
-    options.columns(table);
+    options.columns(table)
 
-    table.uuid('createUserId').notNullable().references('id').inTable('users');
-    table.uuid('updateUserId').nullable().references('id').inTable('users');
-    table.uuid('deleteUserId').nullable().references('id').inTable('users');
-    table.timestamp('createdAt').notNullable();
-    table.timestamp('updatedAt').nullable();
-    table.timestamp('deletedAt').nullable();
-  });
+    table.uuid('createUserId').notNullable().references('id').inTable('users')
+    table.uuid('updateUserId').nullable().references('id').inTable('users')
+    table.uuid('deleteUserId').nullable().references('id').inTable('users')
+    table.timestamp('createdAt').notNullable()
+    table.timestamp('updatedAt').nullable()
+    table.timestamp('deletedAt').nullable()
+  })
 }
 
 export interface DropTableOptions {
-  tableName: string;
+  tableName: string
 }
 
 export async function dropTable(knex: Knex, options: DropTableOptions): Promise<void> {
-  await knex.schema.dropTable(options.tableName);
+  await knex.schema.dropTable(options.tableName)
 }

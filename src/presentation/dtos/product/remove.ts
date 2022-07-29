@@ -1,3 +1,3 @@
 export class RemoveProductDto {
-  public id!: string;
+  public id!: string
 }

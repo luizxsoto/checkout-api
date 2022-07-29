@@ -1,26 +1,26 @@
-import { Express } from 'express';
+import { Express } from 'express'
 
-import { setupInterceptors } from '@/main/config';
-import { exception } from '@/main/interceptors';
+import { setupInterceptors } from '@/main/config'
+import { exception } from '@/main/interceptors'
 
 function makeSut() {
-  const express = { use: jest.fn() };
-  const sut = setupInterceptors;
+  const express = { use: jest.fn() }
+  const sut = setupInterceptors
 
-  return { express, sut };
+  return { express, sut }
 }
 
 describe('Interceptors', () => {
   afterEach(() => {
-    jest.clearAllMocks();
-  });
+    jest.clearAllMocks()
+  })
 
   test('Should setup interceptors', () => {
-    const { express, sut } = makeSut();
+    const { express, sut } = makeSut()
 
-    sut(express as unknown as Express);
+    sut(express as unknown as Express)
 
-    expect(express.use).toBeCalledTimes(1);
-    expect(express.use).toBeCalledWith(exception);
-  });
-});
+    expect(express.use).toBeCalledTimes(1)
+    expect(express.use).toBeCalledWith(exception)
+  })
+})

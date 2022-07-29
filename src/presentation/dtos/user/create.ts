@@ -1,11 +1,11 @@
-import { Roles } from '@/domain/models';
+import { Roles } from '@/domain/models'
 
 export class CreateUserDto {
-  public name!: string;
+  public name!: string
 
-  public email!: string;
+  public email!: string
 
-  public password!: string;
+  public password!: string
 
-  public roles!: Roles[];
+  public roles!: Roles[]
 }

@@ -1,31 +1,31 @@
-import { resolve } from 'path';
+import { resolve } from 'path'
 
-import { Express } from 'express';
-import request from 'supertest';
+import { makeBearerTokenMock } from '@tests/domain/mocks/models'
+import { Express } from 'express'
+import request from 'supertest'
 
-import { knexConfig, setupApp } from '@/main/config';
-import { makeBearerTokenMock } from '@tests/domain/mocks/models';
+import { knexConfig, setupApp } from '@/main/config'
 
-const validUuidV4 = '10000000-0000-4000-8000-000000000001';
-const userId = '00000000-0000-4000-8000-000000000001';
-let app: Express;
+const validUuidV4 = '10000000-0000-4000-8000-000000000001'
+const userId = '00000000-0000-4000-8000-000000000001'
+let app: Express
 
 describe('User Routes', () => {
   beforeAll(async () => {
-    app = setupApp();
+    app = setupApp()
 
     await knexConfig.migrate
       .latest({ directory: resolve('database/migrations') })
-      .catch((error) => console.error('[knexConfig.migrate]', error));
-  });
+      .catch((error) => console.error('[knexConfig.migrate]', error))
+  })
 
   afterEach(async () => {
-    await knexConfig.table('users').del();
-  });
+    await knexConfig.table('users').del()
+  })
 
   afterAll(async () => {
-    await knexConfig.destroy();
-  });
+    await knexConfig.destroy()
+  })
 
   describe('list()', () => {
     test('Should list user and return correct values', async () => {
@@ -37,37 +37,37 @@ describe('User Routes', () => {
         roles: [],
         createUserId: userId,
         createdAt: new Date().toISOString(),
-      };
+      }
 
-      await knexConfig.table('users').insert(requestModel);
+      await knexConfig.table('users').insert(requestModel)
 
       const result = await request(app)
         .get('/api/users')
         .query({ filters: `["=", "email", "${requestModel.email}"]` })
         .set('authorization', await makeBearerTokenMock())
-        .send();
+        .send()
 
-      expect(result.status).toBe(200);
-      expect(result.body[0]?.id).toBe(requestModel.id);
-      expect(result.body[0]?.name).toBe(requestModel.name);
-      expect(result.body[0]?.email).toBe(requestModel.email);
-      expect(result.body[0]?.createUserId).toBe(requestModel.createUserId);
-      expect(result.body[0]?.createdAt).toBe(requestModel.createdAt);
-      expect(result.body[0]?.password).toBeUndefined();
-    });
+      expect(result.status).toBe(200)
+      expect(result.body[0]?.id).toBe(requestModel.id)
+      expect(result.body[0]?.name).toBe(requestModel.name)
+      expect(result.body[0]?.email).toBe(requestModel.email)
+      expect(result.body[0]?.createUserId).toBe(requestModel.createUserId)
+      expect(result.body[0]?.createdAt).toBe(requestModel.createdAt)
+      expect(result.body[0]?.password).toBeUndefined()
+    })
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
       const requestModel = {
         filters: 'invalid_filters',
-      };
+      }
 
       const result = await request(app)
         .get('/api/users')
         .query(requestModel)
         .set('authorization', await makeBearerTokenMock())
-        .send();
+        .send()
 
-      expect(result.status).toBe(400);
+      expect(result.status).toBe(400)
       expect(result.body).toStrictEqual({
         name: 'ValidationException',
         code: 400,
@@ -80,9 +80,9 @@ describe('User Routes', () => {
               'This value must be a valid list filters and with this posible fields: name, email, createUserId, updateUserId, createdAt, updatedAt',
           },
         ],
-      });
-    });
-  });
+      })
+    })
+  })
 
   describe('show()', () => {
     test('Should show user and return correct values', async () => {
@@ -94,35 +94,35 @@ describe('User Routes', () => {
         roles: [],
         createUserId: userId,
         createdAt: new Date().toISOString(),
-      };
+      }
 
-      await knexConfig.table('users').insert(requestModel);
+      await knexConfig.table('users').insert(requestModel)
 
       const result = await request(app)
         .get(`/api/users/${requestModel.id}`)
         .set('authorization', await makeBearerTokenMock())
-        .send();
+        .send()
 
-      expect(result.status).toBe(200);
-      expect(result.body.id).toBe(requestModel.id);
-      expect(result.body.name).toBe(requestModel.name);
-      expect(result.body.email).toBe(requestModel.email);
-      expect(result.body.createUserId).toBe(requestModel.createUserId);
-      expect(result.body.createdAt).toBe(requestModel.createdAt);
-      expect(result.body.password).toBeUndefined();
-    });
+      expect(result.status).toBe(200)
+      expect(result.body.id).toBe(requestModel.id)
+      expect(result.body.name).toBe(requestModel.name)
+      expect(result.body.email).toBe(requestModel.email)
+      expect(result.body.createUserId).toBe(requestModel.createUserId)
+      expect(result.body.createdAt).toBe(requestModel.createdAt)
+      expect(result.body.password).toBeUndefined()
+    })
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
       const requestModel = {
         id: 'invalid_id',
-      };
+      }
 
       const result = await request(app)
         .get(`/api/users/${requestModel.id}`)
         .set('authorization', await makeBearerTokenMock())
-        .send();
+        .send()
 
-      expect(result.status).toBe(400);
+      expect(result.status).toBe(400)
       expect(result.body).toStrictEqual({
         name: 'ValidationException',
         code: 400,
@@ -137,9 +137,9 @@ describe('User Routes', () => {
             },
           },
         ],
-      });
-    });
-  });
+      })
+    })
+  })
 
   describe('create()', () => {
     test('Should create user and return correct values', async () => {
@@ -148,38 +148,38 @@ describe('User Routes', () => {
         email: 'any@email.com',
         password: 'Password@123',
         roles: [],
-      };
-      const createUserId = userId;
+      }
+      const createUserId = userId
 
       const result = await request(app)
         .post('/api/users')
         .set('authorization', await makeBearerTokenMock({ userId: createUserId }))
-        .send(requestModel);
+        .send(requestModel)
 
-      expect(result.status).toBe(201);
-      expect(result.body.name).toBe(requestModel.name);
-      expect(result.body.email).toBe(requestModel.email);
-      expect(result.body.createUserId).toBe(createUserId);
+      expect(result.status).toBe(201)
+      expect(result.body.name).toBe(requestModel.name)
+      expect(result.body.email).toBe(requestModel.email)
+      expect(result.body.createUserId).toBe(createUserId)
       expect(result.body.id).toMatch(
-        /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i,
-      );
-      expect(result.body.createdAt).toBeDefined();
-      expect(result.body.password).toBeUndefined();
-    });
+        /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i
+      )
+      expect(result.body.createdAt).toBeDefined()
+      expect(result.body.password).toBeUndefined()
+    })
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
       const requestModel = {
         name: 'Any Name',
         password: 'Password@123',
         roles: [],
-      };
+      }
 
       const result = await request(app)
         .post('/api/users')
         .set('authorization', await makeBearerTokenMock())
-        .send(requestModel);
+        .send(requestModel)
 
-      expect(result.status).toBe(400);
+      expect(result.status).toBe(400)
       expect(result.body).toStrictEqual({
         name: 'ValidationException',
         code: 400,
@@ -191,9 +191,9 @@ describe('User Routes', () => {
             message: 'This value is required',
           },
         ],
-      });
-    });
-  });
+      })
+    })
+  })
 
   describe('update()', () => {
     test('Should update user and return correct values', async () => {
@@ -205,26 +205,26 @@ describe('User Routes', () => {
         roles: [],
         createUserId: userId,
         createdAt: new Date().toISOString(),
-      };
-      const updateUserId = userId;
+      }
+      const updateUserId = userId
 
-      await knexConfig.table('users').insert(requestModel);
+      await knexConfig.table('users').insert(requestModel)
 
       const result = await request(app)
         .put(`/api/users/${requestModel.id}`)
         .set('authorization', await makeBearerTokenMock({ userId: updateUserId }))
-        .send(requestModel);
+        .send(requestModel)
 
-      expect(result.status).toBe(200);
-      expect(result.body.id).toBe(requestModel.id);
-      expect(result.body.name).toBe(requestModel.name);
-      expect(result.body.email).toBe(requestModel.email);
-      expect(result.body.createUserId).toBe(requestModel.createUserId);
-      expect(result.body.updateUserId).toBe(updateUserId);
-      expect(result.body.createdAt).toBe(requestModel.createdAt);
-      expect(result.body.updatedAt).toBeDefined();
-      expect(result.body.password).toBeUndefined();
-    });
+      expect(result.status).toBe(200)
+      expect(result.body.id).toBe(requestModel.id)
+      expect(result.body.name).toBe(requestModel.name)
+      expect(result.body.email).toBe(requestModel.email)
+      expect(result.body.createUserId).toBe(requestModel.createUserId)
+      expect(result.body.updateUserId).toBe(updateUserId)
+      expect(result.body.createdAt).toBe(requestModel.createdAt)
+      expect(result.body.updatedAt).toBeDefined()
+      expect(result.body.password).toBeUndefined()
+    })
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
       const requestModel = {
@@ -233,14 +233,14 @@ describe('User Routes', () => {
         email: 'any@email.com',
         password: 'Password@123',
         roles: [],
-      };
+      }
 
       const result = await request(app)
         .put(`/api/users/${requestModel.id}`)
         .set('authorization', await makeBearerTokenMock())
-        .send(requestModel);
+        .send(requestModel)
 
-      expect(result.status).toBe(400);
+      expect(result.status).toBe(400)
       expect(result.body).toStrictEqual({
         name: 'ValidationException',
         code: 400,
@@ -255,9 +255,9 @@ describe('User Routes', () => {
             },
           },
         ],
-      });
-    });
-  });
+      })
+    })
+  })
 
   describe('remove()', () => {
     test('Should remove user and return correct values', async () => {
@@ -271,40 +271,40 @@ describe('User Routes', () => {
         updateUserId: userId,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-      };
-      const deleteUserId = userId;
+      }
+      const deleteUserId = userId
 
-      await knexConfig.table('users').insert(requestModel);
+      await knexConfig.table('users').insert(requestModel)
 
       const result = await request(app)
         .delete(`/api/users/${requestModel.id}`)
         .set('authorization', await makeBearerTokenMock({ userId: deleteUserId }))
-        .send();
+        .send()
 
-      expect(result.status).toBe(200);
-      expect(result.body.id).toBe(requestModel.id);
-      expect(result.body.name).toBe(requestModel.name);
-      expect(result.body.email).toBe(requestModel.email);
-      expect(result.body.createUserId).toBe(requestModel.createUserId);
-      expect(result.body.updateUserId).toBe(requestModel.updateUserId);
-      expect(result.body.deleteUserId).toBe(deleteUserId);
-      expect(result.body.createdAt).toBe(requestModel.createdAt);
-      expect(result.body.updatedAt).toBe(requestModel.updatedAt);
-      expect(result.body.deletedAt).toBeDefined();
-      expect(result.body.password).toBeUndefined();
-    });
+      expect(result.status).toBe(200)
+      expect(result.body.id).toBe(requestModel.id)
+      expect(result.body.name).toBe(requestModel.name)
+      expect(result.body.email).toBe(requestModel.email)
+      expect(result.body.createUserId).toBe(requestModel.createUserId)
+      expect(result.body.updateUserId).toBe(requestModel.updateUserId)
+      expect(result.body.deleteUserId).toBe(deleteUserId)
+      expect(result.body.createdAt).toBe(requestModel.createdAt)
+      expect(result.body.updatedAt).toBe(requestModel.updatedAt)
+      expect(result.body.deletedAt).toBeDefined()
+      expect(result.body.password).toBeUndefined()
+    })
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
       const requestModel = {
         id: 'invalid_id',
-      };
+      }
 
       const result = await request(app)
         .delete(`/api/users/${requestModel.id}`)
         .set('authorization', await makeBearerTokenMock())
-        .send();
+        .send()
 
-      expect(result.status).toBe(400);
+      expect(result.status).toBe(400)
       expect(result.body).toStrictEqual({
         name: 'ValidationException',
         code: 400,
@@ -319,7 +319,7 @@ describe('User Routes', () => {
             },
           },
         ],
-      });
-    });
-  });
-});
+      })
+    })
+  })
+})

@@ -1,10 +1,10 @@
-import { ValidationService } from '@/data/contracts/services';
-import { ShowUserValidation } from '@/data/contracts/validations';
-import { ShowUserUseCase } from '@/domain/use-cases';
-import { ValidationBuilder } from '@/main/builders';
+import { ValidationService } from '@/data/contracts/services'
+import { ShowUserValidation } from '@/data/contracts/validations'
+import { ShowUserUseCase } from '@/domain/use-cases'
+import { ValidationBuilder } from '@/main/builders'
 
 export function makeShowUserValidation(
-  validationService: ValidationService.Validator,
+  validationService: ValidationService.Validator
 ): ShowUserValidation {
   return async (requestModel: ShowUserUseCase.RequestModel) => {
     await validationService.validate({
@@ -13,7 +13,7 @@ export function makeShowUserValidation(
       },
       model: requestModel,
       data: {},
-    });
+    })
     return (validationData) =>
       validationService.validate({
         schema: {
@@ -23,6 +23,6 @@ export function makeShowUserValidation(
         },
         model: requestModel,
         data: validationData,
-      });
-  };
+      })
+  }
 }

@@ -1,11 +1,12 @@
+import { makeProductModelMock } from '@tests/domain/mocks/models'
+
 import {
   CreateProductRepository,
   FindByProductRepository,
   ListProductRepository,
   RemoveProductRepository,
   UpdateProductRepository,
-} from '@/data/contracts/repositories';
-import { makeProductModelMock } from '@tests/domain/mocks/models';
+} from '@/data/contracts/repositories'
 
 export function makeProductRepositoryStub() {
   return {
@@ -19,23 +20,23 @@ export function makeProductRepositoryStub() {
       .fn()
       .mockImplementation(
         (
-          requestModel: CreateProductRepository.RequestModel,
+          requestModel: CreateProductRepository.RequestModel
         ): CreateProductRepository.ResponseModel =>
-          requestModel.map((itemModel) => makeProductModelMock(itemModel)),
+          requestModel.map((itemModel) => makeProductModelMock(itemModel))
       ),
     update: jest
       .fn()
       .mockImplementation(
         (
-          requestModel: UpdateProductRepository.RequestModel,
-        ): UpdateProductRepository.ResponseModel => [makeProductModelMock(requestModel[1])],
+          requestModel: UpdateProductRepository.RequestModel
+        ): UpdateProductRepository.ResponseModel => [makeProductModelMock(requestModel[1])]
       ),
     remove: jest
       .fn()
       .mockImplementation(
         (
-          requestModel: RemoveProductRepository.RequestModel,
-        ): RemoveProductRepository.ResponseModel => [makeProductModelMock(requestModel[0])],
+          requestModel: RemoveProductRepository.RequestModel
+        ): RemoveProductRepository.ResponseModel => [makeProductModelMock(requestModel[0])]
       ),
-  };
+  }
 }

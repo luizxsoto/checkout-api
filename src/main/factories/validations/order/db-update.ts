@@ -1,10 +1,10 @@
-import { ValidationService } from '@/data/contracts/services';
-import { UpdateOrderValidation } from '@/data/contracts/validations';
-import { UpdateOrderUseCase } from '@/domain/use-cases';
-import { ValidationBuilder } from '@/main/builders';
+import { ValidationService } from '@/data/contracts/services'
+import { UpdateOrderValidation } from '@/data/contracts/validations'
+import { UpdateOrderUseCase } from '@/domain/use-cases'
+import { ValidationBuilder } from '@/main/builders'
 
 export function makeUpdateOrderValidation(
-  validationService: ValidationService.Validator,
+  validationService: ValidationService.Validator
 ): UpdateOrderValidation {
   return async (requestModel: UpdateOrderUseCase.RequestModel) => {
     await validationService.validate({
@@ -14,7 +14,7 @@ export function makeUpdateOrderValidation(
       },
       model: requestModel,
       data: {},
-    });
+    })
     return (validationData) =>
       validationService.validate({
         schema: {
@@ -27,6 +27,6 @@ export function makeUpdateOrderValidation(
         },
         model: requestModel,
         data: validationData,
-      });
-  };
+      })
+  }
 }

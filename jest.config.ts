@@ -1,4 +1,4 @@
-import { Config } from '@jest/types';
+import { Config } from '@jest/types'
 
 const config: Config.InitialOptions = {
   cache: false,
@@ -22,7 +22,7 @@ const config: Config.InitialOptions = {
     '^@tests/(.*)': ['<rootDir>/tests/$1'],
     '^@/(.*)': ['<rootDir>/src/$1'],
   },
-};
+}
 
 // eslint-disable-next-line import/no-default-export
-export default config;
+export default config

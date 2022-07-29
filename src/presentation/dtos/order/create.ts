@@ -1,5 +1,5 @@
 export class CreateOrderDto {
-  public userId!: string;
+  public userId!: string
 
-  public orderItems!: { productId: string; quantity: number }[];
+  public orderItems!: { productId: string; quantity: number }[]
 }

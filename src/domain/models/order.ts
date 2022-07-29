@@ -1,6 +1,6 @@
-import { BaseModel } from './base';
+import { BaseModel } from './base'
 
 export type OrderModel = BaseModel & {
-  userId: string;
-  totalValue: number;
-};
+  userId: string
+  totalValue: number
+}

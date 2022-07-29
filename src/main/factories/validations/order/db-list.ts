@@ -1,52 +1,52 @@
-import { ValidationService } from '@/data/contracts/services';
-import { ListOrderValidation } from '@/data/contracts/validations';
-import { ListOrderUseCase } from '@/domain/use-cases';
-import { ValidationBuilder } from '@/main/builders';
-import { MAX_INTEGER, MAX_PER_PAGE, MIN_PER_PAGE } from '@/main/constants';
-import { ArrayValidation, ObjectValidation } from '@/validation/validators';
+import { ValidationService } from '@/data/contracts/services'
+import { ListOrderValidation } from '@/data/contracts/validations'
+import { ListOrderUseCase } from '@/domain/use-cases'
+import { ValidationBuilder } from '@/main/builders'
+import { MAX_INTEGER, MAX_PER_PAGE, MIN_PER_PAGE } from '@/main/constants'
+import { ArrayValidation, ObjectValidation } from '@/validation/validators'
 
 export function makeListOrderValidation(
-  validationService: ValidationService.Validator,
+  validationService: ValidationService.Validator
 ): ListOrderValidation {
   return async (requestModel: ListOrderUseCase.RequestModel) => {
     const filtersSchema: Record<string, [ArrayValidation.Validator]> = {
       userId: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().string().regex({ pattern: 'uuidV4' }).build() },
-          validationService,
+          validationService
         ),
       ],
       totalValue: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().integer().max({ value: MAX_INTEGER }).build() },
-          validationService,
+          validationService
         ),
       ],
       createUserId: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().string().regex({ pattern: 'uuidV4' }).build() },
-          validationService,
+          validationService
         ),
       ],
       updateUserId: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().string().regex({ pattern: 'uuidV4' }).build() },
-          validationService,
+          validationService
         ),
       ],
       createdAt: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().string().date().build() },
-          validationService,
+          validationService
         ),
       ],
       updatedAt: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().string().date().build() },
-          validationService,
+          validationService
         ),
       ],
-    };
+    }
 
     await validationService.validate({
       schema: {
@@ -67,12 +67,12 @@ export function makeListOrderValidation(
         filters: new ValidationBuilder()
           .listFilers(
             { schema: filtersSchema },
-            new ObjectValidation.Validator({ schema: filtersSchema }, validationService),
+            new ObjectValidation.Validator({ schema: filtersSchema }, validationService)
           )
           .build(),
       },
       model: requestModel,
       data: {},
-    });
-  };
+    })
+  }
 }

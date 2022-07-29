@@ -1,5 +1,5 @@
-import { CreateProductUseCase } from '@/domain/use-cases';
+import { CreateProductUseCase } from '@/domain/use-cases'
 
 export type CreateProductValidation = (
-  requestModel: CreateProductUseCase.RequestModel,
-) => Promise<void>;
+  requestModel: CreateProductUseCase.RequestModel
+) => Promise<void>

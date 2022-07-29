@@ -1,11 +1,11 @@
-import { Knex } from 'knex';
+import { Knex } from 'knex'
 
-import { ProductModel } from '@/domain/models';
-import { envConfig } from '@/main/config';
+import { ProductModel } from '@/domain/models'
+import { envConfig } from '@/main/config'
 
-const tableName = 'products';
+const tableName = 'products'
 const products: (Omit<ProductModel, 'createdAt'> & {
-  createdAt: string;
+  createdAt: string
 })[] = [
   {
     id: '00000000-0000-4000-8000-000000000001',
@@ -34,18 +34,18 @@ const products: (Omit<ProductModel, 'createdAt'> & {
     image: 'https://boacausa.net/img/image-placeholder.png',
     price: 3000,
   },
-];
+]
 
 export async function up(knex: Knex): Promise<void> {
-  if (envConfig.nodeEnv === 'production') return;
+  if (envConfig.nodeEnv === 'production') return
 
-  await knex.table(tableName).insert(products);
+  await knex.table(tableName).insert(products)
 }
 
 export async function down(knex: Knex): Promise<void> {
-  if (envConfig.nodeEnv === 'production') return;
+  if (envConfig.nodeEnv === 'production') return
 
-  const productIds = products.map((product) => product.id);
+  const productIds = products.map((product) => product.id)
 
-  await knex.table(tableName).whereIn('id', productIds).delete();
+  await knex.table(tableName).whereIn('id', productIds).delete()
 }

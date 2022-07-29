@@ -1,5 +1,5 @@
-import { StatusCodes } from '@/main/constants';
-import { ApplicationException } from '@/main/exceptions';
+import { StatusCodes } from '@/main/constants'
+import { ApplicationException } from '@/main/exceptions'
 
 export class InvalidCredentials extends ApplicationException {
   constructor() {
@@ -7,6 +7,6 @@ export class InvalidCredentials extends ApplicationException {
       name: 'InvalidCredentials',
       code: StatusCodes.UNAUTHORIZED,
       message: 'Invalid credentials',
-    });
+    })
   }
 }

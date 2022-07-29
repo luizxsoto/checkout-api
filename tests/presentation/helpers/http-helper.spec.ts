@@ -1,40 +1,40 @@
-import { InternalException } from '@/main/exceptions';
-import { created, notFound, ok, serverError } from '@/presentation/helpers';
+import { InternalException } from '@/main/exceptions'
+import { created, notFound, ok, serverError } from '@/presentation/helpers'
 
 describe('Http Helpers', () => {
   test('Should return correct values for ok()', () => {
-    const body = { anyProp: 'anyValue' };
-    const sutResult = ok(body);
+    const body = { anyProp: 'anyValue' }
+    const sutResult = ok(body)
 
-    expect(sutResult).toStrictEqual({ statusCode: 200, body });
-  });
+    expect(sutResult).toStrictEqual({ statusCode: 200, body })
+  })
 
   test('Should return correct values for created()', () => {
-    const body = { anyProp: 'anyValue' };
-    const sutResult = created(body);
+    const body = { anyProp: 'anyValue' }
+    const sutResult = created(body)
 
-    expect(sutResult).toStrictEqual({ statusCode: 201, body });
-  });
+    expect(sutResult).toStrictEqual({ statusCode: 201, body })
+  })
 
   test('Should return correct values for notFound()', () => {
-    const sutResult = notFound();
+    const sutResult = notFound()
 
-    expect(sutResult).toStrictEqual({ statusCode: 404, body: { message: 'Route not found' } });
-  });
+    expect(sutResult).toStrictEqual({ statusCode: 404, body: { message: 'Route not found' } })
+  })
 
   describe('Should return correct values for serverError()', () => {
     test('Case error is instanceof ApplicationException', () => {
-      const error = new InternalException(new Error());
-      const sutResult = serverError(error);
+      const error = new InternalException(new Error())
+      const sutResult = serverError(error)
 
-      expect(sutResult).toStrictEqual({ statusCode: 500, body: error });
-    });
+      expect(sutResult).toStrictEqual({ statusCode: 500, body: error })
+    })
 
     test('Case error is not instanceof ApplicationException', () => {
-      const error = new Error();
-      const sutResult = serverError(error);
+      const error = new Error()
+      const sutResult = serverError(error)
 
-      expect(sutResult).toStrictEqual({ statusCode: 500, body: new InternalException(error) });
-    });
-  });
-});
+      expect(sutResult).toStrictEqual({ statusCode: 500, body: new InternalException(error) })
+    })
+  })
+})

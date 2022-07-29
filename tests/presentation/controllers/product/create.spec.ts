@@ -1,25 +1,26 @@
-import { CreateProductController } from '@/presentation/controllers';
-import { makeProductModelMock } from '@tests/domain/mocks/models';
-import { makeCreateProductUseCaseStub } from '@tests/presentation/stubs/use-cases';
+import { makeProductModelMock } from '@tests/domain/mocks/models'
+import { makeCreateProductUseCaseStub } from '@tests/presentation/stubs/use-cases'
 
-const productMock = makeProductModelMock();
+import { CreateProductController } from '@/presentation/controllers'
+
+const productMock = makeProductModelMock()
 
 function makeSut() {
-  const createProductUseCase = makeCreateProductUseCaseStub();
-  const sut = new CreateProductController(createProductUseCase);
+  const createProductUseCase = makeCreateProductUseCaseStub()
+  const sut = new CreateProductController(createProductUseCase)
 
-  return { createProductUseCase, sut };
+  return { createProductUseCase, sut }
 }
 
 describe(CreateProductController.name, () => {
   test('Should create product and return correct values', async () => {
-    const { createProductUseCase, sut } = makeSut();
+    const { createProductUseCase, sut } = makeSut()
 
-    createProductUseCase.execute.mockReturnValueOnce(Promise.resolve(productMock));
+    createProductUseCase.execute.mockReturnValueOnce(Promise.resolve(productMock))
 
-    const sutResult = await sut.handle(productMock);
+    const sutResult = await sut.handle(productMock)
 
-    expect(sutResult).toStrictEqual({ statusCode: 201, body: productMock });
-    expect(createProductUseCase.execute).toBeCalledWith(productMock);
-  });
-});
+    expect(sutResult).toStrictEqual({ statusCode: 201, body: productMock })
+    expect(createProductUseCase.execute).toBeCalledWith(productMock)
+  })
+})

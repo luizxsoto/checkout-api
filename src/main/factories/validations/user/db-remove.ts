@@ -1,10 +1,10 @@
-import { ValidationService } from '@/data/contracts/services';
-import { RemoveUserValidation } from '@/data/contracts/validations';
-import { RemoveUserUseCase } from '@/domain/use-cases';
-import { ValidationBuilder } from '@/main/builders';
+import { ValidationService } from '@/data/contracts/services'
+import { RemoveUserValidation } from '@/data/contracts/validations'
+import { RemoveUserUseCase } from '@/domain/use-cases'
+import { ValidationBuilder } from '@/main/builders'
 
 export function makeRemoveUserValidation(
-  validationService: ValidationService.Validator,
+  validationService: ValidationService.Validator
 ): RemoveUserValidation {
   return async (requestModel: RemoveUserUseCase.RequestModel) => {
     await validationService.validate({
@@ -13,7 +13,7 @@ export function makeRemoveUserValidation(
       },
       model: requestModel,
       data: {},
-    });
+    })
     return (validationData) =>
       validationService.validate({
         schema: {
@@ -23,6 +23,6 @@ export function makeRemoveUserValidation(
         },
         model: requestModel,
         data: validationData,
-      });
-  };
+      })
+  }
 }

@@ -1,9 +1,9 @@
-import { ProductModel } from '@/domain/models';
+import { ProductModel } from '@/domain/models'
 
-export type RequestModel = { id: string };
+export type RequestModel = { id: string }
 
-export type ResponseModel = ProductModel;
+export type ResponseModel = ProductModel
 
 export interface UseCase {
-  execute: (requestModel: RequestModel) => Promise<ResponseModel>;
+  execute: (requestModel: RequestModel) => Promise<ResponseModel>
 }

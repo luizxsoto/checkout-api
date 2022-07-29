@@ -1,25 +1,26 @@
-import { RemoveUserController } from '@/presentation/controllers';
-import { makeUserModelMock } from '@tests/domain/mocks/models';
-import { makeRemoveUserUseCaseStub } from '@tests/presentation/stubs/use-cases';
+import { makeUserModelMock } from '@tests/domain/mocks/models'
+import { makeRemoveUserUseCaseStub } from '@tests/presentation/stubs/use-cases'
 
-const userMock = makeUserModelMock();
+import { RemoveUserController } from '@/presentation/controllers'
+
+const userMock = makeUserModelMock()
 
 function makeSut() {
-  const removeUserUseCase = makeRemoveUserUseCaseStub();
-  const sut = new RemoveUserController(removeUserUseCase);
+  const removeUserUseCase = makeRemoveUserUseCaseStub()
+  const sut = new RemoveUserController(removeUserUseCase)
 
-  return { removeUserUseCase, sut };
+  return { removeUserUseCase, sut }
 }
 
 describe(RemoveUserController.name, () => {
   test('Should remove user and return correct values', async () => {
-    const { removeUserUseCase, sut } = makeSut();
+    const { removeUserUseCase, sut } = makeSut()
 
-    removeUserUseCase.execute.mockReturnValueOnce(Promise.resolve(userMock));
+    removeUserUseCase.execute.mockReturnValueOnce(Promise.resolve(userMock))
 
-    const sutResult = await sut.handle(userMock);
+    const sutResult = await sut.handle(userMock)
 
-    expect(sutResult).toStrictEqual({ statusCode: 200, body: userMock });
-    expect(removeUserUseCase.execute).toBeCalledWith(userMock);
-  });
-});
+    expect(sutResult).toStrictEqual({ statusCode: 200, body: userMock })
+    expect(removeUserUseCase.execute).toBeCalledWith(userMock)
+  })
+})

@@ -1,3 +1,3 @@
 export class ShowOrderDto {
-  public id!: string;
+  public id!: string
 }

@@ -1,14 +1,15 @@
-import { ListUserUseCase } from '@/domain/use-cases';
-import { MAX_PER_PAGE, MIN_PER_PAGE } from '@/main/constants';
-import { ValidationException } from '@/main/exceptions';
-import { makeListUserValidation } from '@/main/factories/validations';
-import { makeValidationServiceStub } from '@tests/data/stubs/services';
+import { makeValidationServiceStub } from '@tests/data/stubs/services'
+
+import { ListUserUseCase } from '@/domain/use-cases'
+import { MAX_PER_PAGE, MIN_PER_PAGE } from '@/main/constants'
+import { ValidationException } from '@/main/exceptions'
+import { makeListUserValidation } from '@/main/factories/validations'
 
 function makeSut() {
-  const validationService = makeValidationServiceStub();
-  const sut = makeListUserValidation(validationService);
+  const validationService = makeValidationServiceStub()
+  const sut = makeListUserValidation(validationService)
 
-  return { validationService, sut };
+  return { validationService, sut }
 }
 
 describe(makeListUserValidation.name, () => {
@@ -221,17 +222,17 @@ describe(makeListUserValidation.name, () => {
     'Should throw ValidationException for every user invalid prop',
     ({ properties, validations }) => {
       it(JSON.stringify(validations), async () => {
-        const { sut } = makeSut();
+        const { sut } = makeSut()
 
         const requestModel = {
           filters: '[]',
           ...properties,
-        } as ListUserUseCase.RequestModel;
+        } as ListUserUseCase.RequestModel
 
-        const sutResult = await sut(requestModel).catch((e) => e);
+        const sutResult = await sut(requestModel).catch((e) => e)
 
-        expect(sutResult).toStrictEqual(new ValidationException(validations));
-      });
-    },
-  );
-});
+        expect(sutResult).toStrictEqual(new ValidationException(validations))
+      })
+    }
+  )
+})

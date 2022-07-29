@@ -1,11 +1,11 @@
-import { ValidationService } from '@/data/contracts/services';
-import { UpdateProductValidation } from '@/data/contracts/validations';
-import { UpdateProductUseCase } from '@/domain/use-cases';
-import { ValidationBuilder } from '@/main/builders';
-import { MAX_INTEGER, MAX_PRODUCT_NAME_LENGTH, MIN_PRODUCT_NAME_LENGTH } from '@/main/constants';
+import { ValidationService } from '@/data/contracts/services'
+import { UpdateProductValidation } from '@/data/contracts/validations'
+import { UpdateProductUseCase } from '@/domain/use-cases'
+import { ValidationBuilder } from '@/main/builders'
+import { MAX_INTEGER, MAX_PRODUCT_NAME_LENGTH, MIN_PRODUCT_NAME_LENGTH } from '@/main/constants'
 
 export function makeUpdateProductValidation(
-  validationService: ValidationService.Validator,
+  validationService: ValidationService.Validator
 ): UpdateProductValidation {
   return async (requestModel: UpdateProductUseCase.RequestModel) => {
     await validationService.validate({
@@ -24,7 +24,7 @@ export function makeUpdateProductValidation(
       },
       model: requestModel,
       data: {},
-    });
+    })
     return (validationData) =>
       validationService.validate({
         schema: {
@@ -34,6 +34,6 @@ export function makeUpdateProductValidation(
         },
         model: requestModel,
         data: validationData,
-      });
-  };
+      })
+  }
 }

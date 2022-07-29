@@ -1,17 +1,18 @@
-import { RemoveProductUseCase } from '@/domain/use-cases';
-import { ValidationException } from '@/main/exceptions';
-import { makeRemoveProductValidation } from '@/main/factories/validations';
-import { makeValidationServiceStub } from '@tests/data/stubs/services';
-import { makeProductModelMock } from '@tests/domain/mocks/models';
+import { makeValidationServiceStub } from '@tests/data/stubs/services'
+import { makeProductModelMock } from '@tests/domain/mocks/models'
 
-const existingProduct = makeProductModelMock();
-const nonExistentId = '00000000-0000-4000-8000-000000000002';
+import { RemoveProductUseCase } from '@/domain/use-cases'
+import { ValidationException } from '@/main/exceptions'
+import { makeRemoveProductValidation } from '@/main/factories/validations'
+
+const existingProduct = makeProductModelMock()
+const nonExistentId = '00000000-0000-4000-8000-000000000002'
 
 function makeSut() {
-  const validationService = makeValidationServiceStub();
-  const sut = makeRemoveProductValidation(validationService);
+  const validationService = makeValidationServiceStub()
+  const sut = makeRemoveProductValidation(validationService)
 
-  return { validationService, sut };
+  return { validationService, sut }
 }
 
 describe(makeRemoveProductValidation.name, () => {
@@ -46,18 +47,18 @@ describe(makeRemoveProductValidation.name, () => {
     'Should throw ValidationException for every product invalid prop',
     ({ properties, validations }) => {
       it(JSON.stringify(validations), async () => {
-        const { sut } = makeSut();
+        const { sut } = makeSut()
 
-        const requestModel = { ...properties } as RemoveProductUseCase.RequestModel;
+        const requestModel = { ...properties } as RemoveProductUseCase.RequestModel
 
-        let sutResult = await sut(requestModel).catch((e) => e);
+        let sutResult = await sut(requestModel).catch((e) => e)
 
         if (typeof sutResult === 'function') {
-          sutResult = await sutResult({ products: [existingProduct] }).catch((e: unknown) => e);
+          sutResult = await sutResult({ products: [existingProduct] }).catch((e: unknown) => e)
         }
 
-        expect(sutResult).toStrictEqual(new ValidationException(validations));
-      });
-    },
-  );
-});
+        expect(sutResult).toStrictEqual(new ValidationException(validations))
+      })
+    }
+  )
+})

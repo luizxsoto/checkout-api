@@ -1,4 +1,6 @@
-import { ValidationBuilder } from '@/main/builders';
+import { makeValidationServiceStub } from '@tests/data/stubs/services'
+
+import { ValidationBuilder } from '@/main/builders'
 import {
   ArrayValidation,
   CustomValidation,
@@ -16,19 +18,18 @@ import {
   RequiredValidation,
   StringValidation,
   UniqueValidation,
-} from '@/validation/validators';
-import { makeValidationServiceStub } from '@tests/data/stubs/services';
+} from '@/validation/validators'
 
 function makeSut() {
-  const sut = new ValidationBuilder();
+  const sut = new ValidationBuilder()
 
-  return { sut };
+  return { sut }
 }
 
 describe(ValidationBuilder.name, () => {
   test('Should build correctly the validations', () => {
-    const { sut } = makeSut();
-    const validationService = makeValidationServiceStub();
+    const { sut } = makeSut()
+    const validationService = makeValidationServiceStub()
 
     const sutResult = sut
       .array({ validations: [] }, validationService)
@@ -47,7 +48,7 @@ describe(ValidationBuilder.name, () => {
       .required()
       .string()
       .unique({ dataEntity: 'anyData', props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }] })
-      .build();
+      .build()
 
     expect(sutResult).toStrictEqual([
       new ArrayValidation.Validator({ validations: [] }, validationService),
@@ -67,7 +68,7 @@ describe(ValidationBuilder.name, () => {
       new LengthValidation.Validator({ minLength: 1, maxLength: 1 }),
       new ListFiltersValidation.Validator(
         { schema: {} },
-        new ObjectValidation.Validator({ schema: {} }, validationService),
+        new ObjectValidation.Validator({ schema: {} }, validationService)
       ),
       new MaxValidation.Validator({ value: 1 }),
       new MinValidation.Validator({ value: 1 }),
@@ -79,6 +80,6 @@ describe(ValidationBuilder.name, () => {
         dataEntity: 'anyData',
         props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }],
       }),
-    ]);
-  });
-});
+    ])
+  })
+})

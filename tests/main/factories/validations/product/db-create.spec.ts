@@ -1,15 +1,16 @@
-import { ProductModel } from '@/domain/models';
-import { CreateProductUseCase } from '@/domain/use-cases';
-import { MAX_INTEGER } from '@/main/constants';
-import { ValidationException } from '@/main/exceptions';
-import { makeCreateProductValidation } from '@/main/factories/validations';
-import { makeValidationServiceStub } from '@tests/data/stubs/services';
+import { makeValidationServiceStub } from '@tests/data/stubs/services'
+
+import { ProductModel } from '@/domain/models'
+import { CreateProductUseCase } from '@/domain/use-cases'
+import { MAX_INTEGER } from '@/main/constants'
+import { ValidationException } from '@/main/exceptions'
+import { makeCreateProductValidation } from '@/main/factories/validations'
 
 function makeSut() {
-  const validationService = makeValidationServiceStub();
-  const sut = makeCreateProductValidation(validationService);
+  const validationService = makeValidationServiceStub()
+  const sut = makeCreateProductValidation(validationService)
 
-  return { validationService, sut };
+  return { validationService, sut }
 }
 
 describe(makeCreateProductValidation.name, () => {
@@ -102,7 +103,7 @@ describe(makeCreateProductValidation.name, () => {
     'Should throw ValidationException for every product invalid prop',
     ({ properties, validations }) => {
       it(JSON.stringify(validations), async () => {
-        const { sut } = makeSut();
+        const { sut } = makeSut()
 
         const requestModel = {
           name: 'Any Name',
@@ -110,12 +111,12 @@ describe(makeCreateProductValidation.name, () => {
           image: 'any-image.com',
           price: 1000,
           ...properties,
-        } as CreateProductUseCase.RequestModel;
+        } as CreateProductUseCase.RequestModel
 
-        const sutResult = await sut(requestModel).catch((e) => e);
+        const sutResult = await sut(requestModel).catch((e) => e)
 
-        expect(sutResult).toStrictEqual(new ValidationException(validations));
-      });
-    },
-  );
-});
+        expect(sutResult).toStrictEqual(new ValidationException(validations))
+      })
+    }
+  )
+})

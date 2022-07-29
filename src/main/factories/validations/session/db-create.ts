@@ -1,18 +1,18 @@
-import { HashComparer } from '@/data/contracts/cryptography';
-import { ValidationService } from '@/data/contracts/services';
-import { CreateSessionValidation } from '@/data/contracts/validations';
-import { CreateSessionUseCase } from '@/domain/use-cases';
-import { ValidationBuilder } from '@/main/builders';
+import { HashComparer } from '@/data/contracts/cryptography'
+import { ValidationService } from '@/data/contracts/services'
+import { CreateSessionValidation } from '@/data/contracts/validations'
+import { CreateSessionUseCase } from '@/domain/use-cases'
+import { ValidationBuilder } from '@/main/builders'
 import {
   MAX_USER_EMAIL_LENGTH,
   MAX_USER_PASSWORD_LENGTH,
   MIN_USER_EMAIL_LENGTH,
   MIN_USER_PASSWORD_LENGTH,
-} from '@/main/constants';
+} from '@/main/constants'
 
 export function makeCreateSessionValidation(
   validationService: ValidationService.Validator,
-  hashComparer: HashComparer,
+  hashComparer: HashComparer
 ): CreateSessionValidation {
   return async (requestModel: CreateSessionUseCase.RequestModel) => {
     await validationService.validate({
@@ -32,7 +32,7 @@ export function makeCreateSessionValidation(
       },
       model: requestModel,
       data: {},
-    });
+    })
     return async (validationData) => {
       await validationService.validate({
         schema: {
@@ -42,7 +42,7 @@ export function makeCreateSessionValidation(
         },
         model: requestModel,
         data: validationData,
-      });
+      })
       return (findedUser) =>
         validationService.validate({
           schema: {
@@ -56,7 +56,7 @@ export function makeCreateSessionValidation(
           },
           model: requestModel,
           data: validationData,
-        });
-    };
-  };
+        })
+    }
+  }
 }

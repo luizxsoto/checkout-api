@@ -1,11 +1,11 @@
 export class ListOrderDto {
-  public page?: number;
+  public page?: number
 
-  public perPage?: number;
+  public perPage?: number
 
-  public orderBy?: 'userId' | 'totalValue' | 'createdAt' | 'updatedAt';
+  public orderBy?: 'userId' | 'totalValue' | 'createdAt' | 'updatedAt'
 
-  public order?: 'asc' | 'desc';
+  public order?: 'asc' | 'desc'
 
-  public filters?: string;
+  public filters?: string
 }

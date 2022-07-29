@@ -1,4 +1,4 @@
-import { OrderModel } from '@/domain/models';
+import { OrderModel } from '@/domain/models'
 
 export type RequestModel = Omit<
   OrderModel,
@@ -9,10 +9,10 @@ export type RequestModel = Omit<
   | 'createdAt'
   | 'updatedAt'
   | 'deletedAt'
->;
+>
 
-export type ResponseModel = OrderModel;
+export type ResponseModel = OrderModel
 
 export interface UseCase {
-  execute: (requestModel: RequestModel) => Promise<ResponseModel>;
+  execute: (requestModel: RequestModel) => Promise<ResponseModel>
 }

@@ -1,33 +1,33 @@
-import { CreateProductRepository } from '@/data/contracts/repositories';
-import { CreateProductValidation } from '@/data/contracts/validations';
-import { CreateProductUseCase } from '@/domain/use-cases';
+import { CreateProductRepository } from '@/data/contracts/repositories'
+import { CreateProductValidation } from '@/data/contracts/validations'
+import { CreateProductUseCase } from '@/domain/use-cases'
 
 export class DbCreateProductUseCase implements CreateProductUseCase.UseCase {
   constructor(
     private readonly createProductRepository: CreateProductRepository.Repository,
-    private readonly createProductValidation: CreateProductValidation,
+    private readonly createProductValidation: CreateProductValidation
   ) {}
 
   public async execute(
-    requestModel: CreateProductUseCase.RequestModel,
+    requestModel: CreateProductUseCase.RequestModel
   ): Promise<CreateProductUseCase.ResponseModel> {
-    const sanitizedRequestModel = this.sanitizeRequestModel(requestModel);
+    const sanitizedRequestModel = this.sanitizeRequestModel(requestModel)
 
-    await this.createProductValidation(sanitizedRequestModel);
+    await this.createProductValidation(sanitizedRequestModel)
 
-    const [productCreated] = await this.createProductRepository.create([sanitizedRequestModel]);
+    const [productCreated] = await this.createProductRepository.create([sanitizedRequestModel])
 
-    return { ...sanitizedRequestModel, ...productCreated };
+    return { ...sanitizedRequestModel, ...productCreated }
   }
 
   private sanitizeRequestModel(
-    requestModel: CreateProductUseCase.RequestModel,
+    requestModel: CreateProductUseCase.RequestModel
   ): CreateProductUseCase.RequestModel {
     return {
       name: requestModel.name,
       category: requestModel.category,
       image: requestModel.image,
       price: requestModel.price,
-    };
+    }
   }
 }

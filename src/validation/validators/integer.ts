@@ -1,18 +1,18 @@
-import lodashGet from 'lodash.get';
+import lodashGet from 'lodash.get'
 
-import { FieldValidation } from '@/validation/protocols';
+import { FieldValidation } from '@/validation/protocols'
 
-export type Options = undefined;
+export type Options = undefined
 
 export class Validator implements FieldValidation.Validation<Options> {
   constructor(public readonly options?: Options) {}
 
   public validate({ key, model }: FieldValidation.Params): FieldValidation.Result {
-    const value = lodashGet(model, key);
-    const integerRgx = /^\d*$/;
+    const value = lodashGet(model, key)
+    const integerRgx = /^\d*$/
     if (value === undefined || (typeof value === 'number' && integerRgx.test(String(value))))
-      return null;
+      return null
 
-    return { field: key, rule: 'integer', message: 'This value must be an integer' };
+    return { field: key, rule: 'integer', message: 'This value must be an integer' }
   }
 }

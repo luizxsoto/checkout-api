@@ -1,11 +1,11 @@
-import { ValidationService } from '@/data/contracts/services';
-import { CreateOrderValidation } from '@/data/contracts/validations';
-import { CreateOrderUseCase } from '@/domain/use-cases';
-import { ValidationBuilder } from '@/main/builders';
-import { MAX_INTEGER } from '@/main/constants';
+import { ValidationService } from '@/data/contracts/services'
+import { CreateOrderValidation } from '@/data/contracts/validations'
+import { CreateOrderUseCase } from '@/domain/use-cases'
+import { ValidationBuilder } from '@/main/builders'
+import { MAX_INTEGER } from '@/main/constants'
 
 export function makeCreateOrderValidation(
-  validationService: ValidationService.Validator,
+  validationService: ValidationService.Validator
 ): CreateOrderValidation {
   return async (requestModel: CreateOrderUseCase.RequestModel) => {
     await validationService.validate({
@@ -32,18 +32,18 @@ export function makeCreateOrderValidation(
                         .build(),
                     },
                   },
-                  validationService,
+                  validationService
                 )
                 .build(),
             },
-            validationService,
+            validationService
           )
           .distinct({ keys: ['productId'] })
           .build(),
       },
       model: requestModel,
       data: {},
-    });
+    })
     return (validationData) =>
       validationService.validate({
         schema: {
@@ -65,16 +65,16 @@ export function makeCreateOrderValidation(
                           .build(),
                       },
                     },
-                    validationService,
+                    validationService
                   )
                   .build(),
               },
-              validationService,
+              validationService
             )
             .build(),
         },
         model: requestModel,
         data: validationData,
-      });
-  };
+      })
+  }
 }

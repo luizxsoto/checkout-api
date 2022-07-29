@@ -1,3 +1,3 @@
 export class RemoveUserDto {
-  public id!: string;
+  public id!: string
 }

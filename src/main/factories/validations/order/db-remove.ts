@@ -1,10 +1,10 @@
-import { ValidationService } from '@/data/contracts/services';
-import { RemoveOrderValidation } from '@/data/contracts/validations';
-import { RemoveOrderUseCase } from '@/domain/use-cases';
-import { ValidationBuilder } from '@/main/builders';
+import { ValidationService } from '@/data/contracts/services'
+import { RemoveOrderValidation } from '@/data/contracts/validations'
+import { RemoveOrderUseCase } from '@/domain/use-cases'
+import { ValidationBuilder } from '@/main/builders'
 
 export function makeRemoveOrderValidation(
-  validationService: ValidationService.Validator,
+  validationService: ValidationService.Validator
 ): RemoveOrderValidation {
   return async (requestModel: RemoveOrderUseCase.RequestModel) => {
     await validationService.validate({
@@ -13,7 +13,7 @@ export function makeRemoveOrderValidation(
       },
       model: requestModel,
       data: {},
-    });
+    })
     return (validationData) =>
       validationService.validate({
         schema: {
@@ -23,6 +23,6 @@ export function makeRemoveOrderValidation(
         },
         model: requestModel,
         data: validationData,
-      });
-  };
+      })
+  }
 }

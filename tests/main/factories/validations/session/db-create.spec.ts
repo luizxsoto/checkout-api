@@ -1,18 +1,19 @@
-import { CreateSessionUseCase } from '@/domain/use-cases';
-import { ValidationException } from '@/main/exceptions';
-import { makeCreateSessionValidation } from '@/main/factories/validations';
-import { makeHashCompareCryptographyStub } from '@tests/data/stubs/cryptography';
-import { makeValidationServiceStub } from '@tests/data/stubs/services';
-import { makeUserModelMock } from '@tests/domain/mocks/models';
+import { makeHashCompareCryptographyStub } from '@tests/data/stubs/cryptography'
+import { makeValidationServiceStub } from '@tests/data/stubs/services'
+import { makeUserModelMock } from '@tests/domain/mocks/models'
 
-const existingUser = makeUserModelMock();
+import { CreateSessionUseCase } from '@/domain/use-cases'
+import { ValidationException } from '@/main/exceptions'
+import { makeCreateSessionValidation } from '@/main/factories/validations'
+
+const existingUser = makeUserModelMock()
 
 function makeSut() {
-  const validationService = makeValidationServiceStub();
-  const hashCompareCryptography = makeHashCompareCryptographyStub();
-  const sut = makeCreateSessionValidation(validationService, hashCompareCryptography);
+  const validationService = makeValidationServiceStub()
+  const hashCompareCryptography = makeHashCompareCryptographyStub()
+  const sut = makeCreateSessionValidation(validationService, hashCompareCryptography)
 
-  return { validationService, sut };
+  return { validationService, sut }
 }
 
 describe(makeCreateSessionValidation.name, () => {
@@ -100,26 +101,26 @@ describe(makeCreateSessionValidation.name, () => {
     'Should throw ValidationException for every session invalid prop',
     ({ properties, validations }) => {
       it(JSON.stringify(validations), async () => {
-        const { sut } = makeSut();
+        const { sut } = makeSut()
 
         const requestModel = {
           email: 'valid@email.com',
           password: 'Password@123',
           ...properties,
-        } as CreateSessionUseCase.RequestModel;
+        } as CreateSessionUseCase.RequestModel
 
-        let sutResult = await sut(requestModel).catch((e) => e);
+        let sutResult = await sut(requestModel).catch((e) => e)
 
         if (typeof sutResult === 'function') {
-          sutResult = await sutResult({ users: [existingUser] }).catch((e: unknown) => e);
+          sutResult = await sutResult({ users: [existingUser] }).catch((e: unknown) => e)
         }
 
         if (typeof sutResult === 'function') {
-          sutResult = await sutResult(existingUser).catch((e: unknown) => e);
+          sutResult = await sutResult(existingUser).catch((e: unknown) => e)
         }
 
-        expect(sutResult).toStrictEqual(new ValidationException(validations));
-      });
-    },
-  );
-});
+        expect(sutResult).toStrictEqual(new ValidationException(validations))
+      })
+    }
+  )
+})

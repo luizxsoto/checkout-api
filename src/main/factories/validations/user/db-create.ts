@@ -1,7 +1,7 @@
-import { ValidationService } from '@/data/contracts/services';
-import { CreateUserValidation } from '@/data/contracts/validations';
-import { CreateUserUseCase } from '@/domain/use-cases';
-import { ValidationBuilder } from '@/main/builders';
+import { ValidationService } from '@/data/contracts/services'
+import { CreateUserValidation } from '@/data/contracts/validations'
+import { CreateUserUseCase } from '@/domain/use-cases'
+import { ValidationBuilder } from '@/main/builders'
 import {
   MAX_USER_EMAIL_LENGTH,
   MAX_USER_NAME_LENGTH,
@@ -9,10 +9,10 @@ import {
   MIN_USER_EMAIL_LENGTH,
   MIN_USER_NAME_LENGTH,
   MIN_USER_PASSWORD_LENGTH,
-} from '@/main/constants';
+} from '@/main/constants'
 
 export function makeCreateUserValidation(
-  validationService: ValidationService.Validator,
+  validationService: ValidationService.Validator
 ): CreateUserValidation {
   return async (requestModel: CreateUserUseCase.RequestModel) => {
     await validationService.validate({
@@ -44,14 +44,14 @@ export function makeCreateUserValidation(
                 .in({ values: ['admin', 'moderator'] })
                 .build(),
             },
-            validationService,
+            validationService
           )
           .distinct()
           .build(),
       },
       model: requestModel,
       data: {},
-    });
+    })
     return (validationData) =>
       validationService.validate({
         schema: {
@@ -61,6 +61,6 @@ export function makeCreateUserValidation(
         },
         model: requestModel,
         data: validationData,
-      });
-  };
+      })
+  }
 }

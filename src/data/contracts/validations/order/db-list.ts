@@ -1,3 +1,3 @@
-import { ListOrderUseCase } from '@/domain/use-cases';
+import { ListOrderUseCase } from '@/domain/use-cases'
 
-export type ListOrderValidation = (requestModel: ListOrderUseCase.RequestModel) => Promise<void>;
+export type ListOrderValidation = (requestModel: ListOrderUseCase.RequestModel) => Promise<void>

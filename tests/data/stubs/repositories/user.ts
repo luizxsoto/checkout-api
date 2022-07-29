@@ -1,11 +1,12 @@
+import { makeUserModelMock } from '@tests/domain/mocks/models'
+
 import {
   CreateUserRepository,
   FindByUserRepository,
   ListUserRepository,
   RemoveUserRepository,
   UpdateUserRepository,
-} from '@/data/contracts/repositories';
-import { makeUserModelMock } from '@tests/domain/mocks/models';
+} from '@/data/contracts/repositories'
 
 export function makeUserRepositoryStub() {
   return {
@@ -19,21 +20,21 @@ export function makeUserRepositoryStub() {
       .fn()
       .mockImplementation(
         (requestModel: CreateUserRepository.RequestModel): CreateUserRepository.ResponseModel =>
-          requestModel.map((itemModel) => makeUserModelMock(itemModel)),
+          requestModel.map((itemModel) => makeUserModelMock(itemModel))
       ),
     update: jest
       .fn()
       .mockImplementation(
         (requestModel: UpdateUserRepository.RequestModel): UpdateUserRepository.ResponseModel => [
           makeUserModelMock(requestModel[1]),
-        ],
+        ]
       ),
     remove: jest
       .fn()
       .mockImplementation(
         (requestModel: RemoveUserRepository.RequestModel): RemoveUserRepository.ResponseModel => [
           makeUserModelMock(requestModel[0]),
-        ],
+        ]
       ),
-  };
+  }
 }

@@ -1,18 +1,19 @@
+import { makeOrderItemModelMock } from '@tests/domain/mocks/models'
+
 import {
   CreateOrderItemRepository,
   FindByOrderItemRepository,
   ListOrderItemRepository,
   RemoveOrderItemRepository,
   UpdateOrderItemRepository,
-} from '@/data/contracts/repositories';
-import { makeOrderItemModelMock } from '@tests/domain/mocks/models';
+} from '@/data/contracts/repositories'
 
 export function makeOrderItemRepositoryStub() {
   return {
     findBy: jest
       .fn()
       .mockImplementation(
-        (): FindByOrderItemRepository.ResponseModel => [makeOrderItemModelMock()],
+        (): FindByOrderItemRepository.ResponseModel => [makeOrderItemModelMock()]
       ),
     list: jest
       .fn()
@@ -21,23 +22,23 @@ export function makeOrderItemRepositoryStub() {
       .fn()
       .mockImplementation(
         (
-          requestModel: CreateOrderItemRepository.RequestModel,
+          requestModel: CreateOrderItemRepository.RequestModel
         ): CreateOrderItemRepository.ResponseModel =>
-          requestModel.map((itemModel) => makeOrderItemModelMock(itemModel)),
+          requestModel.map((itemModel) => makeOrderItemModelMock(itemModel))
       ),
     update: jest
       .fn()
       .mockImplementation(
         (
-          requestModel: UpdateOrderItemRepository.RequestModel,
-        ): UpdateOrderItemRepository.ResponseModel => [makeOrderItemModelMock(requestModel[1])],
+          requestModel: UpdateOrderItemRepository.RequestModel
+        ): UpdateOrderItemRepository.ResponseModel => [makeOrderItemModelMock(requestModel[1])]
       ),
     remove: jest
       .fn()
       .mockImplementation(
         (
-          requestModel: RemoveOrderItemRepository.RequestModel,
-        ): RemoveOrderItemRepository.ResponseModel => [makeOrderItemModelMock(requestModel[0])],
+          requestModel: RemoveOrderItemRepository.RequestModel
+        ): RemoveOrderItemRepository.ResponseModel => [makeOrderItemModelMock(requestModel[0])]
       ),
-  };
+  }
 }

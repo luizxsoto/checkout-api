@@ -1,6 +1,6 @@
-import { makeBaseModelMock } from './base';
+import { makeBaseModelMock } from './base'
 
-import { ProductModel } from '@/domain/models';
+import { ProductModel } from '@/domain/models'
 
 export function makeProductModelMock(extraData?: Partial<ProductModel>) {
   return {
@@ -10,5 +10,5 @@ export function makeProductModelMock(extraData?: Partial<ProductModel>) {
     image: 'any-image.com',
     price: 1000,
     ...extraData,
-  };
+  }
 }

@@ -1,14 +1,14 @@
-import { hash } from 'bcrypt';
-import { Knex } from 'knex';
+import { hash } from 'bcrypt'
+import { Knex } from 'knex'
 
-import { UserModel } from '@/domain/models';
-import { envConfig } from '@/main/config';
+import { UserModel } from '@/domain/models'
+import { envConfig } from '@/main/config'
 
-const tableName = 'users';
+const tableName = 'users'
 const users: () => Promise<
   (Omit<UserModel, 'roles' | 'createdAt'> & {
-    createdAt: string;
-    roles: string;
+    createdAt: string
+    roles: string
   })[]
 > = async () => [
   {
@@ -38,18 +38,18 @@ const users: () => Promise<
     password: await hash('Password@123', 12),
     roles: JSON.stringify([]),
   },
-];
+]
 
 export async function up(knex: Knex): Promise<void> {
-  if (envConfig.nodeEnv === 'production') return;
+  if (envConfig.nodeEnv === 'production') return
 
-  await knex.table(tableName).insert(await users());
+  await knex.table(tableName).insert(await users())
 }
 
 export async function down(knex: Knex): Promise<void> {
-  if (envConfig.nodeEnv === 'production') return;
+  if (envConfig.nodeEnv === 'production') return
 
-  const userIds = (await users()).map((user) => user.id);
+  const userIds = (await users()).map((user) => user.id)
 
-  await knex.table(tableName).whereIn('id', userIds).delete();
+  await knex.table(tableName).whereIn('id', userIds).delete()
 }

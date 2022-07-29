@@ -1,9 +1,9 @@
-import { ProductModel } from '@/domain/models';
+import { ProductModel } from '@/domain/models'
 
-export type RequestModel = Partial<ProductModel>[];
+export type RequestModel = Partial<ProductModel>[]
 
-export type ResponseModel = ProductModel[];
+export type ResponseModel = ProductModel[]
 
 export interface Repository {
-  findBy: (requestModel: RequestModel) => Promise<ResponseModel>;
+  findBy: (requestModel: RequestModel) => Promise<ResponseModel>
 }

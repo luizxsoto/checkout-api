@@ -1,51 +1,51 @@
-import { Hasher } from '@/data/contracts/cryptography';
-import { CreateUserRepository, FindByUserRepository } from '@/data/contracts/repositories';
-import { CreateUserValidation } from '@/data/contracts/validations';
-import { CreateUserUseCase } from '@/domain/use-cases';
+import { Hasher } from '@/data/contracts/cryptography'
+import { CreateUserRepository, FindByUserRepository } from '@/data/contracts/repositories'
+import { CreateUserValidation } from '@/data/contracts/validations'
+import { CreateUserUseCase } from '@/domain/use-cases'
 
 export class DbCreateUserUseCase implements CreateUserUseCase.UseCase {
   constructor(
     private readonly createUserRepository: CreateUserRepository.Repository,
     private readonly findByUserRepository: FindByUserRepository.Repository,
     private readonly createUserValidation: CreateUserValidation,
-    private readonly hasher: Hasher,
+    private readonly hasher: Hasher
   ) {}
 
   public async execute(
-    requestModel: CreateUserUseCase.RequestModel,
+    requestModel: CreateUserUseCase.RequestModel
   ): Promise<CreateUserUseCase.ResponseModel> {
-    const sanitizedRequestModel = this.sanitizeRequestModel(requestModel);
+    const sanitizedRequestModel = this.sanitizeRequestModel(requestModel)
 
-    const restValidation = await this.createUserValidation(sanitizedRequestModel);
+    const restValidation = await this.createUserValidation(sanitizedRequestModel)
 
     const users = await this.findByUserRepository.findBy(
       [{ email: sanitizedRequestModel.email }],
-      true,
-    );
+      true
+    )
 
-    await restValidation({ users });
+    await restValidation({ users })
 
     const [userCreated] = await this.createUserRepository.create([
       {
         ...sanitizedRequestModel,
         password: await this.hasher.hash(sanitizedRequestModel.password),
       },
-    ]);
+    ])
 
-    const responseModel = { ...sanitizedRequestModel, ...userCreated };
-    Reflect.deleteProperty(responseModel, 'password');
+    const responseModel = { ...sanitizedRequestModel, ...userCreated }
+    Reflect.deleteProperty(responseModel, 'password')
 
-    return responseModel;
+    return responseModel
   }
 
   private sanitizeRequestModel(
-    requestModel: CreateUserUseCase.RequestModel,
+    requestModel: CreateUserUseCase.RequestModel
   ): CreateUserUseCase.RequestModel {
     return {
       name: requestModel.name,
       email: requestModel.email,
       password: requestModel.password,
       roles: requestModel.roles,
-    };
+    }
   }
 }

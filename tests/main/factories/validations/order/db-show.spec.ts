@@ -1,17 +1,18 @@
-import { ShowOrderUseCase } from '@/domain/use-cases';
-import { ValidationException } from '@/main/exceptions';
-import { makeShowOrderValidation } from '@/main/factories/validations';
-import { makeValidationServiceStub } from '@tests/data/stubs/services';
-import { makeOrderModelMock } from '@tests/domain/mocks/models';
+import { makeValidationServiceStub } from '@tests/data/stubs/services'
+import { makeOrderModelMock } from '@tests/domain/mocks/models'
 
-const existingOrder = makeOrderModelMock();
-const nonExistentId = '00000000-0000-4000-8000-000000000002';
+import { ShowOrderUseCase } from '@/domain/use-cases'
+import { ValidationException } from '@/main/exceptions'
+import { makeShowOrderValidation } from '@/main/factories/validations'
+
+const existingOrder = makeOrderModelMock()
+const nonExistentId = '00000000-0000-4000-8000-000000000002'
 
 function makeSut() {
-  const validationService = makeValidationServiceStub();
-  const sut = makeShowOrderValidation(validationService);
+  const validationService = makeValidationServiceStub()
+  const sut = makeShowOrderValidation(validationService)
 
-  return { validationService, sut };
+  return { validationService, sut }
 }
 
 describe(makeShowOrderValidation.name, () => {
@@ -46,18 +47,18 @@ describe(makeShowOrderValidation.name, () => {
     'Should throw ValidationException for every order invalid prop',
     ({ properties, validations }) => {
       it(JSON.stringify(validations), async () => {
-        const { sut } = makeSut();
+        const { sut } = makeSut()
 
-        const requestModel = { ...properties } as ShowOrderUseCase.RequestModel;
+        const requestModel = { ...properties } as ShowOrderUseCase.RequestModel
 
-        let sutResult = await sut(requestModel).catch((e) => e);
+        let sutResult = await sut(requestModel).catch((e) => e)
 
         if (typeof sutResult === 'function') {
-          sutResult = await sutResult({ orders: [existingOrder] }).catch((e: unknown) => e);
+          sutResult = await sutResult({ orders: [existingOrder] }).catch((e: unknown) => e)
         }
 
-        expect(sutResult).toStrictEqual(new ValidationException(validations));
-      });
-    },
-  );
-});
+        expect(sutResult).toStrictEqual(new ValidationException(validations))
+      })
+    }
+  )
+})
