@@ -30,7 +30,7 @@
 
 ## :information_source: How To Use
 
-To clone and run this application, you'll need [Git](https://git-scm.com), [Node.js >= v16.16.x](https://nodejs.org/), [Docker and Compose](https://www.docker.com/) installed on your computer.
+To clone and run this application, you'll need [Git](https://git-scm.com), [Node.js >= v16.13.x](https://nodejs.org/), [Docker and Compose](https://www.docker.com/) installed on your computer.
 
 From your command line:
 
