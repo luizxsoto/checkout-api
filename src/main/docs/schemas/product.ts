@@ -10,7 +10,10 @@ export const baseProduct = {
       maxLength: MAX_PRODUCT_NAME_LENGTH
     },
     category: { $ref: '#/schemas/productCategory', example: 'others' },
-    image: { type: 'string', example: 'https://avatars.githubusercontent.com/u/37672408' },
+    image: {
+      type: 'string',
+      example: 'https://github.githubassets.com/images/icons/emoji/tada.png'
+    },
     price: { type: 'integer', example: 100, maximum: MAX_INTEGER }
   }
 }

@@ -1,0 +1,32 @@
+export const filters = {
+  in: 'query',
+  name: 'Filters',
+  description: [
+    'Filters have the following two structures:\n',
+    'Comparation',
+    '```jsonc',
+    '[',
+    '  "=", // Comparation operator (=, !=, >, >=, <, <=, :, !:, in)',
+    '  "name", // Field',
+    '  "Any Name" // Value',
+    ']',
+    '```',
+    'Relation',
+    '```jsonc',
+    '[',
+    '  "|", // Relation operator (&, |)',
+    '  "[", // Comparation or Relation structures',
+    '    "=",',
+    '    "name",',
+    '    "Any Name"',
+    '  "],"',
+    '  "[", // Comparation or Relation structures',
+    '    "=",',
+    '    "name",',
+    '    "Other Name"',
+    '  "]"',
+    ']',
+    '```'
+  ].join('\n'),
+  schema: { type: 'string', example: '["=", "name", "Any Name"]' }
+}
