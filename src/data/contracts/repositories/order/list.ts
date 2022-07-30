@@ -8,7 +8,13 @@ export type RequestModel = {
   filters?: string
 }
 
-export type ResponseModel = OrderModel[]
+export type ResponseModel = {
+  page: number
+  perPage: number
+  lastPage: number
+  total: number
+  registers: OrderModel[]
+}
 
 export interface Repository {
   list: (requestModel: RequestModel) => Promise<ResponseModel>

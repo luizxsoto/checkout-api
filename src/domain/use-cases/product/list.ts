@@ -8,7 +8,13 @@ export type RequestModel = {
   filters?: string
 }
 
-export type ResponseModel = ProductModel[]
+export type ResponseModel = {
+  page: number
+  perPage: number
+  lastPage: number
+  total: number
+  registers: ProductModel[]
+}
 
 export interface UseCase {
   execute: (requestModel: RequestModel) => Promise<ResponseModel>

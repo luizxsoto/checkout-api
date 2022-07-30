@@ -8,7 +8,13 @@ export type RequestModel = {
   filters?: string
 }
 
-export type ResponseModel = Omit<UserModel, 'password'>[]
+export type ResponseModel = {
+  page: number
+  perPage: number
+  lastPage: number
+  total: number
+  registers: Omit<UserModel, 'password'>[]
+}
 
 export interface UseCase {
   execute: (requestModel: RequestModel) => Promise<ResponseModel>

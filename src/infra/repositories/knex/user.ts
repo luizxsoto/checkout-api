@@ -43,7 +43,10 @@ export class KnexUserRepository<FindByType = 'NORMAL' | 'SANITIZED'>
   public async list(
     requestModel: ListUserRepository.RequestModel
   ): Promise<ListUserRepository.ResponseModel> {
-    return this.baseList<UserModel>(requestModel).then(this.sanitizeResponse)
+    return this.baseList<UserModel>(requestModel).then(({ registers, ...listData }) => ({
+      ...listData,
+      registers: this.sanitizeResponse(registers)
+    }))
   }
 
   public async create(

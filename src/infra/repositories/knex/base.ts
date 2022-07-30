@@ -57,7 +57,13 @@ export abstract class KnexBaseRepository {
       filters?: string
     } & Partial<Model>,
     withDeleted = false
-  ): Promise<Model[]> {
+  ): Promise<{
+    page: number
+    perPage: number
+    lastPage: number
+    total: number
+    registers: Model[]
+  }> {
     const {
       page = 1,
       perPage = MIN_PER_PAGE,
@@ -65,6 +71,7 @@ export abstract class KnexBaseRepository {
       order = 'desc',
       filters = '[]'
     } = requestModel
+    const parsedFilters = JSON.parse(filters.replace(/'/g, "''"))
     const offset = (page - 1) * perPage
 
     type PrimitiveType = string | number
@@ -110,14 +117,28 @@ export abstract class KnexBaseRepository {
       operatorsQueryDict[operator]?.()
     }
 
-    const query = this.knex.table(this.tableName)
-    buildQuery(query, JSON.parse(filters.replace(/'/g, "''")))
-    query.offset(offset).limit(perPage).orderBy(orderBy, order)
-    if (!withDeleted) query.whereNull('deletedAt')
+    function startQuery(knex: Knex, tableName: string) {
+      const query = knex.table(tableName)
+      buildQuery(query, parsedFilters)
+      if (!withDeleted) query.whereNull('deletedAt')
+      return query
+    }
 
-    const rows = await this.baseRun<Model[]>(query)
+    const listQuery = startQuery(this.knex, this.tableName)
+    listQuery.offset(offset).limit(perPage).orderBy(orderBy, order)
+    const registers = await this.baseRun<Model[]>(listQuery)
 
-    return rows
+    const countQuery = startQuery(this.knex, this.tableName)
+    countQuery.count('id as count')
+    const [{ count }] = await this.baseRun<{ count: string }[]>(countQuery)
+
+    return {
+      page,
+      perPage,
+      lastPage: Math.ceil(Number(count) / perPage),
+      total: Number(count),
+      registers
+    }
   }
 
   protected async baseCreate<Model extends BaseModel>(
