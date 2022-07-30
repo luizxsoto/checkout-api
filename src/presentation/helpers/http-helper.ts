@@ -1,5 +1,5 @@
 import { StatusCodes } from '@/main/constants'
-import { ApplicationException, InternalException } from '@/main/exceptions'
+import { ApplicationException, InternalException, NotFoundException } from '@/main/exceptions'
 import { HttpResponse } from '@/presentation/contracts'
 
 export function ok(data: any): HttpResponse {
@@ -11,7 +11,7 @@ export function created(data: any): HttpResponse {
 }
 
 export function notFound(): HttpResponse {
-  return { statusCode: StatusCodes.NOT_FOUND, body: { message: 'Route not found' } }
+  return { statusCode: StatusCodes.NOT_FOUND, body: new NotFoundException() }
 }
 
 export function serverError(error: Error): HttpResponse {
