@@ -35,7 +35,13 @@ export const productPaths = {
       summary: 'List all product',
       description: 'Use this route to list all product',
       security: [{ bearerAuth: [] }],
-      parameters: [{ $ref: '#/components/filters' }],
+      parameters: [
+        { $ref: '#/components/orderBy' },
+        { $ref: '#/components/order' },
+        { $ref: '#/components/page' },
+        { $ref: '#/components/perPage' },
+        { $ref: '#/components/filters' }
+      ],
       responses: {
         200: {
           description: 'Ok',

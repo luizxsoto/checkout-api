@@ -1,6 +1,6 @@
 export const filters = {
   in: 'query',
-  name: 'Filters',
+  name: 'filters',
   description: [
     'Filters have the following two structures:\n',
     'Comparation',
