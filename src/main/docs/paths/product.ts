@@ -46,7 +46,18 @@ export const productPaths = {
         200: {
           description: 'Ok',
           content: {
-            'application/json': { schema: { type: 'array', items: { $ref: '#/schemas/product' } } }
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  page: { type: 'integer', example: 1 },
+                  perPage: { type: 'integer', example: 20 },
+                  lastPage: { type: 'integer', example: 1 },
+                  total: { type: 'integer', example: 1 },
+                  registers: { type: 'array', items: { $ref: '#/schemas/product' } }
+                }
+              }
+            }
           }
         },
         400: { $ref: '#/schemas/badRequest' },
