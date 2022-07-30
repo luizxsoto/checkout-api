@@ -21,7 +21,7 @@ export class DbShowOrderUseCase implements ShowOrderUseCase.UseCase {
     await restValidation({ orders })
 
     const orderItems = await this.findByOrderItemRepository.findBy([
-      { orderId: sanitizedRequestModel.id },
+      { orderId: sanitizedRequestModel.id }
     ])
 
     return { ...orders[0], ...sanitizedRequestModel, orderItems }

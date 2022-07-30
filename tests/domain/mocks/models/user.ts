@@ -9,6 +9,6 @@ export function makeUserModelMock(extraData?: Partial<UserModel>) {
     email: 'valid@email.com',
     password: 'Password@123',
     roles: [],
-    ...extraData,
+    ...extraData
   }
 }

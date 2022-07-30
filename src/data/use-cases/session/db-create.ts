@@ -27,7 +27,7 @@ export class DbCreateSessionUseCase implements CreateSessionUseCase.UseCase {
 
     const bearerToken = await this.encrypter.encrypt({
       userId: findedUser.id,
-      roles: findedUser.roles,
+      roles: findedUser.roles
     })
 
     const responseModel = { ...findedUser, bearerToken }
@@ -41,7 +41,7 @@ export class DbCreateSessionUseCase implements CreateSessionUseCase.UseCase {
   ): CreateSessionUseCase.RequestModel {
     return {
       email: requestModel.email,
-      password: requestModel.password,
+      password: requestModel.password
     }
   }
 }

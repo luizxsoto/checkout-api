@@ -18,11 +18,11 @@ describe('Express adaptMiddleware', () => {
     const { handle, sut } = makeSut()
 
     const request = {
-      headers: { headersProp: 'any_headers', authorization: 'Bearer any_bearerToken' },
+      headers: { headersProp: 'any_headers', authorization: 'Bearer any_bearerToken' }
     }
     const response = {
       status: jest.fn().mockReturnThis(),
-      json: jest.fn().mockReturnThis(),
+      json: jest.fn().mockReturnThis()
     }
     const next = jest.fn()
     const handleMockResult = { id: 'any_id' }
@@ -36,7 +36,7 @@ describe('Express adaptMiddleware', () => {
 
     expect(handle).toBeCalledWith({
       ...request.headers,
-      bearerToken: request.headers.authorization.replace('Bearer ', ''),
+      bearerToken: request.headers.authorization.replace(/^bearer\s?/i, '')
     })
     expect(next).toBeCalledWith()
     expect(sutResult).toBeUndefined()
@@ -47,11 +47,11 @@ describe('Express adaptMiddleware', () => {
     const { handle, sut } = makeSut()
 
     const request = {
-      headers: { headersProp: 'any_headers', authorization: 'Bearer any_bearerToken' },
+      headers: { headersProp: 'any_headers', authorization: 'Bearer any_bearerToken' }
     }
     const response = {
       status: jest.fn().mockReturnThis(),
-      json: jest.fn().mockReturnThis(),
+      json: jest.fn().mockReturnThis()
     }
     const next = jest.fn()
     const error = new Error()

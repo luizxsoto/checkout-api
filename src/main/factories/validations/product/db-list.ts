@@ -7,7 +7,7 @@ import {
   MAX_PER_PAGE,
   MAX_PRODUCT_NAME_LENGTH,
   MIN_PER_PAGE,
-  MIN_PRODUCT_NAME_LENGTH,
+  MIN_PRODUCT_NAME_LENGTH
 } from '@/main/constants'
 import { ArrayValidation, ObjectValidation } from '@/validation/validators'
 
@@ -22,10 +22,10 @@ export function makeListProductValidation(
             validations: new ValidationBuilder()
               .string()
               .length({ minLength: MIN_PRODUCT_NAME_LENGTH, maxLength: MAX_PRODUCT_NAME_LENGTH })
-              .build(),
+              .build()
           },
           validationService
-        ),
+        )
       ],
       category: [
         new ArrayValidation.Validator(
@@ -33,41 +33,41 @@ export function makeListProductValidation(
             validations: new ValidationBuilder()
               .string()
               .in({ values: ['clothes', 'shoes', 'others'] })
-              .build(),
+              .build()
           },
           validationService
-        ),
+        )
       ],
       price: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().integer().max({ value: MAX_INTEGER }).build() },
           validationService
-        ),
+        )
       ],
       createUserId: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().string().regex({ pattern: 'uuidV4' }).build() },
           validationService
-        ),
+        )
       ],
       updateUserId: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().string().regex({ pattern: 'uuidV4' }).build() },
           validationService
-        ),
+        )
       ],
       createdAt: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().string().date().build() },
           validationService
-        ),
+        )
       ],
       updatedAt: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().string().date().build() },
           validationService
-        ),
-      ],
+        )
+      ]
     }
 
     await validationService.validate({
@@ -91,10 +91,10 @@ export function makeListProductValidation(
             { schema: filtersSchema },
             new ObjectValidation.Validator({ schema: filtersSchema }, validationService)
           )
-          .build(),
+          .build()
       },
       model: requestModel,
-      data: {},
+      data: {}
     })
   }
 }

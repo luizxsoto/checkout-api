@@ -33,7 +33,7 @@ describe(KnexUserRepository.name, () => {
       const requestModel = {
         name: 'Any Name',
         email: 'any@email.com',
-        password: 'Password@123',
+        password: 'Password@123'
       }
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]))
       const responseModel = { ...requestModel }
@@ -49,7 +49,7 @@ describe(KnexUserRepository.name, () => {
       const requestModel = {
         name: 'Any Name',
         email: 'any@email.com',
-        password: 'Password@123',
+        password: 'Password@123'
       }
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]))
       const responseModel = { ...requestModel }
@@ -66,7 +66,7 @@ describe(KnexUserRepository.name, () => {
       const { knex, sut } = makeSut()
 
       const requestModel = {
-        password: 'Password@123',
+        password: 'Password@123'
       }
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]))
       const responseModel = { ...requestModel }
@@ -87,14 +87,14 @@ describe(KnexUserRepository.name, () => {
         name: 'Any Name',
         email: 'any@email.com',
         password: 'Password@123',
-        roles: ['admin'] as Roles[],
+        roles: ['admin'] as Roles[]
       }
       knex.then.mockImplementationOnce((resolve) => resolve([{ ...requestModel, id }]))
       const responseModel = {
         ...requestModel,
         id,
         createUserId: userId,
-        createdAt: new Date(),
+        createdAt: new Date()
       }
 
       const [sutResult] = await sut.create([requestModel])
@@ -113,7 +113,7 @@ describe(KnexUserRepository.name, () => {
         email: 'any@email.com',
         password: 'Password@123',
         roles: [],
-        createdAt: new Date(),
+        createdAt: new Date()
       }
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]))
       const responseModel = { ...requestModel, updateUserId: userId, updatedAt: new Date() }

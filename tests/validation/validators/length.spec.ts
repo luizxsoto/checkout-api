@@ -19,7 +19,7 @@ describe('LengthValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'anyProp',
       message: `This value length must be beetween ${options.minLength} and ${options.maxLength}`,
-      rule: 'length',
+      rule: 'length'
     })
   })
 
@@ -35,7 +35,7 @@ describe('LengthValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'anyProp',
       message: `This value length must be beetween ${options.minLength} and ${options.maxLength}`,
-      rule: 'length',
+      rule: 'length'
     })
   })
 
@@ -51,7 +51,7 @@ describe('LengthValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'anyProp',
       message: `This value length must be beetween ${options.minLength} and ${options.maxLength}`,
-      rule: 'length',
+      rule: 'length'
     })
   })
 
@@ -67,7 +67,7 @@ describe('LengthValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'anyProp',
       message: `This value length must be beetween ${options.minLength} and ${options.maxLength}`,
-      rule: 'length',
+      rule: 'length'
     })
   })
 

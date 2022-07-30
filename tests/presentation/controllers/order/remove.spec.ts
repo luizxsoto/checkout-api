@@ -25,7 +25,7 @@ describe(RemoveOrderController.name, () => {
 
     expect(sutResult).toStrictEqual({
       statusCode: 200,
-      body: { ...orderMock, orderItems: [orderItemMock] },
+      body: { ...orderMock, orderItems: [orderItemMock] }
     })
     expect(removeOrderUseCase.execute).toBeCalledWith(orderMock)
   })

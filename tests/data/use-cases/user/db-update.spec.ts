@@ -32,16 +32,16 @@ describe(DbUpdateUserUseCase.name, () => {
       email: 'any@email.com',
       password: 'Password@123',
       roles: [],
-      anyWrongProp: 'anyValue',
+      anyWrongProp: 'anyValue'
     }
     const sanitizedRequestModel = {
-      ...requestModel,
+      ...requestModel
     }
     Reflect.deleteProperty(sanitizedRequestModel, 'anyWrongProp')
     const responseModel = {
       ...sanitizedRequestModel,
       updatedAt: new Date(),
-      password: 'hashed_password',
+      password: 'hashed_password'
     }
     Reflect.deleteProperty(responseModel, 'password')
     const existsUser = { ...responseModel }
@@ -60,7 +60,7 @@ describe(DbUpdateUserUseCase.name, () => {
       true
     )
     expect(updateUserValidation.secondValidation).toBeCalledWith({
-      users: [existsUser, otherUser],
+      users: [existsUser, otherUser]
     })
     expect(hasherCryptography.hash).toBeCalledWith(sanitizedRequestModel.password)
     expect(userRepository.update).toBeCalledWith(
@@ -78,7 +78,7 @@ describe(DbUpdateUserUseCase.name, () => {
       email: 'any@email.com',
       password: 'Password@123',
       roles: [],
-      anyWrongProp: 'anyValue',
+      anyWrongProp: 'anyValue'
     }
     const error = new Error('firstValidation Error')
 
@@ -98,7 +98,7 @@ describe(DbUpdateUserUseCase.name, () => {
       email: 'any@email.com',
       password: 'Password@123',
       roles: [],
-      anyWrongProp: 'anyValue',
+      anyWrongProp: 'anyValue'
     }
     const error = new Error('secondValidation Error')
 

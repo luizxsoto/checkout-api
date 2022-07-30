@@ -5,7 +5,7 @@ import {
   FindByUserRepository,
   ListUserRepository,
   RemoveUserRepository,
-  UpdateUserRepository,
+  UpdateUserRepository
 } from '@/data/contracts/repositories'
 
 export function makeUserRepositoryStub() {
@@ -26,15 +26,15 @@ export function makeUserRepositoryStub() {
       .fn()
       .mockImplementation(
         (requestModel: UpdateUserRepository.RequestModel): UpdateUserRepository.ResponseModel => [
-          makeUserModelMock(requestModel[1]),
+          makeUserModelMock(requestModel[1])
         ]
       ),
     remove: jest
       .fn()
       .mockImplementation(
         (requestModel: RemoveUserRepository.RequestModel): RemoveUserRepository.ResponseModel => [
-          makeUserModelMock(requestModel[0]),
+          makeUserModelMock(requestModel[0])
         ]
-      ),
+      )
   }
 }

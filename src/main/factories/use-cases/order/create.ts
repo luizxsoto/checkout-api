@@ -5,7 +5,7 @@ import {
   KnexOrderItemRepository,
   KnexOrderRepository,
   KnexProductRepository,
-  KnexUserRepository,
+  KnexUserRepository
 } from '@/infra/repositories'
 import { UUIDService } from '@/infra/services'
 import { CompositeValidation } from '@/main/composites'

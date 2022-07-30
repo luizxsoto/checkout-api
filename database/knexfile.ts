@@ -13,8 +13,8 @@ const config: Knex.Config = {
   connection: envConfig.dbURL,
   migrations: {
     directory: './migrations',
-    tableName: 'knex_migrations',
-  },
+    tableName: 'knex_migrations'
+  }
 }
 
 // eslint-disable-next-line import/no-default-export

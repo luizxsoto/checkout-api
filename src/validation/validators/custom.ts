@@ -11,7 +11,7 @@ export class Validator implements FieldValidation.Validation<Options> {
     return {
       field: key,
       rule: this.options.rule,
-      message: this.options.message,
+      message: this.options.message
     }
   }
 }

@@ -14,7 +14,7 @@ export class Validator implements FieldValidation.Validation<Options> {
   public async validate({
     key,
     model,
-    data,
+    data
   }: FieldValidation.Params): Promise<FieldValidation.Result> {
     const value = lodashGet(model, key)
     if (value === undefined) return null
@@ -41,7 +41,7 @@ export class Validator implements FieldValidation.Validation<Options> {
       field: key,
       rule: 'unique',
       message: 'This value has already been used',
-      details: { findedRegister },
+      details: { findedRegister }
     }
   }
 }

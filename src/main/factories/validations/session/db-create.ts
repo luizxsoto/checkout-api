@@ -7,7 +7,7 @@ import {
   MAX_USER_EMAIL_LENGTH,
   MAX_USER_PASSWORD_LENGTH,
   MIN_USER_EMAIL_LENGTH,
-  MIN_USER_PASSWORD_LENGTH,
+  MIN_USER_PASSWORD_LENGTH
 } from '@/main/constants'
 
 export function makeCreateSessionValidation(
@@ -28,20 +28,20 @@ export function makeCreateSessionValidation(
           .string()
           .regex({ pattern: 'password' })
           .length({ minLength: MIN_USER_PASSWORD_LENGTH, maxLength: MAX_USER_PASSWORD_LENGTH })
-          .build(),
+          .build()
       },
       model: requestModel,
-      data: {},
+      data: {}
     })
     return async (validationData) => {
       await validationService.validate({
         schema: {
           email: new ValidationBuilder()
             .exists({ dataEntity: 'users', props: [{ modelKey: 'email', dataKey: 'email' }] })
-            .build(),
+            .build()
         },
         model: requestModel,
-        data: validationData,
+        data: validationData
       })
       return (findedUser) =>
         validationService.validate({
@@ -50,12 +50,12 @@ export function makeCreateSessionValidation(
               .custom({
                 validation: () => hashComparer.compare(requestModel.password, findedUser.password),
                 rule: 'password',
-                message: 'Wrong password',
+                message: 'Wrong password'
               })
-              .build(),
+              .build()
           },
           model: requestModel,
-          data: validationData,
+          data: validationData
         })
     }
   }

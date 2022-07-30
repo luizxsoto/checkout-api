@@ -15,8 +15,8 @@ const orderItems: (Omit<OrderItemModel, 'createdAt'> & {
     productId: '00000000-0000-4000-8000-000000000001',
     quantity: 1,
     unitValue: 1000,
-    totalValue: 1000,
-  },
+    totalValue: 1000
+  }
 ]
 
 export async function up(knex: Knex): Promise<void> {

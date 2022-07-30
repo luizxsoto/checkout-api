@@ -32,7 +32,7 @@ describe(KnexOrderRepository.name, () => {
 
       const requestModel = {
         userId: validUuidV4,
-        totalValue: 1000,
+        totalValue: 1000
       }
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]))
       const responseModel = { ...requestModel }
@@ -49,7 +49,7 @@ describe(KnexOrderRepository.name, () => {
 
       const requestModel = {
         userId: validUuidV4,
-        totalValue: 1000,
+        totalValue: 1000
       }
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]))
       const responseModel = { ...requestModel }
@@ -67,14 +67,14 @@ describe(KnexOrderRepository.name, () => {
       const id = 'any_id'
       const requestModel = {
         userId: validUuidV4,
-        totalValue: 1000,
+        totalValue: 1000
       }
       knex.then.mockImplementationOnce((resolve) => resolve([{ ...requestModel, id }]))
       const responseModel = {
         ...requestModel,
         id,
         createUserId: userId,
-        createdAt: new Date(),
+        createdAt: new Date()
       }
 
       const [sutResult] = await sut.create([requestModel])
@@ -91,7 +91,7 @@ describe(KnexOrderRepository.name, () => {
         id: 'any_id',
         userId: validUuidV4,
         totalValue: 1000,
-        createdAt: new Date(),
+        createdAt: new Date()
       }
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]))
       const responseModel = { ...requestModel, updateUserId: userId, updatedAt: new Date() }

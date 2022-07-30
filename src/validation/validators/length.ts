@@ -15,7 +15,7 @@ export class Validator implements FieldValidation.Validation<Options> {
       return {
         field: key,
         rule: 'length',
-        message: `This value length must be beetween ${this.options.minLength} and ${this.options.maxLength}`,
+        message: `This value length must be beetween ${this.options.minLength} and ${this.options.maxLength}`
       }
     }
 

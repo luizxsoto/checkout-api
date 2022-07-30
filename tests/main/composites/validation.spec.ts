@@ -16,14 +16,14 @@ describe(CompositeValidation.name, () => {
     const sutResult = await sut.validate({
       schema: { anyProp: [validation] },
       model: { anyProp: 'any_value' },
-      data: {},
+      data: {}
     })
 
     expect(sutResult).toBeUndefined()
     expect(validation.validate).toBeCalledWith({
       key: 'anyProp',
       model: { anyProp: 'any_value' },
-      data: {},
+      data: {}
     })
   })
 
@@ -33,7 +33,7 @@ describe(CompositeValidation.name, () => {
     const validationResult = {
       field: 'anyProp',
       rule: 'anyRule',
-      message: 'Something wrong is not right',
+      message: 'Something wrong is not right'
     }
 
     validation.validate.mockReturnValueOnce(Promise.resolve(validationResult))
@@ -41,14 +41,14 @@ describe(CompositeValidation.name, () => {
     const sutResult = sut.validate({
       schema: { anyProp: [validation] },
       model: { anyProp: 'any_value' },
-      data: {},
+      data: {}
     })
 
     await expect(sutResult).rejects.toStrictEqual(new ValidationException([validationResult]))
     expect(validation.validate).toBeCalledWith({
       key: 'anyProp',
       model: { anyProp: 'any_value' },
-      data: {},
+      data: {}
     })
   })
 })

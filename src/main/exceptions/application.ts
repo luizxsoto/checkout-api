@@ -18,7 +18,7 @@ export class ApplicationException {
             ...(typeof error.details === 'string' ? {} : error.details),
             name: originalError?.name,
             message: originalError?.message,
-            stack: originalError?.stack?.split('\n').map((line: string) => line.trim()),
+            stack: originalError?.stack?.split('\n').map((line: string) => line.trim())
           }
 
     Object.assign(

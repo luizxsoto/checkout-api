@@ -18,7 +18,7 @@ describe('StringValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'anyProp',
       message: 'This value must be a string',
-      rule: 'string',
+      rule: 'string'
     })
   })
 

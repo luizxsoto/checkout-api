@@ -19,11 +19,11 @@ describe(makeCreateUserValidation.name, () => {
     // name
     {
       properties: { name: undefined },
-      validations: [{ field: 'name', rule: 'required', message: 'This value is required' }],
+      validations: [{ field: 'name', rule: 'required', message: 'This value is required' }]
     },
     {
       properties: { name: 1 },
-      validations: [{ field: 'name', rule: 'string', message: 'This value must be a string' }],
+      validations: [{ field: 'name', rule: 'string', message: 'This value must be a string' }]
     },
     {
       properties: { name: ' InV@L1D n@m3 ' },
@@ -32,32 +32,32 @@ describe(makeCreateUserValidation.name, () => {
           field: 'name',
           rule: 'regex',
           message: 'This value must be valid according to the pattern: name',
-          details: { pattern: '/^([a-zA-Z\\u00C0-\\u00FF]+\\s)*[a-zA-Z\\u00C0-\\u00FF]+$/' },
-        },
-      ],
+          details: { pattern: '/^([a-zA-Z\\u00C0-\\u00FF]+\\s)*[a-zA-Z\\u00C0-\\u00FF]+$/' }
+        }
+      ]
     },
     {
       properties: { name: 'lower' },
       validations: [
-        { field: 'name', rule: 'length', message: 'This value length must be beetween 6 and 100' },
-      ],
+        { field: 'name', rule: 'length', message: 'This value length must be beetween 6 and 100' }
+      ]
     },
     {
       properties: {
-        name: 'Biggest Name Biggest Name Biggest Name Biggest Name Biggest Name Biggest Name Biggest Name Biggest Name',
+        name: 'Biggest Name Biggest Name Biggest Name Biggest Name Biggest Name Biggest Name Biggest Name Biggest Name'
       },
       validations: [
-        { field: 'name', rule: 'length', message: 'This value length must be beetween 6 and 100' },
-      ],
+        { field: 'name', rule: 'length', message: 'This value length must be beetween 6 and 100' }
+      ]
     },
     // email
     {
       properties: { email: undefined },
-      validations: [{ field: 'email', rule: 'required', message: 'This value is required' }],
+      validations: [{ field: 'email', rule: 'required', message: 'This value is required' }]
     },
     {
       properties: { email: 1 },
-      validations: [{ field: 'email', rule: 'string', message: 'This value must be a string' }],
+      validations: [{ field: 'email', rule: 'string', message: 'This value must be a string' }]
     },
     {
       properties: { email: ' InV@L1D eM@1L ' },
@@ -66,18 +66,18 @@ describe(makeCreateUserValidation.name, () => {
           field: 'email',
           rule: 'regex',
           message: 'This value must be valid according to the pattern: email',
-          details: { pattern: '/^[\\w+.]+@\\w+\\.\\w{2,}(?:\\.\\w{2})?$/' },
-        },
-      ],
+          details: { pattern: '/^[\\w+.]+@\\w+\\.\\w{2,}(?:\\.\\w{2})?$/' }
+        }
+      ]
     },
     {
       properties: {
         email:
-          'biggest_email_biggest_email_biggest_email_biggest_email_biggest_email_biggest_email_biggest_email@invalid.com',
+          'biggest_email_biggest_email_biggest_email_biggest_email_biggest_email_biggest_email_biggest_email@invalid.com'
       },
       validations: [
-        { field: 'email', rule: 'length', message: 'This value length must be beetween 6 and 100' },
-      ],
+        { field: 'email', rule: 'length', message: 'This value length must be beetween 6 and 100' }
+      ]
     },
     {
       properties: { email: 'valid@email.com' },
@@ -86,18 +86,18 @@ describe(makeCreateUserValidation.name, () => {
           field: 'email',
           rule: 'unique',
           message: 'This value has already been used',
-          details: { findedRegister: existingUser },
-        },
-      ],
+          details: { findedRegister: existingUser }
+        }
+      ]
     },
     // password
     {
       properties: { password: undefined },
-      validations: [{ field: 'password', rule: 'required', message: 'This value is required' }],
+      validations: [{ field: 'password', rule: 'required', message: 'This value is required' }]
     },
     {
       properties: { password: 1 },
-      validations: [{ field: 'password', rule: 'string', message: 'This value must be a string' }],
+      validations: [{ field: 'password', rule: 'string', message: 'This value must be a string' }]
     },
     {
       properties: { password: ' InV@L1D n@m3 ' },
@@ -107,10 +107,10 @@ describe(makeCreateUserValidation.name, () => {
           rule: 'regex',
           message: 'This value must be valid according to the pattern: password',
           details: {
-            pattern: '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]/',
-          },
-        },
-      ],
+            pattern: '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]/'
+          }
+        }
+      ]
     },
     {
       properties: { password: 'L0we!' },
@@ -118,47 +118,47 @@ describe(makeCreateUserValidation.name, () => {
         {
           field: 'password',
           rule: 'length',
-          message: 'This value length must be beetween 6 and 20',
-        },
-      ],
+          message: 'This value length must be beetween 6 and 20'
+        }
+      ]
     },
     {
       properties: {
-        password: 'Biggest.Password.Biggest.Password.Biggest.Password@1',
+        password: 'Biggest.Password.Biggest.Password.Biggest.Password@1'
       },
       validations: [
         {
           field: 'password',
           rule: 'length',
-          message: 'This value length must be beetween 6 and 20',
-        },
-      ],
+          message: 'This value length must be beetween 6 and 20'
+        }
+      ]
     },
     // roles
     {
       properties: { roles: undefined },
-      validations: [{ field: 'roles', rule: 'required', message: 'This value is required' }],
+      validations: [{ field: 'roles', rule: 'required', message: 'This value is required' }]
     },
     {
       properties: { roles: 'invalid_array' },
-      validations: [{ field: 'roles', rule: 'array', message: 'This value must be an array' }],
+      validations: [{ field: 'roles', rule: 'array', message: 'This value must be an array' }]
     },
     {
       properties: { roles: [1] },
-      validations: [{ field: 'roles.0', rule: 'string', message: 'This value must be a string' }],
+      validations: [{ field: 'roles.0', rule: 'string', message: 'This value must be a string' }]
     },
     {
       properties: { roles: ['invalid_role'] },
       validations: [
-        { field: 'roles.0', rule: 'in', message: 'This value must be in: admin, moderator' },
-      ],
+        { field: 'roles.0', rule: 'in', message: 'This value must be in: admin, moderator' }
+      ]
     },
     {
       properties: { roles: ['admin', 'admin'] },
       validations: [
-        { field: 'roles', rule: 'distinct', message: 'This value cannot have duplicate items' },
-      ],
-    },
+        { field: 'roles', rule: 'distinct', message: 'This value cannot have duplicate items' }
+      ]
+    }
   ])(
     'Should throw ValidationException for every user invalid prop',
     ({ properties, validations }) => {
@@ -170,7 +170,7 @@ describe(makeCreateUserValidation.name, () => {
           email: 'any@email.com',
           password: 'Password@123',
           roles: [],
-          ...properties,
+          ...properties
         } as CreateUserUseCase.RequestModel
 
         let sutResult = await sut(requestModel).catch((e) => e)

@@ -17,37 +17,35 @@ describe(makeListProductValidation.name, () => {
     // page
     {
       properties: { page: 'page' },
-      validations: [{ field: 'page', rule: 'integer', message: 'This value must be an integer' }],
+      validations: [{ field: 'page', rule: 'integer', message: 'This value must be an integer' }]
     },
     {
       properties: { page: 0 },
       validations: [
-        { field: 'page', rule: 'min', message: 'This value must be bigger or equal to: 1' },
-      ],
+        { field: 'page', rule: 'min', message: 'This value must be bigger or equal to: 1' }
+      ]
     },
     // perPage
     {
       properties: { perPage: 'perPage' },
-      validations: [
-        { field: 'perPage', rule: 'integer', message: 'This value must be an integer' },
-      ],
+      validations: [{ field: 'perPage', rule: 'integer', message: 'This value must be an integer' }]
     },
     {
       properties: { perPage: MIN_PER_PAGE - 1 },
       validations: [
-        { field: 'perPage', rule: 'min', message: 'This value must be bigger or equal to: 20' },
-      ],
+        { field: 'perPage', rule: 'min', message: 'This value must be bigger or equal to: 20' }
+      ]
     },
     {
       properties: { perPage: MAX_PER_PAGE + 1 },
       validations: [
-        { field: 'perPage', rule: 'max', message: 'This value must be less or equal to: 50' },
-      ],
+        { field: 'perPage', rule: 'max', message: 'This value must be less or equal to: 50' }
+      ]
     },
     // orderBy
     {
       properties: { orderBy: 1 },
-      validations: [{ field: 'orderBy', rule: 'string', message: 'This value must be a string' }],
+      validations: [{ field: 'orderBy', rule: 'string', message: 'This value must be a string' }]
     },
     {
       properties: { orderBy: 'orderBy' },
@@ -55,25 +53,25 @@ describe(makeListProductValidation.name, () => {
         {
           field: 'orderBy',
           rule: 'in',
-          message: 'This value must be in: name, category, price, createdAt, updatedAt',
-        },
-      ],
+          message: 'This value must be in: name, category, price, createdAt, updatedAt'
+        }
+      ]
     },
     // order
     {
       properties: { order: 1 },
-      validations: [{ field: 'order', rule: 'string', message: 'This value must be a string' }],
+      validations: [{ field: 'order', rule: 'string', message: 'This value must be a string' }]
     },
     {
       properties: { order: 'order' },
-      validations: [{ field: 'order', rule: 'in', message: 'This value must be in: asc, desc' }],
+      validations: [{ field: 'order', rule: 'in', message: 'This value must be in: asc, desc' }]
     },
     // name
     {
       properties: { filters: '["=", "name", 1]' },
       validations: [
-        { field: 'filters.name.0', rule: 'string', message: 'This value must be a string' },
-      ],
+        { field: 'filters.name.0', rule: 'string', message: 'This value must be a string' }
+      ]
     },
     {
       properties: { filters: '["=", "name", "lower"]' },
@@ -81,29 +79,29 @@ describe(makeListProductValidation.name, () => {
         {
           field: 'filters.name.0',
           rule: 'length',
-          message: 'This value length must be beetween 6 and 255',
-        },
-      ],
+          message: 'This value length must be beetween 6 and 255'
+        }
+      ]
     },
     {
       properties: {
         filters:
-          '["=", "name", "BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName Bigg"]',
+          '["=", "name", "BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName Bigg"]'
       },
       validations: [
         {
           field: 'filters.name.0',
           rule: 'length',
-          message: 'This value length must be beetween 6 and 255',
-        },
-      ],
+          message: 'This value length must be beetween 6 and 255'
+        }
+      ]
     },
     // category
     {
       properties: { filters: '["=", "category", 1]' },
       validations: [
-        { field: 'filters.category.0', rule: 'string', message: 'This value must be a string' },
-      ],
+        { field: 'filters.category.0', rule: 'string', message: 'This value must be a string' }
+      ]
     },
     {
       properties: { filters: '["=", "category", "invalid_category"]' },
@@ -111,16 +109,16 @@ describe(makeListProductValidation.name, () => {
         {
           field: 'filters.category.0',
           rule: 'in',
-          message: 'This value must be in: clothes, shoes, others',
-        },
-      ],
+          message: 'This value must be in: clothes, shoes, others'
+        }
+      ]
     },
     // price
     {
       properties: { filters: '["=", "price", 1.2]' },
       validations: [
-        { field: 'filters.price.0', rule: 'integer', message: 'This value must be an integer' },
-      ],
+        { field: 'filters.price.0', rule: 'integer', message: 'This value must be an integer' }
+      ]
     },
     {
       properties: { filters: `["=", "price", ${MAX_INTEGER + 1}]` },
@@ -128,16 +126,16 @@ describe(makeListProductValidation.name, () => {
         {
           field: 'filters.price.0',
           rule: 'max',
-          message: `This value must be less or equal to: ${MAX_INTEGER}`,
-        },
-      ],
+          message: `This value must be less or equal to: ${MAX_INTEGER}`
+        }
+      ]
     },
     // createUserId
     {
       properties: { filters: '["=", "createUserId", 1]' },
       validations: [
-        { field: 'filters.createUserId.0', rule: 'string', message: 'This value must be a string' },
-      ],
+        { field: 'filters.createUserId.0', rule: 'string', message: 'This value must be a string' }
+      ]
     },
     {
       properties: { filters: '["=", "createUserId", "invalid_uuid"]' },
@@ -147,17 +145,17 @@ describe(makeListProductValidation.name, () => {
           rule: 'regex',
           message: 'This value must be valid according to the pattern: uuidV4',
           details: {
-            pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i',
-          },
-        },
-      ],
+            pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i'
+          }
+        }
+      ]
     },
     // updateUserId
     {
       properties: { filters: '["=", "updateUserId", 1]' },
       validations: [
-        { field: 'filters.updateUserId.0', rule: 'string', message: 'This value must be a string' },
-      ],
+        { field: 'filters.updateUserId.0', rule: 'string', message: 'This value must be a string' }
+      ]
     },
     {
       properties: { filters: '["=", "updateUserId", "invalid_uuid"]' },
@@ -167,17 +165,17 @@ describe(makeListProductValidation.name, () => {
           rule: 'regex',
           message: 'This value must be valid according to the pattern: uuidV4',
           details: {
-            pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i',
-          },
-        },
-      ],
+            pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i'
+          }
+        }
+      ]
     },
     // createdAt
     {
       properties: { filters: '["=", "createdAt", 1]' },
       validations: [
-        { field: 'filters.createdAt.0', rule: 'string', message: 'This value must be a string' },
-      ],
+        { field: 'filters.createdAt.0', rule: 'string', message: 'This value must be a string' }
+      ]
     },
     {
       properties: { filters: '["=", "createdAt", "invalid_date"]' },
@@ -185,16 +183,16 @@ describe(makeListProductValidation.name, () => {
         {
           field: 'filters.createdAt.0',
           rule: 'date',
-          message: 'This value must be a valid date',
-        },
-      ],
+          message: 'This value must be a valid date'
+        }
+      ]
     },
     // updatedAt
     {
       properties: { filters: '["=", "updatedAt", 1]' },
       validations: [
-        { field: 'filters.updatedAt.0', rule: 'string', message: 'This value must be a string' },
-      ],
+        { field: 'filters.updatedAt.0', rule: 'string', message: 'This value must be a string' }
+      ]
     },
     {
       properties: { filters: '["=", "updatedAt", "invalid_date"]' },
@@ -202,10 +200,10 @@ describe(makeListProductValidation.name, () => {
         {
           field: 'filters.updatedAt.0',
           rule: 'date',
-          message: 'This value must be a valid date',
-        },
-      ],
-    },
+          message: 'This value must be a valid date'
+        }
+      ]
+    }
   ])(
     'Should throw ValidationException for every product invalid prop',
     ({ properties, validations }) => {
@@ -214,7 +212,7 @@ describe(makeListProductValidation.name, () => {
 
         const requestModel = {
           filters: '[]',
-          ...properties,
+          ...properties
         } as ListProductUseCase.RequestModel
 
         const sutResult = await sut(requestModel).catch((e) => e)

@@ -18,7 +18,7 @@ describe('DistinctValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'anyProp',
       message: 'This value cannot have duplicate items',
-      rule: 'distinct',
+      rule: 'distinct'
     })
   })
 
@@ -34,7 +34,7 @@ describe('DistinctValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'anyProp',
       message: `This value cannot have duplicate items by: ${options.keys.join(', ')}`,
-      rule: 'distinct',
+      rule: 'distinct'
     })
   })
 

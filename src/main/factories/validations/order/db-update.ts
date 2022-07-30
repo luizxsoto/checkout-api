@@ -10,10 +10,10 @@ export function makeUpdateOrderValidation(
     await validationService.validate({
       schema: {
         id: new ValidationBuilder().required().string().regex({ pattern: 'uuidV4' }).build(),
-        userId: new ValidationBuilder().required().string().regex({ pattern: 'uuidV4' }).build(),
+        userId: new ValidationBuilder().required().string().regex({ pattern: 'uuidV4' }).build()
       },
       model: requestModel,
-      data: {},
+      data: {}
     })
     return (validationData) =>
       validationService.validate({
@@ -23,10 +23,10 @@ export function makeUpdateOrderValidation(
             .build(),
           userId: new ValidationBuilder()
             .exists({ dataEntity: 'users', props: [{ modelKey: 'userId', dataKey: 'id' }] })
-            .build(),
+            .build()
         },
         model: requestModel,
-        data: validationData,
+        data: validationData
       })
   }
 }

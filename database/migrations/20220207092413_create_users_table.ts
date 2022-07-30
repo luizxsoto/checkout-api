@@ -12,7 +12,7 @@ export async function up(knex: Knex): Promise<void> {
       table.string('email', 100).notNullable()
       table.string('password', 100).notNullable()
       table.jsonb('roles').notNullable()
-    },
+    }
   })
 }
 

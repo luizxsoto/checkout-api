@@ -8,7 +8,7 @@ import {
   MAX_USER_NAME_LENGTH,
   MIN_PER_PAGE,
   MIN_USER_EMAIL_LENGTH,
-  MIN_USER_NAME_LENGTH,
+  MIN_USER_NAME_LENGTH
 } from '@/main/constants'
 import { ArrayValidation, ObjectValidation } from '@/validation/validators'
 
@@ -24,10 +24,10 @@ export function makeListUserValidation(
               .string()
               .regex({ pattern: 'name' })
               .length({ minLength: MIN_USER_NAME_LENGTH, maxLength: MAX_USER_NAME_LENGTH })
-              .build(),
+              .build()
           },
           validationService
-        ),
+        )
       ],
       email: [
         new ArrayValidation.Validator(
@@ -36,35 +36,35 @@ export function makeListUserValidation(
               .string()
               .regex({ pattern: 'email' })
               .length({ minLength: MIN_USER_EMAIL_LENGTH, maxLength: MAX_USER_EMAIL_LENGTH })
-              .build(),
+              .build()
           },
           validationService
-        ),
+        )
       ],
       createUserId: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().string().regex({ pattern: 'uuidV4' }).build() },
           validationService
-        ),
+        )
       ],
       updateUserId: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().string().regex({ pattern: 'uuidV4' }).build() },
           validationService
-        ),
+        )
       ],
       createdAt: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().string().date().build() },
           validationService
-        ),
+        )
       ],
       updatedAt: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().string().date().build() },
           validationService
-        ),
-      ],
+        )
+      ]
     }
 
     await validationService.validate({
@@ -88,10 +88,10 @@ export function makeListUserValidation(
             { schema: filtersSchema },
             new ObjectValidation.Validator({ schema: filtersSchema }, validationService)
           )
-          .build(),
+          .build()
       },
       model: requestModel,
-      data: {},
+      data: {}
     })
   }
 }

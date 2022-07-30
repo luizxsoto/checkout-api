@@ -91,7 +91,7 @@ describe(KnexBaseRepository.name, () => {
         orderBy: 'orderBy',
         order: 'desc',
         filters:
-          '["&", ["|", ["=", "anyProp", "anyValue"], ["!=", "anyProp", "anyValue"], [">", "anyProp", "anyValue"], [">=", "anyProp", "anyValue"], ["<", "anyProp", "anyValue"], ["<=", "anyProp", "anyValue"], [":", "anyProp", "anyValue"], ["!:", "anyProp", "anyValue"], ["in", "anyProp", ["anyValue"]]]]',
+          '["&", ["|", ["=", "anyProp", "anyValue"], ["!=", "anyProp", "anyValue"], [">", "anyProp", "anyValue"], [">=", "anyProp", "anyValue"], ["<", "anyProp", "anyValue"], ["<=", "anyProp", "anyValue"], [":", "anyProp", "anyValue"], ["!:", "anyProp", "anyValue"], ["in", "anyProp", ["anyValue"]]]]'
       }
       const responseModel = { anyProp: 'anyValue' }
 
@@ -165,13 +165,13 @@ describe(KnexBaseRepository.name, () => {
       const { knex, uuidService, tableName, sut } = makeSut()
 
       const requestModel = {
-        anyProp: 'anyValue',
+        anyProp: 'anyValue'
       }
       const responseModel = {
         ...requestModel,
         id: validUuidV4,
         createUserId: userId,
-        createdAt: new Date(),
+        createdAt: new Date()
       }
       uuidService.generateUniqueID.mockReturnValueOnce(validUuidV4)
 
@@ -187,13 +187,13 @@ describe(KnexBaseRepository.name, () => {
       const { knex, uuidService, tableName, sut } = makeSut()
 
       const requestModel = {
-        anyProp: 'anyValue',
+        anyProp: 'anyValue'
       }
       const responseModel = {
         ...requestModel,
         id: validUuidV4,
         createUserId: userId,
-        createdAt: new Date(),
+        createdAt: new Date()
       }
       uuidService.generateUniqueID.mockReturnValueOnce(validUuidV4)
       knex.then.mockImplementationOnce((resolve) => resolve([1]))
@@ -213,12 +213,12 @@ describe(KnexBaseRepository.name, () => {
 
       const where = { anyProp: 'anyValue' }
       const requestModel = {
-        anyProp: 'otherValue',
+        anyProp: 'otherValue'
       }
       const updateModel = {
         ...requestModel,
         updateUserId: userId,
-        updatedAt: new Date(),
+        updatedAt: new Date()
       }
       knex.then.mockImplementationOnce((resolve) => resolve([updateModel]))
 
@@ -235,12 +235,12 @@ describe(KnexBaseRepository.name, () => {
 
       const where = { anyProp: 'anyValue' }
       const requestModel = {
-        anyProp: 'otherValue',
+        anyProp: 'otherValue'
       }
       const updateModel = {
         ...requestModel,
         updateUserId: userId,
-        updatedAt: new Date(),
+        updatedAt: new Date()
       }
       knex.then.mockImplementationOnce((resolve) => resolve(1))
 
@@ -261,7 +261,7 @@ describe(KnexBaseRepository.name, () => {
       const removeModel = {
         ...where,
         deleteUserId: userId,
-        deletedAt: new Date(),
+        deletedAt: new Date()
       }
       knex.then.mockImplementationOnce((resolve) => resolve([removeModel]))
 
@@ -280,7 +280,7 @@ describe(KnexBaseRepository.name, () => {
       const removeModel = {
         ...where,
         deleteUserId: userId,
-        deletedAt: new Date(),
+        deletedAt: new Date()
       }
       knex.then.mockImplementationOnce((resolve) => resolve(1))
 

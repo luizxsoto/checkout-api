@@ -18,7 +18,7 @@ describe('DateValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'anyProp',
       message: 'This value must be a valid date',
-      rule: 'date',
+      rule: 'date'
     })
   })
 
@@ -33,7 +33,7 @@ describe('DateValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'anyProp',
       message: 'This value must be a valid date',
-      rule: 'date',
+      rule: 'date'
     })
   })
 

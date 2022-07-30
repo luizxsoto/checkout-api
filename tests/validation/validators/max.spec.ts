@@ -19,7 +19,7 @@ describe('MaxValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'anyProp',
       message: `This value must be less or equal to: ${options.value}`,
-      rule: 'max',
+      rule: 'max'
     })
   })
 

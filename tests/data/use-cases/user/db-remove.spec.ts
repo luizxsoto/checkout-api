@@ -23,10 +23,10 @@ describe(DbRemoveUserUseCase.name, () => {
 
     const requestModel = {
       id: validUuidV4,
-      anyWrongProp: 'anyValue',
+      anyWrongProp: 'anyValue'
     }
     const sanitizedRequestModel = {
-      ...requestModel,
+      ...requestModel
     }
     Reflect.deleteProperty(sanitizedRequestModel, 'anyWrongProp')
     const responseModel = { ...sanitizedRequestModel, deletedAt: new Date() }
@@ -49,7 +49,7 @@ describe(DbRemoveUserUseCase.name, () => {
 
     const requestModel = {
       id: validUuidV4,
-      anyWrongProp: 'anyValue',
+      anyWrongProp: 'anyValue'
     }
     const error = new Error('firstValidation Error')
 
@@ -65,7 +65,7 @@ describe(DbRemoveUserUseCase.name, () => {
 
     const requestModel = {
       id: validUuidV4,
-      anyWrongProp: 'anyValue',
+      anyWrongProp: 'anyValue'
     }
     const error = new Error('secondValidation Error')
 

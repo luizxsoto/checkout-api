@@ -6,7 +6,7 @@ export class InvalidCredentials extends ApplicationException {
     super({
       name: 'InvalidCredentials',
       code: StatusCodes.UNAUTHORIZED,
-      message: 'Invalid credentials',
+      message: 'Invalid credentials'
     })
   }
 }

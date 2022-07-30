@@ -7,7 +7,7 @@ import {
   FindByOrderRepository,
   ListOrderRepository,
   RemoveOrderRepository,
-  UpdateOrderRepository,
+  UpdateOrderRepository
 } from '@/data/contracts/repositories'
 import { GenerateUniqueIDService } from '@/data/contracts/services'
 import { OrderModel, SessionModel } from '@/domain/models'

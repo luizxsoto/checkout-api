@@ -27,10 +27,10 @@ describe(DbUpdateOrderUseCase.name, () => {
     const requestModel = {
       id: validUuidV4,
       userId: validUuidV4,
-      anyWrongProp: 'anyValue',
+      anyWrongProp: 'anyValue'
     }
     const sanitizedRequestModel = {
-      ...requestModel,
+      ...requestModel
     }
     Reflect.deleteProperty(sanitizedRequestModel, 'anyWrongProp')
     const responseModel = { ...sanitizedRequestModel, updatedAt: new Date() }
@@ -49,7 +49,7 @@ describe(DbUpdateOrderUseCase.name, () => {
     expect(userRepository.findBy).toBeCalledWith([{ id: sanitizedRequestModel.userId }], true)
     expect(updateOrderValidation.secondValidation).toBeCalledWith({
       orders: [existsOrder],
-      users: [existsUser],
+      users: [existsUser]
     })
     expect(orderRepository.update).toBeCalledWith(
       { id: sanitizedRequestModel.id },
@@ -64,7 +64,7 @@ describe(DbUpdateOrderUseCase.name, () => {
       id: validUuidV4,
       userId: validUuidV4,
       orderItems: [{ productId: validUuidV4, quantity: 1 }],
-      anyWrongProp: 'anyValue',
+      anyWrongProp: 'anyValue'
     }
     const error = new Error('firstValidation Error')
 
@@ -82,7 +82,7 @@ describe(DbUpdateOrderUseCase.name, () => {
       id: validUuidV4,
       userId: validUuidV4,
       orderItems: [{ productId: validUuidV4, quantity: 1 }],
-      anyWrongProp: 'anyValue',
+      anyWrongProp: 'anyValue'
     }
     const error = new Error('secondValidation Error')
 

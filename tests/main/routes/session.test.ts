@@ -38,7 +38,7 @@ describe('Session Routes', () => {
         password,
         roles: [],
         createUserId: userId,
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       }
 
       await knexConfig.table('users').insert({ ...requestModel, password: hashedPassword })
@@ -69,9 +69,9 @@ describe('Session Routes', () => {
           {
             field: 'email',
             rule: 'required',
-            message: 'This value is required',
-          },
-        ],
+            message: 'This value is required'
+          }
+        ]
       })
     })
   })

@@ -19,7 +19,7 @@ describe('MinValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'anyProp',
       message: `This value must be bigger or equal to: ${options.value}`,
-      rule: 'min',
+      rule: 'min'
     })
   })
 

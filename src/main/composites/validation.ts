@@ -25,7 +25,7 @@ export class CompositeValidation implements ValidationService.Validator {
   public async validate({
     schema,
     model,
-    data,
+    data
   }: ValidationService.Params): Promise<ValidationService.Result> {
     await Promise.all(
       Object.keys(schema).map(async (key) => this.performValidation(schema[key], key, model, data))

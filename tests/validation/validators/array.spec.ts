@@ -22,7 +22,7 @@ describe('ArrayValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'anyProp',
       message: 'This value must be an array',
-      rule: 'array',
+      rule: 'array'
     })
     expect(validationService.performValidation).not.toBeCalled()
   })

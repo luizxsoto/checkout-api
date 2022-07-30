@@ -7,6 +7,6 @@ export function makeBaseModelMock(extraData?: Partial<BaseModel>) {
     id: validUuidV4,
     createUserId: validUuidV4,
     createdAt: new Date(),
-    ...extraData,
+    ...extraData
   }
 }

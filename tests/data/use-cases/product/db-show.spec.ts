@@ -19,7 +19,7 @@ describe(DbShowProductUseCase.name, () => {
 
     const requestModel = {
       id: validUuidV4,
-      anyWrongProp: 'anyValue',
+      anyWrongProp: 'anyValue'
     }
     const sanitizedRequestModel = { ...requestModel }
     Reflect.deleteProperty(sanitizedRequestModel, 'anyWrongProp')
@@ -41,7 +41,7 @@ describe(DbShowProductUseCase.name, () => {
 
     const requestModel = {
       id: validUuidV4,
-      anyWrongProp: 'anyValue',
+      anyWrongProp: 'anyValue'
     }
     const error = new Error('firstValidation Error')
 
@@ -57,7 +57,7 @@ describe(DbShowProductUseCase.name, () => {
 
     const requestModel = {
       id: validUuidV4,
-      anyWrongProp: 'anyValue',
+      anyWrongProp: 'anyValue'
     }
     const error = new Error('secondValidation Error')
 

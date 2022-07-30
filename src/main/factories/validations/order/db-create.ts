@@ -29,20 +29,20 @@ export function makeCreateOrderValidation(
                         .integer()
                         .min({ value: 1 })
                         .max({ value: MAX_INTEGER })
-                        .build(),
-                    },
+                        .build()
+                    }
                   },
                   validationService
                 )
-                .build(),
+                .build()
             },
             validationService
           )
           .distinct({ keys: ['productId'] })
-          .build(),
+          .build()
       },
       model: requestModel,
-      data: {},
+      data: {}
     })
     return (validationData) =>
       validationService.validate({
@@ -60,21 +60,21 @@ export function makeCreateOrderValidation(
                         productId: new ValidationBuilder()
                           .exists({
                             dataEntity: 'products',
-                            props: [{ modelKey: 'productId', dataKey: 'id' }],
+                            props: [{ modelKey: 'productId', dataKey: 'id' }]
                           })
-                          .build(),
-                      },
+                          .build()
+                      }
                     },
                     validationService
                   )
-                  .build(),
+                  .build()
               },
               validationService
             )
-            .build(),
+            .build()
         },
         model: requestModel,
-        data: validationData,
+        data: validationData
       })
   }
 }

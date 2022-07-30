@@ -17,7 +17,7 @@ import {
   RegexValidation,
   RequiredValidation,
   StringValidation,
-  UniqueValidation,
+  UniqueValidation
 } from '@/validation/validators'
 
 function makeSut() {
@@ -55,13 +55,13 @@ describe(ValidationBuilder.name, () => {
       new CustomValidation.Validator({
         validation: expect.any(Function),
         rule: 'any_rule',
-        message: 'any_message',
+        message: 'any_message'
       }),
       new DateValidation.Validator(),
       new DistinctValidation.Validator(),
       new ExistsValidation.Validator({
         dataEntity: 'anyData',
-        props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }],
+        props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }]
       }),
       new InValidation.Validator({ values: [] }),
       new IntegerValidation.Validator(),
@@ -78,8 +78,8 @@ describe(ValidationBuilder.name, () => {
       new StringValidation.Validator(),
       new UniqueValidation.Validator({
         dataEntity: 'anyData',
-        props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }],
-      }),
+        props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }]
+      })
     ])
   })
 })

@@ -20,20 +20,20 @@ export function makeUpdateProductValidation(
           .in({ values: ['clothes', 'shoes', 'others'] })
           .build(),
         image: new ValidationBuilder().string().regex({ pattern: 'url' }).build(),
-        price: new ValidationBuilder().integer().max({ value: MAX_INTEGER }).build(),
+        price: new ValidationBuilder().integer().max({ value: MAX_INTEGER }).build()
       },
       model: requestModel,
-      data: {},
+      data: {}
     })
     return (validationData) =>
       validationService.validate({
         schema: {
           id: new ValidationBuilder()
             .exists({ dataEntity: 'products', props: [{ modelKey: 'id', dataKey: 'id' }] })
-            .build(),
+            .build()
         },
         model: requestModel,
-        data: validationData,
+        data: validationData
       })
   }
 }

@@ -29,7 +29,7 @@ export class DbRemoveProductUseCase implements RemoveProductUseCase.UseCase {
     requestModel: RemoveProductUseCase.RequestModel
   ): RemoveProductUseCase.RequestModel {
     return {
-      id: requestModel.id,
+      id: requestModel.id
     }
   }
 }

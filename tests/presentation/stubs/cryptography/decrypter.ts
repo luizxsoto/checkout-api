@@ -4,6 +4,6 @@ export function makeDecrypterCryptographyStub() {
       if (bearerToken === 'invalid_bearerToken') throw Error()
 
       return Promise.resolve({} as any)
-    }),
+    })
   }
 }

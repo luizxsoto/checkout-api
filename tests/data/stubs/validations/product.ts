@@ -4,7 +4,7 @@ import {
   ListProductUseCase,
   RemoveProductUseCase,
   ShowProductUseCase,
-  UpdateProductUseCase,
+  UpdateProductUseCase
 } from '@/domain/use-cases'
 
 export function makeCreateProductValidationStub() {

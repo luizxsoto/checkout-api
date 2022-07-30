@@ -6,7 +6,7 @@ export class InvalidPermissions extends ApplicationException {
     super({
       name: 'InvalidPermissions',
       code: StatusCodes.FORBIDDEN,
-      message: 'Invalid permissions',
+      message: 'Invalid permissions'
     })
   }
 }

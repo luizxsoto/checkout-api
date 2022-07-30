@@ -4,7 +4,7 @@ import {
   ListUserUseCase,
   RemoveUserUseCase,
   ShowUserUseCase,
-  UpdateUserUseCase,
+  UpdateUserUseCase
 } from '@/domain/use-cases'
 
 export function makeCreateUserValidationStub() {

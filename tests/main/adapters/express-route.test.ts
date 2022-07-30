@@ -23,11 +23,11 @@ describe('Express adaptRoute', () => {
       body: { bodyProp: 'any_body' },
       params: { paramsProp: 'any_params' },
       query: { queryProp: 'any_query' },
-      session: makeSessionModelMock(),
+      session: makeSessionModelMock()
     }
     const response = {
       status: jest.fn().mockReturnThis(),
-      json: jest.fn().mockReturnThis(),
+      json: jest.fn().mockReturnThis()
     }
     const next = jest.fn()
     handle.mockImplementationOnce(() =>
@@ -53,7 +53,7 @@ describe('Express adaptRoute', () => {
     const request = {}
     const response = {
       status: jest.fn().mockReturnThis(),
-      json: jest.fn().mockReturnThis(),
+      json: jest.fn().mockReturnThis()
     }
     const next = jest.fn()
     const error = new Error()

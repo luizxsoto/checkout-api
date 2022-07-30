@@ -5,7 +5,7 @@ import {
   ArrayValidation,
   ListFiltersValidation,
   ObjectValidation,
-  StringValidation,
+  StringValidation
 } from '@/validation/validators'
 
 function makeSut(
@@ -26,9 +26,9 @@ describe('ListFiltersValidation', () => {
     const options = {
       schema: {
         anyProp: <[ArrayValidation.Validator]>[
-          new ArrayValidation.Validator({ validations: [] }, validationService),
-        ],
-      },
+          new ArrayValidation.Validator({ validations: [] }, validationService)
+        ]
+      }
     }
     const { sut } = makeSut(options, validationService)
 
@@ -40,7 +40,7 @@ describe('ListFiltersValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'filters',
       message: 'This value must be a valid list filters and with this posible fields: anyProp',
-      rule: 'listFilters',
+      rule: 'listFilters'
     })
   })
 
@@ -49,9 +49,9 @@ describe('ListFiltersValidation', () => {
     const options = {
       schema: {
         anyProp: <[ArrayValidation.Validator]>[
-          new ArrayValidation.Validator({ validations: [] }, validationService),
-        ],
-      },
+          new ArrayValidation.Validator({ validations: [] }, validationService)
+        ]
+      }
     }
     const { sut } = makeSut(options, validationService)
 
@@ -63,7 +63,7 @@ describe('ListFiltersValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'filters',
       message: 'This value must be a valid list filters and with this posible fields: anyProp',
-      rule: 'listFilters',
+      rule: 'listFilters'
     })
   })
 
@@ -72,9 +72,9 @@ describe('ListFiltersValidation', () => {
     const options = {
       schema: {
         anyProp: <[ArrayValidation.Validator]>[
-          new ArrayValidation.Validator({ validations: [] }, validationService),
-        ],
-      },
+          new ArrayValidation.Validator({ validations: [] }, validationService)
+        ]
+      }
     }
     const { sut } = makeSut(options, validationService)
 
@@ -86,7 +86,7 @@ describe('ListFiltersValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'filters',
       message: 'This value must be a valid list filters and with this posible fields: anyProp',
-      rule: 'listFilters',
+      rule: 'listFilters'
     })
   })
 
@@ -95,9 +95,9 @@ describe('ListFiltersValidation', () => {
     const options = {
       schema: {
         anyProp: <[ArrayValidation.Validator]>[
-          new ArrayValidation.Validator({ validations: [] }, validationService),
-        ],
-      },
+          new ArrayValidation.Validator({ validations: [] }, validationService)
+        ]
+      }
     }
     const { sut } = makeSut(options, validationService)
 
@@ -109,7 +109,7 @@ describe('ListFiltersValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'filters',
       message: 'This value must be a valid list filters and with this posible fields: anyProp',
-      rule: 'listFilters',
+      rule: 'listFilters'
     })
   })
 
@@ -118,9 +118,9 @@ describe('ListFiltersValidation', () => {
     const options = {
       schema: {
         anyProp: <[ArrayValidation.Validator]>[
-          new ArrayValidation.Validator({ validations: [] }, validationService),
-        ],
-      },
+          new ArrayValidation.Validator({ validations: [] }, validationService)
+        ]
+      }
     }
     const { sut } = makeSut(options, validationService)
 
@@ -132,7 +132,7 @@ describe('ListFiltersValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'filters',
       message: 'This value must be a valid list filters and with this posible fields: anyProp',
-      rule: 'listFilters',
+      rule: 'listFilters'
     })
   })
 
@@ -141,9 +141,9 @@ describe('ListFiltersValidation', () => {
     const options = {
       schema: {
         anyProp: <[ArrayValidation.Validator]>[
-          new ArrayValidation.Validator({ validations: [] }, validationService),
-        ],
-      },
+          new ArrayValidation.Validator({ validations: [] }, validationService)
+        ]
+      }
     }
     const { sut } = makeSut(options, validationService)
 
@@ -155,7 +155,7 @@ describe('ListFiltersValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'filters',
       message: 'This value must be a valid list filters and with this posible fields: anyProp',
-      rule: 'listFilters',
+      rule: 'listFilters'
     })
   })
 
@@ -164,9 +164,9 @@ describe('ListFiltersValidation', () => {
     const options = {
       schema: {
         anyProp: <[ArrayValidation.Validator]>[
-          new ArrayValidation.Validator({ validations: [] }, validationService),
-        ],
-      },
+          new ArrayValidation.Validator({ validations: [] }, validationService)
+        ]
+      }
     }
     const { sut } = makeSut(options, validationService)
 
@@ -178,7 +178,7 @@ describe('ListFiltersValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'filters',
       message: 'This value must be a valid list filters and with this posible fields: anyProp',
-      rule: 'listFilters',
+      rule: 'listFilters'
     })
   })
 
@@ -187,9 +187,9 @@ describe('ListFiltersValidation', () => {
     const options = {
       schema: {
         anyProp: <[ArrayValidation.Validator]>[
-          new ArrayValidation.Validator({ validations: [] }, validationService),
-        ],
-      },
+          new ArrayValidation.Validator({ validations: [] }, validationService)
+        ]
+      }
     }
     const { sut } = makeSut(options, validationService)
 
@@ -201,7 +201,7 @@ describe('ListFiltersValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'filters',
       message: 'This value must be a valid list filters and with this posible fields: anyProp',
-      rule: 'listFilters',
+      rule: 'listFilters'
     })
   })
 
@@ -210,9 +210,9 @@ describe('ListFiltersValidation', () => {
     const options = {
       schema: {
         anyProp: <[ArrayValidation.Validator]>[
-          new ArrayValidation.Validator({ validations: [] }, validationService),
-        ],
-      },
+          new ArrayValidation.Validator({ validations: [] }, validationService)
+        ]
+      }
     }
     const { sut } = makeSut(options, validationService)
 
@@ -224,7 +224,7 @@ describe('ListFiltersValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'filters',
       message: 'This value must be a valid list filters and with this posible fields: anyProp',
-      rule: 'listFilters',
+      rule: 'listFilters'
     })
   })
 
@@ -233,9 +233,9 @@ describe('ListFiltersValidation', () => {
     const options = {
       schema: {
         anyProp: <[ArrayValidation.Validator]>[
-          new ArrayValidation.Validator({ validations: [] }, validationService),
-        ],
-      },
+          new ArrayValidation.Validator({ validations: [] }, validationService)
+        ]
+      }
     }
     const { sut } = makeSut(options, validationService)
 
@@ -247,7 +247,7 @@ describe('ListFiltersValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'filters',
       message: 'This value must be a valid list filters and with this posible fields: anyProp',
-      rule: 'listFilters',
+      rule: 'listFilters'
     })
   })
 
@@ -256,9 +256,9 @@ describe('ListFiltersValidation', () => {
     const options = {
       schema: {
         anyProp: <[ArrayValidation.Validator]>[
-          new ArrayValidation.Validator({ validations: [] }, validationService),
-        ],
-      },
+          new ArrayValidation.Validator({ validations: [] }, validationService)
+        ]
+      }
     }
     const { sut } = makeSut(options, validationService)
 
@@ -270,7 +270,7 @@ describe('ListFiltersValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'filters',
       message: 'This value must be a valid list filters and with this posible fields: anyProp',
-      rule: 'listFilters',
+      rule: 'listFilters'
     })
   })
 
@@ -279,9 +279,9 @@ describe('ListFiltersValidation', () => {
     const options = {
       schema: {
         anyProp: <[ArrayValidation.Validator]>[
-          new ArrayValidation.Validator({ validations: [] }, validationService),
-        ],
-      },
+          new ArrayValidation.Validator({ validations: [] }, validationService)
+        ]
+      }
     }
     const { sut } = makeSut(options, validationService)
 
@@ -293,7 +293,7 @@ describe('ListFiltersValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'filters',
       message: 'This value must be a valid list filters and with this posible fields: anyProp',
-      rule: 'listFilters',
+      rule: 'listFilters'
     })
   })
 
@@ -302,9 +302,9 @@ describe('ListFiltersValidation', () => {
     const options = {
       schema: {
         anyProp: <[ArrayValidation.Validator]>[
-          new ArrayValidation.Validator({ validations: [] }, validationService),
-        ],
-      },
+          new ArrayValidation.Validator({ validations: [] }, validationService)
+        ]
+      }
     }
     const { sut } = makeSut(options, validationService)
 
@@ -316,7 +316,7 @@ describe('ListFiltersValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'filters',
       message: 'This value must be a valid list filters and with this posible fields: anyProp',
-      rule: 'listFilters',
+      rule: 'listFilters'
     })
   })
 
@@ -328,16 +328,16 @@ describe('ListFiltersValidation', () => {
           new ArrayValidation.Validator(
             { validations: [new StringValidation.Validator()] },
             validationService
-          ),
-        ],
-      },
+          )
+        ]
+      }
     }
     const { sut } = makeSut(options, validationService)
 
     const key = 'filters'
     const model = {
       filters:
-        '["&", ["|", ["=", "anyProp", "anyValue"], ["!=", "anyProp", "anyValue"], [">", "anyProp", "anyValue"], [">=", "anyProp", "anyValue"], ["<", "anyProp", "anyValue"], ["<=", "anyProp", "anyValue"], [":", "anyProp", "anyValue"], ["!:", "anyProp", "anyValue"], ["in", "anyProp", ["anyValue"]]]]',
+        '["&", ["|", ["=", "anyProp", "anyValue"], ["!=", "anyProp", "anyValue"], [">", "anyProp", "anyValue"], [">=", "anyProp", "anyValue"], ["<", "anyProp", "anyValue"], ["<=", "anyProp", "anyValue"], [":", "anyProp", "anyValue"], ["!:", "anyProp", "anyValue"], ["in", "anyProp", ["anyValue"]]]]'
     }
     const data = {}
     const sutResult = await sut.validate({ key, model, data })
@@ -350,9 +350,9 @@ describe('ListFiltersValidation', () => {
     const options = {
       schema: {
         anyProp: <[ArrayValidation.Validator]>[
-          new ArrayValidation.Validator({ validations: [] }, validationService),
-        ],
-      },
+          new ArrayValidation.Validator({ validations: [] }, validationService)
+        ]
+      }
     }
     const { sut } = makeSut(options, validationService)
 
@@ -369,9 +369,9 @@ describe('ListFiltersValidation', () => {
     const options = {
       schema: {
         anyProp: <[ArrayValidation.Validator]>[
-          new ArrayValidation.Validator({ validations: [] }, validationService),
-        ],
-      },
+          new ArrayValidation.Validator({ validations: [] }, validationService)
+        ]
+      }
     }
     const { sut } = makeSut(options, validationService)
 

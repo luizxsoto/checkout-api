@@ -8,7 +8,7 @@ export class DatabaseException extends ApplicationException {
       code: StatusCodes.INTERNAL,
       message: 'An error ocurred performing a database query',
       originalError: error,
-      details: { query },
+      details: { query }
     })
   }
 }

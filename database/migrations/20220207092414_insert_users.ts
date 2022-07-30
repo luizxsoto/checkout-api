@@ -18,7 +18,7 @@ const users: () => Promise<
     name: 'Admin',
     email: 'admin@email.com',
     password: await hash('Password@123', 12),
-    roles: JSON.stringify(['admin']),
+    roles: JSON.stringify(['admin'])
   },
   {
     id: '00000000-0000-4000-8000-000000000002',
@@ -27,7 +27,7 @@ const users: () => Promise<
     name: 'Moderator',
     email: 'moderator@email.com',
     password: await hash('Password@123', 12),
-    roles: JSON.stringify(['moderator']),
+    roles: JSON.stringify(['moderator'])
   },
   {
     id: '00000000-0000-4000-8000-000000000003',
@@ -36,8 +36,8 @@ const users: () => Promise<
     name: 'Normal',
     email: 'normal@email.com',
     password: await hash('Password@123', 12),
-    roles: JSON.stringify([]),
-  },
+    roles: JSON.stringify([])
+  }
 ]
 
 export async function up(knex: Knex): Promise<void> {

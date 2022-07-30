@@ -14,7 +14,7 @@ const products: (Omit<ProductModel, 'createdAt'> & {
     name: 'Product 1',
     category: 'clothes',
     image: 'https://boacausa.net/img/image-placeholder.png',
-    price: 1000,
+    price: 1000
   },
   {
     id: '00000000-0000-4000-8000-000000000002',
@@ -23,7 +23,7 @@ const products: (Omit<ProductModel, 'createdAt'> & {
     name: 'Product 2',
     category: 'shoes',
     image: 'https://boacausa.net/img/image-placeholder.png',
-    price: 2000,
+    price: 2000
   },
   {
     id: '00000000-0000-4000-8000-000000000003',
@@ -32,8 +32,8 @@ const products: (Omit<ProductModel, 'createdAt'> & {
     name: 'Product 3',
     category: 'others',
     image: 'https://boacausa.net/img/image-placeholder.png',
-    price: 3000,
-  },
+    price: 3000
+  }
 ]
 
 export async function up(knex: Knex): Promise<void> {

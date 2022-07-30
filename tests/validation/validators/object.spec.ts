@@ -23,14 +23,14 @@ describe('ObjectValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'anyProp',
       message: 'This value must be an object',
-      rule: 'object',
+      rule: 'object'
     })
     expect(validationService.performValidation).not.toBeCalled()
   })
 
   test('Should return null and performValidation for nested rules', async () => {
     const options = {
-      schema: <ValidationService.Schema>{ nestedProp: [new StringValidation.Validator()] },
+      schema: <ValidationService.Schema>{ nestedProp: [new StringValidation.Validator()] }
     }
     const { validationService, sut } = makeSut(options)
 

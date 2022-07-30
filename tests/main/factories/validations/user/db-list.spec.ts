@@ -17,37 +17,35 @@ describe(makeListUserValidation.name, () => {
     // page
     {
       properties: { page: 'page' },
-      validations: [{ field: 'page', rule: 'integer', message: 'This value must be an integer' }],
+      validations: [{ field: 'page', rule: 'integer', message: 'This value must be an integer' }]
     },
     {
       properties: { page: 0 },
       validations: [
-        { field: 'page', rule: 'min', message: 'This value must be bigger or equal to: 1' },
-      ],
+        { field: 'page', rule: 'min', message: 'This value must be bigger or equal to: 1' }
+      ]
     },
     // perPage
     {
       properties: { perPage: 'perPage' },
-      validations: [
-        { field: 'perPage', rule: 'integer', message: 'This value must be an integer' },
-      ],
+      validations: [{ field: 'perPage', rule: 'integer', message: 'This value must be an integer' }]
     },
     {
       properties: { perPage: MIN_PER_PAGE - 1 },
       validations: [
-        { field: 'perPage', rule: 'min', message: 'This value must be bigger or equal to: 20' },
-      ],
+        { field: 'perPage', rule: 'min', message: 'This value must be bigger or equal to: 20' }
+      ]
     },
     {
       properties: { perPage: MAX_PER_PAGE + 1 },
       validations: [
-        { field: 'perPage', rule: 'max', message: 'This value must be less or equal to: 50' },
-      ],
+        { field: 'perPage', rule: 'max', message: 'This value must be less or equal to: 50' }
+      ]
     },
     // orderBy
     {
       properties: { orderBy: 1 },
-      validations: [{ field: 'orderBy', rule: 'string', message: 'This value must be a string' }],
+      validations: [{ field: 'orderBy', rule: 'string', message: 'This value must be a string' }]
     },
     {
       properties: { orderBy: 'orderBy' },
@@ -55,25 +53,25 @@ describe(makeListUserValidation.name, () => {
         {
           field: 'orderBy',
           rule: 'in',
-          message: 'This value must be in: name, email, createdAt, updatedAt',
-        },
-      ],
+          message: 'This value must be in: name, email, createdAt, updatedAt'
+        }
+      ]
     },
     // order
     {
       properties: { order: 1 },
-      validations: [{ field: 'order', rule: 'string', message: 'This value must be a string' }],
+      validations: [{ field: 'order', rule: 'string', message: 'This value must be a string' }]
     },
     {
       properties: { order: 'order' },
-      validations: [{ field: 'order', rule: 'in', message: 'This value must be in: asc, desc' }],
+      validations: [{ field: 'order', rule: 'in', message: 'This value must be in: asc, desc' }]
     },
     // name
     {
       properties: { filters: '["=", "name", 1]' },
       validations: [
-        { field: 'filters.name.0', rule: 'string', message: 'This value must be a string' },
-      ],
+        { field: 'filters.name.0', rule: 'string', message: 'This value must be a string' }
+      ]
     },
     {
       properties: { filters: '["=", "name", " InV@L1D n@m3 "]' },
@@ -83,10 +81,10 @@ describe(makeListUserValidation.name, () => {
           rule: 'regex',
           message: 'This value must be valid according to the pattern: name',
           details: {
-            pattern: '/^([a-zA-Z\\u00C0-\\u00FF]+\\s)*[a-zA-Z\\u00C0-\\u00FF]+$/',
-          },
-        },
-      ],
+            pattern: '/^([a-zA-Z\\u00C0-\\u00FF]+\\s)*[a-zA-Z\\u00C0-\\u00FF]+$/'
+          }
+        }
+      ]
     },
     {
       properties: { filters: '["=", "name", "lower"]' },
@@ -94,29 +92,29 @@ describe(makeListUserValidation.name, () => {
         {
           field: 'filters.name.0',
           rule: 'length',
-          message: 'This value length must be beetween 6 and 100',
-        },
-      ],
+          message: 'This value length must be beetween 6 and 100'
+        }
+      ]
     },
     {
       properties: {
         filters:
-          '["=", "name", "BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName"]',
+          '["=", "name", "BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName BiggestName"]'
       },
       validations: [
         {
           field: 'filters.name.0',
           rule: 'length',
-          message: 'This value length must be beetween 6 and 100',
-        },
-      ],
+          message: 'This value length must be beetween 6 and 100'
+        }
+      ]
     },
     // email
     {
       properties: { filters: '["=", "email", 1]' },
       validations: [
-        { field: 'filters.email.0', rule: 'string', message: 'This value must be a string' },
-      ],
+        { field: 'filters.email.0', rule: 'string', message: 'This value must be a string' }
+      ]
     },
     {
       properties: { filters: '["=", "email", " InV@L1D eM@1L "]' },
@@ -126,30 +124,30 @@ describe(makeListUserValidation.name, () => {
           rule: 'regex',
           message: 'This value must be valid according to the pattern: email',
           details: {
-            pattern: '/^[\\w+.]+@\\w+\\.\\w{2,}(?:\\.\\w{2})?$/',
-          },
-        },
-      ],
+            pattern: '/^[\\w+.]+@\\w+\\.\\w{2,}(?:\\.\\w{2})?$/'
+          }
+        }
+      ]
     },
     {
       properties: {
         filters:
-          '["=", "email", "biggest_email_biggest_email_biggest_email_biggest_email_biggest_email_biggest_email_biggest_email@invalid.com"]',
+          '["=", "email", "biggest_email_biggest_email_biggest_email_biggest_email_biggest_email_biggest_email_biggest_email@invalid.com"]'
       },
       validations: [
         {
           field: 'filters.email.0',
           rule: 'length',
-          message: 'This value length must be beetween 6 and 100',
-        },
-      ],
+          message: 'This value length must be beetween 6 and 100'
+        }
+      ]
     },
     // createUserId
     {
       properties: { filters: '["=", "createUserId", 1]' },
       validations: [
-        { field: 'filters.createUserId.0', rule: 'string', message: 'This value must be a string' },
-      ],
+        { field: 'filters.createUserId.0', rule: 'string', message: 'This value must be a string' }
+      ]
     },
     {
       properties: { filters: '["=", "createUserId", "invalid_uuid"]' },
@@ -159,17 +157,17 @@ describe(makeListUserValidation.name, () => {
           rule: 'regex',
           message: 'This value must be valid according to the pattern: uuidV4',
           details: {
-            pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i',
-          },
-        },
-      ],
+            pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i'
+          }
+        }
+      ]
     },
     // updateUserId
     {
       properties: { filters: '["=", "updateUserId", 1]' },
       validations: [
-        { field: 'filters.updateUserId.0', rule: 'string', message: 'This value must be a string' },
-      ],
+        { field: 'filters.updateUserId.0', rule: 'string', message: 'This value must be a string' }
+      ]
     },
     {
       properties: { filters: '["=", "updateUserId", "invalid_uuid"]' },
@@ -179,17 +177,17 @@ describe(makeListUserValidation.name, () => {
           rule: 'regex',
           message: 'This value must be valid according to the pattern: uuidV4',
           details: {
-            pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i',
-          },
-        },
-      ],
+            pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i'
+          }
+        }
+      ]
     },
     // createdAt
     {
       properties: { filters: '["=", "createdAt", 1]' },
       validations: [
-        { field: 'filters.createdAt.0', rule: 'string', message: 'This value must be a string' },
-      ],
+        { field: 'filters.createdAt.0', rule: 'string', message: 'This value must be a string' }
+      ]
     },
     {
       properties: { filters: '["=", "createdAt", "invalid_date"]' },
@@ -197,16 +195,16 @@ describe(makeListUserValidation.name, () => {
         {
           field: 'filters.createdAt.0',
           rule: 'date',
-          message: 'This value must be a valid date',
-        },
-      ],
+          message: 'This value must be a valid date'
+        }
+      ]
     },
     // updatedAt
     {
       properties: { filters: '["=", "updatedAt", 1]' },
       validations: [
-        { field: 'filters.updatedAt.0', rule: 'string', message: 'This value must be a string' },
-      ],
+        { field: 'filters.updatedAt.0', rule: 'string', message: 'This value must be a string' }
+      ]
     },
     {
       properties: { filters: '["=", "updatedAt", "invalid_date"]' },
@@ -214,10 +212,10 @@ describe(makeListUserValidation.name, () => {
         {
           field: 'filters.updatedAt.0',
           rule: 'date',
-          message: 'This value must be a valid date',
-        },
-      ],
-    },
+          message: 'This value must be a valid date'
+        }
+      ]
+    }
   ])(
     'Should throw ValidationException for every user invalid prop',
     ({ properties, validations }) => {
@@ -226,7 +224,7 @@ describe(makeListUserValidation.name, () => {
 
         const requestModel = {
           filters: '[]',
-          ...properties,
+          ...properties
         } as ListUserUseCase.RequestModel
 
         const sutResult = await sut(requestModel).catch((e) => e)

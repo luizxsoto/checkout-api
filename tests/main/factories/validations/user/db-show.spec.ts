@@ -20,11 +20,11 @@ describe(makeShowUserValidation.name, () => {
     // id
     {
       properties: { id: undefined },
-      validations: [{ field: 'id', rule: 'required', message: 'This value is required' }],
+      validations: [{ field: 'id', rule: 'required', message: 'This value is required' }]
     },
     {
       properties: { id: 1 },
-      validations: [{ field: 'id', rule: 'string', message: 'This value must be a string' }],
+      validations: [{ field: 'id', rule: 'string', message: 'This value must be a string' }]
     },
     {
       properties: { id: 'invalid_uuid' },
@@ -34,15 +34,15 @@ describe(makeShowUserValidation.name, () => {
           rule: 'regex',
           message: 'This value must be valid according to the pattern: uuidV4',
           details: {
-            pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i',
-          },
-        },
-      ],
+            pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i'
+          }
+        }
+      ]
     },
     {
       properties: { id: nonExistentId },
-      validations: [{ field: 'id', rule: 'exists', message: 'This value was not found' }],
-    },
+      validations: [{ field: 'id', rule: 'exists', message: 'This value was not found' }]
+    }
   ])(
     'Should throw ValidationException for every user invalid prop',
     ({ properties, validations }) => {

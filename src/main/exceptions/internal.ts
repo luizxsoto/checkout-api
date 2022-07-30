@@ -8,7 +8,7 @@ export class InternalException extends ApplicationException {
       name: 'InternalException',
       code: StatusCodes.INTERNAL,
       message: 'Something went wrong',
-      originalError: error,
+      originalError: error
     })
   }
 }

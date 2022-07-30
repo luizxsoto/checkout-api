@@ -18,7 +18,7 @@ describe('RequiredValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'anyProp',
       message: 'This value is required',
-      rule: 'required',
+      rule: 'required'
     })
   })
 

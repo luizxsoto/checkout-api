@@ -11,7 +11,7 @@ export function adaptRoute(
       const request = {
         ...(req.body ?? {}),
         ...(req.params ?? {}),
-        ...(req.query ?? {}),
+        ...(req.query ?? {})
       }
 
       const controller = makeController(req.session as SessionModel)

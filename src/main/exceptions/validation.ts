@@ -12,7 +12,7 @@ export class ValidationException extends ApplicationException {
     super({
       name: 'ValidationException',
       code: StatusCodes.BAD_REQUEST,
-      message: 'An error ocurred performing a validation',
+      message: 'An error ocurred performing a validation'
     })
   }
 }

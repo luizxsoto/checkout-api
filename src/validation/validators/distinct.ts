@@ -29,7 +29,7 @@ export class Validator implements FieldValidation.Validation<Options> {
       rule: 'distinct',
       message: `This value cannot have duplicate items${
         !this.options?.keys ? '' : ` by: ${this.options?.keys.join(', ')}`
-      }`,
+      }`
     }
   }
 }

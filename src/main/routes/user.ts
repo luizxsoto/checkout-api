@@ -6,7 +6,7 @@ import {
   makeListUserController,
   makeRemoveUserController,
   makeShowUserController,
-  makeUpdateUserController,
+  makeUpdateUserController
 } from '@/main/factories/controllers'
 import { auth } from '@/main/middlewares'
 

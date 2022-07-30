@@ -22,7 +22,7 @@ describe(AuthMiddleware.name, () => {
     const request = { bearerToken: 'Bearer valid_bearerToken' }
     const sutResult = await sut.handle(request)
 
-    expect(decrypter.decrypt).toBeCalledWith(request.bearerToken.replace('Bearer ', ''))
+    expect(decrypter.decrypt).toBeCalledWith(request.bearerToken.replace(/^bearer\s?/i, ''))
 
     expect(sutResult).toStrictEqual({ session: { ...decryptResult } })
   })

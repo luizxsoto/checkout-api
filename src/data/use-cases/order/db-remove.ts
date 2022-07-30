@@ -1,7 +1,7 @@
 import {
   FindByOrderRepository,
   RemoveOrderItemRepository,
-  RemoveOrderRepository,
+  RemoveOrderRepository
 } from '@/data/contracts/repositories'
 import { RemoveOrderValidation } from '@/data/contracts/validations'
 import { RemoveOrderUseCase } from '@/domain/use-cases'
@@ -27,14 +27,14 @@ export class DbRemoveOrderUseCase implements RemoveOrderUseCase.UseCase {
 
     const [orderRemoved] = await this.removeOrderRepository.remove(sanitizedRequestModel)
     const orderItemsRemoved = await this.removeOrderItemRepository.remove({
-      orderId: sanitizedRequestModel.id,
+      orderId: sanitizedRequestModel.id
     })
 
     return {
       ...orders[0],
       ...sanitizedRequestModel,
       ...orderRemoved,
-      orderItems: orderItemsRemoved,
+      orderItems: orderItemsRemoved
     }
   }
 
@@ -42,7 +42,7 @@ export class DbRemoveOrderUseCase implements RemoveOrderUseCase.UseCase {
     requestModel: RemoveOrderUseCase.RequestModel
   ): RemoveOrderUseCase.RequestModel {
     return {
-      id: requestModel.id,
+      id: requestModel.id
     }
   }
 }

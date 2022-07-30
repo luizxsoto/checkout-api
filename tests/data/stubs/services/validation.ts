@@ -25,7 +25,7 @@ export function makeValidationServiceStub() {
   async function validate({
     schema,
     model,
-    data,
+    data
   }: ValidationService.Params): Promise<ValidationService.Result> {
     await Promise.all(
       Object.keys(schema).map(async (key) => performValidation(schema[key], key, model, data))
@@ -36,6 +36,6 @@ export function makeValidationServiceStub() {
 
   return {
     performValidation: jest.fn().mockImplementation(performValidation),
-    validate: jest.fn().mockImplementation(validate),
+    validate: jest.fn().mockImplementation(validate)
   }
 }

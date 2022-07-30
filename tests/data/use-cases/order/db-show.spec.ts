@@ -1,6 +1,6 @@
 import {
   makeOrderItemRepositoryStub,
-  makeOrderRepositoryStub,
+  makeOrderRepositoryStub
 } from '@tests/data/stubs/repositories'
 import { makeShowOrderValidationStub } from '@tests/data/stubs/validations'
 
@@ -27,7 +27,7 @@ describe(DbShowOrderUseCase.name, () => {
 
     const requestModel = {
       id: validUuidV4,
-      anyWrongProp: 'anyValue',
+      anyWrongProp: 'anyValue'
     }
     const sanitizedRequestModel = { ...requestModel }
     Reflect.deleteProperty(sanitizedRequestModel, 'anyWrongProp')
@@ -52,7 +52,7 @@ describe(DbShowOrderUseCase.name, () => {
 
     const requestModel = {
       id: validUuidV4,
-      anyWrongProp: 'anyValue',
+      anyWrongProp: 'anyValue'
     }
     const error = new Error('firstValidation Error')
 
@@ -68,7 +68,7 @@ describe(DbShowOrderUseCase.name, () => {
 
     const requestModel = {
       id: validUuidV4,
-      anyWrongProp: 'anyValue',
+      anyWrongProp: 'anyValue'
     }
     const error = new Error('secondValidation Error')
 

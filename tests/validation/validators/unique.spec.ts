@@ -10,7 +10,7 @@ describe('UniqueValidation', () => {
   test('Should return ValidationError if the value has already been used', async () => {
     const options = {
       dataEntity: 'anyData',
-      props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }],
+      props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }]
     }
     const { sut } = makeSut(options)
 
@@ -23,14 +23,14 @@ describe('UniqueValidation', () => {
       field: 'anyProp',
       message: 'This value has already been used',
       rule: 'unique',
-      details: { findedRegister: { anyProp: 'any_value' } },
+      details: { findedRegister: { anyProp: 'any_value' } }
     })
   })
 
   test('Should return null if the value has not already been used', async () => {
     const options = {
       dataEntity: 'anyData',
-      props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }],
+      props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }]
     }
     const { sut } = makeSut(options)
 
@@ -46,7 +46,7 @@ describe('UniqueValidation', () => {
     const options = {
       dataEntity: 'anyData',
       ignoreProps: [{ modelKey: 'ignoreProp', dataKey: 'ignoreProp' }],
-      props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }],
+      props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }]
     }
     const { sut } = makeSut(options)
 
@@ -62,7 +62,7 @@ describe('UniqueValidation', () => {
     const options = {
       dataEntity: 'anyData',
       ignoreProps: [{ modelKey: 'ignoreProp', dataKey: 'ignoreProp' }],
-      props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }],
+      props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }]
     }
     const { sut } = makeSut(options)
 
@@ -77,7 +77,7 @@ describe('UniqueValidation', () => {
   test('Should return null if no value is provided', async () => {
     const options = {
       dataEntity: 'anyData',
-      props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }],
+      props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }]
     }
     const { sut } = makeSut(options)
 

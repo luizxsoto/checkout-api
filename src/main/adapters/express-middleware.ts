@@ -7,7 +7,7 @@ export function adaptMiddleware(middleware: Middleware) {
     try {
       const request = {
         ...req.headers,
-        bearerToken: req.headers.authorization?.replace('Bearer ', ''),
+        bearerToken: req.headers.authorization?.replace(/^bearer\s?/i, '')
       }
 
       const middlewareResponse = await middleware.handle(request)

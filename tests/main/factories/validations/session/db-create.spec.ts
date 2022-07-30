@@ -21,11 +21,11 @@ describe(makeCreateSessionValidation.name, () => {
     // email
     {
       properties: { email: undefined },
-      validations: [{ field: 'email', rule: 'required', message: 'This value is required' }],
+      validations: [{ field: 'email', rule: 'required', message: 'This value is required' }]
     },
     {
       properties: { email: 1 },
-      validations: [{ field: 'email', rule: 'string', message: 'This value must be a string' }],
+      validations: [{ field: 'email', rule: 'string', message: 'This value must be a string' }]
     },
     {
       properties: { email: ' InV@L1D eM@1L ' },
@@ -34,31 +34,31 @@ describe(makeCreateSessionValidation.name, () => {
           field: 'email',
           rule: 'regex',
           message: 'This value must be valid according to the pattern: email',
-          details: { pattern: '/^[\\w+.]+@\\w+\\.\\w{2,}(?:\\.\\w{2})?$/' },
-        },
-      ],
+          details: { pattern: '/^[\\w+.]+@\\w+\\.\\w{2,}(?:\\.\\w{2})?$/' }
+        }
+      ]
     },
     {
       properties: {
         email:
-          'biggest_email_biggest_email_biggest_email_biggest_email_biggest_email_biggest_email_biggest_email@invalid.com',
+          'biggest_email_biggest_email_biggest_email_biggest_email_biggest_email_biggest_email_biggest_email@invalid.com'
       },
       validations: [
-        { field: 'email', rule: 'length', message: 'This value length must be beetween 6 and 100' },
-      ],
+        { field: 'email', rule: 'length', message: 'This value length must be beetween 6 and 100' }
+      ]
     },
     {
       properties: { email: 'any@email.com' },
-      validations: [{ field: 'email', rule: 'exists', message: 'This value was not found' }],
+      validations: [{ field: 'email', rule: 'exists', message: 'This value was not found' }]
     },
     // password
     {
       properties: { password: undefined },
-      validations: [{ field: 'password', rule: 'required', message: 'This value is required' }],
+      validations: [{ field: 'password', rule: 'required', message: 'This value is required' }]
     },
     {
       properties: { password: 1 },
-      validations: [{ field: 'password', rule: 'string', message: 'This value must be a string' }],
+      validations: [{ field: 'password', rule: 'string', message: 'This value must be a string' }]
     },
     {
       properties: { password: ' InV@L1D n@m3 ' },
@@ -68,10 +68,10 @@ describe(makeCreateSessionValidation.name, () => {
           rule: 'regex',
           message: 'This value must be valid according to the pattern: password',
           details: {
-            pattern: '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]/',
-          },
-        },
-      ],
+            pattern: '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]/'
+          }
+        }
+      ]
     },
     {
       properties: { password: 'L0we!' },
@@ -79,9 +79,9 @@ describe(makeCreateSessionValidation.name, () => {
         {
           field: 'password',
           rule: 'length',
-          message: 'This value length must be beetween 6 and 20',
-        },
-      ],
+          message: 'This value length must be beetween 6 and 20'
+        }
+      ]
     },
     {
       properties: { password: 'Biggest.Password.Biggest.Password.Biggest.Password@1' },
@@ -89,14 +89,14 @@ describe(makeCreateSessionValidation.name, () => {
         {
           field: 'password',
           rule: 'length',
-          message: 'This value length must be beetween 6 and 20',
-        },
-      ],
+          message: 'This value length must be beetween 6 and 20'
+        }
+      ]
     },
     {
       properties: { password: '0ther@Password' },
-      validations: [{ field: 'password', rule: 'password', message: 'Wrong password' }],
-    },
+      validations: [{ field: 'password', rule: 'password', message: 'Wrong password' }]
+    }
   ])(
     'Should throw ValidationException for every session invalid prop',
     ({ properties, validations }) => {
@@ -106,7 +106,7 @@ describe(makeCreateSessionValidation.name, () => {
         const requestModel = {
           email: 'valid@email.com',
           password: 'Password@123',
-          ...properties,
+          ...properties
         } as CreateSessionUseCase.RequestModel
 
         let sutResult = await sut(requestModel).catch((e) => e)

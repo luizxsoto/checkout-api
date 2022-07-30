@@ -16,7 +16,7 @@ describe('Knex', () => {
     expect(knexSpy).toBeCalledWith({
       client: 'dbClient',
       connection: 'dbURL',
-      useNullAsDefault: true,
+      useNullAsDefault: true
     })
   })
 })

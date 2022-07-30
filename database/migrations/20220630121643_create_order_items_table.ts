@@ -13,7 +13,7 @@ export async function up(knex: Knex): Promise<void> {
       table.integer('quantity').notNullable()
       table.integer('unitValue').notNullable()
       table.integer('totalValue').notNullable()
-    },
+    }
   })
 }
 

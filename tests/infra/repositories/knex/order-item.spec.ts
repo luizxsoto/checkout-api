@@ -35,7 +35,7 @@ describe(KnexOrderItemRepository.name, () => {
         productId: validUuidV4,
         quantity: 1,
         unitValue: 1000,
-        totalValue: 1000,
+        totalValue: 1000
       }
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]))
       const responseModel = { ...requestModel }
@@ -55,7 +55,7 @@ describe(KnexOrderItemRepository.name, () => {
         productId: validUuidV4,
         quantity: 1,
         unitValue: 1000,
-        totalValue: 1000,
+        totalValue: 1000
       }
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]))
       const responseModel = { ...requestModel }
@@ -76,14 +76,14 @@ describe(KnexOrderItemRepository.name, () => {
         productId: validUuidV4,
         quantity: 1,
         unitValue: 1000,
-        totalValue: 1000,
+        totalValue: 1000
       }
       knex.then.mockImplementationOnce((resolve) => resolve([{ ...requestModel, id }]))
       const responseModel = {
         ...requestModel,
         id,
         createUserId: userId,
-        createdAt: new Date(),
+        createdAt: new Date()
       }
 
       const [sutResult] = await sut.create([requestModel])
@@ -103,7 +103,7 @@ describe(KnexOrderItemRepository.name, () => {
         quantity: 1,
         unitValue: 1000,
         totalValue: 1000,
-        createdAt: new Date(),
+        createdAt: new Date()
       }
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]))
       const responseModel = { ...requestModel, updateUserId: userId, updatedAt: new Date() }

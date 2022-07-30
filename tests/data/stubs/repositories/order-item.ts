@@ -5,7 +5,7 @@ import {
   FindByOrderItemRepository,
   ListOrderItemRepository,
   RemoveOrderItemRepository,
-  UpdateOrderItemRepository,
+  UpdateOrderItemRepository
 } from '@/data/contracts/repositories'
 
 export function makeOrderItemRepositoryStub() {
@@ -39,6 +39,6 @@ export function makeOrderItemRepositoryStub() {
         (
           requestModel: RemoveOrderItemRepository.RequestModel
         ): RemoveOrderItemRepository.ResponseModel => [makeOrderItemModelMock(requestModel[0])]
-      ),
+      )
   }
 }

@@ -10,7 +10,7 @@ describe('ExistsValidation', () => {
   test('Should return ValidationError if the value was not found', async () => {
     const options = {
       dataEntity: 'anyData',
-      props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }],
+      props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }]
     }
     const { sut } = makeSut(options)
 
@@ -22,14 +22,14 @@ describe('ExistsValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'anyProp',
       message: 'This value was not found',
-      rule: 'exists',
+      rule: 'exists'
     })
   })
 
   test('Should return nul if the value was found', async () => {
     const options = {
       dataEntity: 'anyData',
-      props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }],
+      props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }]
     }
     const { sut } = makeSut(options)
 
@@ -44,7 +44,7 @@ describe('ExistsValidation', () => {
   test('Should return nul if the value was found with nested key', async () => {
     const options = {
       dataEntity: 'anyData',
-      props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }],
+      props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }]
     }
     const { sut } = makeSut(options)
 
@@ -59,7 +59,7 @@ describe('ExistsValidation', () => {
   test('Should return null if no value is provided', async () => {
     const options = {
       dataEntity: 'anyData',
-      props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }],
+      props: [{ modelKey: 'anyProp', dataKey: 'anyProp' }]
     }
     const { sut } = makeSut(options)
 

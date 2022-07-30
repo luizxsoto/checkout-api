@@ -9,7 +9,7 @@ export function makeSessionModelMock(extraData?: Partial<SessionModel>) {
   return {
     userId: validUuidV4,
     roles: ['admin'] as Roles[],
-    ...extraData,
+    ...extraData
   }
 }
 

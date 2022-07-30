@@ -19,7 +19,7 @@ describe('InValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'anyProp',
       message: `This value must be in: ${options.values.join(', ')}`,
-      rule: 'in',
+      rule: 'in'
     })
   })
 

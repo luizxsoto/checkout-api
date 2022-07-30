@@ -14,14 +14,14 @@ const config: Config.InitialOptions = {
     '!<rootDir>/src/presentation/dtos/**',
     '!<rootDir>/src/validation/protocols/**',
     '!<rootDir>/src/**/contracts/**',
-    '!<rootDir>/src/**/exceptions/**',
+    '!<rootDir>/src/**/exceptions/**'
   ],
   coverageDirectory: './coverage',
   roots: ['<rootDir>/src/', '<rootDir>/tests/'],
   moduleNameMapper: {
     '^@tests/(.*)': ['<rootDir>/tests/$1'],
-    '^@/(.*)': ['<rootDir>/src/$1'],
-  },
+    '^@/(.*)': ['<rootDir>/src/$1']
+  }
 }
 
 // eslint-disable-next-line import/no-default-export

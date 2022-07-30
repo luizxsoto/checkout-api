@@ -28,8 +28,8 @@ export class DbCreateUserUseCase implements CreateUserUseCase.UseCase {
     const [userCreated] = await this.createUserRepository.create([
       {
         ...sanitizedRequestModel,
-        password: await this.hasher.hash(sanitizedRequestModel.password),
-      },
+        password: await this.hasher.hash(sanitizedRequestModel.password)
+      }
     ])
 
     const responseModel = { ...sanitizedRequestModel, ...userCreated }
@@ -45,7 +45,7 @@ export class DbCreateUserUseCase implements CreateUserUseCase.UseCase {
       name: requestModel.name,
       email: requestModel.email,
       password: requestModel.password,
-      roles: requestModel.roles,
+      roles: requestModel.roles
     }
   }
 }

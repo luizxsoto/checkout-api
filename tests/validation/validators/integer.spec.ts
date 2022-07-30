@@ -18,7 +18,7 @@ describe('IntegerValidation', () => {
     expect(sutResult).toStrictEqual({
       field: 'anyProp',
       message: 'This value must be an integer',
-      rule: 'integer',
+      rule: 'integer'
     })
   })
 

@@ -5,7 +5,7 @@ import {
   FindByProductRepository,
   ListProductRepository,
   RemoveProductRepository,
-  UpdateProductRepository,
+  UpdateProductRepository
 } from '@/data/contracts/repositories'
 
 export function makeProductRepositoryStub() {
@@ -37,6 +37,6 @@ export function makeProductRepositoryStub() {
         (
           requestModel: RemoveProductRepository.RequestModel
         ): RemoveProductRepository.ResponseModel => [makeProductModelMock(requestModel[0])]
-      ),
+      )
   }
 }

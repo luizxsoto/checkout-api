@@ -9,7 +9,7 @@ jest.mock('jsonwebtoken', () => ({
 
   async verify(): Promise<string> {
     return 'any_value'
-  },
+  }
 }))
 
 function makeSut() {

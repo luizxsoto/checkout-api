@@ -7,7 +7,7 @@ import {
   FindByProductRepository,
   ListProductRepository,
   RemoveProductRepository,
-  UpdateProductRepository,
+  UpdateProductRepository
 } from '@/data/contracts/repositories'
 import { GenerateUniqueIDService } from '@/data/contracts/services'
 import { ProductModel, SessionModel } from '@/domain/models'

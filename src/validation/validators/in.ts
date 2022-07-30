@@ -16,7 +16,7 @@ export class Validator implements FieldValidation.Validation<Options> {
     return {
       field: key,
       rule: 'in',
-      message: `This value must be in: ${this.options.values.join(', ')}`,
+      message: `This value must be in: ${this.options.values.join(', ')}`
     }
   }
 }

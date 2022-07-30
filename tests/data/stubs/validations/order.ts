@@ -4,7 +4,7 @@ import {
   ListOrderUseCase,
   RemoveOrderUseCase,
   ShowOrderUseCase,
-  UpdateOrderUseCase,
+  UpdateOrderUseCase
 } from '@/domain/use-cases'
 
 export function makeCreateOrderValidationStub() {

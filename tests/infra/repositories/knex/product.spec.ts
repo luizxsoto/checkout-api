@@ -34,7 +34,7 @@ describe(KnexProductRepository.name, () => {
         name: 'Any Name',
         category: 'others' as ProductModel['category'],
         image: 'any-image.com',
-        price: 1000,
+        price: 1000
       }
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]))
       const responseModel = { ...requestModel }
@@ -53,7 +53,7 @@ describe(KnexProductRepository.name, () => {
         name: 'Any Name',
         category: 'others' as ProductModel['category'],
         image: 'any-image.com',
-        price: 1000,
+        price: 1000
       }
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]))
       const responseModel = { ...requestModel }
@@ -73,14 +73,14 @@ describe(KnexProductRepository.name, () => {
         name: 'Any Name',
         category: 'others' as ProductModel['category'],
         image: 'any-image.com',
-        price: 1000,
+        price: 1000
       }
       knex.then.mockImplementationOnce((resolve) => resolve([{ ...requestModel, id }]))
       const responseModel = {
         ...requestModel,
         id,
         createUserId: userId,
-        createdAt: new Date(),
+        createdAt: new Date()
       }
 
       const [sutResult] = await sut.create([requestModel])
@@ -99,7 +99,7 @@ describe(KnexProductRepository.name, () => {
         category: 'others' as ProductModel['category'],
         image: 'any-image.com',
         price: 1000,
-        createdAt: new Date(),
+        createdAt: new Date()
       }
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]))
       const responseModel = { ...requestModel, updateUserId: userId, updatedAt: new Date() }

@@ -36,7 +36,7 @@ describe('Product Routes', () => {
         image: 'any-image.com',
         price: 1000,
         createUserId: userId,
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       }
 
       await knexConfig.table('products').insert(requestModel)
@@ -59,7 +59,7 @@ describe('Product Routes', () => {
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
       const requestModel = {
-        filters: 'invalid_filters',
+        filters: 'invalid_filters'
       }
 
       const result = await request(app)
@@ -78,9 +78,9 @@ describe('Product Routes', () => {
             field: 'filters',
             rule: 'listFilters',
             message:
-              'This value must be a valid list filters and with this posible fields: name, category, price, createUserId, updateUserId, createdAt, updatedAt',
-          },
-        ],
+              'This value must be a valid list filters and with this posible fields: name, category, price, createUserId, updateUserId, createdAt, updatedAt'
+          }
+        ]
       })
     })
   })
@@ -94,7 +94,7 @@ describe('Product Routes', () => {
         image: 'any-image.com',
         price: 1000,
         createUserId: userId,
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       }
 
       await knexConfig.table('products').insert(requestModel)
@@ -116,7 +116,7 @@ describe('Product Routes', () => {
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
       const requestModel = {
-        id: 'invalid_id',
+        id: 'invalid_id'
       }
 
       const result = await request(app)
@@ -135,10 +135,10 @@ describe('Product Routes', () => {
             rule: 'regex',
             message: 'This value must be valid according to the pattern: uuidV4',
             details: {
-              pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i',
-            },
-          },
-        ],
+              pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i'
+            }
+          }
+        ]
       })
     })
   })
@@ -149,7 +149,7 @@ describe('Product Routes', () => {
         name: 'Any Name',
         category: 'others',
         image: 'any-image.com',
-        price: 1000,
+        price: 1000
       }
       const createUserId = userId
 
@@ -187,9 +187,9 @@ describe('Product Routes', () => {
           {
             field: 'name',
             rule: 'required',
-            message: 'This value is required',
-          },
-        ],
+            message: 'This value is required'
+          }
+        ]
       })
     })
   })
@@ -203,7 +203,7 @@ describe('Product Routes', () => {
         image: 'any-image.com',
         price: 1000,
         createUserId: userId,
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       }
       const updateUserId = userId
 
@@ -232,7 +232,7 @@ describe('Product Routes', () => {
         name: 'Any Name',
         category: 'others',
         image: 'any-image.com',
-        price: 1000,
+        price: 1000
       }
 
       const result = await request(app)
@@ -251,10 +251,10 @@ describe('Product Routes', () => {
             rule: 'regex',
             message: 'This value must be valid according to the pattern: uuidV4',
             details: {
-              pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i',
-            },
-          },
-        ],
+              pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i'
+            }
+          }
+        ]
       })
     })
   })
@@ -270,7 +270,7 @@ describe('Product Routes', () => {
         createUserId: userId,
         updateUserId: userId,
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       }
       const deleteUserId = userId
 
@@ -297,7 +297,7 @@ describe('Product Routes', () => {
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
       const requestModel = {
-        id: 'invalid_id',
+        id: 'invalid_id'
       }
 
       const result = await request(app)
@@ -316,10 +316,10 @@ describe('Product Routes', () => {
             rule: 'regex',
             message: 'This value must be valid according to the pattern: uuidV4',
             details: {
-              pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i',
-            },
-          },
-        ],
+              pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i'
+            }
+          }
+        ]
       })
     })
   })

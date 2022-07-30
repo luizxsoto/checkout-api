@@ -28,7 +28,7 @@ export class DbListUserUseCase implements ListUserUseCase.UseCase {
       perPage: Number(requestModel.perPage) || requestModel.perPage,
       orderBy: requestModel.orderBy,
       order: requestModel.order,
-      filters: requestModel.filters,
+      filters: requestModel.filters
     }
 
     return sanitizedRequestModel

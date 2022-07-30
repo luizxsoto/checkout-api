@@ -21,7 +21,7 @@ describe(DbListOrderUseCase.name, () => {
       orderBy: 'userId' as const,
       order: 'asc' as const,
       filters: '[]',
-      anyWrongProp: 'anyValue',
+      anyWrongProp: 'anyValue'
     }
     const sanitizedRequestModel = { ...requestModel }
     Reflect.deleteProperty(sanitizedRequestModel, 'anyWrongProp')
@@ -51,7 +51,7 @@ describe(DbListOrderUseCase.name, () => {
       orderBy: 'userId' as const,
       order: 'asc' as const,
       filters: '[]',
-      anyWrongProp: 'anyValue',
+      anyWrongProp: 'anyValue'
     }
     const error = new Error('firstValidation Error')
 

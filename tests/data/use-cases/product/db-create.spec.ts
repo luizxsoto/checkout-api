@@ -21,10 +21,10 @@ describe(DbCreateProductUseCase.name, () => {
       category: 'others' as ProductModel['category'],
       image: 'any-image.com',
       price: 1000,
-      anyWrongProp: 'anyValue',
+      anyWrongProp: 'anyValue'
     }
     const sanitizedRequestModel = {
-      ...requestModel,
+      ...requestModel
     }
     Reflect.deleteProperty(sanitizedRequestModel, 'anyWrongProp')
     const responseModel = { ...sanitizedRequestModel, id: 'any_id', createdAt: new Date() }
@@ -46,7 +46,7 @@ describe(DbCreateProductUseCase.name, () => {
       category: 'others' as ProductModel['category'],
       image: 'any-image.com',
       price: 1000,
-      anyWrongProp: 'anyValue',
+      anyWrongProp: 'anyValue'
     }
     const error = new Error('firstValidation Error')
 

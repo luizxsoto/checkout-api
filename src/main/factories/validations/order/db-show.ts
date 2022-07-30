@@ -9,20 +9,20 @@ export function makeShowOrderValidation(
   return async (requestModel: ShowOrderUseCase.RequestModel) => {
     await validationService.validate({
       schema: {
-        id: new ValidationBuilder().required().string().regex({ pattern: 'uuidV4' }).build(),
+        id: new ValidationBuilder().required().string().regex({ pattern: 'uuidV4' }).build()
       },
       model: requestModel,
-      data: {},
+      data: {}
     })
     return (validationData) =>
       validationService.validate({
         schema: {
           id: new ValidationBuilder()
             .exists({ dataEntity: 'orders', props: [{ modelKey: 'id', dataKey: 'id' }] })
-            .build(),
+            .build()
         },
         model: requestModel,
-        data: validationData,
+        data: validationData
       })
   }
 }

@@ -1,4 +1,4 @@
-import { InternalException } from '@/main/exceptions'
+import { InternalException, NotFoundException } from '@/main/exceptions'
 import { created, notFound, ok, serverError } from '@/presentation/helpers'
 
 describe('Http Helpers', () => {
@@ -19,7 +19,7 @@ describe('Http Helpers', () => {
   test('Should return correct values for notFound()', () => {
     const sutResult = notFound()
 
-    expect(sutResult).toStrictEqual({ statusCode: 404, body: { message: 'Route not found' } })
+    expect(sutResult).toStrictEqual({ statusCode: 404, body: new NotFoundException() })
   })
 
   describe('Should return correct values for serverError()', () => {

@@ -7,7 +7,7 @@ import {
   FindByUserRepository,
   ListUserRepository,
   RemoveUserRepository,
-  UpdateUserRepository,
+  UpdateUserRepository
 } from '@/data/contracts/repositories'
 import { GenerateUniqueIDService } from '@/data/contracts/services'
 import { SessionModel, UserModel } from '@/domain/models'
@@ -52,14 +52,14 @@ export class KnexUserRepository<FindByType = 'NORMAL' | 'SANITIZED'>
     const result = await this.baseCreate<Omit<UserModel, 'roles'> & { roles: string }>(
       requestModel.map((itemModel) => ({
         ...itemModel,
-        roles: JSON.stringify(itemModel.roles),
+        roles: JSON.stringify(itemModel.roles)
       }))
     )
 
     return result.map((item) => ({
       ...item,
       roles: requestModel.find((itemModel) => itemModel.email === item.email)
-        ?.roles as UserModel['roles'],
+        ?.roles as UserModel['roles']
     }))
   }
 
@@ -74,7 +74,7 @@ export class KnexUserRepository<FindByType = 'NORMAL' | 'SANITIZED'>
   ): Promise<UpdateUserRepository.ResponseModel> {
     const result = await this.baseUpdate<Omit<UserModel, 'roles'> & { roles?: string }>(where, {
       ...model,
-      roles: model.roles && JSON.stringify(model.roles),
+      roles: model.roles && JSON.stringify(model.roles)
     })
 
     return result as unknown as UpdateUserRepository.ResponseModel

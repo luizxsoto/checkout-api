@@ -24,7 +24,7 @@ describe(DbCreateSessionUseCase.name, () => {
     const requestModel = {
       email: 'any@email.com',
       password: 'Password@123',
-      anyWrongProp: 'anyValue',
+      anyWrongProp: 'anyValue'
     }
     const sanitizedRequestModel = { ...requestModel }
     Reflect.deleteProperty(sanitizedRequestModel, 'anyWrongProp')
@@ -34,7 +34,7 @@ describe(DbCreateSessionUseCase.name, () => {
       roles: ['any_role'],
       createdAt: new Date(),
       password: 'hashed_password',
-      bearerToken: 'any_bearerToken',
+      bearerToken: 'any_bearerToken'
     }
     Reflect.deleteProperty(responseModel, 'password')
 
@@ -50,7 +50,7 @@ describe(DbCreateSessionUseCase.name, () => {
     expect(createSessionValidation.thirdValidation).toBeCalledWith(responseModel)
     expect(encrypterCryptography.encrypt).toBeCalledWith({
       userId: responseModel.id,
-      roles: responseModel.roles,
+      roles: responseModel.roles
     })
   })
 
@@ -60,7 +60,7 @@ describe(DbCreateSessionUseCase.name, () => {
     const requestModel = {
       email: 'any@email.com',
       password: 'Password@123',
-      anyWrongProp: 'anyValue',
+      anyWrongProp: 'anyValue'
     }
     const error = new Error('firstValidation Error')
 
@@ -77,7 +77,7 @@ describe(DbCreateSessionUseCase.name, () => {
     const requestModel = {
       email: 'any@email.com',
       password: 'Password@123',
-      anyWrongProp: 'anyValue',
+      anyWrongProp: 'anyValue'
     }
     const error = new Error('secondValidation Error')
 
@@ -94,7 +94,7 @@ describe(DbCreateSessionUseCase.name, () => {
     const requestModel = {
       email: 'any@email.com',
       password: 'Password@123',
-      anyWrongProp: 'anyValue',
+      anyWrongProp: 'anyValue'
     }
     const error = new Error('thirdValidation Error')
 

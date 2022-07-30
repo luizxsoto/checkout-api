@@ -14,7 +14,7 @@ export class Validator implements FieldValidation.Validation<Options> {
     return {
       field: key,
       rule: 'max',
-      message: `This value must be less or equal to: ${this.options.value}`,
+      message: `This value must be less or equal to: ${this.options.value}`
     }
   }
 }

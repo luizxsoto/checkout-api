@@ -36,7 +36,7 @@ describe('User Routes', () => {
         password: 'hashed_password',
         roles: [],
         createUserId: userId,
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       }
 
       await knexConfig.table('users').insert(requestModel)
@@ -58,7 +58,7 @@ describe('User Routes', () => {
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
       const requestModel = {
-        filters: 'invalid_filters',
+        filters: 'invalid_filters'
       }
 
       const result = await request(app)
@@ -77,9 +77,9 @@ describe('User Routes', () => {
             field: 'filters',
             rule: 'listFilters',
             message:
-              'This value must be a valid list filters and with this posible fields: name, email, createUserId, updateUserId, createdAt, updatedAt',
-          },
-        ],
+              'This value must be a valid list filters and with this posible fields: name, email, createUserId, updateUserId, createdAt, updatedAt'
+          }
+        ]
       })
     })
   })
@@ -93,7 +93,7 @@ describe('User Routes', () => {
         password: 'hashed_password',
         roles: [],
         createUserId: userId,
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       }
 
       await knexConfig.table('users').insert(requestModel)
@@ -114,7 +114,7 @@ describe('User Routes', () => {
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
       const requestModel = {
-        id: 'invalid_id',
+        id: 'invalid_id'
       }
 
       const result = await request(app)
@@ -133,10 +133,10 @@ describe('User Routes', () => {
             rule: 'regex',
             message: 'This value must be valid according to the pattern: uuidV4',
             details: {
-              pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i',
-            },
-          },
-        ],
+              pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i'
+            }
+          }
+        ]
       })
     })
   })
@@ -147,7 +147,7 @@ describe('User Routes', () => {
         name: 'Any Name',
         email: 'any@email.com',
         password: 'Password@123',
-        roles: [],
+        roles: []
       }
       const createUserId = userId
 
@@ -171,7 +171,7 @@ describe('User Routes', () => {
       const requestModel = {
         name: 'Any Name',
         password: 'Password@123',
-        roles: [],
+        roles: []
       }
 
       const result = await request(app)
@@ -188,9 +188,9 @@ describe('User Routes', () => {
           {
             field: 'email',
             rule: 'required',
-            message: 'This value is required',
-          },
-        ],
+            message: 'This value is required'
+          }
+        ]
       })
     })
   })
@@ -204,7 +204,7 @@ describe('User Routes', () => {
         password: 'Password@123',
         roles: [],
         createUserId: userId,
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       }
       const updateUserId = userId
 
@@ -232,7 +232,7 @@ describe('User Routes', () => {
         name: 'Any Name',
         email: 'any@email.com',
         password: 'Password@123',
-        roles: [],
+        roles: []
       }
 
       const result = await request(app)
@@ -251,10 +251,10 @@ describe('User Routes', () => {
             rule: 'regex',
             message: 'This value must be valid according to the pattern: uuidV4',
             details: {
-              pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i',
-            },
-          },
-        ],
+              pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i'
+            }
+          }
+        ]
       })
     })
   })
@@ -270,7 +270,7 @@ describe('User Routes', () => {
         createUserId: userId,
         updateUserId: userId,
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       }
       const deleteUserId = userId
 
@@ -296,7 +296,7 @@ describe('User Routes', () => {
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
       const requestModel = {
-        id: 'invalid_id',
+        id: 'invalid_id'
       }
 
       const result = await request(app)
@@ -315,10 +315,10 @@ describe('User Routes', () => {
             rule: 'regex',
             message: 'This value must be valid according to the pattern: uuidV4',
             details: {
-              pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i',
-            },
-          },
-        ],
+              pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i'
+            }
+          }
+        ]
       })
     })
   })

@@ -38,7 +38,7 @@ export class DbUpdateProductUseCase implements UpdateProductUseCase.UseCase {
       name: requestModel.name,
       category: requestModel.category,
       image: requestModel.image,
-      price: requestModel.price,
+      price: requestModel.price
     }
   }
 }

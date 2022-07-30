@@ -32,8 +32,7 @@ export class DbUpdateUserUseCase implements UpdateUserUseCase.UseCase {
       {
         ...sanitizedRequestModel,
         password:
-          sanitizedRequestModel.password &&
-          (await this.hasher.hash(sanitizedRequestModel.password)),
+          sanitizedRequestModel.password && (await this.hasher.hash(sanitizedRequestModel.password))
       }
     )
 
@@ -53,7 +52,7 @@ export class DbUpdateUserUseCase implements UpdateUserUseCase.UseCase {
       name: requestModel.name,
       email: requestModel.email,
       password: requestModel.password,
-      roles: requestModel.roles,
+      roles: requestModel.roles
     }
   }
 }

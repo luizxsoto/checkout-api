@@ -37,7 +37,7 @@ describe('Order Routes', () => {
         userId: validUuidV4,
         totalValue: 1000,
         createUserId: userId,
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       }
 
       await knexConfig.table('orders').insert(requestModel)
@@ -58,7 +58,7 @@ describe('Order Routes', () => {
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
       const requestModel = {
-        filters: 'invalid_filters',
+        filters: 'invalid_filters'
       }
 
       const result = await request(app)
@@ -77,9 +77,9 @@ describe('Order Routes', () => {
             field: 'filters',
             rule: 'listFilters',
             message:
-              'This value must be a valid list filters and with this posible fields: userId, totalValue, createUserId, updateUserId, createdAt, updatedAt',
-          },
-        ],
+              'This value must be a valid list filters and with this posible fields: userId, totalValue, createUserId, updateUserId, createdAt, updatedAt'
+          }
+        ]
       })
     })
   })
@@ -91,7 +91,7 @@ describe('Order Routes', () => {
         userId: validUuidV4,
         totalValue: 1000,
         createUserId: userId,
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       }
       const orderItemModel = {
         id: validUuidV4,
@@ -101,7 +101,7 @@ describe('Order Routes', () => {
         unitValue: 1000,
         totalValue: 1000,
         createUserId: userId,
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       }
 
       await knexConfig.table('orders').insert(orderModel)
@@ -130,7 +130,7 @@ describe('Order Routes', () => {
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
       const requestModel = {
-        id: 'invalid_id',
+        id: 'invalid_id'
       }
 
       const result = await request(app)
@@ -149,10 +149,10 @@ describe('Order Routes', () => {
             rule: 'regex',
             message: 'This value must be valid according to the pattern: uuidV4',
             details: {
-              pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i',
-            },
-          },
-        ],
+              pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i'
+            }
+          }
+        ]
       })
     })
   })
@@ -161,7 +161,7 @@ describe('Order Routes', () => {
     test('Should create order and return correct values', async () => {
       const requestModel = {
         userId: existingUserId,
-        orderItems: [{ productId: existingProductId, quantity: 1 }],
+        orderItems: [{ productId: existingProductId, quantity: 1 }]
       }
       const createUserId = userId
       const productPrice = 1000
@@ -195,7 +195,7 @@ describe('Order Routes', () => {
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
       const requestModel = {
-        orderItems: [{ productId: validUuidV4, quantity: 1 }],
+        orderItems: [{ productId: validUuidV4, quantity: 1 }]
       }
 
       const result = await request(app)
@@ -212,9 +212,9 @@ describe('Order Routes', () => {
           {
             field: 'userId',
             rule: 'required',
-            message: 'This value is required',
-          },
-        ],
+            message: 'This value is required'
+          }
+        ]
       })
     })
   })
@@ -226,7 +226,7 @@ describe('Order Routes', () => {
         userId: existingUserId,
         totalValue: 1000,
         createUserId: userId,
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       }
       const updateUserId = userId
 
@@ -250,7 +250,7 @@ describe('Order Routes', () => {
     test('Should return a correct body validation error if some prop is invalid', async () => {
       const requestModel = {
         id: 'invalid_id',
-        userId: validUuidV4,
+        userId: validUuidV4
       }
 
       const result = await request(app)
@@ -269,10 +269,10 @@ describe('Order Routes', () => {
             rule: 'regex',
             message: 'This value must be valid according to the pattern: uuidV4',
             details: {
-              pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i',
-            },
-          },
-        ],
+              pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i'
+            }
+          }
+        ]
       })
     })
   })
@@ -286,7 +286,7 @@ describe('Order Routes', () => {
         createUserId: userId,
         updateUserId: userId,
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       }
       const orderItemModel = {
         id: validUuidV4,
@@ -298,7 +298,7 @@ describe('Order Routes', () => {
         createUserId: userId,
         updateUserId: userId,
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       }
       const deleteUserId = userId
 
@@ -342,7 +342,7 @@ describe('Order Routes', () => {
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
       const requestModel = {
-        id: 'invalid_id',
+        id: 'invalid_id'
       }
 
       const result = await request(app)
@@ -361,10 +361,10 @@ describe('Order Routes', () => {
             rule: 'regex',
             message: 'This value must be valid according to the pattern: uuidV4',
             details: {
-              pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i',
-            },
-          },
-        ],
+              pattern: '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i'
+            }
+          }
+        ]
       })
     })
   })

@@ -32,7 +32,7 @@ export class DbRemoveUserUseCase implements RemoveUserUseCase.UseCase {
     requestModel: RemoveUserUseCase.RequestModel
   ): RemoveUserUseCase.RequestModel {
     return {
-      id: requestModel.id,
+      id: requestModel.id
     }
   }
 }

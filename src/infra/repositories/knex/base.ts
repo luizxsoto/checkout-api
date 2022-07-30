@@ -63,7 +63,7 @@ export abstract class KnexBaseRepository {
       perPage = MIN_PER_PAGE,
       orderBy = 'createdAt',
       order = 'desc',
-      filters = '[]',
+      filters = '[]'
     } = requestModel
     const offset = (page - 1) * perPage
 
@@ -104,7 +104,7 @@ export abstract class KnexBaseRepository {
               .normalize('NFD')
               .replace(/[\u0300-\u036f]/g, '')}'`
           ),
-        in: () => builder.whereIn(field as string, values as PrimitiveType[]),
+        in: () => builder.whereIn(field as string, values as PrimitiveType[])
       }
 
       operatorsQueryDict[operator]?.()
@@ -136,7 +136,7 @@ export abstract class KnexBaseRepository {
       ...itemModel,
       id: this.uuidService.generateUniqueID(),
       createUserId: this.session.userId,
-      createdAt: new Date(),
+      createdAt: new Date()
     })) as Model[]
 
     const query = this.knex.table(this.tableName).insert(createModel)
@@ -148,7 +148,7 @@ export abstract class KnexBaseRepository {
       ? createModel
       : result.map((item) => ({
           ...createModel.find((itemModel) => itemModel.id === item.id),
-          ...item,
+          ...item
         }))
   }
 
@@ -170,7 +170,7 @@ export abstract class KnexBaseRepository {
     const updateModel = {
       ...requestModel,
       updateUserId: this.session.userId,
-      updatedAt: new Date(),
+      updatedAt: new Date()
     } as Model
 
     const query = this.knex.table(this.tableName).update(updateModel).where(where)
@@ -187,7 +187,7 @@ export abstract class KnexBaseRepository {
     const removeModel = {
       ...where,
       deleteUserId: this.session.userId,
-      deletedAt: new Date(),
+      deletedAt: new Date()
     } as Model
 
     const query = this.knex.table(this.tableName).update(removeModel).where(where)

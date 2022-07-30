@@ -10,7 +10,7 @@ export class Validator implements FieldValidation.Validation<Options> {
   public async validate({
     key,
     model,
-    data,
+    data
   }: FieldValidation.Params): Promise<FieldValidation.Result> {
     const value = lodashGet(model, key)
     if (value === undefined) return null
@@ -28,7 +28,7 @@ export class Validator implements FieldValidation.Validation<Options> {
     return {
       field: key,
       rule: 'exists',
-      message: 'This value was not found',
+      message: 'This value was not found'
     }
   }
 }

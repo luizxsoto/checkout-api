@@ -8,7 +8,7 @@ import {
   MAX_USER_PASSWORD_LENGTH,
   MIN_USER_EMAIL_LENGTH,
   MIN_USER_NAME_LENGTH,
-  MIN_USER_PASSWORD_LENGTH,
+  MIN_USER_PASSWORD_LENGTH
 } from '@/main/constants'
 
 export function makeUpdateUserValidation(
@@ -39,15 +39,15 @@ export function makeUpdateUserValidation(
               validations: new ValidationBuilder()
                 .string()
                 .in({ values: ['admin', 'moderator'] })
-                .build(),
+                .build()
             },
             validationService
           )
           .distinct()
-          .build(),
+          .build()
       },
       model: requestModel,
-      data: {},
+      data: {}
     })
     return (validationData) =>
       validationService.validate({
@@ -59,12 +59,12 @@ export function makeUpdateUserValidation(
             .unique({
               dataEntity: 'users',
               ignoreProps: [{ modelKey: 'id', dataKey: 'id' }],
-              props: [{ modelKey: 'email', dataKey: 'email' }],
+              props: [{ modelKey: 'email', dataKey: 'email' }]
             })
-            .build(),
+            .build()
         },
         model: requestModel,
-        data: validationData,
+        data: validationData
       })
   }
 }

@@ -2,7 +2,7 @@ import {
   CreateOrderItemRepository,
   CreateOrderRepository,
   FindByProductRepository,
-  FindByUserRepository,
+  FindByUserRepository
 } from '@/data/contracts/repositories'
 import { CreateOrderValidation } from '@/data/contracts/validations'
 import { OrderItemModel, OrderModel, ProductModel } from '@/domain/models'
@@ -61,7 +61,7 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
 
     const orderItemsWithOrderId = orderItemsWithValues.map((orderItem) => ({
       ...orderItem,
-      orderId: orderCreated.id,
+      orderId: orderCreated.id
     }))
 
     const orderItemsCreated = await this.createOrderItemRepository.create(orderItemsWithOrderId)
@@ -73,8 +73,8 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
         ...orderItem,
         ...(orderItemsCreated.find(
           (orderItemCreated) => orderItemCreated.productId === orderItem.productId
-        ) as OrderItemModel),
-      })),
+        ) as OrderItemModel)
+      }))
     }
   }
 
@@ -83,7 +83,7 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
   ): CreateOrderUseCase.RequestModel {
     const sanitizedRequestModel = {
       userId: requestModel.userId,
-      orderItems: requestModel.orderItems,
+      orderItems: requestModel.orderItems
     }
 
     if (
@@ -94,7 +94,7 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
     ) {
       sanitizedRequestModel.orderItems = requestModel.orderItems.map((orderItem) => ({
         productId: orderItem.productId,
-        quantity: orderItem.quantity,
+        quantity: orderItem.quantity
       }))
     }
 

@@ -9,6 +9,6 @@ export function makeProductModelMock(extraData?: Partial<ProductModel>) {
     category: 'others' as ProductModel['category'],
     image: 'any-image.com',
     price: 1000,
-    ...extraData,
+    ...extraData
   }
 }

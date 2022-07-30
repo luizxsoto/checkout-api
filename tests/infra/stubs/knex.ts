@@ -16,6 +16,6 @@ export function makeKnexStub(modelMock?: Record<string, unknown>) {
     limit: jest.fn().mockReturnThis(),
     orderBy: jest.fn().mockReturnThis(),
 
-    then: jest.fn((resolve, _reject) => resolve([modelMock])),
+    then: jest.fn((resolve, _reject) => resolve([modelMock]))
   }
 }

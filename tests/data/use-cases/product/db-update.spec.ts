@@ -28,10 +28,10 @@ describe(DbUpdateProductUseCase.name, () => {
       category: 'others' as ProductModel['category'],
       image: 'any-image.com',
       price: 1000,
-      anyWrongProp: 'anyValue',
+      anyWrongProp: 'anyValue'
     }
     const sanitizedRequestModel = {
-      ...requestModel,
+      ...requestModel
     }
     Reflect.deleteProperty(sanitizedRequestModel, 'anyWrongProp')
     const responseModel = { ...sanitizedRequestModel, updatedAt: new Date() }
@@ -61,7 +61,7 @@ describe(DbUpdateProductUseCase.name, () => {
       email: 'any@email.com',
       password: 'Password@123',
       roles: [],
-      anyWrongProp: 'anyValue',
+      anyWrongProp: 'anyValue'
     }
     const error = new Error('firstValidation Error')
 
@@ -81,7 +81,7 @@ describe(DbUpdateProductUseCase.name, () => {
       email: 'any@email.com',
       password: 'Password@123',
       roles: [],
-      anyWrongProp: 'anyValue',
+      anyWrongProp: 'anyValue'
     }
     const error = new Error('secondValidation Error')
 

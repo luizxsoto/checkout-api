@@ -11,7 +11,7 @@ describe('CustomValidation', () => {
     const options = {
       validation: () => Promise.resolve(false),
       rule: 'any_rule',
-      message: 'any_message',
+      message: 'any_message'
     }
     const { sut } = makeSut(options)
 
@@ -27,7 +27,7 @@ describe('CustomValidation', () => {
     const options = {
       validation: () => Promise.resolve(true),
       rule: 'any_rule',
-      message: 'any_message',
+      message: 'any_message'
     }
     const { sut } = makeSut(options)
 

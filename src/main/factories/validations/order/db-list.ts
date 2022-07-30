@@ -14,38 +14,38 @@ export function makeListOrderValidation(
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().string().regex({ pattern: 'uuidV4' }).build() },
           validationService
-        ),
+        )
       ],
       totalValue: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().integer().max({ value: MAX_INTEGER }).build() },
           validationService
-        ),
+        )
       ],
       createUserId: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().string().regex({ pattern: 'uuidV4' }).build() },
           validationService
-        ),
+        )
       ],
       updateUserId: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().string().regex({ pattern: 'uuidV4' }).build() },
           validationService
-        ),
+        )
       ],
       createdAt: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().string().date().build() },
           validationService
-        ),
+        )
       ],
       updatedAt: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().string().date().build() },
           validationService
-        ),
-      ],
+        )
+      ]
     }
 
     await validationService.validate({
@@ -69,10 +69,10 @@ export function makeListOrderValidation(
             { schema: filtersSchema },
             new ObjectValidation.Validator({ schema: filtersSchema }, validationService)
           )
-          .build(),
+          .build()
       },
       model: requestModel,
-      data: {},
+      data: {}
     })
   }
 }

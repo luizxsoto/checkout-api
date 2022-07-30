@@ -6,7 +6,7 @@ import {
   makeListProductController,
   makeRemoveProductController,
   makeShowProductController,
-  makeUpdateProductController,
+  makeUpdateProductController
 } from '@/main/factories/controllers'
 import { auth } from '@/main/middlewares'
 

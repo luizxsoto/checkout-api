@@ -16,7 +16,7 @@ export class Validator implements FieldValidation.Validation<Options> {
   public async validate({
     key,
     model,
-    data,
+    data
   }: FieldValidation.Params): Promise<FieldValidation.Result> {
     const value = lodashGet(model, key) as string
     if (value === undefined) return null
@@ -33,7 +33,7 @@ export class Validator implements FieldValidation.Validation<Options> {
       rule: 'listFilters',
       message: `This value must be a valid list filters and with this posible fields: ${posibleFields.join(
         ', '
-      )}`,
+      )}`
     }
 
     try {
@@ -126,7 +126,7 @@ export class Validator implements FieldValidation.Validation<Options> {
         }
 
         return true
-      },
+      }
     }
 
     const [operator, fieldOrFilter, values] = arrayValue

@@ -1,7 +1,7 @@
 import {
   FindByOrderRepository,
   FindByUserRepository,
-  UpdateOrderRepository,
+  UpdateOrderRepository
 } from '@/data/contracts/repositories'
 import { UpdateOrderValidation } from '@/data/contracts/validations'
 import { UpdateOrderUseCase } from '@/domain/use-cases'
@@ -45,7 +45,7 @@ export class DbUpdateOrderUseCase implements UpdateOrderUseCase.UseCase {
   ): UpdateOrderUseCase.RequestModel {
     return {
       id: requestModel.id,
-      userId: requestModel.userId,
+      userId: requestModel.userId
     }
   }
 }

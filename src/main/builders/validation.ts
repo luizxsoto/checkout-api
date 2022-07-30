@@ -16,7 +16,7 @@ import {
   RegexValidation,
   RequiredValidation,
   StringValidation,
-  UniqueValidation,
+  UniqueValidation
 } from '@/validation/validators'
 
 export class ValidationBuilder {

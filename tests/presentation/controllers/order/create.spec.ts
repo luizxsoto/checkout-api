@@ -25,11 +25,11 @@ describe(CreateOrderController.name, () => {
 
     expect(sutResult).toStrictEqual({
       statusCode: 201,
-      body: { ...orderMock, orderItems: [orderItemMock] },
+      body: { ...orderMock, orderItems: [orderItemMock] }
     })
     expect(createOrderUseCase.execute).toBeCalledWith({
       ...orderMock,
-      orderItems: [orderItemMock],
+      orderItems: [orderItemMock]
     })
   })
 })

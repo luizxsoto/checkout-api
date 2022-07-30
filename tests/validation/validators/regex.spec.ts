@@ -20,7 +20,7 @@ describe('RegexValidation', () => {
       field: 'anyProp',
       message: `This value must be valid according to the pattern: ${options.pattern}`,
       rule: 'regex',
-      details: { pattern: String(options.customPattern) },
+      details: { pattern: String(options.customPattern) }
     })
   })
 
@@ -37,7 +37,7 @@ describe('RegexValidation', () => {
       field: 'anyProp',
       message: `This value must be valid according to the pattern: ${options.pattern}`,
       rule: 'regex',
-      details: { pattern: String(/^([a-zA-Z\u00C0-\u00FF]+\s)*[a-zA-Z\u00C0-\u00FF]+$/) },
+      details: { pattern: String(/^([a-zA-Z\u00C0-\u00FF]+\s)*[a-zA-Z\u00C0-\u00FF]+$/) }
     })
   })
 
@@ -54,7 +54,7 @@ describe('RegexValidation', () => {
       field: 'anyProp',
       message: `This value must be valid according to the pattern: ${options.pattern}`,
       rule: 'regex',
-      details: { pattern: String(/^[\w+.]+@\w+\.\w{2,}(?:\.\w{2})?$/) },
+      details: { pattern: String(/^[\w+.]+@\w+\.\w{2,}(?:\.\w{2})?$/) }
     })
   })
 
@@ -72,8 +72,8 @@ describe('RegexValidation', () => {
       message: `This value must be valid according to the pattern: ${options.pattern}`,
       rule: 'regex',
       details: {
-        pattern: String(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/),
-      },
+        pattern: String(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/)
+      }
     })
   })
 
@@ -91,8 +91,8 @@ describe('RegexValidation', () => {
       message: `This value must be valid according to the pattern: ${options.pattern}`,
       rule: 'regex',
       details: {
-        pattern: String(/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i),
-      },
+        pattern: String(/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i)
+      }
     })
   })
 
@@ -112,8 +112,8 @@ describe('RegexValidation', () => {
       details: {
         pattern: String(
           /[(http(s)?)://(www.)?a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/gi
-        ),
-      },
+        )
+      }
     })
   })
 

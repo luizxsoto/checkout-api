@@ -21,10 +21,10 @@ export function makeCreateProductValidation(
           .in({ values: ['clothes', 'shoes', 'others'] })
           .build(),
         image: new ValidationBuilder().required().string().regex({ pattern: 'url' }).build(),
-        price: new ValidationBuilder().required().integer().max({ value: MAX_INTEGER }).build(),
+        price: new ValidationBuilder().required().integer().max({ value: MAX_INTEGER }).build()
       },
       model: requestModel,
-      data: {},
+      data: {}
     })
   }
 }

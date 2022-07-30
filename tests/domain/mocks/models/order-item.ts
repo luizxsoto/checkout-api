@@ -12,6 +12,6 @@ export function makeOrderItemModelMock(extraData?: Partial<OrderItemModel>) {
     quantity: 1,
     unitValue: 1000,
     totalValue: 1000,
-    ...extraData,
+    ...extraData
   }
 }
