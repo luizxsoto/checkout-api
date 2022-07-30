@@ -48,12 +48,16 @@ describe('User Routes', () => {
         .send()
 
       expect(result.status).toBe(200)
-      expect(result.body[0]?.id).toBe(requestModel.id)
-      expect(result.body[0]?.name).toBe(requestModel.name)
-      expect(result.body[0]?.email).toBe(requestModel.email)
-      expect(result.body[0]?.createUserId).toBe(requestModel.createUserId)
-      expect(result.body[0]?.createdAt).toBe(requestModel.createdAt)
-      expect(result.body[0]?.password).toBeUndefined()
+      expect(result.body.page).toBe(1)
+      expect(result.body.perPage).toBe(20)
+      expect(result.body.lastPage).toBe(1)
+      expect(result.body.total).toBe(1)
+      expect(result.body.registers?.[0]?.id).toBe(requestModel.id)
+      expect(result.body.registers?.[0]?.name).toBe(requestModel.name)
+      expect(result.body.registers?.[0]?.email).toBe(requestModel.email)
+      expect(result.body.registers?.[0]?.createUserId).toBe(requestModel.createUserId)
+      expect(result.body.registers?.[0]?.createdAt).toBe(requestModel.createdAt)
+      expect(result.body.registers?.[0]?.password).toBeUndefined()
     })
 
     test('Should return a correct body validation error if some prop is invalid', async () => {

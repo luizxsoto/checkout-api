@@ -13,9 +13,15 @@ export function makeProductRepositoryStub() {
     findBy: jest
       .fn()
       .mockImplementation((): FindByProductRepository.ResponseModel => [makeProductModelMock()]),
-    list: jest
-      .fn()
-      .mockImplementation((): ListProductRepository.ResponseModel => [makeProductModelMock()]),
+    list: jest.fn().mockImplementation(
+      (): ListProductRepository.ResponseModel => ({
+        page: 1,
+        perPage: 20,
+        lastPage: 1,
+        total: 1,
+        registers: [makeProductModelMock()]
+      })
+    ),
     create: jest
       .fn()
       .mockImplementation(

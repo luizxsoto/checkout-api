@@ -13,9 +13,15 @@ export function makeUserRepositoryStub() {
     findBy: jest
       .fn()
       .mockImplementation((): FindByUserRepository.ResponseModel => [makeUserModelMock()]),
-    list: jest
-      .fn()
-      .mockImplementation((): ListUserRepository.ResponseModel => [makeUserModelMock()]),
+    list: jest.fn().mockImplementation(
+      (): ListUserRepository.ResponseModel => ({
+        page: 1,
+        perPage: 20,
+        lastPage: 1,
+        total: 1,
+        registers: [makeUserModelMock()]
+      })
+    ),
     create: jest
       .fn()
       .mockImplementation(

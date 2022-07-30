@@ -2,7 +2,15 @@ import { makeOrderItemModelMock, makeOrderModelMock } from '@tests/domain/mocks/
 
 export function makeListOrderUseCaseStub() {
   return {
-    execute: jest.fn(() => Promise.resolve([makeOrderModelMock()]))
+    execute: jest.fn(() =>
+      Promise.resolve({
+        page: 1,
+        perPage: 20,
+        lastPage: 1,
+        total: 1,
+        registers: [makeOrderModelMock()]
+      })
+    )
   }
 }
 

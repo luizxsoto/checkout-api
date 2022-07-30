@@ -96,6 +96,7 @@ describe(KnexBaseRepository.name, () => {
       const responseModel = { anyProp: 'anyValue' }
 
       knex.then.mockImplementationOnce((resolve) => resolve([responseModel]))
+      knex.then.mockImplementationOnce((resolve) => resolve([{ count: 1 }]))
       knex.where.mockImplementation((cb) => {
         if (typeof cb === 'function') cb(knex)
         return knex
@@ -107,7 +108,13 @@ describe(KnexBaseRepository.name, () => {
 
       const sutResult = await sut.list(requestModel)
 
-      expect(sutResult).toStrictEqual([responseModel])
+      expect(sutResult).toStrictEqual({
+        page: requestModel.page,
+        perPage: requestModel.perPage,
+        lastPage: 1,
+        total: 1,
+        registers: [responseModel]
+      })
       expect(knex.whereNull).toBeCalledWith('deletedAt')
       expect(knex.table).toBeCalledWith(tableName)
       expect(knex.where).toBeCalledWith('anyProp', 'anyValue')
@@ -124,6 +131,7 @@ describe(KnexBaseRepository.name, () => {
       const requestModel = {}
       const responseModel = { anyProp: 'anyValue' }
       knex.then.mockImplementationOnce((resolve) => resolve([responseModel]))
+      knex.then.mockImplementationOnce((resolve) => resolve([{ count: 1 }]))
       knex.where.mockImplementationOnce((cb) => {
         cb(knex)
         return knex
@@ -131,12 +139,19 @@ describe(KnexBaseRepository.name, () => {
 
       const sutResult = await sut.list(requestModel)
 
-      expect(sutResult).toStrictEqual([responseModel])
+      expect(sutResult).toStrictEqual({
+        page: 1,
+        perPage: 20,
+        lastPage: 1,
+        total: 1,
+        registers: [responseModel]
+      })
       expect(knex.whereNull).toBeCalledWith('deletedAt')
       expect(knex.table).toBeCalledWith(tableName)
       expect(knex.offset).toBeCalledWith(0 * 20)
       expect(knex.limit).toBeCalledWith(20)
       expect(knex.orderBy).toBeCalledWith('createdAt', 'desc')
+      expect(knex.count).toBeCalledWith('id as count')
     })
 
     test('Should not filter whereNull deletedAt if withDeleted was informed', async () => {

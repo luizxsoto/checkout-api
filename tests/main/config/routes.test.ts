@@ -4,6 +4,7 @@ import { setupRoutes } from '@/main/config/routes'
 import * as routes from '@/main/routes'
 
 jest.mock('express', () => ({ Express: {}, Router: jest.fn(() => jest.fn()), json: jest.fn() }))
+jest.mock('swagger-ui-express', () => ({ serve: {}, setup: jest.fn() }))
 jest.mock('@/main/routes', () => ({ userRoutes: jest.fn() }))
 
 function makeSut() {

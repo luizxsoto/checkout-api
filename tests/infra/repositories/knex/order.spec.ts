@@ -52,11 +52,18 @@ describe(KnexOrderRepository.name, () => {
         totalValue: 1000
       }
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]))
+      knex.then.mockImplementationOnce((resolve) => resolve([{ count: 1 }]))
       const responseModel = { ...requestModel }
 
       const sutResult = await sut.list({})
 
-      expect(sutResult).toStrictEqual([responseModel])
+      expect(sutResult).toStrictEqual({
+        page: 1,
+        perPage: 20,
+        lastPage: 1,
+        total: 1,
+        registers: [responseModel]
+      })
     })
   })
 

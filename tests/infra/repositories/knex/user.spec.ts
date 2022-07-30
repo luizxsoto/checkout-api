@@ -69,12 +69,19 @@ describe(KnexUserRepository.name, () => {
         password: 'Password@123'
       }
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]))
+      knex.then.mockImplementationOnce((resolve) => resolve([{ count: 1 }]))
       const responseModel = { ...requestModel }
       Reflect.deleteProperty(responseModel, 'password')
 
       const sutResult = await sut.list({})
 
-      expect(sutResult).toStrictEqual([responseModel])
+      expect(sutResult).toStrictEqual({
+        page: 1,
+        perPage: 20,
+        lastPage: 1,
+        total: 1,
+        registers: [responseModel]
+      })
     })
   })
 

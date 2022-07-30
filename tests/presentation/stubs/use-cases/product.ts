@@ -2,7 +2,15 @@ import { makeProductModelMock } from '@tests/domain/mocks/models'
 
 export function makeListProductUseCaseStub() {
   return {
-    execute: jest.fn(() => Promise.resolve([makeProductModelMock()]))
+    execute: jest.fn(() =>
+      Promise.resolve({
+        page: 1,
+        perPage: 20,
+        lastPage: 1,
+        total: 1,
+        registers: [makeProductModelMock()]
+      })
+    )
   }
 }
 

@@ -15,9 +15,15 @@ export function makeOrderItemRepositoryStub() {
       .mockImplementation(
         (): FindByOrderItemRepository.ResponseModel => [makeOrderItemModelMock()]
       ),
-    list: jest
-      .fn()
-      .mockImplementation((): ListOrderItemRepository.ResponseModel => [makeOrderItemModelMock()]),
+    list: jest.fn().mockImplementation(
+      (): ListOrderItemRepository.ResponseModel => ({
+        page: 1,
+        perPage: 20,
+        lastPage: 1,
+        total: 1,
+        registers: [makeOrderItemModelMock()]
+      })
+    ),
     create: jest
       .fn()
       .mockImplementation(

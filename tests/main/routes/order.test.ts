@@ -49,11 +49,15 @@ describe('Order Routes', () => {
         .send()
 
       expect(result.status).toBe(200)
-      expect(result.body[0]?.id).toBe(requestModel.id)
-      expect(result.body[0]?.userId).toBe(requestModel.userId)
-      expect(result.body[0]?.totalValue).toBe(requestModel.totalValue)
-      expect(result.body[0]?.createUserId).toBe(requestModel.createUserId)
-      expect(result.body[0]?.createdAt).toBe(requestModel.createdAt)
+      expect(result.body.page).toBe(1)
+      expect(result.body.perPage).toBe(20)
+      expect(result.body.lastPage).toBe(1)
+      expect(result.body.total).toBe(1)
+      expect(result.body.registers?.[0]?.id).toBe(requestModel.id)
+      expect(result.body.registers?.[0]?.userId).toBe(requestModel.userId)
+      expect(result.body.registers?.[0]?.totalValue).toBe(requestModel.totalValue)
+      expect(result.body.registers?.[0]?.createUserId).toBe(requestModel.createUserId)
+      expect(result.body.registers?.[0]?.createdAt).toBe(requestModel.createdAt)
     })
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
