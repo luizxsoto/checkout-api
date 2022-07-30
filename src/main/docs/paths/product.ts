@@ -23,11 +23,11 @@ export const productPaths = {
           description: 'Created',
           content: { 'application/json': { schema: { $ref: '#/schemas/product' } } }
         },
-        400: { $ref: '#/components/badRequest' },
-        401: { $ref: '#/components/unauthorized' },
-        403: { $ref: '#/components/forbidden' },
-        404: { $ref: '#/components/notFound' },
-        500: { $ref: '#/components/internal' }
+        400: { $ref: '#/schemas/badRequest' },
+        401: { $ref: '#/schemas/unauthorized' },
+        403: { $ref: '#/schemas/forbidden' },
+        404: { $ref: '#/schemas/notFound' },
+        500: { $ref: '#/schemas/internal' }
       }
     },
     get: {
@@ -43,11 +43,11 @@ export const productPaths = {
             'application/json': { schema: { type: 'array', items: { $ref: '#/schemas/product' } } }
           }
         },
-        400: { $ref: '#/components/badRequest' },
-        401: { $ref: '#/components/unauthorized' },
-        403: { $ref: '#/components/forbidden' },
-        404: { $ref: '#/components/notFound' },
-        500: { $ref: '#/components/internal' }
+        400: { $ref: '#/schemas/badRequest' },
+        401: { $ref: '#/schemas/unauthorized' },
+        403: { $ref: '#/schemas/forbidden' },
+        404: { $ref: '#/schemas/notFound' },
+        500: { $ref: '#/schemas/internal' }
       }
     }
   }
