@@ -86,6 +86,28 @@ export const productPaths = {
         404: { $ref: '#/schemas/notFound' },
         500: { $ref: '#/schemas/internal' }
       }
+    },
+    put: {
+      tags: ['products'],
+      summary: 'Update a existing product',
+      description: 'Use this route to update a existing product',
+      security: [{ bearerAuth: [] }],
+      parameters: [{ $ref: '#/components/id' }],
+      requestBody: {
+        required: true,
+        content: { 'application/json': { schema: { allOf: [{ $ref: '#/schemas/baseProduct' }] } } }
+      },
+      responses: {
+        200: {
+          description: 'Created',
+          content: { 'application/json': { schema: { $ref: '#/schemas/product' } } }
+        },
+        400: { $ref: '#/schemas/badRequest' },
+        401: { $ref: '#/schemas/unauthorized' },
+        403: { $ref: '#/schemas/forbidden' },
+        404: { $ref: '#/schemas/notFound' },
+        500: { $ref: '#/schemas/internal' }
+      }
     }
   }
 }
