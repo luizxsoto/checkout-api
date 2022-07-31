@@ -12,7 +12,12 @@ export function makeDbShowOrderUseCase(session: SessionModel): ShowOrderUseCase.
   const orderItemRepository = new KnexOrderItemRepository(session, knexConfig, new UUIDService())
   const validationService = new CompositeValidation()
   const showOrderValidation = makeShowOrderValidation(validationService)
-  const useCase = new DbShowOrderUseCase(repository, orderItemRepository, showOrderValidation)
+  const useCase = new DbShowOrderUseCase(
+    repository,
+    orderItemRepository,
+    showOrderValidation,
+    session
+  )
 
   return useCase
 }

@@ -11,7 +11,7 @@ export function makeDbListOrderUseCase(session: SessionModel): ListOrderUseCase.
   const repository = new KnexOrderRepository(session, knexConfig, new UUIDService())
   const validationService = new CompositeValidation()
   const listOrderValidation = makeListOrderValidation(validationService)
-  const useCase = new DbListOrderUseCase(repository, listOrderValidation)
+  const useCase = new DbListOrderUseCase(repository, listOrderValidation, session)
 
   return useCase
 }

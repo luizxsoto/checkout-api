@@ -1,11 +1,13 @@
 import { ListOrderRepository } from '@/data/contracts/repositories'
 import { ListOrderValidation } from '@/data/contracts/validations'
+import { SessionModel } from '@/domain/models'
 import { ListOrderUseCase } from '@/domain/use-cases'
 
 export class DbListOrderUseCase implements ListOrderUseCase.UseCase {
   constructor(
     private readonly listOrderRepository: ListOrderRepository.Repository,
-    private readonly listOrderValidation: ListOrderValidation
+    private readonly listOrderValidation: ListOrderValidation,
+    private readonly session: SessionModel
   ) {}
 
   public async execute(
@@ -15,7 +17,15 @@ export class DbListOrderUseCase implements ListOrderUseCase.UseCase {
 
     await this.listOrderValidation(sanitizedRequestModel)
 
-    const orders = await this.listOrderRepository.list(sanitizedRequestModel)
+    let parsedFilter = JSON.parse(requestModel.filters ?? '[]')
+    const rolesCanSeeAllOrders = ['admin', 'moderator']
+    if (!this.session.roles.some((role) => rolesCanSeeAllOrders.includes(role))) {
+      parsedFilter = ['&', ['=', 'userId', this.session.userId], parsedFilter]
+    }
+    const orders = await this.listOrderRepository.list({
+      ...sanitizedRequestModel,
+      filters: JSON.stringify(parsedFilter)
+    })
 
     return orders
   }

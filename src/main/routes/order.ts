@@ -14,6 +14,6 @@ export function orderRoutes(router: Router): void {
   router.get('/orders', auth([]), adaptRoute(makeListOrderController))
   router.get('/orders/:id', auth([]), adaptRoute(makeShowOrderController))
   router.post('/orders', auth([]), adaptRoute(makeCreateOrderController))
-  router.put('/orders/:id', auth([]), adaptRoute(makeUpdateOrderController))
-  router.delete('/orders/:id', auth([]), adaptRoute(makeRemoveOrderController))
+  router.put('/orders/:id', auth(['admin', 'moderator']), adaptRoute(makeUpdateOrderController))
+  router.delete('/orders/:id', auth(['admin', 'moderator']), adaptRoute(makeRemoveOrderController))
 }
