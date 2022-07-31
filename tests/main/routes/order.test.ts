@@ -199,7 +199,7 @@ describe('Order Routes', () => {
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
       const requestModel = {
-        orderItems: [{ productId: validUuidV4, quantity: 1 }]
+        orderItems: [{ quantity: 1 }]
       }
 
       const result = await request(app)
@@ -214,7 +214,7 @@ describe('Order Routes', () => {
         message: 'An error ocurred performing a validation',
         validations: [
           {
-            field: 'userId',
+            field: 'orderItems.0.productId',
             rule: 'required',
             message: 'This value is required'
           }

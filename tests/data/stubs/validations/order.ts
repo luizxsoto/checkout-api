@@ -1,4 +1,4 @@
-import { OrderModel, UserModel } from '@/domain/models'
+import { OrderModel, ProductModel, UserModel } from '@/domain/models'
 import {
   CreateOrderUseCase,
   ListOrderUseCase,
@@ -9,14 +9,14 @@ import {
 
 export function makeCreateOrderValidationStub() {
   const secondValidation = jest.fn(
-    async (validationData: { users: Omit<UserModel, 'password'>[] }): Promise<void> => {
+    async (validationData: { products: ProductModel[] }): Promise<void> => {
       //
     }
   )
   const firstValidation = jest.fn(
     async (
       requestModel: CreateOrderUseCase.RequestModel
-    ): Promise<(validationData: { users: Omit<UserModel, 'password'>[] }) => Promise<void>> => {
+    ): Promise<(validationData: { products: ProductModel[] }) => Promise<void>> => {
       return secondValidation
     }
   )

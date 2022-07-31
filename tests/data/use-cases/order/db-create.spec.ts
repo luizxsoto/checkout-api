@@ -1,11 +1,10 @@
 import {
   makeOrderItemRepositoryStub,
   makeOrderRepositoryStub,
-  makeProductRepositoryStub,
-  makeUserRepositoryStub
+  makeProductRepositoryStub
 } from '@tests/data/stubs/repositories'
 import { makeCreateOrderValidationStub } from '@tests/data/stubs/validations'
-import { makeProductModelMock, makeUserModelMock } from '@tests/domain/mocks/models'
+import { makeProductModelMock, makeSessionModelMock } from '@tests/domain/mocks/models'
 
 import { DbCreateOrderUseCase } from '@/data/use-cases'
 
@@ -14,23 +13,23 @@ const validUuidV4 = '00000000-0000-4000-8000-000000000001'
 function makeSut() {
   const orderRepository = makeOrderRepositoryStub()
   const orderItemRepository = makeOrderItemRepositoryStub()
-  const userRepository = makeUserRepositoryStub()
   const productRepository = makeProductRepositoryStub()
   const createOrderValidation = makeCreateOrderValidationStub()
+  const session = makeSessionModelMock()
   const sut = new DbCreateOrderUseCase(
     orderRepository,
     orderItemRepository,
-    userRepository,
     productRepository,
-    createOrderValidation.firstValidation
+    createOrderValidation.firstValidation,
+    session
   )
 
   return {
     orderRepository,
     orderItemRepository,
-    userRepository,
     productRepository,
     createOrderValidation,
+    session,
     sut
   }
 }
@@ -40,19 +39,19 @@ describe(DbCreateOrderUseCase.name, () => {
     const {
       orderRepository,
       orderItemRepository,
-      userRepository,
       productRepository,
       createOrderValidation,
+      session,
       sut
     } = makeSut()
 
     const requestModel = {
-      userId: validUuidV4,
       anyWrongProp: 'anyValue',
       orderItems: [{ productId: validUuidV4, quantity: 1, anyWrongProp: 'anyValue' }]
     }
     const sanitizedRequestModel = {
       ...requestModel,
+      userId: session.userId,
       orderItems: [{ ...requestModel.orderItems[0] }]
     }
     Reflect.deleteProperty(sanitizedRequestModel, 'anyWrongProp')
@@ -79,10 +78,8 @@ describe(DbCreateOrderUseCase.name, () => {
       createdAt: new Date()
     }
     const responseModel = { ...orderCreated, orderItems: [orderItemCreated] }
-    const user = makeUserModelMock()
     const product = makeProductModelMock()
 
-    userRepository.findBy.mockReturnValueOnce([user])
     productRepository.findBy.mockReturnValueOnce([product])
     orderRepository.create.mockReturnValueOnce([orderCreated])
     orderItemRepository.create.mockReturnValueOnce([orderItemCreated])
@@ -91,14 +88,10 @@ describe(DbCreateOrderUseCase.name, () => {
 
     expect(sutResult).toStrictEqual(responseModel)
     expect(createOrderValidation.firstValidation).toBeCalledWith(sanitizedRequestModel)
-    expect(userRepository.findBy).toBeCalledWith([{ id: sanitizedRequestModel.userId }], true)
     expect(productRepository.findBy).toBeCalledWith([
       { id: sanitizedRequestModel.orderItems[0].productId }
     ])
-    expect(createOrderValidation.secondValidation).toBeCalledWith({
-      users: [user],
-      products: [product]
-    })
+    expect(createOrderValidation.secondValidation).toBeCalledWith({ products: [product] })
     expect(orderRepository.create).toBeCalledWith([orderWithValues])
     expect(orderItemRepository.create).toBeCalledWith([
       { ...orderItemWithValues, orderId: 'any_id' }
@@ -109,7 +102,6 @@ describe(DbCreateOrderUseCase.name, () => {
     const { createOrderValidation, sut } = makeSut()
 
     const requestModel = {
-      userId: validUuidV4,
       orderItems: [{ productId: validUuidV4, quantity: 1 }]
     }
     const error = new Error('firstValidation Error')
@@ -125,7 +117,6 @@ describe(DbCreateOrderUseCase.name, () => {
     const { createOrderValidation, sut } = makeSut()
 
     const requestModel = {
-      userId: validUuidV4,
       orderItems: [{ productId: validUuidV4, quantity: 1 }]
     }
     const error = new Error('secondValidation Error')
