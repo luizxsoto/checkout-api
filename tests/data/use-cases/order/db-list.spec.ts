@@ -1,12 +1,20 @@
 import { makeOrderRepositoryStub } from '@tests/data/stubs/repositories'
 import { makeListOrderValidationStub } from '@tests/data/stubs/validations'
+import { makeSessionModelMock } from '@tests/domain/mocks/models'
 
 import { DbListOrderUseCase } from '@/data/use-cases'
+import { SessionModel } from '@/domain/models'
 
-function makeSut() {
+const validUuidV4 = '00000000-0000-4000-8000-000000000001'
+
+function makeSut(session?: SessionModel) {
   const orderRepository = makeOrderRepositoryStub()
   const listOrderValidation = makeListOrderValidationStub()
-  const sut = new DbListOrderUseCase(orderRepository, listOrderValidation.firstValidation)
+  const sut = new DbListOrderUseCase(
+    orderRepository,
+    listOrderValidation.firstValidation,
+    session || makeSessionModelMock()
+  )
 
   return { orderRepository, listOrderValidation, sut }
 }
@@ -20,7 +28,6 @@ describe(DbListOrderUseCase.name, () => {
       perPage: 20,
       orderBy: 'userId' as const,
       order: 'asc' as const,
-      filters: '[]',
       anyWrongProp: 'anyValue'
     }
     const sanitizedRequestModel = { ...requestModel }
@@ -30,7 +37,6 @@ describe(DbListOrderUseCase.name, () => {
     Reflect.deleteProperty(responseModel, 'perPage')
     Reflect.deleteProperty(responseModel, 'orderBy')
     Reflect.deleteProperty(responseModel, 'order')
-    Reflect.deleteProperty(responseModel, 'filters')
     const existsOrder = { ...responseModel }
 
     orderRepository.list.mockReturnValueOnce([existsOrder])
@@ -39,7 +45,30 @@ describe(DbListOrderUseCase.name, () => {
 
     expect(sutResult).toStrictEqual([responseModel])
     expect(listOrderValidation.firstValidation).toBeCalledWith(sanitizedRequestModel)
-    expect(orderRepository.list).toBeCalledWith(sanitizedRequestModel)
+    expect(orderRepository.list).toBeCalledWith({ ...sanitizedRequestModel, filters: '[]' })
+  })
+
+  test('Should list order filtering session userId if have no rolesCanSeeAllOrders', async () => {
+    const userId = validUuidV4
+    const { orderRepository, sut } = makeSut(makeSessionModelMock({ userId, roles: [] }))
+
+    const sanitizedRequestModel = { filters: '[]' }
+    const responseModel = { ...sanitizedRequestModel }
+    Reflect.deleteProperty(responseModel, 'filters')
+    const existsOrder = { ...responseModel }
+
+    orderRepository.list.mockReturnValueOnce([existsOrder])
+
+    await sut.execute(sanitizedRequestModel)
+
+    expect(orderRepository.list).toBeCalledWith({
+      ...sanitizedRequestModel,
+      filters: JSON.stringify([
+        '&',
+        ['=', 'userId', userId],
+        JSON.parse(sanitizedRequestModel.filters)
+      ])
+    })
   })
 
   test('Should throws if firstValidation throws', async () => {

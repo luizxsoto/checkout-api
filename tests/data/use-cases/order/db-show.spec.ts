@@ -3,19 +3,22 @@ import {
   makeOrderRepositoryStub
 } from '@tests/data/stubs/repositories'
 import { makeShowOrderValidationStub } from '@tests/data/stubs/validations'
+import { makeSessionModelMock } from '@tests/domain/mocks/models'
 
 import { DbShowOrderUseCase } from '@/data/use-cases'
+import { SessionModel } from '@/domain/models'
 
 const validUuidV4 = '00000000-0000-4000-8000-000000000001'
 
-function makeSut() {
+function makeSut(session?: SessionModel) {
   const orderRepository = makeOrderRepositoryStub()
   const orderItemRepository = makeOrderItemRepositoryStub()
   const showOrderValidation = makeShowOrderValidationStub()
   const sut = new DbShowOrderUseCase(
     orderRepository,
     orderItemRepository,
-    showOrderValidation.firstValidation
+    showOrderValidation.firstValidation,
+    session || makeSessionModelMock()
   )
 
   return { orderRepository, orderItemRepository, showOrderValidation, sut }
@@ -45,6 +48,17 @@ describe(DbShowOrderUseCase.name, () => {
     expect(orderRepository.findBy).toBeCalledWith([sanitizedRequestModel])
     expect(showOrderValidation.secondValidation).toBeCalledWith({ orders: [existsOrder] })
     expect(orderItemRepository.findBy).toBeCalledWith([{ orderId: sanitizedRequestModel.id }])
+  })
+
+  test('Should show order filtering session userId if have no rolesCanSeeAllOrders', async () => {
+    const userId = validUuidV4
+    const { orderRepository, sut } = makeSut(makeSessionModelMock({ userId, roles: [] }))
+
+    const sanitizedRequestModel = { id: validUuidV4 }
+
+    await sut.execute(sanitizedRequestModel)
+
+    expect(orderRepository.findBy).toBeCalledWith([sanitizedRequestModel, { userId }])
   })
 
   test('Should throws if firstValidation throws', async () => {
