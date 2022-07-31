@@ -19,7 +19,17 @@ export function makeUpdateUserValidation(
   return async (requestModel: UpdateUserUseCase.RequestModel) => {
     await validationService.validate({
       schema: {
-        id: new ValidationBuilder().required().string().regex({ pattern: 'uuidV4' }).build(),
+        id: new ValidationBuilder()
+          .required()
+          .string()
+          .regex({ pattern: 'uuidV4' })
+          .custom({
+            validation: () =>
+              session.roles.some((role) => role === 'admin') || requestModel.id === session.userId,
+            rule: 'differentId',
+            message: 'Only admin can update users different from himself'
+          })
+          .build(),
         name: new ValidationBuilder()
           .string()
           .regex({ pattern: 'name' })
@@ -51,7 +61,7 @@ export function makeUpdateUserValidation(
               !requestModel.roles ||
               !requestModel.roles.length ||
               session.roles.some((role) => role === 'admin'),
-            rule: 'role',
+            rule: 'filledRole',
             message:
               'Only an admin can provide a filled role array, otherwise provide an empty array'
           })

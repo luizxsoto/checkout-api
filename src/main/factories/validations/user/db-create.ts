@@ -52,7 +52,7 @@ export function makeCreateUserValidation(
           .custom({
             validation: () =>
               !requestModel.roles.length || session.roles.some((role) => role === 'admin'),
-            rule: 'role',
+            rule: 'filledRole',
             message:
               'Only an admin can provide a filled role array, otherwise provide an empty array'
           })
