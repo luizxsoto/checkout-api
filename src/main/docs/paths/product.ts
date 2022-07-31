@@ -67,5 +67,25 @@ export const productPaths = {
         500: { $ref: '#/schemas/internal' }
       }
     }
+  },
+  '/products/{id}': {
+    get: {
+      tags: ['products'],
+      summary: 'Show a detailed product',
+      description: 'Use this route to show a detailed product',
+      security: [{ bearerAuth: [] }],
+      parameters: [{ $ref: '#/components/id' }],
+      responses: {
+        200: {
+          description: 'Ok',
+          content: { 'application/json': { schema: { $ref: '#/schemas/product' } } }
+        },
+        400: { $ref: '#/schemas/badRequest' },
+        401: { $ref: '#/schemas/unauthorized' },
+        403: { $ref: '#/schemas/forbidden' },
+        404: { $ref: '#/schemas/notFound' },
+        500: { $ref: '#/schemas/internal' }
+      }
+    }
   }
 }

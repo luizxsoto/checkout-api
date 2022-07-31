@@ -12,7 +12,7 @@ export const baseProduct = {
     category: { $ref: '#/schemas/productCategory', example: 'others' },
     image: {
       type: 'string',
-      example: 'https://github.githubassets.com/images/icons/emoji/tada.png'
+      example: 'https://boacausa.net/img/image-placeholder.png'
     },
     price: { type: 'integer', example: 100, maximum: MAX_INTEGER }
   }
