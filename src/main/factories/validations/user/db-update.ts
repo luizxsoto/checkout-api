@@ -1,5 +1,6 @@
 import { ValidationService } from '@/data/contracts/services'
 import { UpdateUserValidation } from '@/data/contracts/validations'
+import { SessionModel } from '@/domain/models'
 import { UpdateUserUseCase } from '@/domain/use-cases'
 import { ValidationBuilder } from '@/main/builders'
 import {
@@ -12,7 +13,8 @@ import {
 } from '@/main/constants'
 
 export function makeUpdateUserValidation(
-  validationService: ValidationService.Validator
+  validationService: ValidationService.Validator,
+  session: SessionModel
 ): UpdateUserValidation {
   return async (requestModel: UpdateUserUseCase.RequestModel) => {
     await validationService.validate({
@@ -44,6 +46,15 @@ export function makeUpdateUserValidation(
             validationService
           )
           .distinct()
+          .custom({
+            validation: () =>
+              !requestModel.roles ||
+              !requestModel.roles.length ||
+              session.roles.some((role) => role === 'admin'),
+            rule: 'role',
+            message:
+              'Only an admin can provide a filled role array, otherwise provide an empty array'
+          })
           .build()
       },
       model: requestModel,

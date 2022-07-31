@@ -1,5 +1,6 @@
 import { ValidationService } from '@/data/contracts/services'
 import { CreateUserValidation } from '@/data/contracts/validations'
+import { SessionModel } from '@/domain/models'
 import { CreateUserUseCase } from '@/domain/use-cases'
 import { ValidationBuilder } from '@/main/builders'
 import {
@@ -12,7 +13,8 @@ import {
 } from '@/main/constants'
 
 export function makeCreateUserValidation(
-  validationService: ValidationService.Validator
+  validationService: ValidationService.Validator,
+  session: SessionModel
 ): CreateUserValidation {
   return async (requestModel: CreateUserUseCase.RequestModel) => {
     await validationService.validate({
@@ -47,6 +49,13 @@ export function makeCreateUserValidation(
             validationService
           )
           .distinct()
+          .custom({
+            validation: () =>
+              !requestModel.roles.length || session.roles.some((role) => role === 'admin'),
+            rule: 'role',
+            message:
+              'Only an admin can provide a filled role array, otherwise provide an empty array'
+          })
           .build()
       },
       model: requestModel,

@@ -1,6 +1,10 @@
 import { FieldValidation } from '@/validation/protocols'
 
-export type Options = { validation: () => Promise<boolean>; rule: string; message: string }
+export type Options = {
+  validation: () => Promise<boolean> | boolean
+  rule: string
+  message: string
+}
 
 export class Validator implements FieldValidation.Validation<Options> {
   constructor(public readonly options: Options) {}
