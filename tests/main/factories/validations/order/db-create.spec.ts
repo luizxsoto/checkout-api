@@ -2,7 +2,6 @@ import { makeValidationServiceStub } from '@tests/data/stubs/services'
 import { makeProductModelMock } from '@tests/domain/mocks/models'
 
 import { CreateOrderUseCase } from '@/domain/use-cases'
-import { MAX_INTEGER } from '@/main/constants'
 import { ValidationException } from '@/main/exceptions'
 import { makeCreateOrderValidation } from '@/main/factories/validations'
 
@@ -25,6 +24,10 @@ describe(makeCreateOrderValidation.name, () => {
       validations: [{ field: 'orderItems', rule: 'required', message: 'This value is required' }]
     },
     {
+      properties: { orderItems: 'invalid_array' },
+      validations: [{ field: 'orderItems', rule: 'array', message: 'This value must be an array' }]
+    },
+    {
       properties: {
         orderItems: [
           { productId: validUuidV4, quantity: 1 },
@@ -36,6 +39,30 @@ describe(makeCreateOrderValidation.name, () => {
           field: 'orderItems',
           rule: 'distinct',
           message: 'This value cannot have duplicate items by: productId'
+        }
+      ]
+    },
+    {
+      properties: { orderItems: [] },
+      validations: [
+        {
+          field: 'orderItems',
+          rule: 'length',
+          message: 'This value length must be beetween 1 and 10'
+        }
+      ]
+    },
+    {
+      properties: {
+        orderItems: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11'].map(
+          (item) => ({ productId: validUuidV4.replace('01', item), quantity: 1 })
+        )
+      },
+      validations: [
+        {
+          field: 'orderItems',
+          rule: 'length',
+          message: 'This value length must be beetween 1 and 10'
         }
       ]
     },
@@ -99,12 +126,12 @@ describe(makeCreateOrderValidation.name, () => {
       ]
     },
     {
-      properties: { orderItems: [{ productId: validUuidV4, quantity: MAX_INTEGER + 1 }] },
+      properties: { orderItems: [{ productId: validUuidV4, quantity: 11 }] },
       validations: [
         {
           field: 'orderItems.0.quantity',
           rule: 'max',
-          message: `This value must be less or equal to: ${MAX_INTEGER}`
+          message: 'This value must be less or equal to: 10'
         }
       ]
     }
