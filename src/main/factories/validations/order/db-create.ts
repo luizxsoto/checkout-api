@@ -2,7 +2,7 @@ import { ValidationService } from '@/data/contracts/services'
 import { CreateOrderValidation } from '@/data/contracts/validations'
 import { CreateOrderUseCase } from '@/domain/use-cases'
 import { ValidationBuilder } from '@/main/builders'
-import { MAX_INTEGER } from '@/main/constants'
+import { MAX_ORDER_ITEMS_LENGTH, MAX_ORDER_ITEM_QUANTITY } from '@/main/constants'
 
 export function makeCreateOrderValidation(
   validationService: ValidationService.Validator
@@ -27,7 +27,7 @@ export function makeCreateOrderValidation(
                         .required()
                         .integer()
                         .min({ value: 1 })
-                        .max({ value: MAX_INTEGER })
+                        .max({ value: MAX_ORDER_ITEM_QUANTITY })
                         .build()
                     }
                   },
@@ -38,6 +38,7 @@ export function makeCreateOrderValidation(
             validationService
           )
           .distinct({ keys: ['productId'] })
+          .length({ minLength: 1, maxLength: MAX_ORDER_ITEMS_LENGTH })
           .build()
       },
       model: requestModel,

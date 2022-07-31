@@ -1,0 +1,3 @@
+export const MAX_ORDER_ITEMS_LENGTH = 10
+
+export const MAX_ORDER_ITEM_QUANTITY = 10
