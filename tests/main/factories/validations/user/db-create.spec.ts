@@ -207,7 +207,7 @@ describe(makeCreateUserValidation.name, () => {
           field: 'roles',
           message:
             'Only an admin can provide a filled role array, otherwise provide an empty array',
-          rule: 'role'
+          rule: 'filledRole'
         }
       ])
     )

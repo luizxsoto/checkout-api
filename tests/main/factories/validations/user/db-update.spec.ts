@@ -221,7 +221,31 @@ describe(makeUpdateUserValidation.name, () => {
           field: 'roles',
           message:
             'Only an admin can provide a filled role array, otherwise provide an empty array',
-          rule: 'role'
+          rule: 'filledRole'
+        }
+      ])
+    )
+  })
+
+  it('Should throw ValidationException if provided a user id different from himself, but is not admin', async () => {
+    const { sut } = makeSut(makeSessionModelMock({ roles: ['moderator'] }))
+
+    const requestModel = {
+      id: nonExistentId,
+      name: 'Any Name',
+      email: 'any@email.com',
+      password: 'Password@123',
+      roles: []
+    } as UpdateUserUseCase.RequestModel
+
+    const sutResult = await sut(requestModel).catch((e) => e)
+
+    expect(sutResult).toStrictEqual(
+      new ValidationException([
+        {
+          field: 'id',
+          message: 'Only admin can update users different from himself',
+          rule: 'differentId'
         }
       ])
     )
