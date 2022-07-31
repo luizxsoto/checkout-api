@@ -99,7 +99,25 @@ export const productPaths = {
       },
       responses: {
         200: {
-          description: 'Created',
+          description: 'Ok',
+          content: { 'application/json': { schema: { $ref: '#/schemas/product' } } }
+        },
+        400: { $ref: '#/schemas/badRequest' },
+        401: { $ref: '#/schemas/unauthorized' },
+        403: { $ref: '#/schemas/forbidden' },
+        404: { $ref: '#/schemas/notFound' },
+        500: { $ref: '#/schemas/internal' }
+      }
+    },
+    delete: {
+      tags: ['products'],
+      summary: 'Remove a existing product',
+      description: 'Use this route to remove a existing product',
+      security: [{ bearerAuth: [] }],
+      parameters: [{ $ref: '#/components/id' }],
+      responses: {
+        200: {
+          description: 'Ok',
           content: { 'application/json': { schema: { $ref: '#/schemas/product' } } }
         },
         400: { $ref: '#/schemas/badRequest' },
