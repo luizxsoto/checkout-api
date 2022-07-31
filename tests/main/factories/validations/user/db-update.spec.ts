@@ -1,6 +1,7 @@
 import { makeValidationServiceStub } from '@tests/data/stubs/services'
-import { makeUserModelMock } from '@tests/domain/mocks/models'
+import { makeSessionModelMock, makeUserModelMock } from '@tests/domain/mocks/models'
 
+import { SessionModel } from '@/domain/models'
 import { UpdateUserUseCase } from '@/domain/use-cases'
 import { ValidationException } from '@/main/exceptions'
 import { makeUpdateUserValidation } from '@/main/factories/validations'
@@ -9,9 +10,12 @@ const validUuidV4 = '00000000-0000-4000-8000-000000000001'
 const nonExistentId = '00000000-0000-4000-8000-000000000002'
 const existingUser = makeUserModelMock()
 
-function makeSut() {
+function makeSut(session?: SessionModel) {
   const validationService = makeValidationServiceStub()
-  const sut = makeUpdateUserValidation(validationService)
+  const sut = makeUpdateUserValidation(
+    validationService,
+    session || makeSessionModelMock({ userId: validUuidV4 })
+  )
 
   return { validationService, sut }
 }
@@ -197,4 +201,29 @@ describe(makeUpdateUserValidation.name, () => {
       })
     }
   )
+
+  it('Should throw ValidationException if provided a filled role array, but is not admin', async () => {
+    const { sut } = makeSut(makeSessionModelMock({ roles: ['moderator'] }))
+
+    const requestModel = {
+      id: validUuidV4,
+      name: 'Any Name',
+      email: 'any@email.com',
+      password: 'Password@123',
+      roles: ['admin']
+    } as UpdateUserUseCase.RequestModel
+
+    const sutResult = await sut(requestModel).catch((e) => e)
+
+    expect(sutResult).toStrictEqual(
+      new ValidationException([
+        {
+          field: 'roles',
+          message:
+            'Only an admin can provide a filled role array, otherwise provide an empty array',
+          rule: 'role'
+        }
+      ])
+    )
+  })
 })
