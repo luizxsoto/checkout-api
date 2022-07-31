@@ -4,8 +4,7 @@ import { CreateOrderUseCase } from '@/domain/use-cases'
 import {
   KnexOrderItemRepository,
   KnexOrderRepository,
-  KnexProductRepository,
-  KnexUserRepository
+  KnexProductRepository
 } from '@/infra/repositories'
 import { UUIDService } from '@/infra/services'
 import { CompositeValidation } from '@/main/composites'
@@ -16,16 +15,15 @@ export function makeDbCreateOrderUseCase(session: SessionModel): CreateOrderUseC
   const uuidService = new UUIDService()
   const repository = new KnexOrderRepository(session, knexConfig, uuidService)
   const orderItemRepository = new KnexOrderItemRepository(session, knexConfig, uuidService)
-  const userRepository = new KnexUserRepository(session, knexConfig, uuidService)
   const productRepository = new KnexProductRepository(session, knexConfig, uuidService)
   const validationService = new CompositeValidation()
   const createOrderValidation = makeCreateOrderValidation(validationService)
   const useCase = new DbCreateOrderUseCase(
     repository,
     orderItemRepository,
-    userRepository,
     productRepository,
-    createOrderValidation
+    createOrderValidation,
+    session
   )
 
   return useCase

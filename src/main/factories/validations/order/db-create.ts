@@ -10,7 +10,6 @@ export function makeCreateOrderValidation(
   return async (requestModel: CreateOrderUseCase.RequestModel) => {
     await validationService.validate({
       schema: {
-        userId: new ValidationBuilder().required().string().regex({ pattern: 'uuidV4' }).build(),
         orderItems: new ValidationBuilder()
           .required()
           .array(
@@ -47,9 +46,6 @@ export function makeCreateOrderValidation(
     return (validationData) =>
       validationService.validate({
         schema: {
-          userId: new ValidationBuilder()
-            .exists({ dataEntity: 'users', props: [{ modelKey: 'userId', dataKey: 'id' }] })
-            .build(),
           orderItems: new ValidationBuilder()
             .array(
               {

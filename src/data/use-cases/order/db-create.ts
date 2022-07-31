@@ -1,11 +1,10 @@
 import {
   CreateOrderItemRepository,
   CreateOrderRepository,
-  FindByProductRepository,
-  FindByUserRepository
+  FindByProductRepository
 } from '@/data/contracts/repositories'
 import { CreateOrderValidation } from '@/data/contracts/validations'
-import { OrderItemModel, OrderModel, ProductModel } from '@/domain/models'
+import { OrderItemModel, OrderModel, ProductModel, SessionModel } from '@/domain/models'
 import { CreateOrderUseCase } from '@/domain/use-cases'
 
 type OrderWithValues = Omit<
@@ -29,9 +28,9 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
   constructor(
     private readonly createOrderRepository: CreateOrderRepository.Repository,
     private readonly createOrderItemRepository: CreateOrderItemRepository.Repository,
-    private readonly findByUserRepository: FindByUserRepository.Repository,
     private readonly findByProductRepository: FindByProductRepository.Repository,
-    private readonly createOrderValidation: CreateOrderValidation
+    private readonly createOrderValidation: CreateOrderValidation,
+    private readonly session: SessionModel
   ) {}
 
   public async execute(
@@ -41,16 +40,11 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
 
     const restValidation = await this.createOrderValidation(sanitizedRequestModel)
 
-    const users = await this.findByUserRepository.findBy(
-      [{ id: sanitizedRequestModel.userId }],
-      true
-    )
-
     const products = await this.findByProductRepository.findBy(
       sanitizedRequestModel.orderItems.map((orderItem) => ({ id: orderItem.productId }))
     )
 
-    await restValidation({ users, products })
+    await restValidation({ products })
 
     const { orderItems: orderItemsWithValues, ...orderWithValues } = this.sanitizeValues(
       sanitizedRequestModel,
@@ -82,7 +76,7 @@ export class DbCreateOrderUseCase implements CreateOrderUseCase.UseCase {
     requestModel: CreateOrderUseCase.RequestModel
   ): CreateOrderUseCase.RequestModel {
     const sanitizedRequestModel = {
-      userId: requestModel.userId,
+      userId: this.session.userId,
       orderItems: requestModel.orderItems
     }
 
