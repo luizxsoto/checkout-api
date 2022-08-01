@@ -4,10 +4,10 @@
 
 ### Clean code / architecture POC application
 
-![Coverage Build](https://github.com/luizxsoto/ecommerce-api/actions/workflows/test-coveralls.yml/badge.svg)
-![Coverage Status](https://coveralls.io/repos/github/luizxsoto/ecommerce-api/badge.svg?branch=master)
-![Languages](https://img.shields.io/github/languages/count/luizxsoto/ecommerce-api)
-![Known Vulnerabilities](https://snyk.io/test/github/luizxsoto/ecommerce-api/badge.svg)
+[![Coverage Build](https://github.com/luizxsoto/ecommerce-api/actions/workflows/test-coveralls.yml/badge.svg)](https://github.com/luizxsoto/ecommerce-api/actions/workflows/test-coveralls.yml)
+[![Coverage Status](https://coveralls.io/repos/github/luizxsoto/ecommerce-api/badge.svg?branch=master)](https://coveralls.io/github/luizxsoto/ecommerce-api)
+[![Code Style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com)
+[![Known Vulnerabilities](https://snyk.io/test/github/luizxsoto/ecommerce-api/badge.svg)](https://snyk.io/test/github/luizxsoto/ecommerce-api)
 
 [Technologies](#rocket-technologies)
 &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
