@@ -8,12 +8,8 @@ import { CompositeValidation } from '@/main/composites'
 import { envConfig, knexConfig } from '@/main/config'
 import { makeCreateSessionValidation } from '@/main/factories/validations'
 
-export function makeDbCreateSessionUseCase(): CreateSessionUseCase.UseCase {
-  const repository = new KnexUserRepository<'NORMAL'>(
-    {} as SessionModel,
-    knexConfig,
-    new UUIDService()
-  )
+export function makeDbCreateSessionUseCase(session?: SessionModel): CreateSessionUseCase.UseCase {
+  const repository = new KnexUserRepository<'NORMAL'>(session!, knexConfig, new UUIDService())
   const validationService = new CompositeValidation()
   const salt = 12
   const bcryptCryptography = new BcryptCryptography(salt)

@@ -4,7 +4,7 @@ import { envConfig } from '@/main/config'
 import { Middleware } from '@/presentation/contracts'
 import { AuthMiddleware } from '@/presentation/middlewares'
 
-export function makeAuthMiddleware(roles: Roles[]): Middleware {
+export function makeAuthMiddleware(roles: Roles[], isOptional?: boolean): Middleware {
   const jwtCryptography = new JwtCryptography(envConfig.jwtSecret)
-  return new AuthMiddleware(jwtCryptography, roles)
+  return new AuthMiddleware(jwtCryptography, roles, isOptional)
 }

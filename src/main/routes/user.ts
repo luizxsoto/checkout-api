@@ -12,8 +12,8 @@ import { auth } from '@/main/middlewares'
 
 export function userRoutes(router: Router): void {
   router.get('/users', auth(['admin']), adaptRoute(makeListUserController))
-  router.get('/users/:id', auth(['admin']), adaptRoute(makeShowUserController))
-  router.post('/users', auth([]), adaptRoute(makeCreateUserController))
+  router.get('/users/:id', auth([]), adaptRoute(makeShowUserController))
+  router.post('/users', auth([], true), adaptRoute(makeCreateUserController))
   router.put('/users/:id', auth([]), adaptRoute(makeUpdateUserController))
   router.delete('/users/:id', auth(['admin']), adaptRoute(makeRemoveUserController))
 }

@@ -14,7 +14,7 @@ import {
 
 export function makeCreateUserValidation(
   validationService: ValidationService.Validator,
-  session: SessionModel
+  session?: SessionModel
 ): CreateUserValidation {
   return async (requestModel: CreateUserUseCase.RequestModel) => {
     await validationService.validate({
@@ -51,7 +51,8 @@ export function makeCreateUserValidation(
           .distinct()
           .custom({
             validation: () =>
-              !requestModel.roles.length || session.roles.some((role) => role === 'admin'),
+              !requestModel.roles.length ||
+              Boolean(session?.roles.some((role) => role === 'admin')),
             rule: 'filledRole',
             message:
               'Only an admin can provide a filled role array, otherwise provide an empty array'

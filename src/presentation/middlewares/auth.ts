@@ -8,12 +8,20 @@ export type AuthMiddlewareRequest = {
 }
 
 export class AuthMiddleware implements Middleware {
-  constructor(private readonly decrypter: Decrypter, private readonly roles: Roles[]) {}
+  constructor(
+    private readonly decrypter: Decrypter,
+    private readonly roles: Roles[],
+    private readonly isOptional?: boolean
+  ) {}
 
-  async handle(request: AuthMiddlewareRequest): Promise<Record<string, unknown>> {
-    if (!request.bearerToken) throw new InvalidCredentials()
-
+  async handle(request: AuthMiddlewareRequest): Promise<{ session: SessionModel }> {
     const session = {} as SessionModel
+
+    if (!request.bearerToken) {
+      if (this.isOptional) return { session }
+      throw new InvalidCredentials()
+    }
+
     try {
       const decryptResult = await this.decrypter.decrypt<{ userId: string; roles: Roles[] }>(
         request.bearerToken.replace(/^bearer\s?/i, '')
