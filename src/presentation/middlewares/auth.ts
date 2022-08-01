@@ -16,6 +16,7 @@ export class AuthMiddleware implements Middleware {
 
   async handle(request: AuthMiddlewareRequest): Promise<{ session: SessionModel }> {
     const session = {} as SessionModel
+    session.roles = []
 
     if (!request.bearerToken) {
       if (this.isOptional) return { session }
