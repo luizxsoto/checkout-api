@@ -34,7 +34,6 @@ export const productPaths = {
       tags: ['products'],
       summary: 'List all product',
       description: 'Use this route to list all product',
-      security: [{ bearerAuth: [] }],
       parameters: [
         { $ref: '#/components/orderBy' },
         { $ref: '#/components/order' },
@@ -73,7 +72,6 @@ export const productPaths = {
       tags: ['products'],
       summary: 'Show a detailed product',
       description: 'Use this route to show a detailed product',
-      security: [{ bearerAuth: [] }],
       parameters: [{ $ref: '#/components/id' }],
       responses: {
         200: {

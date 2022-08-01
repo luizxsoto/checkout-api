@@ -5,7 +5,6 @@ export const userPaths = {
       summary: 'Create a new user',
       description:
         'Use this route to create a new user\n\nOnly an admin can provide a filled role array, otherwise provide an empty array',
-      security: [{ bearerAuth: [] }],
       requestBody: {
         required: true,
         content: {
