@@ -228,7 +228,7 @@ describe(makeUpdateUserValidation.name, () => {
   })
 
   it('Should throw ValidationException if provided a user id different from himself, but is not admin', async () => {
-    const { sut } = makeSut(makeSessionModelMock({ roles: ['moderator'] }))
+    const { sut } = makeSut(makeSessionModelMock({ userId: validUuidV4, roles: ['moderator'] }))
 
     const requestModel = {
       id: nonExistentId,

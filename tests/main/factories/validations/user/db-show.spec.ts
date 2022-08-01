@@ -1,16 +1,21 @@
 import { makeValidationServiceStub } from '@tests/data/stubs/services'
-import { makeUserModelMock } from '@tests/domain/mocks/models'
+import { makeSessionModelMock, makeUserModelMock } from '@tests/domain/mocks/models'
 
+import { SessionModel } from '@/domain/models'
 import { ShowUserUseCase } from '@/domain/use-cases'
 import { ValidationException } from '@/main/exceptions'
 import { makeShowUserValidation } from '@/main/factories/validations'
 
-const existingUser = makeUserModelMock()
+const validUuidV4 = '00000000-0000-4000-8000-000000000001'
 const nonExistentId = '00000000-0000-4000-8000-000000000002'
+const existingUser = makeUserModelMock()
 
-function makeSut() {
+function makeSut(session?: SessionModel) {
   const validationService = makeValidationServiceStub()
-  const sut = makeShowUserValidation(validationService)
+  const sut = makeShowUserValidation(
+    validationService,
+    session || makeSessionModelMock({ userId: validUuidV4 })
+  )
 
   return { validationService, sut }
 }
@@ -61,4 +66,24 @@ describe(makeShowUserValidation.name, () => {
       })
     }
   )
+
+  it('Should throw ValidationException if provided a user id different from himself, but is not admin', async () => {
+    const { sut } = makeSut(makeSessionModelMock({ userId: validUuidV4, roles: ['moderator'] }))
+
+    const requestModel = {
+      id: nonExistentId
+    } as ShowUserUseCase.RequestModel
+
+    const sutResult = await sut(requestModel).catch((e) => e)
+
+    expect(sutResult).toStrictEqual(
+      new ValidationException([
+        {
+          field: 'id',
+          message: 'Only admin can show users different from himself',
+          rule: 'differentId'
+        }
+      ])
+    )
+  })
 })
