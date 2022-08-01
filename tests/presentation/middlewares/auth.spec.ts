@@ -5,9 +5,9 @@ import { Roles } from '@/domain/models'
 import { InvalidCredentials, InvalidPermissions } from '@/main/exceptions'
 import { AuthMiddleware } from '@/presentation/middlewares'
 
-function makeSut(roles?: Roles[]) {
+function makeSut(roles?: Roles[], isOptional?: boolean) {
   const decrypter = makeDecrypterCryptographyStub()
-  const sut = new AuthMiddleware(decrypter, roles ?? [])
+  const sut = new AuthMiddleware(decrypter, roles ?? [], isOptional)
 
   return { decrypter, sut }
 }
@@ -27,8 +27,17 @@ describe(AuthMiddleware.name, () => {
     expect(sutResult).toStrictEqual({ session: { ...decryptResult } })
   })
 
-  test('Should throw InvalidCredentials if no bearerToken was informed', async () => {
-    const { sut } = makeSut()
+  test('Should return empty session if no bearerToken was informed and isOptional', async () => {
+    const { sut } = makeSut([], true)
+
+    const request = {}
+    const sutResult = await sut.handle(request)
+
+    expect(sutResult).toStrictEqual({ session: {} })
+  })
+
+  test('Should throw InvalidCredentials if no bearerToken was informed and not isOptional', async () => {
+    const { sut } = makeSut([], false)
 
     const request = { bearerToken: '' }
     const sutResult = await sut.handle(request).catch((e) => e)

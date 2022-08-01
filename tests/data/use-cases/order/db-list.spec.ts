@@ -13,7 +13,7 @@ function makeSut(session?: SessionModel) {
   const sut = new DbListOrderUseCase(
     orderRepository,
     listOrderValidation.firstValidation,
-    session || makeSessionModelMock()
+    session ?? makeSessionModelMock()
   )
 
   return { orderRepository, listOrderValidation, sut }

@@ -14,7 +14,7 @@ function makeSut(session?: SessionModel) {
   const validationService = makeValidationServiceStub()
   const sut = makeUpdateUserValidation(
     validationService,
-    session || makeSessionModelMock({ userId: validUuidV4 })
+    session ?? makeSessionModelMock({ userId: validUuidV4 })
   )
 
   return { validationService, sut }

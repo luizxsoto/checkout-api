@@ -18,7 +18,7 @@ function makeSut(session?: SessionModel) {
     orderRepository,
     orderItemRepository,
     showOrderValidation.firstValidation,
-    session || makeSessionModelMock()
+    session ?? makeSessionModelMock()
   )
 
   return { orderRepository, orderItemRepository, showOrderValidation, sut }
