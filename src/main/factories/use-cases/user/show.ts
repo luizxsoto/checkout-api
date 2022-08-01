@@ -10,7 +10,7 @@ import { makeShowUserValidation } from '@/main/factories/validations'
 export function makeDbShowUserUseCase(session: SessionModel): ShowUserUseCase.UseCase {
   const repository = new KnexUserRepository(session, knexConfig, new UUIDService())
   const validationService = new CompositeValidation()
-  const showUserValidation = makeShowUserValidation(validationService)
+  const showUserValidation = makeShowUserValidation(validationService, session)
   const useCase = new DbShowUserUseCase(repository, showUserValidation)
 
   return useCase
