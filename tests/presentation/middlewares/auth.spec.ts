@@ -33,7 +33,7 @@ describe(AuthMiddleware.name, () => {
     const request = {}
     const sutResult = await sut.handle(request)
 
-    expect(sutResult).toStrictEqual({ session: {} })
+    expect(sutResult).toStrictEqual({ session: { roles: [] } })
   })
 
   test('Should throw InvalidCredentials if no bearerToken was informed and not isOptional', async () => {
