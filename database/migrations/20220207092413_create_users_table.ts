@@ -11,7 +11,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string('name', 100).notNullable()
     table.string('email', 100).notNullable()
     table.string('password', 100).notNullable()
-    table.jsonb('roles').notNullable()
+    table.string('role', 100).notNullable()
 
     table.uuid('createUserId').nullable().references('id').inTable('users')
     table.uuid('updateUserId').nullable().references('id').inTable('users')

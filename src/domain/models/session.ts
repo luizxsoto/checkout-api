@@ -1,6 +1,6 @@
-export type Roles = 'admin' | 'moderator'
+export type Role = 'admin' | 'moderator' | 'customer'
 
 export type SessionModel = {
   userId: string
-  roles: Roles[]
+  role: Role
 }

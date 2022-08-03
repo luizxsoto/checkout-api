@@ -2,7 +2,7 @@ import { UserModel } from '@/domain/models'
 
 export type RequestModel = Parameters<
   (
-    where: Partial<Omit<UserModel, 'roles'>>,
+    where: Partial<UserModel>,
     model: Partial<
       Omit<
         UserModel,

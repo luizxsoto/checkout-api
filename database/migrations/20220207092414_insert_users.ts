@@ -5,12 +5,7 @@ import { UserModel } from '@/domain/models'
 import { envConfig } from '@/main/config'
 
 const tableName = 'users'
-const users: () => Promise<
-  (Omit<UserModel, 'roles' | 'createdAt'> & {
-    createdAt: string
-    roles: string
-  })[]
-> = async () => [
+const users: () => Promise<(Omit<UserModel, 'createdAt'> & { createdAt: string })[]> = async () => [
   {
     id: '00000000-0000-4000-8000-000000000001',
     createUserId: '00000000-0000-4000-8000-000000000001',
@@ -18,7 +13,7 @@ const users: () => Promise<
     name: 'Admin',
     email: 'admin@email.com',
     password: await hash('Password@123', 12),
-    roles: JSON.stringify(['admin'])
+    role: 'admin'
   },
   {
     id: '00000000-0000-4000-8000-000000000002',
@@ -27,16 +22,16 @@ const users: () => Promise<
     name: 'Moderator',
     email: 'moderator@email.com',
     password: await hash('Password@123', 12),
-    roles: JSON.stringify(['moderator'])
+    role: 'moderator'
   },
   {
     id: '00000000-0000-4000-8000-000000000003',
     createUserId: '00000000-0000-4000-8000-000000000001',
     createdAt: new Date().toISOString(),
-    name: 'Normal',
-    email: 'normal@email.com',
+    name: 'Customer',
+    email: 'customer@email.com',
     password: await hash('Password@123', 12),
-    roles: JSON.stringify([])
+    role: 'customer'
   }
 ]
 

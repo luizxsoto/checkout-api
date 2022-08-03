@@ -16,8 +16,7 @@ export function makeShowUserValidation(
           .string()
           .regex({ pattern: 'uuidV4' })
           .custom({
-            validation: () =>
-              session.roles.some((role) => role === 'admin') || requestModel.id === session.userId,
+            validation: () => session.role === 'admin' || requestModel.id === session.userId,
             rule: 'differentId',
             message: 'Only admin can show users different from himself'
           })

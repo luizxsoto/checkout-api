@@ -27,7 +27,7 @@ export class DbCreateSessionUseCase implements CreateSessionUseCase.UseCase {
 
     const bearerToken = await this.encrypter.encrypt({
       userId: findedUser.id,
-      roles: findedUser.roles
+      role: findedUser.role
     })
 
     const responseModel = { ...findedUser, bearerToken }

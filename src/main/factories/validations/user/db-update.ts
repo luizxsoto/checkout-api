@@ -24,8 +24,7 @@ export function makeUpdateUserValidation(
           .string()
           .regex({ pattern: 'uuidV4' })
           .custom({
-            validation: () =>
-              session.roles.some((role) => role === 'admin') || requestModel.id === session.userId,
+            validation: () => session.role === 'admin' || requestModel.id === session.userId,
             rule: 'differentId',
             message: 'Only admin can update users different from himself'
           })
@@ -45,25 +44,13 @@ export function makeUpdateUserValidation(
           .regex({ pattern: 'password' })
           .length({ minLength: MIN_USER_PASSWORD_LENGTH, maxLength: MAX_USER_PASSWORD_LENGTH })
           .build(),
-        roles: new ValidationBuilder()
-          .array(
-            {
-              validations: new ValidationBuilder()
-                .string()
-                .in({ values: ['admin', 'moderator'] })
-                .build()
-            },
-            validationService
-          )
-          .distinct()
+        role: new ValidationBuilder()
+          .string()
+          .in({ values: ['admin', 'moderator', 'customer'] })
           .custom({
-            validation: () =>
-              !requestModel.roles ||
-              !requestModel.roles.length ||
-              session.roles.some((role) => role === 'admin'),
+            validation: () => requestModel.role === 'customer' || session?.role === 'admin',
             rule: 'filledRole',
-            message:
-              'Only an admin can provide a filled role array, otherwise provide an empty array'
+            message: 'Only an admin can provide a role different from customer'
           })
           .build()
       },

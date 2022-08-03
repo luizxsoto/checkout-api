@@ -19,7 +19,7 @@ export class DbListOrderUseCase implements ListOrderUseCase.UseCase {
 
     let parsedFilter = JSON.parse(requestModel.filters ?? '[]')
     const rolesCanSeeAllOrders = ['admin', 'moderator']
-    if (!this.session.roles.some((role) => rolesCanSeeAllOrders.includes(role))) {
+    if (!rolesCanSeeAllOrders.includes(this.session.role)) {
       parsedFilter = ['&', ['=', 'userId', this.session.userId], parsedFilter]
     }
     const orders = await this.listOrderRepository.list({

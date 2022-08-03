@@ -20,7 +20,7 @@ export class DbShowOrderUseCase implements ShowOrderUseCase.UseCase {
 
     const filters: Partial<OrderModel>[] = [sanitizedRequestModel]
     const rolesCanSeeAllOrders = ['admin', 'moderator']
-    if (!this.session.roles.some((role) => rolesCanSeeAllOrders.includes(role))) {
+    if (!rolesCanSeeAllOrders.includes(this.session.role)) {
       filters.push({ userId: this.session.userId })
     }
     const orders = await this.findByOrderRepository.findBy(filters)

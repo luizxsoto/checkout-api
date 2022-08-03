@@ -45,7 +45,7 @@ export class DbCreateUserUseCase implements CreateUserUseCase.UseCase {
       name: requestModel.name,
       email: requestModel.email,
       password: requestModel.password,
-      roles: requestModel.roles
+      role: requestModel.role
     }
   }
 }

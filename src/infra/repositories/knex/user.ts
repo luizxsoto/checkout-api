@@ -52,22 +52,13 @@ export class KnexUserRepository<FindByType = 'NORMAL' | 'SANITIZED'>
   public async create(
     requestModel: CreateUserRepository.RequestModel
   ): Promise<CreateUserRepository.ResponseModel> {
-    const result = await this.baseCreate<Omit<UserModel, 'roles'> & { roles: string }>(
-      requestModel.map((itemModel) => ({
-        ...itemModel,
-        roles: JSON.stringify(itemModel.roles)
-      }))
-    )
+    const result = await this.baseCreate<UserModel>(requestModel)
 
-    return result.map((item) => ({
-      ...item,
-      roles: requestModel.find((itemModel) => itemModel.email === item.email)
-        ?.roles as UserModel['roles']
-    }))
+    return result
   }
 
   public async update(
-    where: Partial<Omit<UserModel, 'roles'>>,
+    where: Partial<UserModel>,
     model: Partial<
       Omit<
         UserModel,
@@ -75,12 +66,9 @@ export class KnexUserRepository<FindByType = 'NORMAL' | 'SANITIZED'>
       >
     >
   ): Promise<UpdateUserRepository.ResponseModel> {
-    const result = await this.baseUpdate<Omit<UserModel, 'roles'> & { roles?: string }>(where, {
-      ...model,
-      roles: model.roles && JSON.stringify(model.roles)
-    })
+    const result = await this.baseUpdate<UserModel>(where, model)
 
-    return result as unknown as UpdateUserRepository.ResponseModel
+    return result
   }
 
   public async remove(

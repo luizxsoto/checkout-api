@@ -52,7 +52,7 @@ export class DbUpdateUserUseCase implements UpdateUserUseCase.UseCase {
       name: requestModel.name,
       email: requestModel.email,
       password: requestModel.password,
-      roles: requestModel.roles
+      role: requestModel.role
     }
   }
 }

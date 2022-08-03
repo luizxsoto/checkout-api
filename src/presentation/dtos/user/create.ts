@@ -1,4 +1,4 @@
-import { Roles } from '@/domain/models'
+import { Role } from '@/domain/models'
 
 export class CreateUserDto {
   public name!: string
@@ -7,5 +7,5 @@ export class CreateUserDto {
 
   public password!: string
 
-  public roles!: Roles[]
+  public role!: Role
 }

@@ -11,9 +11,21 @@ import {
 import { auth } from '@/main/middlewares'
 
 export function orderRoutes(router: Router): void {
-  router.get('/orders', auth([]), adaptRoute(makeListOrderController))
-  router.get('/orders/:id', auth([]), adaptRoute(makeShowOrderController))
-  router.post('/orders', auth([]), adaptRoute(makeCreateOrderController))
+  router.get(
+    '/orders',
+    auth(['admin', 'moderator', 'customer']),
+    adaptRoute(makeListOrderController)
+  )
+  router.get(
+    '/orders/:id',
+    auth(['admin', 'moderator', 'customer']),
+    adaptRoute(makeShowOrderController)
+  )
+  router.post(
+    '/orders',
+    auth(['admin', 'moderator', 'customer']),
+    adaptRoute(makeCreateOrderController)
+  )
   router.put('/orders/:id', auth(['admin', 'moderator']), adaptRoute(makeUpdateOrderController))
   router.delete('/orders/:id', auth(['admin', 'moderator']), adaptRoute(makeRemoveOrderController))
 }

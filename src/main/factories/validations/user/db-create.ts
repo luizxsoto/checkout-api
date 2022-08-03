@@ -37,25 +37,14 @@ export function makeCreateUserValidation(
           .regex({ pattern: 'password' })
           .length({ minLength: MIN_USER_PASSWORD_LENGTH, maxLength: MAX_USER_PASSWORD_LENGTH })
           .build(),
-        roles: new ValidationBuilder()
+        role: new ValidationBuilder()
           .required()
-          .array(
-            {
-              validations: new ValidationBuilder()
-                .string()
-                .in({ values: ['admin', 'moderator'] })
-                .build()
-            },
-            validationService
-          )
-          .distinct()
+          .string()
+          .in({ values: ['admin', 'moderator', 'customer'] })
           .custom({
-            validation: () =>
-              !requestModel.roles.length ||
-              Boolean(session?.roles.some((role) => role === 'admin')),
+            validation: () => requestModel.role === 'customer' || session?.role === 'admin',
             rule: 'filledRole',
-            message:
-              'Only an admin can provide a filled role array, otherwise provide an empty array'
+            message: 'Only an admin can provide a role different from customer'
           })
           .build()
       },
