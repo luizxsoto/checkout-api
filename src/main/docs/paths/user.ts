@@ -4,7 +4,7 @@ export const userPaths = {
       tags: ['users'],
       summary: 'Create a new user',
       description:
-        'Use this route to create a new user\n\nOnly an admin can provide a filled role array, otherwise provide an empty array',
+        'Use this route to create a new user\n\nOnly an admin can provide a role different from customer',
       requestBody: {
         required: true,
         content: {
@@ -12,7 +12,7 @@ export const userPaths = {
             schema: {
               allOf: [
                 { $ref: '#/schemas/baseUser' },
-                { required: ['name', 'email', 'password', 'roles'] }
+                { required: ['name', 'email', 'password', 'role'] }
               ]
             }
           }
@@ -91,7 +91,7 @@ export const userPaths = {
       tags: ['users'],
       summary: 'Update a existing user',
       description:
-        'Use this route to update a existing user\n\nOnly an admin can provide a filled role array, otherwise provide an empty array',
+        'Use this route to create a new user\n\nOnly an admin can provide a role different from customer',
       security: [{ bearerAuth: [] }],
       parameters: [{ $ref: '#/components/id' }],
       requestBody: {

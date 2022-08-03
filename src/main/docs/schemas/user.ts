@@ -28,7 +28,7 @@ export const baseUser = {
       minLength: MIN_USER_PASSWORD_LENGTH,
       maxLength: MAX_USER_PASSWORD_LENGTH
     },
-    roles: { type: 'array', items: { $ref: '#/schemas/role' } }
+    role: { $ref: '#/schemas/role' }
   }
 }
 
