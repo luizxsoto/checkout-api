@@ -31,7 +31,7 @@ describe(DbCreateSessionUseCase.name, () => {
     const responseModel = {
       ...sanitizedRequestModel,
       id: 'any_id',
-      roles: ['any_role'],
+      role: 'any_role',
       createdAt: new Date(),
       password: 'hashed_password',
       bearerToken: 'any_bearerToken'
@@ -50,7 +50,7 @@ describe(DbCreateSessionUseCase.name, () => {
     expect(createSessionValidation.thirdValidation).toBeCalledWith(responseModel)
     expect(encrypterCryptography.encrypt).toBeCalledWith({
       userId: responseModel.id,
-      roles: responseModel.roles
+      role: responseModel.role
     })
   })
 

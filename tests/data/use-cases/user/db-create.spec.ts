@@ -29,7 +29,7 @@ describe(DbCreateUserUseCase.name, () => {
       name: 'Any Name',
       email: 'any@email.com',
       password: 'Password@123',
-      roles: [],
+      role: 'admin' as const,
       anyWrongProp: 'anyValue'
     }
     const sanitizedRequestModel = {
@@ -68,7 +68,7 @@ describe(DbCreateUserUseCase.name, () => {
       name: 'Any Name',
       email: 'any@email.com',
       password: 'Password@123',
-      roles: [],
+      role: 'admin' as const,
       anyWrongProp: 'anyValue'
     }
     const error = new Error('firstValidation Error')
@@ -87,7 +87,7 @@ describe(DbCreateUserUseCase.name, () => {
       name: 'Any Name',
       email: 'any@email.com',
       password: 'Password@123',
-      roles: [],
+      role: 'admin' as const,
       anyWrongProp: 'anyValue'
     }
     const error = new Error('secondValidation Error')

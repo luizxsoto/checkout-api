@@ -58,9 +58,9 @@ describe(DbUpdateProductUseCase.name, () => {
     const requestModel = {
       id: validUuidV4,
       name: 'Any Name',
-      email: 'any@email.com',
-      password: 'Password@123',
-      roles: [],
+      category: 'others' as ProductModel['category'],
+      image: 'any-image.com',
+      price: 1000,
       anyWrongProp: 'anyValue'
     }
     const error = new Error('firstValidation Error')
@@ -78,9 +78,9 @@ describe(DbUpdateProductUseCase.name, () => {
     const requestModel = {
       id: validUuidV4,
       name: 'Any Name',
-      email: 'any@email.com',
-      password: 'Password@123',
-      roles: [],
+      category: 'others' as ProductModel['category'],
+      image: 'any-image.com',
+      price: 1000,
       anyWrongProp: 'anyValue'
     }
     const error = new Error('secondValidation Error')

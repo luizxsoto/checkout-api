@@ -34,7 +34,7 @@ describe('User Routes', () => {
         name: 'Any Name',
         email: 'any@email.com',
         password: 'hashed_password',
-        roles: [],
+        role: 'customer',
         createUserId: userId,
         createdAt: new Date().toISOString()
       }
@@ -95,7 +95,7 @@ describe('User Routes', () => {
         name: 'Any Name',
         email: 'any@email.com',
         password: 'hashed_password',
-        roles: [],
+        role: 'customer',
         createUserId: userId,
         createdAt: new Date().toISOString()
       }
@@ -151,7 +151,7 @@ describe('User Routes', () => {
         name: 'Any Name',
         email: 'any@email.com',
         password: 'Password@123',
-        roles: []
+        role: 'customer'
       }
       const createUserId = userId
 
@@ -175,7 +175,7 @@ describe('User Routes', () => {
       const requestModel = {
         name: 'Any Name',
         password: 'Password@123',
-        roles: []
+        role: 'customer'
       }
 
       const result = await request(app)
@@ -206,7 +206,7 @@ describe('User Routes', () => {
         name: 'Any Name',
         email: 'any@email.com',
         password: 'Password@123',
-        roles: [],
+        role: 'customer',
         createUserId: userId,
         createdAt: new Date().toISOString()
       }
@@ -236,7 +236,7 @@ describe('User Routes', () => {
         name: 'Any Name',
         email: 'any@email.com',
         password: 'Password@123',
-        roles: []
+        role: 'customer'
       }
 
       const result = await request(app)
@@ -270,7 +270,7 @@ describe('User Routes', () => {
         name: 'Any Name',
         email: 'any@email.com',
         password: 'Password@123',
-        roles: [],
+        role: 'customer',
         createUserId: userId,
         updateUserId: userId,
         createdAt: new Date().toISOString(),

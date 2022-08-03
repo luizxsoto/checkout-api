@@ -3,7 +3,7 @@ import { makeSessionModelMock, makeUserModelMock } from '@tests/domain/mocks/mod
 import { makeKnexStub } from '@tests/infra/stubs'
 import { Knex } from 'knex'
 
-import { Roles } from '@/domain/models'
+import { Role } from '@/domain/models'
 import { KnexUserRepository } from '@/infra/repositories'
 
 const userId = '00000000-0000-4000-8000-000000000001'
@@ -94,7 +94,7 @@ describe(KnexUserRepository.name, () => {
         name: 'Any Name',
         email: 'any@email.com',
         password: 'Password@123',
-        roles: ['admin'] as Roles[]
+        role: 'admin' as const
       }
       knex.then.mockImplementationOnce((resolve) => resolve([{ ...requestModel, id }]))
       const responseModel = {
@@ -119,7 +119,7 @@ describe(KnexUserRepository.name, () => {
         name: 'Any Name',
         email: 'any@email.com',
         password: 'Password@123',
-        roles: [],
+        role: 'admin' as const,
         createdAt: new Date()
       }
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]))

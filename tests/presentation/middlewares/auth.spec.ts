@@ -1,11 +1,11 @@
 import { makeSessionModelMock } from '@tests/domain/mocks/models'
 import { makeDecrypterCryptographyStub } from '@tests/presentation/stubs/cryptography'
 
-import { Roles } from '@/domain/models'
+import { Role } from '@/domain/models'
 import { InvalidCredentials, InvalidPermissions } from '@/main/exceptions'
 import { AuthMiddleware } from '@/presentation/middlewares'
 
-function makeSut(roles?: Roles[], isOptional?: boolean) {
+function makeSut(roles?: Role[], isOptional?: boolean) {
   const decrypter = makeDecrypterCryptographyStub()
   const sut = new AuthMiddleware(decrypter, roles ?? [], isOptional)
 
@@ -33,7 +33,7 @@ describe(AuthMiddleware.name, () => {
     const request = {}
     const sutResult = await sut.handle(request)
 
-    expect(sutResult).toStrictEqual({ session: { roles: [] } })
+    expect(sutResult).toStrictEqual({ session: {} })
   })
 
   test('Should throw InvalidCredentials if no bearerToken was informed and not isOptional', async () => {
@@ -69,7 +69,7 @@ describe(AuthMiddleware.name, () => {
   test('Should throw InvalidPermissions if an required role was not informed', async () => {
     const { decrypter, sut } = makeSut(['admin'])
 
-    const decryptResult = makeSessionModelMock({ roles: [] })
+    const decryptResult = makeSessionModelMock({ role: 'customer' })
     decrypter.decrypt.mockReturnValueOnce(Promise.resolve(decryptResult))
 
     const request = { bearerToken: 'Bearer valid_bearerToken' }

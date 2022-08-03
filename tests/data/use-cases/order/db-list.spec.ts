@@ -50,7 +50,7 @@ describe(DbListOrderUseCase.name, () => {
 
   test('Should list order filtering session userId if have no rolesCanSeeAllOrders', async () => {
     const userId = validUuidV4
-    const { orderRepository, sut } = makeSut(makeSessionModelMock({ userId, roles: [] }))
+    const { orderRepository, sut } = makeSut(makeSessionModelMock({ userId, role: 'customer' }))
 
     const sanitizedRequestModel = { filters: '[]' }
     const responseModel = { ...sanitizedRequestModel }
