@@ -33,6 +33,7 @@ describe('Product Routes', () => {
         id: validUuidV4,
         name: 'Any Name',
         category: 'others',
+        colors: ['other'],
         image: 'any-image.com',
         price: 1000,
         createUserId: userId,
@@ -47,6 +48,8 @@ describe('Product Routes', () => {
         .set('authorization', await makeBearerTokenMock())
         .send()
 
+      const sqLiteColors = result.body.registers?.[0]?.colors?.split?.(',')?.[0]
+
       expect(result.status).toBe(200)
       expect(result.body.page).toBe(1)
       expect(result.body.perPage).toBe(20)
@@ -55,6 +58,7 @@ describe('Product Routes', () => {
       expect(result.body.registers?.[0]?.id).toBe(requestModel.id)
       expect(result.body.registers?.[0]?.name).toBe(requestModel.name)
       expect(result.body.registers?.[0]?.category).toBe(requestModel.category)
+      expect(sqLiteColors).toBe(requestModel.colors[0])
       expect(result.body.registers?.[0]?.image).toBe(requestModel.image)
       expect(result.body.registers?.[0]?.price).toBe(requestModel.price)
       expect(result.body.registers?.[0]?.createUserId).toBe(requestModel.createUserId)
@@ -82,7 +86,7 @@ describe('Product Routes', () => {
             field: 'filters',
             rule: 'listFilters',
             message:
-              'This value must be a valid list filters and with this posible fields: name, category, price, createUserId, updateUserId, createdAt, updatedAt'
+              'This value must be a valid list filters and with this posible fields: name, category, colors, price, createUserId, updateUserId, createdAt, updatedAt'
           }
         ]
       })
@@ -95,6 +99,7 @@ describe('Product Routes', () => {
         id: validUuidV4,
         name: 'Any Name',
         category: 'others',
+        colors: ['other'],
         image: 'any-image.com',
         price: 1000,
         createUserId: userId,
@@ -108,10 +113,13 @@ describe('Product Routes', () => {
         .set('authorization', await makeBearerTokenMock())
         .send()
 
+      const sqLiteColors = result.body.colors?.split?.(',')?.[0]
+
       expect(result.status).toBe(200)
       expect(result.body.id).toBe(requestModel.id)
       expect(result.body.name).toBe(requestModel.name)
       expect(result.body.category).toBe(requestModel.category)
+      expect(sqLiteColors).toBe(requestModel.colors[0])
       expect(result.body.image).toBe(requestModel.image)
       expect(result.body.price).toBe(requestModel.price)
       expect(result.body.createUserId).toBe(requestModel.createUserId)
@@ -152,6 +160,7 @@ describe('Product Routes', () => {
       const requestModel = {
         name: 'Any Name',
         category: 'others',
+        colors: ['other'],
         image: 'any-image.com',
         price: 1000
       }
@@ -165,6 +174,7 @@ describe('Product Routes', () => {
       expect(result.status).toBe(201)
       expect(result.body.name).toBe(requestModel.name)
       expect(result.body.category).toBe(requestModel.category)
+      expect(result.body.colors[0]).toBe(requestModel.colors[0])
       expect(result.body.image).toBe(requestModel.image)
       expect(result.body.price).toBe(requestModel.price)
       expect(result.body.createUserId).toBe(createUserId)
@@ -175,7 +185,12 @@ describe('Product Routes', () => {
     })
 
     test('Should return a correct body validation error if some prop is invalid', async () => {
-      const requestModel = { category: 'others', image: 'any-image.com', price: 1000 }
+      const requestModel = {
+        category: 'others',
+        colors: ['other'],
+        image: 'any-image.com',
+        price: 1000
+      }
 
       const result = await request(app)
         .post('/api/products')
@@ -204,6 +219,7 @@ describe('Product Routes', () => {
         id: validUuidV4,
         name: 'Any Name',
         category: 'others',
+        colors: ['other'],
         image: 'any-image.com',
         price: 1000,
         createUserId: userId,
@@ -222,6 +238,7 @@ describe('Product Routes', () => {
       expect(result.body.id).toBe(requestModel.id)
       expect(result.body.name).toBe(requestModel.name)
       expect(result.body.category).toBe(requestModel.category)
+      expect(result.body.colors[0]).toBe(requestModel.colors[0])
       expect(result.body.image).toBe(requestModel.image)
       expect(result.body.price).toBe(requestModel.price)
       expect(result.body.createUserId).toBe(requestModel.createUserId)
@@ -235,6 +252,7 @@ describe('Product Routes', () => {
         id: 'invalid_id',
         name: 'Any Name',
         category: 'others',
+        colors: ['other'],
         image: 'any-image.com',
         price: 1000
       }
@@ -269,6 +287,7 @@ describe('Product Routes', () => {
         id: validUuidV4,
         name: 'Any Name',
         category: 'others',
+        colors: ['other'],
         image: 'any-image.com',
         price: 1000,
         createUserId: userId,
@@ -285,10 +304,13 @@ describe('Product Routes', () => {
         .set('authorization', await makeBearerTokenMock({ userId: deleteUserId }))
         .send()
 
+      const sqLiteColors = result.body.colors?.split?.(',')?.[0]
+
       expect(result.status).toBe(200)
       expect(result.body.id).toBe(requestModel.id)
       expect(result.body.name).toBe(requestModel.name)
       expect(result.body.category).toBe(requestModel.category)
+      expect(sqLiteColors).toBe(requestModel.colors[0])
       expect(result.body.image).toBe(requestModel.image)
       expect(result.body.price).toBe(requestModel.price)
       expect(result.body.createUserId).toBe(requestModel.createUserId)

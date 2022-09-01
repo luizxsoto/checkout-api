@@ -32,7 +32,8 @@ describe(KnexProductRepository.name, () => {
 
       const requestModel = {
         name: 'Any Name',
-        category: 'others' as ProductModel['category'],
+        category: 'others' as const,
+        colors: ['other'] as ProductModel['colors'],
         image: 'any-image.com',
         price: 1000
       }
@@ -51,7 +52,8 @@ describe(KnexProductRepository.name, () => {
 
       const requestModel = {
         name: 'Any Name',
-        category: 'others' as ProductModel['category'],
+        category: 'others' as const,
+        colors: ['other'] as ProductModel['colors'],
         image: 'any-image.com',
         price: 1000
       }
@@ -78,7 +80,8 @@ describe(KnexProductRepository.name, () => {
       const id = 'any_id'
       const requestModel = {
         name: 'Any Name',
-        category: 'others' as ProductModel['category'],
+        category: 'others' as const,
+        colors: ['other'] as ProductModel['colors'],
         image: 'any-image.com',
         price: 1000
       }
@@ -103,7 +106,8 @@ describe(KnexProductRepository.name, () => {
       const requestModel = {
         id: 'any_id',
         name: 'Any Name',
-        category: 'others' as ProductModel['category'],
+        category: 'others' as const,
+        colors: ['other'] as ProductModel['colors'],
         image: 'any-image.com',
         price: 1000,
         createdAt: new Date()

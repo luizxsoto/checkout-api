@@ -80,6 +80,59 @@ describe(makeUpdateProductValidation.name, () => {
         }
       ]
     },
+    // colors
+    {
+      properties: { colors: 'invalid_array' },
+      validations: [{ field: 'colors', rule: 'array', message: 'This value must be an array' }]
+    },
+    {
+      properties: { colors: [1] },
+      validations: [{ field: 'colors.0', rule: 'string', message: 'This value must be a string' }]
+    },
+    {
+      properties: { colors: ['invalid_colors'] },
+      validations: [
+        {
+          field: 'colors.0',
+          rule: 'in',
+          message: 'This value must be in: black, white, blue, red, other'
+        }
+      ]
+    },
+    {
+      properties: { colors: [] },
+      validations: [
+        {
+          field: 'colors',
+          rule: 'length',
+          message: 'This value length must be beetween 1 and 10'
+        }
+      ]
+    },
+    {
+      properties: {
+        colors: [
+          'other',
+          'other',
+          'other',
+          'other',
+          'other',
+          'other',
+          'other',
+          'other',
+          'other',
+          'other',
+          'other'
+        ]
+      },
+      validations: [
+        {
+          field: 'colors',
+          rule: 'length',
+          message: 'This value length must be beetween 1 and 10'
+        }
+      ]
+    },
     // image
     {
       properties: { image: 1 },

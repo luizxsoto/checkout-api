@@ -25,7 +25,8 @@ describe(DbUpdateProductUseCase.name, () => {
     const requestModel = {
       id: validUuidV4,
       name: 'Any Name',
-      category: 'others' as ProductModel['category'],
+      category: 'others' as const,
+      colors: ['other'] as ProductModel['colors'],
       image: 'any-image.com',
       price: 1000,
       anyWrongProp: 'anyValue'
@@ -58,7 +59,8 @@ describe(DbUpdateProductUseCase.name, () => {
     const requestModel = {
       id: validUuidV4,
       name: 'Any Name',
-      category: 'others' as ProductModel['category'],
+      category: 'others' as const,
+      colors: ['other'] as ProductModel['colors'],
       image: 'any-image.com',
       price: 1000,
       anyWrongProp: 'anyValue'
@@ -78,7 +80,8 @@ describe(DbUpdateProductUseCase.name, () => {
     const requestModel = {
       id: validUuidV4,
       name: 'Any Name',
-      category: 'others' as ProductModel['category'],
+      category: 'others' as const,
+      colors: ['other'] as ProductModel['colors'],
       image: 'any-image.com',
       price: 1000,
       anyWrongProp: 'anyValue'

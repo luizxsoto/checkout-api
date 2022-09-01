@@ -57,6 +57,63 @@ describe(makeCreateProductValidation.name, () => {
         }
       ]
     },
+    // colors
+    {
+      properties: { colors: undefined },
+      validations: [{ field: 'colors', rule: 'required', message: 'This value is required' }]
+    },
+    {
+      properties: { colors: 'invalid_array' },
+      validations: [{ field: 'colors', rule: 'array', message: 'This value must be an array' }]
+    },
+    {
+      properties: { colors: [1] },
+      validations: [{ field: 'colors.0', rule: 'string', message: 'This value must be a string' }]
+    },
+    {
+      properties: { colors: ['invalid_colors'] },
+      validations: [
+        {
+          field: 'colors.0',
+          rule: 'in',
+          message: 'This value must be in: black, white, blue, red, other'
+        }
+      ]
+    },
+    {
+      properties: { colors: [] },
+      validations: [
+        {
+          field: 'colors',
+          rule: 'length',
+          message: 'This value length must be beetween 1 and 10'
+        }
+      ]
+    },
+    {
+      properties: {
+        colors: [
+          'other',
+          'other',
+          'other',
+          'other',
+          'other',
+          'other',
+          'other',
+          'other',
+          'other',
+          'other',
+          'other'
+        ]
+      },
+      validations: [
+        {
+          field: 'colors',
+          rule: 'length',
+          message: 'This value length must be beetween 1 and 10'
+        }
+      ]
+    },
     // image
     {
       properties: { image: undefined },
@@ -107,7 +164,8 @@ describe(makeCreateProductValidation.name, () => {
 
         const requestModel = {
           name: 'Any Name',
-          category: 'others' as ProductModel['category'],
+          category: 'others' as const,
+          colors: ['other'] as ProductModel['colors'],
           image: 'any-image.com',
           price: 1000,
           ...properties

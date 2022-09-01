@@ -113,6 +113,23 @@ describe(makeListProductValidation.name, () => {
         }
       ]
     },
+    // colors
+    {
+      properties: { filters: '["=", "colors", 1]' },
+      validations: [
+        { field: 'filters.colors.0', rule: 'string', message: 'This value must be a string' }
+      ]
+    },
+    {
+      properties: { filters: '["=", "colors", "invalid_colors"]' },
+      validations: [
+        {
+          field: 'filters.colors.0',
+          rule: 'in',
+          message: 'This value must be in: black, white, blue, red, other'
+        }
+      ]
+    },
     // price
     {
       properties: { filters: '["=", "price", 1.2]' },
