@@ -12,7 +12,7 @@ export const productPaths = {
             schema: {
               allOf: [
                 { $ref: '#/schemas/baseProduct' },
-                { required: ['name', 'category', 'image', 'price'] }
+                { required: ['name', 'category', 'colors', 'image', 'price'] }
               ]
             }
           }

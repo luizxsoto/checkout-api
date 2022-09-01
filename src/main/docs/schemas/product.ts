@@ -9,7 +9,8 @@ export const baseProduct = {
       minLength: MIN_PRODUCT_NAME_LENGTH,
       maxLength: MAX_PRODUCT_NAME_LENGTH
     },
-    category: { $ref: '#/schemas/productCategory', example: 'others' },
+    category: { $ref: '#/schemas/productCategory' },
+    colors: { type: 'array', items: { $ref: '#/schemas/productColors' } },
     image: {
       type: 'string',
       example: 'https://boacausa.net/img/image-placeholder.png'
