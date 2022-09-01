@@ -38,6 +38,17 @@ export function makeListProductValidation(
           validationService
         )
       ],
+      colors: [
+        new ArrayValidation.Validator(
+          {
+            validations: new ValidationBuilder()
+              .string()
+              .in({ values: ['black', 'white', 'blue', 'red', 'other'] })
+              .build()
+          },
+          validationService
+        )
+      ],
       price: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().integer().max({ value: MAX_INTEGER }).build() },

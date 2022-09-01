@@ -2,7 +2,13 @@ import { ValidationService } from '@/data/contracts/services'
 import { UpdateProductValidation } from '@/data/contracts/validations'
 import { UpdateProductUseCase } from '@/domain/use-cases'
 import { ValidationBuilder } from '@/main/builders'
-import { MAX_INTEGER, MAX_PRODUCT_NAME_LENGTH, MIN_PRODUCT_NAME_LENGTH } from '@/main/constants'
+import {
+  MAX_INTEGER,
+  MAX_PRODUCT_COLORS_LENGTH,
+  MAX_PRODUCT_NAME_LENGTH,
+  MIN_PRODUCT_COLORS_LENGTH,
+  MIN_PRODUCT_NAME_LENGTH
+} from '@/main/constants'
 
 export function makeUpdateProductValidation(
   validationService: ValidationService.Validator
@@ -18,6 +24,18 @@ export function makeUpdateProductValidation(
         category: new ValidationBuilder()
           .string()
           .in({ values: ['clothes', 'shoes', 'others'] })
+          .build(),
+        colors: new ValidationBuilder()
+          .array(
+            {
+              validations: new ValidationBuilder()
+                .string()
+                .in({ values: ['black', 'white', 'blue', 'red', 'other'] })
+                .build()
+            },
+            validationService
+          )
+          .length({ minLength: MIN_PRODUCT_COLORS_LENGTH, maxLength: MAX_PRODUCT_COLORS_LENGTH })
           .build(),
         image: new ValidationBuilder().string().regex({ pattern: 'url' }).build(),
         price: new ValidationBuilder().integer().max({ value: MAX_INTEGER }).build()

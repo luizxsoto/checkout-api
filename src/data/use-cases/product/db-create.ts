@@ -26,6 +26,7 @@ export class DbCreateProductUseCase implements CreateProductUseCase.UseCase {
     return {
       name: requestModel.name,
       category: requestModel.category,
+      colors: requestModel.colors,
       image: requestModel.image,
       price: requestModel.price
     }

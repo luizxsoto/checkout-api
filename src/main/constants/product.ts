@@ -1,3 +1,7 @@
 export const MIN_PRODUCT_NAME_LENGTH = 6
 
 export const MAX_PRODUCT_NAME_LENGTH = 255
+
+export const MIN_PRODUCT_COLORS_LENGTH = 1
+
+export const MAX_PRODUCT_COLORS_LENGTH = 10
