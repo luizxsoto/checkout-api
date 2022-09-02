@@ -5,12 +5,17 @@ import { BaseModel, SessionModel } from '@/domain/models'
 import { MIN_PER_PAGE } from '@/main/constants'
 import { DatabaseException } from '@/main/exceptions'
 
+type PrimitiveType = string | number
+type FilterType = [PrimitiveType, PrimitiveType, PrimitiveType | PrimitiveType[]]
+type OperatorType = [string, ...(OperatorType | FilterType)[]]
+
 export abstract class KnexBaseRepository {
   constructor(
     protected readonly session: SessionModel,
     protected readonly knex: Knex,
     protected readonly uuidService: GenerateUniqueIDService.Service,
-    protected readonly tableName: string
+    protected readonly tableName: string,
+    protected readonly arrayFields: string[] = []
   ) {}
 
   protected async baseRun<ResponseT>(query: Knex.QueryBuilder): Promise<ResponseT> {
@@ -73,13 +78,16 @@ export abstract class KnexBaseRepository {
     } = requestModel
     const parsedFilters = JSON.parse(filters.replace(/'/g, "''"))
     const offset = (page - 1) * perPage
+    const arrayFields = this.arrayFields
 
-    type PrimitiveType = string | number
-    type FilterType = [PrimitiveType, PrimitiveType, PrimitiveType | PrimitiveType[]]
-    type OperatorType = [string, ...(OperatorType | FilterType)[]]
+    function putQuotesIfString(value: PrimitiveType) {
+      return typeof value === 'string' ? `'${value}'` : value
+    }
 
     function buildQuery(builder: Knex.QueryBuilder, filter: OperatorType | FilterType) {
-      const [operator, field, values] = filter
+      const operator = filter[0] as string
+      const field = filter[1] as string
+      const values = filter[2] as PrimitiveType
       const [, ...fieldOrFilters] = filter
 
       const operatorsQueryDict: Record<string, () => void> = {
@@ -93,25 +101,71 @@ export abstract class KnexBaseRepository {
               buildQuery(build, fieldOrFilter as OperatorType | FilterType)
             )
           }),
-        '=': () => builder.where(field as string, values as PrimitiveType),
-        '!=': () => builder.whereNot(field as string, values as PrimitiveType),
-        '>': () => builder.where(field as string, '>', values as PrimitiveType),
-        '>=': () => builder.where(field as string, '>=', values as PrimitiveType),
-        '<': () => builder.where(field as string, '<', values as PrimitiveType),
-        '<=': () => builder.where(field as string, '<=', values as PrimitiveType),
+        '=': () => {
+          if (arrayFields.includes(field)) {
+            builder.whereRaw(`${putQuotesIfString(values)} = any("${field}")`)
+          } else {
+            builder.where(field, values)
+          }
+        },
+        '!=': () => {
+          if (arrayFields.includes(field)) {
+            builder.whereRaw(`${putQuotesIfString(values)} != any("${field}")`)
+          } else {
+            builder.whereNot(field, values)
+          }
+        },
+        '>': () => {
+          if (arrayFields.includes(field)) {
+            builder.whereRaw(`${putQuotesIfString(values)} > any("${field}")`)
+          } else {
+            builder.where(field, '>', values)
+          }
+        },
+        '>=': () => {
+          if (arrayFields.includes(field)) {
+            builder.whereRaw(`${putQuotesIfString(values)} >= any("${field}")`)
+          } else {
+            builder.where(field, '>=', values)
+          }
+        },
+        '<': () => {
+          if (arrayFields.includes(field)) {
+            builder.whereRaw(`${putQuotesIfString(values)} < any("${field}")`)
+          } else {
+            builder.where(field, '<', values)
+          }
+        },
+        '<=': () => {
+          if (arrayFields.includes(field)) {
+            builder.whereRaw(`${putQuotesIfString(values)} <= any("${field}")`)
+          } else {
+            builder.where(field, '<=', values)
+          }
+        },
         ':': () =>
           builder.whereRaw(
-            `"${field}"::text ~* '${values}|${String(values)
+            `unaccent("${field}"::text) ~* '${values}|${String(values)
               .normalize('NFD')
               .replace(/[\u0300-\u036f]/g, '')}'`
           ),
         '!:': () =>
           builder.whereRaw(
-            `"${field}"::text !~* '${values}|${String(values)
+            `unaccent("${field}"::text) !~* '${values}|${String(values)
               .normalize('NFD')
               .replace(/[\u0300-\u036f]/g, '')}'`
           ),
-        in: () => builder.whereIn(field as string, values as PrimitiveType[])
+        in: () => {
+          if (arrayFields.includes(field)) {
+            builder.whereRaw(
+              `"${field}" <@ array[${(values as unknown as PrimitiveType[]).map(
+                putQuotesIfString
+              )}]`
+            )
+          } else {
+            builder.whereIn(field, values as unknown as PrimitiveType[])
+          }
+        }
       }
 
       operatorsQueryDict[operator]?.()

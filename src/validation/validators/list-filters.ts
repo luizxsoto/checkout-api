@@ -7,6 +7,10 @@ export type Options = {
   schema: Record<string, [ArrayValidation.Validator]>
 }
 
+type PrimitiveType = string | number
+type FilterType = [PrimitiveType, PrimitiveType, PrimitiveType | PrimitiveType[]]
+type OperatorType = [string, ...(OperatorType | FilterType)[]]
+
 export class Validator implements FieldValidation.Validation<Options> {
   constructor(
     public readonly options: Options,
@@ -20,10 +24,6 @@ export class Validator implements FieldValidation.Validation<Options> {
   }: FieldValidation.Params): Promise<FieldValidation.Result> {
     const value = lodashGet(model, key) as string
     if (value === undefined) return null
-
-    type PrimitiveType = string | number
-    type FilterType = [PrimitiveType, PrimitiveType, PrimitiveType | PrimitiveType[]]
-    type OperatorType = [string, ...(OperatorType | FilterType)[]]
 
     let arrayValue!: OperatorType
 

@@ -19,7 +19,7 @@ type Repositories = FindByProductRepository.Repository &
 
 export class KnexProductRepository extends KnexBaseRepository implements Repositories {
   constructor(session: SessionModel, knex: Knex, uuidService: GenerateUniqueIDService.Service) {
-    super(session, knex, uuidService, 'products')
+    super(session, knex, uuidService, 'products', ['colors'])
   }
 
   public async findBy(
