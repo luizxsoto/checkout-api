@@ -11,7 +11,7 @@ const validUuidV4 = '00000000-0000-4000-8000-000000000001'
 const userId = validUuidV4
 const session = makeSessionModelMock({ userId })
 
-function makeSut() {
+function makeSut(arrayFields?: string[]) {
   const knex = makeKnexStub(makeBaseModelMock() as unknown as Record<string, unknown>)
   const uuidService = makeUuidServiceStub()
   const tableName = 'tableName'
@@ -27,7 +27,7 @@ function makeSut() {
     public update = this.baseUpdate
 
     public remove = this.baseRemove
-  })(session, knex as unknown as Knex, uuidService, tableName)
+  })(session, knex as unknown as Knex, uuidService, tableName, arrayFields)
 
   return { knex, uuidService, tableName, sut }
 }
@@ -117,12 +117,71 @@ describe(KnexBaseRepository.name, () => {
       })
       expect(knex.whereNull).toBeCalledWith('deletedAt')
       expect(knex.table).toBeCalledWith(tableName)
+      expect(knex.where).toBeCalledWith(expect.any(Function))
+      expect(knex.where).toBeCalledWith(expect.any(Function))
       expect(knex.where).toBeCalledWith('anyProp', 'anyValue')
+      expect(knex.whereNot).toBeCalledWith('anyProp', 'anyValue')
+      expect(knex.where).toBeCalledWith('anyProp', '>', 'anyValue')
+      expect(knex.where).toBeCalledWith('anyProp', '>=', 'anyValue')
+      expect(knex.where).toBeCalledWith('anyProp', '<', 'anyValue')
+      expect(knex.where).toBeCalledWith('anyProp', '<=', 'anyValue')
+      expect(knex.whereRaw).toBeCalledWith(`unaccent("anyProp"::text) ~* 'anyValue|anyValue'`)
+      expect(knex.whereRaw).toBeCalledWith(`unaccent("anyProp"::text) !~* 'anyValue|anyValue'`)
+      expect(knex.whereIn).toBeCalledWith('anyProp', ['anyValue'])
       expect(knex.offset).toBeCalledWith(requestModel.perPage - 1 * requestModel.perPage)
       expect(knex.limit).toBeCalledWith(requestModel.perPage)
       expect(knex.orderBy).toBeCalledWith(requestModel.orderBy, requestModel.order)
-      knex.where.mockReset()
-      knex.orWhere.mockReset()
+    })
+
+    test('Should list register and return correct values for arrayFields', async () => {
+      const { knex, tableName, sut } = makeSut(['anyProp'])
+
+      const requestModel = {
+        page: 1,
+        perPage: 20,
+        orderBy: 'orderBy',
+        order: 'desc',
+        filters:
+          '["&", ["|", ["=", "anyProp", 1], ["!=", "anyProp", "anyValue"], [">", "anyProp", "anyValue"], [">=", "anyProp", "anyValue"], ["<", "anyProp", "anyValue"], ["<=", "anyProp", "anyValue"], [":", "anyProp", "anyValue"], ["!:", "anyProp", "anyValue"], ["in", "anyProp", ["anyValue"]]]]'
+      }
+      const responseModel = { anyProp: 'anyValue' }
+
+      knex.then.mockImplementationOnce((resolve) => resolve([responseModel]))
+      knex.then.mockImplementationOnce((resolve) => resolve([{ count: 1 }]))
+      knex.where.mockImplementation((cb) => {
+        if (typeof cb === 'function') cb(knex)
+        return knex
+      })
+      knex.orWhere.mockImplementation((cb) => {
+        if (typeof cb === 'function') cb(knex)
+        return knex
+      })
+
+      const sutResult = await sut.list(requestModel)
+
+      expect(sutResult).toStrictEqual({
+        page: requestModel.page,
+        perPage: requestModel.perPage,
+        lastPage: 1,
+        total: 1,
+        registers: [responseModel]
+      })
+      expect(knex.whereNull).toBeCalledWith('deletedAt')
+      expect(knex.table).toBeCalledWith(tableName)
+      expect(knex.where).toBeCalledWith(expect.any(Function))
+      expect(knex.where).toBeCalledWith(expect.any(Function))
+      expect(knex.whereRaw).toBeCalledWith(`1 = any("anyProp")`)
+      expect(knex.whereRaw).toBeCalledWith(`'anyValue' != any("anyProp")`)
+      expect(knex.whereRaw).toBeCalledWith(`'anyValue' > any("anyProp")`)
+      expect(knex.whereRaw).toBeCalledWith(`'anyValue' >= any("anyProp")`)
+      expect(knex.whereRaw).toBeCalledWith(`'anyValue' < any("anyProp")`)
+      expect(knex.whereRaw).toBeCalledWith(`'anyValue' <= any("anyProp")`)
+      expect(knex.whereRaw).toBeCalledWith(`unaccent("anyProp"::text) ~* 'anyValue|anyValue'`)
+      expect(knex.whereRaw).toBeCalledWith(`unaccent("anyProp"::text) !~* 'anyValue|anyValue'`)
+      expect(knex.whereRaw).toBeCalledWith(`"anyProp" <@ array['anyValue']`)
+      expect(knex.offset).toBeCalledWith(requestModel.perPage - 1 * requestModel.perPage)
+      expect(knex.limit).toBeCalledWith(requestModel.perPage)
+      expect(knex.orderBy).toBeCalledWith(requestModel.orderBy, requestModel.order)
     })
 
     test('Should use default values for page, perPage, orderBy, order and filters', async () => {
