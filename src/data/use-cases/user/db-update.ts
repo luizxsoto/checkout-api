@@ -52,7 +52,8 @@ export class DbUpdateUserUseCase implements UpdateUserUseCase.UseCase {
       name: requestModel.name,
       email: requestModel.email,
       password: requestModel.password,
-      role: requestModel.role
+      role: requestModel.role,
+      image: requestModel.image
     }
   }
 }

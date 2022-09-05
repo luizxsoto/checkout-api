@@ -8,4 +8,6 @@ export class CreateUserDto {
   public password!: string
 
   public role!: Role
+
+  public image?: string
 }

@@ -46,7 +46,8 @@ export function makeCreateUserValidation(
             rule: 'filledRole',
             message: 'Only an admin can provide a role different from customer'
           })
-          .build()
+          .build(),
+        image: new ValidationBuilder().string().regex({ pattern: 'url' }).build()
       },
       model: requestModel,
       data: {}

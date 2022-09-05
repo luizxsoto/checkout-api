@@ -9,9 +9,10 @@ export async function up(knex: Knex): Promise<void> {
     table.uuid('id').primary().notNullable()
 
     table.string('name', 100).notNullable()
-    table.string('email', 100).notNullable()
+    table.string('email', 100).notNullable().unique()
     table.string('password', 100).notNullable()
     table.string('role', 100).notNullable()
+    table.text('image').nullable()
 
     table.uuid('createUserId').nullable().references('id').inTable('users')
     table.uuid('updateUserId').nullable().references('id').inTable('users')

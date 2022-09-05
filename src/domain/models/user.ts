@@ -6,4 +6,5 @@ export type UserModel = BaseModel & {
   email: string
   password: string
   role: Role
+  image?: string
 }

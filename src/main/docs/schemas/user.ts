@@ -28,7 +28,11 @@ export const baseUser = {
       minLength: MIN_USER_PASSWORD_LENGTH,
       maxLength: MAX_USER_PASSWORD_LENGTH
     },
-    role: { $ref: '#/schemas/role' }
+    role: { $ref: '#/schemas/role' },
+    image: {
+      type: 'string',
+      example: 'https://boacausa.net/img/image-placeholder.png'
+    }
   }
 }
 
