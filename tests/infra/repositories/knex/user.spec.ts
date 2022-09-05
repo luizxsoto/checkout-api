@@ -3,7 +3,6 @@ import { makeSessionModelMock, makeUserModelMock } from '@tests/domain/mocks/mod
 import { makeKnexStub } from '@tests/infra/stubs'
 import { Knex } from 'knex'
 
-import { Role } from '@/domain/models'
 import { KnexUserRepository } from '@/infra/repositories'
 
 const userId = '00000000-0000-4000-8000-000000000001'
@@ -33,7 +32,8 @@ describe(KnexUserRepository.name, () => {
       const requestModel = {
         name: 'Any Name',
         email: 'any@email.com',
-        password: 'Password@123'
+        password: 'Password@123',
+        image: 'https://any.image'
       }
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]))
       const responseModel = { ...requestModel }
@@ -49,7 +49,8 @@ describe(KnexUserRepository.name, () => {
       const requestModel = {
         name: 'Any Name',
         email: 'any@email.com',
-        password: 'Password@123'
+        password: 'Password@123',
+        image: 'https://any.image'
       }
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]))
       const responseModel = { ...requestModel }
@@ -94,7 +95,8 @@ describe(KnexUserRepository.name, () => {
         name: 'Any Name',
         email: 'any@email.com',
         password: 'Password@123',
-        role: 'admin' as const
+        role: 'admin' as const,
+        image: 'https://any.image'
       }
       knex.then.mockImplementationOnce((resolve) => resolve([{ ...requestModel, id }]))
       const responseModel = {
@@ -120,6 +122,7 @@ describe(KnexUserRepository.name, () => {
         email: 'any@email.com',
         password: 'Password@123',
         role: 'admin' as const,
+        image: 'https://any.image',
         createdAt: new Date()
       }
       knex.then.mockImplementationOnce((resolve) => resolve([requestModel]))

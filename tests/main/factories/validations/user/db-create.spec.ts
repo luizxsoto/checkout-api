@@ -153,6 +153,25 @@ describe(makeCreateUserValidation.name, () => {
       validations: [
         { field: 'role', rule: 'in', message: 'This value must be in: admin, moderator, customer' }
       ]
+    },
+    // image
+    {
+      properties: { image: 1 },
+      validations: [{ field: 'image', rule: 'string', message: 'This value must be a string' }]
+    },
+    {
+      properties: { image: 'invalid_url' },
+      validations: [
+        {
+          field: 'image',
+          rule: 'regex',
+          message: 'This value must be valid according to the pattern: url',
+          details: {
+            pattern:
+              '/[(http(s)?)://(www.)?a-zA-Z0-9@:%._+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/gi'
+          }
+        }
+      ]
     }
   ])(
     'Should throw ValidationException for every user invalid prop',
@@ -165,6 +184,7 @@ describe(makeCreateUserValidation.name, () => {
           email: 'any@email.com',
           password: 'Password@123',
           role: 'admin',
+          image: 'https://any.image',
           ...properties
         } as CreateUserUseCase.RequestModel
 
@@ -186,7 +206,8 @@ describe(makeCreateUserValidation.name, () => {
       name: 'Any Name',
       email: 'any@email.com',
       password: 'Password@123',
-      role: 'moderator'
+      role: 'moderator',
+      image: 'https://any.image'
     } as CreateUserUseCase.RequestModel
 
     const sutResult = await sut(requestModel).catch((e) => e)

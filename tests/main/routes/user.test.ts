@@ -35,6 +35,7 @@ describe('User Routes', () => {
         email: 'any@email.com',
         password: 'hashed_password',
         role: 'customer',
+        image: 'https://any.image',
         createUserId: userId,
         createdAt: new Date().toISOString()
       }
@@ -55,6 +56,9 @@ describe('User Routes', () => {
       expect(result.body.registers?.[0]?.id).toBe(requestModel.id)
       expect(result.body.registers?.[0]?.name).toBe(requestModel.name)
       expect(result.body.registers?.[0]?.email).toBe(requestModel.email)
+      expect(result.body.registers?.[0]?.role).toBe(requestModel.role)
+      expect(result.body.registers?.[0]?.role).toBe(requestModel.role)
+      expect(result.body.registers?.[0]?.image).toBe(requestModel.image)
       expect(result.body.registers?.[0]?.createUserId).toBe(requestModel.createUserId)
       expect(result.body.registers?.[0]?.createdAt).toBe(requestModel.createdAt)
       expect(result.body.registers?.[0]?.password).toBeUndefined()
@@ -96,6 +100,7 @@ describe('User Routes', () => {
         email: 'any@email.com',
         password: 'hashed_password',
         role: 'customer',
+        image: 'https://any.image',
         createUserId: userId,
         createdAt: new Date().toISOString()
       }
@@ -111,6 +116,8 @@ describe('User Routes', () => {
       expect(result.body.id).toBe(requestModel.id)
       expect(result.body.name).toBe(requestModel.name)
       expect(result.body.email).toBe(requestModel.email)
+      expect(result.body.role).toBe(requestModel.role)
+      expect(result.body.image).toBe(requestModel.image)
       expect(result.body.createUserId).toBe(requestModel.createUserId)
       expect(result.body.createdAt).toBe(requestModel.createdAt)
       expect(result.body.password).toBeUndefined()
@@ -151,7 +158,8 @@ describe('User Routes', () => {
         name: 'Any Name',
         email: 'any@email.com',
         password: 'Password@123',
-        role: 'customer'
+        role: 'customer',
+        image: 'https://any.image'
       }
       const createUserId = userId
 
@@ -163,6 +171,8 @@ describe('User Routes', () => {
       expect(result.status).toBe(201)
       expect(result.body.name).toBe(requestModel.name)
       expect(result.body.email).toBe(requestModel.email)
+      expect(result.body.role).toBe(requestModel.role)
+      expect(result.body.image).toBe(requestModel.image)
       expect(result.body.createUserId).toBe(createUserId)
       expect(result.body.id).toMatch(
         /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i
@@ -175,7 +185,8 @@ describe('User Routes', () => {
       const requestModel = {
         name: 'Any Name',
         password: 'Password@123',
-        role: 'customer'
+        role: 'customer',
+        image: 'https://any.image'
       }
 
       const result = await request(app)
@@ -207,6 +218,7 @@ describe('User Routes', () => {
         email: 'any@email.com',
         password: 'Password@123',
         role: 'customer',
+        image: 'https://any.image',
         createUserId: userId,
         createdAt: new Date().toISOString()
       }
@@ -223,6 +235,8 @@ describe('User Routes', () => {
       expect(result.body.id).toBe(requestModel.id)
       expect(result.body.name).toBe(requestModel.name)
       expect(result.body.email).toBe(requestModel.email)
+      expect(result.body.role).toBe(requestModel.role)
+      expect(result.body.image).toBe(requestModel.image)
       expect(result.body.createUserId).toBe(requestModel.createUserId)
       expect(result.body.updateUserId).toBe(updateUserId)
       expect(result.body.createdAt).toBe(requestModel.createdAt)
@@ -236,7 +250,8 @@ describe('User Routes', () => {
         name: 'Any Name',
         email: 'any@email.com',
         password: 'Password@123',
-        role: 'customer'
+        role: 'customer',
+        image: 'https://any.image'
       }
 
       const result = await request(app)
@@ -271,6 +286,7 @@ describe('User Routes', () => {
         email: 'any@email.com',
         password: 'Password@123',
         role: 'customer',
+        image: 'https://any.image',
         createUserId: userId,
         updateUserId: userId,
         createdAt: new Date().toISOString(),
@@ -289,6 +305,8 @@ describe('User Routes', () => {
       expect(result.body.id).toBe(requestModel.id)
       expect(result.body.name).toBe(requestModel.name)
       expect(result.body.email).toBe(requestModel.email)
+      expect(result.body.role).toBe(requestModel.role)
+      expect(result.body.image).toBe(requestModel.image)
       expect(result.body.createUserId).toBe(requestModel.createUserId)
       expect(result.body.updateUserId).toBe(requestModel.updateUserId)
       expect(result.body.deleteUserId).toBe(deleteUserId)
