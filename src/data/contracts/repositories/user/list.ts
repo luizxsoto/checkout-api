@@ -3,7 +3,7 @@ import { UserModel } from '@/domain/models'
 export type RequestModel = {
   page?: number
   perPage?: number
-  orderBy?: 'name' | 'email' | 'createdAt' | 'updatedAt'
+  orderBy?: 'name' | 'email' | 'role' | 'createdAt' | 'updatedAt'
   order?: 'asc' | 'desc'
   filters?: string
 }

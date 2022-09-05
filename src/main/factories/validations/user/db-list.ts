@@ -41,6 +41,17 @@ export function makeListUserValidation(
           validationService
         )
       ],
+      role: [
+        new ArrayValidation.Validator(
+          {
+            validations: new ValidationBuilder()
+              .string()
+              .in({ values: ['admin', 'moderator', 'customer'] })
+              .build()
+          },
+          validationService
+        )
+      ],
       createUserId: [
         new ArrayValidation.Validator(
           { validations: new ValidationBuilder().string().regex({ pattern: 'uuidV4' }).build() },
@@ -77,7 +88,7 @@ export function makeListUserValidation(
           .build(),
         orderBy: new ValidationBuilder()
           .string()
-          .in({ values: ['name', 'email', 'createdAt', 'updatedAt'] })
+          .in({ values: ['name', 'email', 'role', 'createdAt', 'updatedAt'] })
           .build(),
         order: new ValidationBuilder()
           .string()
