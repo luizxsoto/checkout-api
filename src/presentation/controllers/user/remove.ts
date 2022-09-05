@@ -1,12 +1,11 @@
 import { RemoveUserUseCase } from '@/domain/use-cases'
 import { Controller, HttpResponse } from '@/presentation/contracts'
-import { RemoveUserDto } from '@/presentation/dtos'
 import { ok } from '@/presentation/helpers'
 
-export class RemoveUserController implements Controller<RemoveUserDto> {
+export class RemoveUserController implements Controller<RemoveUserUseCase.RequestModel> {
   constructor(private readonly removeUserUseCase: RemoveUserUseCase.UseCase) {}
 
-  public async handle(params: RemoveUserDto): Promise<HttpResponse> {
+  public async handle(params: RemoveUserUseCase.RequestModel): Promise<HttpResponse> {
     const useCaseResult = await this.removeUserUseCase.execute(params)
 
     return ok(useCaseResult)

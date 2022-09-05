@@ -1,12 +1,11 @@
 import { UpdateUserUseCase } from '@/domain/use-cases'
 import { Controller, HttpResponse } from '@/presentation/contracts'
-import { UpdateUserDto } from '@/presentation/dtos'
 import { ok } from '@/presentation/helpers'
 
-export class UpdateUserController implements Controller<UpdateUserDto> {
+export class UpdateUserController implements Controller<UpdateUserUseCase.RequestModel> {
   constructor(private readonly updateUserUseCase: UpdateUserUseCase.UseCase) {}
 
-  public async handle(params: UpdateUserDto): Promise<HttpResponse> {
+  public async handle(params: UpdateUserUseCase.RequestModel): Promise<HttpResponse> {
     const useCaseResult = await this.updateUserUseCase.execute(params)
 
     return ok(useCaseResult)

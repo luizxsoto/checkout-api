@@ -1,12 +1,11 @@
 import { ListOrderUseCase } from '@/domain/use-cases'
 import { Controller, HttpResponse } from '@/presentation/contracts'
-import { ListOrderDto } from '@/presentation/dtos'
 import { ok } from '@/presentation/helpers'
 
-export class ListOrderController implements Controller<ListOrderDto> {
+export class ListOrderController implements Controller<ListOrderUseCase.RequestModel> {
   constructor(private readonly listOrderUseCase: ListOrderUseCase.UseCase) {}
 
-  public async handle(params: ListOrderDto): Promise<HttpResponse> {
+  public async handle(params: ListOrderUseCase.RequestModel): Promise<HttpResponse> {
     const useCaseResult = await this.listOrderUseCase.execute(params)
 
     return ok(useCaseResult)

@@ -11,7 +11,6 @@ const config: Config.InitialOptions = {
     '!<rootDir>/src/main/config/env.ts',
     '!<rootDir>/src/main/config/*.d.ts',
     '!<rootDir>/src/main/server.ts',
-    '!<rootDir>/src/presentation/dtos/**',
     '!<rootDir>/src/validation/protocols/**',
     '!<rootDir>/src/**/contracts/**',
     '!<rootDir>/src/**/exceptions/**'
