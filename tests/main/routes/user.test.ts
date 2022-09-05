@@ -85,7 +85,7 @@ describe('User Routes', () => {
             field: 'filters',
             rule: 'listFilters',
             message:
-              'This value must be a valid list filters and with this posible fields: name, email, createUserId, updateUserId, createdAt, updatedAt'
+              'This value must be a valid list filters and with this posible fields: name, email, role, createUserId, updateUserId, createdAt, updatedAt'
           }
         ]
       })

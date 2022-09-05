@@ -53,7 +53,7 @@ describe(makeListUserValidation.name, () => {
         {
           field: 'orderBy',
           rule: 'in',
-          message: 'This value must be in: name, email, createdAt, updatedAt'
+          message: 'This value must be in: name, email, role, createdAt, updatedAt'
         }
       ]
     },
@@ -139,6 +139,23 @@ describe(makeListUserValidation.name, () => {
           field: 'filters.email.0',
           rule: 'length',
           message: 'This value length must be beetween 6 and 100'
+        }
+      ]
+    },
+    // role
+    {
+      properties: { filters: '["=", "role", 1]' },
+      validations: [
+        { field: 'filters.role.0', rule: 'string', message: 'This value must be a string' }
+      ]
+    },
+    {
+      properties: { filters: '["=", "role", "invalid_role"]' },
+      validations: [
+        {
+          field: 'filters.role.0',
+          rule: 'in',
+          message: 'This value must be in: admin, moderator, customer'
         }
       ]
     },
